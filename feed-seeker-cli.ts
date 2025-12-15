@@ -204,142 +204,166 @@ interface ExtendedCommand extends Command {
 }
 
 // =======================================================================================================
-console.log(`${bannerText}\n`);
 
-const program: ExtendedCommand = new Command();
-program.name(`feed-seeker`).description('Find RSS, Atom, and JSON feeds on any website with FeedSeeker.');
-program
-	.command('version')
-	.description('Get version')
-	.action(async () => {
-		const packageModule = await import('./package.json', { assert: { type: 'json' } });
-		const packageConfig = packageModule.default;
-		process.stdout.write(`${packageConfig.version}\n`);
-	});
+/**
+ * Create and configure the CLI program
+ * @param argv - Command line arguments (defaults to process.argv)
+ * @returns Configured Command instance
+ */
+export function createProgram(argv?: string[]): ExtendedCommand {
+	const program: ExtendedCommand = new Command();
+	program.name(`feed-seeker`).description('Find RSS, Atom, and JSON feeds on any website with FeedSeeker.');
+	program
+		.command('version')
+		.description('Get version')
+		.action(async () => {
+			const packageModule = await import('./package.json', { assert: { type: 'json' } });
+			const packageConfig = packageModule.default;
+			process.stdout.write(`${packageConfig.version}\n`);
+		});
 
-program
-	.argument('[site]', 'The website URL to search for feeds')
-	.option('-m, --metasearch', 'Meta search only')
-	.option('-b, --blindsearch', 'Blind search only')
-	.option('-a, --anchorsonly', 'Anchors search only')
-	.option('-d, --deepsearch', 'Enable deep search')
-	.option('--all', 'Execute all strategies and combine results')
-	.option('--deepsearch-only', 'Deep search only')
-	.option(
-		'--depth <number>',
-		'Depth of deep search',
-		(val: string): number => {
-			const num = parseInt(val, 10);
-			if (Number.isNaN(num) || num < 1) {
-				throw new Error('Depth must be a positive number (minimum 1)');
+	program
+		.argument('[site]', 'The website URL to search for feeds')
+		.option('-m, --metasearch', 'Meta search only')
+		.option('-b, --blindsearch', 'Blind search only')
+		.option('-a, --anchorsonly', 'Anchors search only')
+		.option('-d, --deepsearch', 'Enable deep search')
+		.option('--all', 'Execute all strategies and combine results')
+		.option('--deepsearch-only', 'Deep search only')
+		.option(
+			'--depth <number>',
+			'Depth of deep search',
+			(val: string): number => {
+				const num = parseInt(val, 10);
+				if (Number.isNaN(num) || num < 1) {
+					throw new Error('Depth must be a positive number (minimum 1)');
+				}
+				return num;
+			},
+			3
+		)
+		.option(
+			'--max-links <number>',
+			'Maximum number of links to process during deep search',
+			(val: string): number => {
+				const num = parseInt(val, 10);
+				if (Number.isNaN(num) || num < 1) {
+					throw new Error('Max links must be a positive number (minimum 1)');
+				}
+				return num;
+			},
+			1000
+		)
+		.option(
+			'--timeout <seconds>',
+			'Timeout for fetch requests in seconds',
+			(val: string): number => {
+				const num = parseInt(val, 10);
+				if (Number.isNaN(num) || num < 1) {
+					throw new Error('Timeout must be a positive number (minimum 1 second)');
+				}
+				return num;
+			},
+			5
+		)
+		.option('--keep-query-params', 'Keep query parameters from the original URL when searching')
+		.option('--check-foreign-feeds', "Check if foreign domain URLs are feeds (but don't crawl them)")
+		.option(
+			'--max-errors <number>',
+			'Stop after a certain number of errors',
+			(val: string): number => {
+				const num = parseInt(val, 10);
+				if (Number.isNaN(num) || num < 0) {
+					throw new Error('Max errors must be a non-negative number');
+				}
+				return num;
+			},
+			5
+		)
+		.option(
+			'--max-feeds <number>',
+			'Stop search after finding a certain number of feeds',
+			(val: string): number => {
+				const num = parseInt(val, 10);
+				if (Number.isNaN(num) || num < 0) {
+					throw new Error('Max feeds must be a non-negative number');
+				}
+				return num;
+			},
+			0
+		)
+		.option(
+			'--search-mode <mode>',
+			'Search mode for blind search: fast (~25), standard (~100), or full (~350+)',
+			'standard'
+		)
+		.description('Find feeds for site\n')
+		.action(async (site: string, options: CLIOptions & { all?: boolean }) => {
+			if (!site) {
+				program.help();
+				process.exit(0);
 			}
-			return num;
-		},
-		3
-	)
-	.option(
-		'--max-links <number>',
-		'Maximum number of links to process during deep search',
-		(val: string): number => {
-			const num = parseInt(val, 10);
-			if (Number.isNaN(num) || num < 1) {
-				throw new Error('Max links must be a positive number (minimum 1)');
+			try {
+				// Set the global flag for --all mode
+				if (options.all) {
+					isAllMode = true;
+					allModeFeeds = [];
+				}
+				// Store the result directly on the program object
+				program.feeds = await getFeeds(site, options);
+			} catch (error) {
+				if (options.displayErrors) {
+					console.error('\nError details:', error);
+				} else {
+					const err = error as Error;
+					console.error(styleText('red', `\nError: ${err.message}`));
+				}
+				process.exit(1);
 			}
-			return num;
-		},
-		1000
-	)
-	.option(
-		'--timeout <seconds>',
-		'Timeout for fetch requests in seconds',
-		(val: string): number => {
-			const num = parseInt(val, 10);
-			if (Number.isNaN(num) || num < 1) {
-				throw new Error('Timeout must be a positive number (minimum 1 second)');
-			}
-			return num;
-		},
-		5
-	)
-	.option('--keep-query-params', 'Keep query parameters from the original URL when searching')
-	.option('--check-foreign-feeds', "Check if foreign domain URLs are feeds (but don't crawl them)")
-	.option(
-		'--max-errors <number>',
-		'Stop after a certain number of errors',
-		(val: string): number => {
-			const num = parseInt(val, 10);
-			if (Number.isNaN(num) || num < 0) {
-				throw new Error('Max errors must be a non-negative number');
-			}
-			return num;
-		},
-		5
-	)
-	.option(
-		'--max-feeds <number>',
-		'Stop search after finding a certain number of feeds',
-		(val: string): number => {
-			const num = parseInt(val, 10);
-			if (Number.isNaN(num) || num < 0) {
-				throw new Error('Max feeds must be a non-negative number');
-			}
-			return num;
-		},
-		0
-	)
-	.option(
-		'--search-mode <mode>',
-		'Search mode for blind search: fast (~25), standard (~100), or full (~350+)',
-		'standard'
-	)
-	.description('Find feeds for site\n')
-	.action(async (site: string, options: CLIOptions & { all?: boolean }) => {
-		if (!site) {
-			program.help();
-			process.exit(0);
+		});
+
+	// add hidden option '--display-errors' to program
+	program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
+
+	return program;
+}
+
+/**
+ * Run the CLI with provided arguments
+ * @param argv - Command line arguments (defaults to process.argv)
+ * @returns Promise that resolves when CLI execution completes
+ */
+export async function run(argv: string[] = process.argv): Promise<void> {
+	console.log(`${bannerText}\n`);
+
+	const program = createProgram(argv);
+
+	// execute program
+	await program.parseAsync(argv);
+
+	if (program.feeds !== undefined) {
+		if (isAllMode && allModeFeeds.length > 0) {
+			// Display summary for --all mode
+			console.log(styleText('yellow', '\n=== All Strategies Complete ==='));
+			console.log(
+				styleText(
+					'green',
+					`Total: ${allModeFeeds.length} ${allModeFeeds.length === 1 ? 'feed' : 'feeds'} found from all strategies\n`
+				)
+			);
+			console.log(JSON.stringify(allModeFeeds, null, 2));
+		} else if (program.feeds.length > 0) {
+			// Normal output for regular mode
+			console.log(JSON.stringify(program.feeds, null, 2));
 		}
-		try {
-			// Set the global flag for --all mode
-			if (options.all) {
-				isAllMode = true;
-				allModeFeeds = [];
-			}
-			// Store the result directly on the program object
-			program.feeds = await getFeeds(site, options);
-		} catch (error) {
-			if (options.displayErrors) {
-				console.error('\nError details:', error);
-			} else {
-				const err = error as Error;
-				console.error(styleText('red', `\nError: ${err.message}`));
-			}
-			process.exit(1);
-		}
-	});
+	}
+}
 
-// add hidden option '--display-errors' to program
-program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
-
-// execute program
-program
-	.parseAsync(process.argv)
-	.then(() => {
-		if (program.feeds !== undefined) {
-			if (isAllMode && allModeFeeds.length > 0) {
-				// Display summary for --all mode
-				console.log(styleText('yellow', '\n=== All Strategies Complete ==='));
-				console.log(
-					styleText('green', `Total: ${allModeFeeds.length} ${allModeFeeds.length === 1 ? 'feed' : 'feeds'} found from all strategies\n`)
-				);
-				console.log(JSON.stringify(allModeFeeds, null, 2));
-			} else if (program.feeds.length > 0) {
-				// Normal output for regular mode
-				console.log(JSON.stringify(program.feeds, null, 2));
-			}
-		}
-	})
-	.catch(error => {
+// Only run if this is the main module (not imported for testing)
+if (import.meta.url === `file://${process.argv[1]}`) {
+	run().catch((error) => {
 		const err = error as Error;
 		console.error(styleText('red', `\nError: ${err.message}`));
 		process.exit(1);
 	});
+}

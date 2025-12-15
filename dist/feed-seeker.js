@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { parseHTML as D } from "linkedom";
+import { parseHTML as M } from "linkedom";
 import T from "tldts";
-import { queue as H } from "async";
-async function C(t, e = {}) {
+import H from "async";
+async function $(t, e = {}) {
   let r, s;
   if (typeof e == "number")
     r = e, s = {};
@@ -56,7 +56,7 @@ const m = {
   // Maximum timeout in seconds (60 seconds)
   MIN_TIMEOUT: 1
   // Minimum timeout in seconds
-}, M = {
+}, C = {
   TYPES: ["rich", "video", "photo", "link"],
   VERSIONS: ["1.0", "2.0"],
   URL_PATTERNS: ["/wp-json/oembed/", "/oembed"]
@@ -127,10 +127,10 @@ function V(t) {
   ), m.MAX_TIMEOUT) : Math.floor(t);
 }
 function Y(t) {
-  return M.URL_PATTERNS.some((e) => t.includes(e));
+  return C.URL_PATTERNS.some((e) => t.includes(e));
 }
 function G(t) {
-  return !!(t.type && M.TYPES.includes(t.type) && M.VERSIONS.includes(t.version) || t.type && t.version && t.html);
+  return !!(t.type && C.TYPES.includes(t.type) && C.VERSIONS.includes(t.version) || t.type && t.version && t.html);
 }
 function N(t) {
   return t.replace(h.CDATA, "$1");
@@ -144,7 +144,7 @@ async function w(t, e = "", r) {
   if (!e) {
     if (!r)
       throw new Error("Instance parameter is required when content is not provided");
-    const o = V(r.options.timeout) * 1e3, n = await C(t, o);
+    const o = V(r.options.timeout) * 1e3, n = await $(t, o);
     if (!n.ok)
       throw new Error(`Failed to fetch ${t}: ${n.status} ${n.statusText}`);
     e = await n.text();
@@ -293,7 +293,7 @@ function ie(t) {
 function oe(t) {
   return x(t) ? !1 : !t.includes("://");
 }
-function F(t, e) {
+function I(t, e) {
   const r = x(t);
   if (!r || r.hostname === e.hostname)
     return !0;
@@ -316,7 +316,7 @@ function ne(t) {
         return t.emit("log", {
           module: "anchors",
           message: `Following meta refresh redirect to ${s}`
-        }), q({ ...t, site: s });
+        }), z({ ...t, site: s });
       }
     }
   }
@@ -372,12 +372,12 @@ async function le(t, e) {
       }
     }
 }
-async function q(t) {
+async function z(t) {
   await ne(t);
   const e = new URL(t.site), r = t.document.querySelectorAll("a"), s = [];
   for (const l of r) {
     const a = P(l, e, t);
-    a && F(a, e) && s.push(l);
+    a && I(a, e) && s.push(l);
   }
   const i = t.options?.maxFeeds || 0, o = {
     instance: t,
@@ -398,7 +398,7 @@ async function q(t) {
   if (i === 0 || o.feedUrls.length < i) {
     const l = t.document.body?.innerHTML || "", a = ae(l), d = new Set(o.feedUrls.map((f) => f.url)), c = [];
     for (const f of a)
-      !d.has(f) && F(f, e) && (c.push(f), d.add(f));
+      !d.has(f) && I(f, e) && (c.push(f), d.add(f));
     for (const f of c) {
       if (i > 0 && o.feedUrls.length >= i) {
         t.emit("log", {
@@ -441,10 +441,10 @@ async function de(t) {
     module: "anchors",
     niceName: "Check all anchors"
   });
-  const e = await q(t);
+  const e = await z(t);
   return t.emit("end", { module: "anchors", feeds: e }), e;
 }
-const ce = 0, L = 0, he = 3, A = "standard", z = 2083, k = 10, U = 1, I = 1e4, v = 6e4, E = [
+const ce = 0, L = 0, he = 3, k = "standard", q = 2083, A = 10, U = 1, _ = 1e4, v = 6e4, E = [
   // Most common standard paths (highest success rate)
   "feed",
   "rss",
@@ -784,16 +784,18 @@ function ue(t) {
   }
 }
 function me(t) {
-  return t ? ["fast", "standard", "exhaustive", "full"].includes(t) ? t : (console.warn(`Invalid search mode "${t}". Falling back to "${A}".`), A) : A;
+  return t ? ["fast", "standard", "exhaustive", "full"].includes(t) ? t : (console.warn(`Invalid search mode "${t}". Falling back to "${k}".`), k) : k;
 }
 function pe(t) {
-  return t == null ? he : !Number.isFinite(t) || t < U ? (console.warn(`Invalid concurrency value ${t}. Using minimum: ${U}.`), U) : t > k ? (console.warn(`Concurrency value ${t} exceeds maximum. Clamping to ${k}.`), k) : Math.floor(t);
+  return t == null ? he : !Number.isFinite(t) || t < U ? (console.warn(`Invalid concurrency value ${t}. Using minimum: ${U}.`), U) : t > A ? (console.warn(
+    `Concurrency value ${t} exceeds maximum. Clamping to ${A}.`
+  ), A) : Math.floor(t);
 }
 function ge(t) {
   return t == null ? L : !Number.isFinite(t) || t < 0 ? (console.warn(`Invalid request delay ${t}. Using default: ${L}.`), L) : t > v ? (console.warn(`Request delay ${t}ms exceeds maximum. Clamping to ${v}ms.`), v) : Math.floor(t);
 }
-function _(t) {
-  return t.length <= z;
+function O(t) {
+  return t.length <= q;
 }
 function we(t, e, r) {
   let s;
@@ -802,8 +804,10 @@ function we(t, e, r) {
   } catch {
     throw new Error(`Invalid URL provided to blindSearch: ${t}`);
   }
-  if (!_(t))
-    throw new Error(`URL too long (${t.length} chars). Maximum allowed: ${z} characters.`);
+  if (!O(t))
+    throw new Error(
+      `URL too long (${t.length} chars). Maximum allowed: ${q} characters.`
+    );
   if (!["http:", "https:"].includes(s.protocol))
     throw new Error(`Invalid protocol "${s.protocol}". Only http: and https: are allowed.`);
   const i = s.origin;
@@ -813,12 +817,12 @@ function we(t, e, r) {
   for (e && (l = s.search); o.length >= i.length; ) {
     const a = o.endsWith("/") ? o.slice(0, -1) : o;
     for (const d of r) {
-      if (n.length >= I)
+      if (n.length >= _)
         return console.warn(
-          `URL generation limit reached (${I} URLs). Stopping to prevent resource exhaustion.`
+          `URL generation limit reached (${_} URLs). Stopping to prevent resource exhaustion.`
         ), n;
       const c = l ? `${a}/${d}${l}` : `${a}/${d}`;
-      _(c) ? n.push(c) : console.warn(`Skipping URL (too long): ${c.substring(0, 100)}...`);
+      O(c) ? n.push(c) : console.warn(`Skipping URL (too long): ${c.substring(0, 100)}...`);
     }
     o = o.slice(0, o.lastIndexOf("/"));
   }
@@ -830,19 +834,31 @@ function Ee(t, e, r, s, i) {
     title: null,
     // No link element title in blind search (unlike metaLinks)
     type: t.type,
-    feedTitle: t.title,
+    feedTitle: t.title
     // Actual feed title from parsing the feed
-    feedType: t.type
-    // Included for BlindSearchFeed interface compatibility
   }), { rssFound: s, atomFound: i };
 }
 function ye(t, e, r, s, i) {
   return t >= e ? !1 : i ? !0 : !(r && s);
 }
 async function xe(t, e) {
-  const r = me(t.options?.searchMode), s = ue(r), i = we(t.site, t.options?.keepQueryParams || !1, s);
-  t.emit("start", { module: "blindsearch", niceName: "Blind search", endpointUrls: i.length });
-  const o = t.options?.all || !1, n = t.options?.maxFeeds ?? ce, l = pe(t.options?.concurrency), a = await Se(i, o, n, l, t);
+  const r = me(t.options?.searchMode), s = ue(r), i = we(
+    t.site,
+    t.options?.keepQueryParams || !1,
+    s
+  );
+  t.emit("start", {
+    module: "blindsearch",
+    niceName: "Blind search",
+    endpointUrls: i.length
+  });
+  const o = t.options?.all || !1, n = t.options?.maxFeeds ?? ce, l = pe(t.options?.concurrency), a = await Se(
+    i,
+    o,
+    n,
+    l,
+    t
+  );
   return t.emit("end", { module: "blindsearch", feeds: a.feeds }), a.feeds;
 }
 async function Se(t, e, r, s, i, o) {
@@ -850,7 +866,7 @@ async function Se(t, e, r, s, i, o) {
   let a = !1, d = !1, c = 0;
   for (; ye(c, t.length, a, d, e); ) {
     if (r > 0 && n.length >= r) {
-      await O(i, n, r);
+      await D(i, n, r);
       break;
     }
     const f = Math.min(s, t.length - c), u = t.slice(c, c + f), S = await Promise.allSettled(
@@ -858,14 +874,19 @@ async function Se(t, e, r, s, i, o) {
     );
     for (const p of S)
       if (p.status === "fulfilled" && p.value.found && (a = p.value.rssFound, d = p.value.atomFound, r > 0 && n.length >= r)) {
-        await O(i, n, r), c = t.length;
+        await D(i, n, r), c = t.length;
         break;
       }
     c += f;
     const j = n.length;
-    i.emit("log", { module: "blindsearch", totalEndpoints: t.length, totalCount: c, feedsFound: j });
-    const $ = ge(i.options?.requestDelay);
-    $ > 0 && c < t.length && await new Promise((p) => setTimeout(p, $));
+    i.emit("log", {
+      module: "blindsearch",
+      totalEndpoints: t.length,
+      totalCount: c,
+      feedsFound: j
+    });
+    const F = ge(i.options?.requestDelay);
+    F > 0 && c < t.length && await new Promise((p) => setTimeout(p, F));
   }
   return { feeds: n, rssFound: a, atomFound: d };
 }
@@ -885,7 +906,7 @@ async function Te(t, e, r, s, i, o) {
   }
   return { found: !1, rssFound: i, atomFound: o };
 }
-async function O(t, e, r) {
+async function D(t, e, r) {
   t.emit("log", {
     module: "blindsearch",
     message: `Stopped due to reaching maximum feeds limit: ${e.length} feeds found (max ${r} allowed).`
@@ -1194,7 +1215,8 @@ class g {
     return Array.from(this.#e.keys());
   }
 }
-function Le(t) {
+const { queue: Le } = H;
+function ke(t) {
   return [
     ".zip",
     ".rar",
@@ -1248,7 +1270,7 @@ class Ae extends g {
     } catch {
       throw new Error(`Invalid start URL: ${e}`);
     }
-    this.maxDepth = r, this.concurrency = s, this.maxLinks = i, this.mainDomain = T.getDomain(this.startUrl), this.checkForeignFeeds = o, this.maxErrors = n, this.maxFeeds = l, this.errorCount = 0, this.instance = a, this.queue = H(this.crawlPage.bind(this), this.concurrency), this.visitedUrls = /* @__PURE__ */ new Set(), this.timeout = 5e3, this.maxLinksReachedMessageEmitted = !1, this.feeds = [], this.queue.error((d) => {
+    this.maxDepth = r, this.concurrency = s, this.maxLinks = i, this.mainDomain = T.getDomain(this.startUrl), this.checkForeignFeeds = o, this.maxErrors = n, this.maxFeeds = l, this.errorCount = 0, this.instance = a, this.queue = Le(this.crawlPage.bind(this), this.concurrency), this.visitedUrls = /* @__PURE__ */ new Set(), this.timeout = 5e3, this.maxLinksReachedMessageEmitted = !1, this.feeds = [], this.queue.error((d) => {
       this.errorCount < this.maxErrors && (this.errorCount++, this.emit("error", {
         module: "deepSearch",
         error: `Async error: ${d}`,
@@ -1273,7 +1295,7 @@ class Ae extends g {
    */
   isValidUrl(e) {
     try {
-      const r = T.getDomain(e) === T.getDomain(this.startUrl), s = !Le(e);
+      const r = T.getDomain(e) === T.getDomain(this.startUrl), s = !ke(e);
       return r && s;
     } catch {
       return this.errorCount < this.maxErrors && (this.errorCount++, this.emit("error", {
@@ -1365,7 +1387,7 @@ class Ae extends g {
     let { url: r, depth: s } = e;
     if (!this.shouldCrawl(r, s)) return;
     this.visitedUrls.add(r);
-    const i = await C(r, this.timeout);
+    const i = await $(r, this.timeout);
     if (!i) {
       this.handleFetchError(r, s, "Failed to fetch URL - timeout or network error");
       return;
@@ -1374,7 +1396,7 @@ class Ae extends g {
       this.handleFetchError(r, s, `HTTP ${i.status} ${i.statusText}`);
       return;
     }
-    const o = await i.text(), { document: n } = D(o);
+    const o = await i.text(), { document: n } = M(o);
     for (const l of n.querySelectorAll("a"))
       try {
         const a = new URL(l.href, this.startUrl).href;
@@ -1384,7 +1406,7 @@ class Ae extends g {
       }
   }
 }
-async function ke(t, e = {}, r = null) {
+async function Ue(t, e = {}, r = null) {
   const s = new Ae(
     t,
     e.depth || 3,
@@ -1405,8 +1427,7 @@ async function ke(t, e = {}, r = null) {
     });
   }), s.feeds;
 }
-class Me extends g {
-  // Store the raw input for validation during initialization
+class Ce extends g {
   /**
    * Creates a new FeedSeeker instance
    * @param {string} site - The website URL to search for feeds (protocol optional, defaults to https://)
@@ -1425,7 +1446,7 @@ class Me extends g {
    * seeker.on('error', (error) => console.error(error));
    */
   constructor(e, r = {}) {
-    super(), this.rawSite = e;
+    super(), this.initStatus = "pending", this.rawSite = e;
     let s = e;
     s.includes("://") || (s = `https://${s}`);
     try {
@@ -1441,44 +1462,91 @@ class Me extends g {
     }, this.initPromise = null;
   }
   /**
+   * Gets the current initialization status
+   * @returns {InitStatus} The current status: 'pending', 'success', or 'error'
+   * @example
+   * const seeker = new FeedSeeker('https://example.com');
+   * await seeker.initialize();
+   * if (seeker.getInitStatus() === 'error') {
+   *   console.error('Failed to initialize');
+   * }
+   */
+  getInitStatus() {
+    return this.initStatus;
+  }
+  /**
+   * Checks if initialization was successful
+   * @returns {boolean} True if initialization succeeded, false otherwise
+   * @example
+   * const seeker = new FeedSeeker('https://example.com');
+   * await seeker.initialize();
+   * if (seeker.isInitialized()) {
+   *   const feeds = await seeker.metaLinks();
+   * }
+   */
+  isInitialized() {
+    return this.initStatus === "success";
+  }
+  /**
+   * Creates an empty document for error states
+   * This ensures all Document methods are available even when initialization fails
+   * @returns {Document} An empty but valid Document object
+   * @private
+   */
+  createEmptyDocument() {
+    const { document: e } = M("<!DOCTYPE html><html><head></head><body></body></html>");
+    return e;
+  }
+  /**
+   * Sets the instance to an empty state (used when initialization fails)
+   * @private
+   */
+  setEmptyState() {
+    this.content = "", this.document = this.createEmptyDocument();
+  }
+  /**
    * Initializes the FeedSeeker instance by validating the URL and fetching the site content and parsing the HTML
    * This method is called automatically by other methods and caches the result
    * Emits 'error' events if validation or fetching fails
+   * Sets initStatus to 'success' or 'error' based on the outcome
    * @returns {Promise<void>} A promise that resolves when the initialization is complete
    * @private
    * @example
    * await seeker.initialize(); // Usually called automatically
+   * if (seeker.getInitStatus() === 'error') {
+   *   console.error('Initialization failed');
+   * }
    */
   async initialize() {
-    return this.initPromise === null && (this.initPromise = (async () => {
+    return this.initPromise ??= (async () => {
       try {
         if (!this.rawSite || typeof this.rawSite != "string") {
-          this.emit("error", {
+          this.initStatus = "error", this.emit("error", {
             module: "FeedSeeker",
             error: "Site parameter must be a non-empty string"
-          }), this.content = "", this.document = { querySelectorAll: () => [] }, this.emit("initialized");
+          }), this.setEmptyState(), this.emit("initialized");
           return;
         }
         try {
           new URL(this.site);
         } catch {
-          this.emit("error", {
+          this.initStatus = "error", this.emit("error", {
             module: "FeedSeeker",
             error: `Invalid URL: ${this.site}`
-          }), this.content = "", this.document = { querySelectorAll: () => [] }, this.emit("initialized");
+          }), this.setEmptyState(), this.emit("initialized");
           return;
         }
-        const e = await C(this.site, this.options.timeout * 1e3);
-        if (!e.ok) {
-          this.emit("error", {
+        const e = (this.options.timeout ?? 5) * 1e3, r = await $(this.site, e);
+        if (!r.ok) {
+          this.initStatus = "error", this.emit("error", {
             module: "FeedSeeker",
-            error: `HTTP error while fetching ${this.site}: ${e.status} ${e.statusText}`
-          }), this.content = "", this.document = { querySelectorAll: () => [] }, this.emit("initialized");
+            error: `HTTP error while fetching ${this.site}: ${r.status} ${r.statusText}`
+          }), this.setEmptyState(), this.emit("initialized");
           return;
         }
-        this.content = await e.text();
-        const { document: r } = D(this.content);
-        this.document = r, this.emit("initialized");
+        this.content = await r.text();
+        const { document: s } = M(this.content);
+        this.document = s, this.initStatus = "success", this.emit("initialized");
       } catch (e) {
         const r = e instanceof Error ? e : new Error(String(e));
         let s = `Failed to fetch ${this.site}`;
@@ -1489,13 +1557,13 @@ class Me extends g {
           const i = r.cause;
           i && (s += ` (cause: ${i.code || i.message})`);
         }
-        this.emit("error", {
+        this.initStatus = "error", this.emit("error", {
           module: "FeedSeeker",
           error: s,
           cause: r.cause
-        }), this.content = "", this.document = { querySelectorAll: () => [] }, this.emit("initialized");
+        }), this.setEmptyState(), this.emit("initialized");
       }
-    })()), this.initPromise;
+    })(), this.initPromise;
   }
   /**
    * Searches for feeds using meta links in the page (link tags in head)
@@ -1524,11 +1592,11 @@ class Me extends g {
   /**
    * Performs a blind search for common feed endpoints
    * This method tries common feed paths like /feed, /rss, /atom.xml, etc.
-   * @returns {Promise<BlindSearchFeed[]>} A promise that resolves to an array of found feed objects
+   * @returns {Promise<Feed[]>} A promise that resolves to an array of found feed objects
    * @throws {Error} When network errors occur during endpoint testing
    * @example
    * const feeds = await seeker.blindSearch();
-   * console.log(feeds); // [{ url: '...', feedType: 'rss', title: '...' }]
+   * console.log(feeds); // [{ url: '...', type: 'rss', title: '...' }]
    */
   async blindSearch() {
     return await this.initialize(), xe(this);
@@ -1543,12 +1611,12 @@ class Me extends g {
    * console.log(feeds); // [{ url: '...', type: 'json', title: '...' }]
    */
   async deepSearch() {
-    return await this.initialize(), ke(this.site, this.options, this);
+    return await this.initialize(), Ue(this.site, this.options, this);
   }
   /**
    * Starts a comprehensive feed search using multiple strategies
    * Automatically deduplicates feeds found by multiple strategies
-   * @returns {Promise<Array<Feed | BlindSearchFeed>>} A promise that resolves to an array of unique found feed objects
+   * @returns {Promise<Feed[]>} A promise that resolves to an array of unique found feed objects
    * @example
    * const seeker = new FeedSeeker('https://example.com', { maxFeeds: 10 });
    * const feeds = await seeker.startSearch();
@@ -1565,7 +1633,7 @@ class Me extends g {
   }
   /**
    * Handles single strategy search modes (deepsearchOnly, metasearch, blindsearch, anchorsonly)
-   * @returns {Promise<Array<Feed | BlindSearchFeed> | null>} Results if a single strategy mode is active, null otherwise
+   * @returns {Promise<Feed[] | null>} Results if a single strategy mode is active, null otherwise
    * @private
    */
   async handleSingleStrategyMode() {
@@ -1574,7 +1642,7 @@ class Me extends g {
   }
   /**
    * Collects feeds from multiple search strategies
-   * @param {Map<string, Feed | BlindSearchFeed>} feedMap - Map to store deduplicated feeds
+   * @param {Map<string, Feed>} feedMap - Map to store deduplicated feeds
    * @returns {Promise<void>}
    * @private
    */
@@ -1588,8 +1656,8 @@ class Me extends g {
   }
   /**
    * Adds feeds to the feed map, deduplicating by URL
-   * @param {Map<string, Feed | BlindSearchFeed>} feedMap - Map to store feeds
-   * @param {Array<Feed | BlindSearchFeed>} feeds - Feeds to add
+   * @param {Map<string, Feed>} feedMap - Map to store feeds
+   * @param {Feed[]} feeds - Feeds to add
    * @returns {void}
    * @private
    */
@@ -1600,7 +1668,7 @@ class Me extends g {
   }
   /**
    * Checks if the feed limit has been reached
-   * @param {Map<string, Feed | BlindSearchFeed>} feedMap - Current feed map
+   * @param {Map<string, Feed>} feedMap - Current feed map
    * @returns {boolean} True if limit is reached, false otherwise
    * @private
    */
@@ -1610,7 +1678,7 @@ class Me extends g {
   }
   /**
    * Handles deep search if enabled
-   * @param {Map<string, Feed | BlindSearchFeed>} feedMap - Map to store feeds
+   * @param {Map<string, Feed>} feedMap - Map to store feeds
    * @returns {Promise<void>}
    * @private
    */
@@ -1627,8 +1695,8 @@ class Me extends g {
   }
   /**
    * Gets feeds from the map with limit applied
-   * @param {Map<string, Feed | BlindSearchFeed>} feedMap - Map containing feeds
-   * @returns {Array<Feed | BlindSearchFeed>} Feeds with limit applied
+   * @param {Map<string, Feed>} feedMap - Map containing feeds
+   * @returns {Feed[]} Feeds with limit applied
    * @private
    */
   getFeedsWithLimit(e) {
@@ -1637,5 +1705,5 @@ class Me extends g {
   }
 }
 export {
-  Me as default
+  Ce as default
 };
