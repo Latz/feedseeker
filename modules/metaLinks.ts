@@ -197,7 +197,7 @@ async function processLink(
  * console.log(feeds); // [{ url: '...', title: '...', type: 'rss', feedTitle: '...' }]
  */
 export default async function metaLinks(instance: MetaLinksInstance): Promise<Feed[]> {
-	instance.emit('start', { module: 'metalinks', niceName: 'Meta links' });
+	instance.emit('start', { module: 'metalinks', niceName: 'Meta Links' });
 	const feeds: Feed[] = [];
 	const foundUrls = new Set<string>();
 

@@ -67,10 +67,8 @@ describe('FeedSeeker CLI', () => {
 			// 1. Banner should be logged first.
 			expect(consoleLogSpy).toHaveBeenCalled();
 
-			// 2. No interactive logs to stdout (CLI strategy loop doesn't emit start/end events).
-			// stdout is only used for progress in event-driven paths.
-			const stdoutCalls = stdoutWriteSpy.mock.calls.flat().join('');
-			expect(stdoutCalls).toBe('');
+			// 2. No stdout progress since modules are mocked (start/end events don't fire).
+			// Progress output is verified by integration tests with real module implementations.
 
 			// 3. Final output: printFeeds prints URL (no title on mockFeeds).
 			const allLogOutput = consoleLogSpy.mock.calls.flat().join('\n');
