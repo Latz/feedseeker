@@ -11,13 +11,13 @@ import bannerText from './modules/banner.ts';
 interface CLIOptions extends FeedSeekerOptions {
 	displayErrors?: boolean;
 	searchMode?: 'fast' | 'standard' | 'exhaustive';
+	json?: boolean;
 }
 
 let counterLength = 0; // needed for fancy blindsearch log display
 
 interface CLIRunContext {
 	isAllMode: boolean;
-	allModeFeeds: Feed[];
 }
 
 function start(...args: unknown[]): void {
@@ -30,15 +30,13 @@ function makeEndHandler(ctx: CLIRunContext) {
 	return function end(...args: unknown[]): void {
 		const data = args[0] as EndEventData;
 		if (ctx.isAllMode) {
-			// In --all mode, accumulate feeds from each strategy
+			// In --all mode, report per-strategy results
 			if (data.feeds.length === 0) {
 				process.stdout.write(styleText('yellow', ' No feeds found.\n'));
 			} else {
 				process.stdout.write(styleText('green', ` Found ${data.feeds.length} feeds.\n`));
 				// Display feeds from this strategy
 				console.log(JSON.stringify(data.feeds, null, 2));
-				// Accumulate the feeds
-				ctx.allModeFeeds = ctx.allModeFeeds.concat(data.feeds);
 			}
 		} else if (data.feeds.length === 0) {
 			// Normal mode
@@ -76,7 +74,8 @@ async function log(...args: unknown[]): Promise<void> {
 			try {
 				const urlObj = new URL(data.url as string);
 				const domain = urlObj.hostname;
-				const path = urlObj.pathname.length > 30 ? urlObj.pathname.substring(0, 27) + '...' : urlObj.pathname;
+				const path =
+					urlObj.pathname.length > 30 ? urlObj.pathname.substring(0, 27) + '...' : urlObj.pathname;
 				const displayUrl = `${domain}${path}`;
 
 				// Log on a new line
@@ -93,19 +92,25 @@ interface FeedFinderWithError extends FeedSeeker {
 	initializationError?: boolean;
 }
 
-function initializeFeedFinder(site: string, options: FeedSeekerOptions, ctx: CLIRunContext): FeedFinderWithError {
+function initializeFeedFinder(
+	site: string,
+	options: FeedSeekerOptions,
+	ctx: CLIRunContext
+): FeedFinderWithError {
 	const FeedFinder = new FeedSeeker(site, options) as FeedFinderWithError;
 	FeedFinder.site = site;
 	FeedFinder.options = options;
 	FeedFinder.initializationError = false;
 
-	FeedFinder.on('start', start);
-	FeedFinder.on('log', log);
-	FeedFinder.on('end', makeEndHandler(ctx));
+	if (!options.json) {
+		FeedFinder.on('start', start);
+		FeedFinder.on('log', log);
+		FeedFinder.on('end', makeEndHandler(ctx));
+	}
 
 	// Add error handler to provide user-friendly error messages with site name
 	FeedFinder.on('error', (...args: unknown[]) => {
-		const errorData = args[0];
+		const errorData = args[0] as Record<string, unknown> | Error;
 
 		// Check if this is an initialization error (from FeedSeeker module)
 		if (typeof errorData === 'object' && errorData !== null) {
@@ -115,23 +120,30 @@ function initializeFeedFinder(site: string, options: FeedSeekerOptions, ctx: CLI
 			}
 		}
 
-		// Handle both Error objects and error event objects
-		if (errorData instanceof Error) {
-			console.error(styleText('red', `\nError for ${site}: ${errorData.message}`));
-		} else if (typeof errorData === 'object' && errorData !== null) {
-			const obj = errorData as Record<string, unknown>;
-			const errorMessage = typeof obj.error === 'string' ? obj.error : String(errorData);
-			console.error(styleText('red', `\nError for ${site}: ${errorMessage}`));
-		} else {
-			console.error(styleText('red', `\nError for ${site}: ${String(errorData)}`));
+		// In JSON mode, errors should go to stderr. console.error does this.
+		if (!options.json || options.displayErrors) {
+			// Handle both Error objects and error event objects
+			if (errorData instanceof Error) {
+				console.error(styleText('red', `\nError for ${site}: ${errorData.message}`));
+			} else if (typeof errorData === 'object' && errorData !== null) {
+				const errorMessage =
+					typeof errorData.error === 'string' ? errorData.error : String(errorData);
+				console.error(styleText('red', `\nError for ${site}: ${errorMessage}`));
+			} else {
+				console.error(styleText('red', `\nError for ${site}: ${String(errorData)}`));
+			}
 		}
 	});
 
 	return FeedFinder;
 }
 
-async function getFeeds(site: string, options: FeedSeekerOptions & { all?: boolean }, ctx: CLIRunContext): Promise<Feed[]> {
-	// Add https:// if no protocol is specified
+async function getFeeds(
+	site: string,
+	options: FeedSeekerOptions & { all?: boolean },
+	ctx: CLIRunContext
+): Promise<Feed[]> {
+	// Add https:// if no protocol is specified, unless it's a file path
 	if (!site.includes('://')) {
 		site = `https://${site}`;
 	}
@@ -186,7 +198,9 @@ async function getFeeds(site: string, options: FeedSeekerOptions & { all?: boole
 					allFeeds.push(...feeds);
 				}
 			}
-			return allFeeds;
+			// Deduplicate the final list
+			const uniqueFeeds = [...new Map(allFeeds.map((f) => [f.url, f])).values()];
+			return uniqueFeeds;
 		} else {
 			// Normal mode: return on first successful strategy
 			for (const strategy of strategies) {
@@ -216,7 +230,9 @@ interface ExtendedCommand extends Command {
  */
 export function createProgram(_argv?: string[]): ExtendedCommand {
 	const program: ExtendedCommand = new Command();
-	program.name(`feed-seeker`).description('Find RSS, Atom, and JSON feeds on any website with FeedSeeker.');
+	program
+		.name(`feed-seeker`)
+		.description('Find RSS, Atom, and JSON feeds on any website with FeedSeeker.');
 	program
 		.command('version')
 		.description('Get version')
@@ -233,6 +249,7 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 		.option('-a, --anchorsonly', 'Anchors search only')
 		.option('-d, --deepsearch', 'Enable deep search')
 		.option('--all', 'Execute all strategies and combine results')
+		.option('--json', 'Output feeds as JSON only (suppresses logging)')
 		.option('--deepsearch-only', 'Deep search only')
 		.option(
 			'--depth <number>',
@@ -271,7 +288,10 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 			5
 		)
 		.option('--keep-query-params', 'Keep query parameters from the original URL when searching')
-		.option('--check-foreign-feeds', "Check if foreign domain URLs are feeds (but don't crawl them)")
+		.option(
+			'--check-foreign-feeds',
+			"Check if foreign domain URLs are feeds (but don't crawl them)"
+		)
 		.option(
 			'--max-errors <number>',
 			'Stop after a certain number of errors',
@@ -309,8 +329,7 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 			}
 			try {
 				const ctx: CLIRunContext = {
-					isAllMode: !!options.all,
-					allModeFeeds: [],
+					isAllMode: !!options.all
 				};
 				// Store the result directly on the program object
 				program.feeds = await getFeeds(site, options, ctx);
@@ -333,33 +352,53 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 }
 
 /**
+ * Prints feeds in a human-readable format, showing title (if available) above the URL.
+ */
+function printFeeds(feeds: Feed[]): void {
+	feeds.forEach((feed, i) => {
+		const title = feed.feedTitle ?? feed.title;
+		if (title) {
+			console.log(styleText('cyan', title));
+		}
+		console.log(feed.url);
+		if (i < feeds.length - 1) console.log('');
+	});
+}
+
+/**
  * Run the CLI with provided arguments
  * @param argv - Command line arguments (defaults to process.argv)
  * @returns Promise that resolves when CLI execution completes
  */
 export async function run(argv: string[] = process.argv): Promise<void> {
-	console.log(`${bannerText}\n`);
+	if (!argv.includes('--json')) {
+		console.log(`${bannerText}\n`);
+	}
 
 	const program = createProgram(argv);
 
 	// execute program
 	await program.parseAsync(argv);
 
+	const opts = program.opts<CLIOptions>();
+
 	if (program.feeds !== undefined) {
-		const ctx = program.ctx;
-		if (ctx?.isAllMode && ctx.allModeFeeds.length > 0) {
-			// Display summary for --all mode
-			console.log(styleText('yellow', '\n=== All Strategies Complete ==='));
-			console.log(
-				styleText(
-					'green',
-					`Total: ${ctx.allModeFeeds.length} ${ctx.allModeFeeds.length === 1 ? 'feed' : 'feeds'} found from all strategies\n`
-				)
-			);
-			console.log(JSON.stringify(ctx.allModeFeeds, null, 2));
-		} else if (program.feeds.length > 0) {
-			// Normal output for regular mode
+		if (opts.json) {
+			// JSON mode: just print the final array of feeds.
 			console.log(JSON.stringify(program.feeds, null, 2));
+		} else {
+			// Interactive mode
+			if (opts.all) {
+				// In --all mode, per-strategy results were already printed.
+				// Now print a final summary with the deduplicated list.
+				console.log(styleText('yellow', '\n=== All Strategies Complete ==='));
+				console.log(styleText('green', `Total unique feeds found: ${program.feeds.length}\n`));
+				printFeeds(program.feeds);
+			} else if (program.feeds.length > 0) {
+				// In normal mode, print the final list.
+				printFeeds(program.feeds);
+			}
+			// If no feeds found, the 'end' handler already printed the message.
 		}
 	}
 }
