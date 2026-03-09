@@ -400,6 +400,12 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 			}
 			// If no feeds found, the 'end' handler already printed the message.
 		}
+
+		// Exit code 2 = search succeeded but no feeds were found.
+		// Exit code 1 = error (set by .catch below or process.exit(1) on init error).
+		if (program.feeds.length === 0) {
+			process.exit(2);
+		}
 	}
 }
 
