@@ -193,7 +193,7 @@ class Crawler extends EventEmitter {
 	 */
 	start(): void {
 		this.queue.push({ url: this.startUrl, depth: 0 });
-		this.emit('start', { module: 'deepSearch', niceName: 'Deep search' });
+		this.emit('start', { module: 'deepSearch', niceName: 'Deep Search' });
 	}
 
 	/**

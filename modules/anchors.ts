@@ -380,7 +380,7 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 export default async function checkAllAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 	instance.emit('start', {
 		module: 'anchors',
-		niceName: 'Check all anchors',
+		niceName: 'Check All Anchors',
 	});
 
 	const feeds = await checkAnchors(instance);

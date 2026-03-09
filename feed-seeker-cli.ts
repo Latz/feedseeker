@@ -94,7 +94,7 @@ interface FeedFinderWithError extends FeedSeeker {
 
 function initializeFeedFinder(
 	site: string,
-	options: FeedSeekerOptions,
+	options: CLIOptions,
 	ctx: CLIRunContext
 ): FeedFinderWithError {
 	const FeedFinder = new FeedSeeker(site, options) as FeedFinderWithError;
@@ -140,7 +140,7 @@ function initializeFeedFinder(
 
 async function getFeeds(
 	site: string,
-	options: FeedSeekerOptions & { all?: boolean },
+	options: CLIOptions & { all?: boolean },
 	ctx: CLIRunContext
 ): Promise<Feed[]> {
 	// Add https:// if no protocol is specified, unless it's a file path
