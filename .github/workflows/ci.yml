@@ -1,0 +1,31 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Use a matrix to test multiple Node.js versions
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        # set fail-fast to false if you want to see all results 
+        # even if one version fails
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - run: npm install
+    - run: npm test
