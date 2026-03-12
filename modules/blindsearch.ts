@@ -344,6 +344,7 @@ async function processFeeds(
 	let rssFound = false;
 	let atomFound = false;
 	let i = 0;
+	const requestDelay = validateRequestDelay(instance.options?.requestDelay);
 
 	while (shouldContinueSearch(i, endpointUrls.length, rssFound, atomFound, shouldCheckAll)) {
 		if (signal?.aborted) {
@@ -379,7 +380,6 @@ async function processFeeds(
 			feedsFound: feeds.length
 		});
 
-		const requestDelay = validateRequestDelay(instance.options?.requestDelay);
 		if (requestDelay > 0 && i < endpointUrls.length) {
 			await new Promise((resolve) => setTimeout(resolve, requestDelay));
 		}

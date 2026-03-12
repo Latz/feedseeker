@@ -458,4 +458,24 @@ describe('blindsearch module — endpoint getters', () => {
 
 		expect(exhaustiveCount).toBeGreaterThan(standardCount);
 	});
+
+	it('validates requestDelay once before the loop, not once per batch', async () => {
+		// An invalid requestDelay triggers console.warn inside validateRequestDelay.
+		// Before fix: validateRequestDelay runs inside the while loop → warn fires once per batch.
+		// After fix: hoisted above the loop → warn fires exactly once regardless of batch count.
+		// With fast mode (24 endpoints) and concurrency 3, there are 8 batches.
+		checkFeed.mockResolvedValue(null);
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			requestDelay: -1, // invalid → triggers console.warn in validateRequestDelay
+		});
+		await blindSearch(instance);
+		const delayWarnCount = warnSpy.mock.calls.filter(args =>
+			args[0]?.includes('Invalid request delay')
+		).length;
+		warnSpy.mockRestore();
+		expect(delayWarnCount).toBe(1);
+	});
 });
