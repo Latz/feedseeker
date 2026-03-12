@@ -1,6 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import deepSearch, { EXCLUDED_EXTENSIONS } from '../modules/deepSearch.ts';
 
+// Track getDomain call arguments to verify caching behaviour in isValidUrl
+let tldtsGetDomainCalls = [];
+
+vi.mock('tldts', async importOriginal => {
+  const real = await importOriginal();
+  return {
+    default: {
+      ...real.default,
+      getDomain: (...args) => {
+        tldtsGetDomainCalls.push(args[0]);
+        return real.default.getDomain(...args);
+      },
+    },
+  };
+});
+
 // Mock fetchWithTimeout to avoid real network requests
 vi.mock('../modules/fetchWithTimeout.ts', () => ({
   default: vi.fn(),
@@ -34,6 +50,7 @@ function makeInstance() {
 describe('deepSearch()', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    tldtsGetDomainCalls.length = 0;
   });
 
   it('throws for a completely invalid start URL', async () => {
@@ -240,5 +257,25 @@ describe('deepSearch()', () => {
     expect(EXCLUDED_EXTENSIONS.has('.mp4')).toBe(true);
     expect(EXCLUDED_EXTENSIONS.has('.pdf')).toBe(true);
     expect(EXCLUDED_EXTENSIONS.has('.html')).toBe(false);
+  });
+
+  it('isValidUrl uses cached mainDomain: getDomain not called with startUrl during link validation', async () => {
+    // With 2 links on the page, isValidUrl runs twice.
+    // Before fix: each isValidUrl call invokes getDomain(url) + getDomain(startUrl) = 4 calls
+    //   plus 1 constructor call = 5 total (startUrl appears 3 times: 1 constructor + 2 isValidUrl).
+    // After fix: each isValidUrl call invokes getDomain(url) only = 2 calls
+    //   plus 1 constructor call = 3 total (startUrl appears exactly once: constructor only).
+    fetchWithTimeout.mockResolvedValue(
+      mockResponse('<html><body><a href="/page1">p1</a><a href="/page2">p2</a></body></html>'),
+    );
+    checkFeed.mockResolvedValue(null);
+
+    await deepSearch('https://example.com', { depth: 1, maxLinks: 3 });
+
+    // Before fix: getDomain was called for both `url` AND `this.startUrl` in every isValidUrl().
+    // With 6 isValidUrl() invocations, startUrl would appear 6 + 1 (constructor) + 1 (shouldCrawl on startUrl) = 8+ times.
+    // After fix: isValidUrl only calls getDomain(url), so startUrl appears only in constructor + shouldCrawl(startUrl) = 2 times.
+    const startUrlCalls = tldtsGetDomainCalls.filter(u => u === 'https://example.com/');
+    expect(startUrlCalls.length).toBeLessThanOrEqual(2);
   });
 });

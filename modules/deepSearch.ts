@@ -208,7 +208,7 @@ class Crawler extends EventEmitter {
 			// Domain comparison using tldts.getDomain() to extract the registrable domain
 			// Example: both "blog.example.com" and "www.example.com" return "example.com"
 			// This allows crawling subdomains of the same site while blocking external domains
-			const sameDomain = tldts.getDomain(url) === tldts.getDomain(this.startUrl);
+			const sameDomain = tldts.getDomain(url) === this.mainDomain;
 
 			// File type filtering prevents downloading large binary files (images, videos, archives)
 			// See excludedFile() function for the complete list of blocked extensions
