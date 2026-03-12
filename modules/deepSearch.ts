@@ -11,6 +11,50 @@ import fetchWithTimeout from './fetchWithTimeout.ts';
 import { type FeedSeekerInstance } from './checkFeed.ts';
 import { type Feed } from './metaLinks.ts';
 
+export const EXCLUDED_EXTENSIONS = new Set([
+	'.zip',
+	'.rar',
+	'.7z',
+	'.tar.gz',
+	'.tar.bz2',
+	'.tar.xz',
+	'.tar',
+	'.gz',
+	'.bz2',
+	'.xz',
+	'.tgz',
+	'.epub',
+	'.mobi',
+	'.azw',
+	'.pdf',
+	'.doc',
+	'.docx',
+	'.xls',
+	'.xlsx',
+	'.ppt',
+	'.pptx',
+	'.jpg',
+	'.jpeg',
+	'.png',
+	'.gif',
+	'.bmp',
+	'.tiff',
+	'.svg',
+	'.mp3',
+	'.mp4',
+	'.avi',
+	'.mov',
+	'.wmv',
+	'.mpg',
+	'.mpeg',
+	'.flv',
+	'.mkv',
+	'.webm',
+	'.ogg',
+	'.ogv',
+	'.ogx',
+]);
+
 /**
  * Checks if a URL points to a file with an excluded extension.
  * Used to avoid downloading large binary files during link crawling.
@@ -19,50 +63,8 @@ import { type Feed } from './metaLinks.ts';
  * @returns {boolean} True if the URL ends with an excluded extension, false otherwise
  */
 function excludedFile(url: string): boolean {
-	const excludedExtensions = [
-		'.zip',
-		'.rar',
-		'.7z',
-		'.tar.gz',
-		'.tar.bz2',
-		'.tar.xz',
-		'.tar',
-		'.gz',
-		'.bz2',
-		'.xz',
-		'.tgz',
-		'.epub',
-		'.mobi',
-		'.azw',
-		'.pdf',
-		'.doc',
-		'.docx',
-		'.xls',
-		'.xlsx',
-		'.ppt',
-		'.pptx',
-		'.jpg',
-		'.jpeg',
-		'.png',
-		'.gif',
-		'.bmp',
-		'.tiff',
-		'.svg',
-		'.mp3',
-		'.mp4',
-		'.avi',
-		'.mov',
-		'.wmv',
-		'.mpg',
-		'.mpeg',
-		'.flv',
-		'.mkv',
-		'.webm',
-		'.ogg',
-		'.ogv',
-		'.ogx',
-	];
-	return excludedExtensions.some(extension => url.endsWith(extension));
+	const lastDot = url.lastIndexOf('.');
+	return lastDot !== -1 && EXCLUDED_EXTENSIONS.has(url.slice(lastDot).toLowerCase());
 }
 
 /**

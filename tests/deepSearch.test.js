@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import deepSearch from '../modules/deepSearch.ts';
+import deepSearch, { EXCLUDED_EXTENSIONS } from '../modules/deepSearch.ts';
 
 // Mock fetchWithTimeout to avoid real network requests
 vi.mock('../modules/fetchWithTimeout.ts', () => ({
@@ -231,5 +231,14 @@ describe('deepSearch()', () => {
     const result = await deepSearch('https://example.com', { depth: 1 }, instance);
     expect(result).toEqual([]);
     expect(instance._events.filter(e => e.event === 'log').length).toBeGreaterThan(0);
+  });
+
+  it('EXCLUDED_EXTENSIONS is a module-level Set containing expected extensions', () => {
+    expect(EXCLUDED_EXTENSIONS).toBeInstanceOf(Set);
+    expect(EXCLUDED_EXTENSIONS.has('.zip')).toBe(true);
+    expect(EXCLUDED_EXTENSIONS.has('.jpg')).toBe(true);
+    expect(EXCLUDED_EXTENSIONS.has('.mp4')).toBe(true);
+    expect(EXCLUDED_EXTENSIONS.has('.pdf')).toBe(true);
+    expect(EXCLUDED_EXTENSIONS.has('.html')).toBe(false);
   });
 });
