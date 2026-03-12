@@ -58,6 +58,15 @@ function isRelativePath(url: string): boolean {
 	return !url.includes('://');
 }
 
+// Module-level Set of allowed external feed hosting domains (FeedBurner services).
+// Hoisted here so it is allocated once, not on every isAllowedDomain() call.
+export const ALLOWED_DOMAINS = new Set([
+	'feedburner.com',
+	'feeds.feedburner.com',
+	'feedproxy.google.com',
+	'feeds2.feedburner.com',
+]);
+
 /**
  * Checks if a URL is on the same domain as the base URL or is an allowed external domain (like feed hosting services)
  * @param {string} url - The URL to check
@@ -78,16 +87,9 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 
 	// Allow common feed hosting services as exceptions
 	// These services host feeds for other websites and should be considered valid external sources
-	const allowedDomains = [
-		// Google FeedBurner (most common feed hosting service)
-		'feedburner.com',
-		'feeds.feedburner.com',
-		'feedproxy.google.com',
-		'feeds2.feedburner.com',
-	];
 	return (
-		allowedDomains.includes(parsedUrl.hostname) ||
-		allowedDomains.some(domain => parsedUrl.hostname.endsWith('.' + domain))
+		ALLOWED_DOMAINS.has(parsedUrl.hostname) ||
+		[...ALLOWED_DOMAINS].some(domain => parsedUrl.hostname.endsWith('.' + domain))
 	);
 }
 

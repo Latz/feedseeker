@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import checkAllAnchors from '../modules/anchors.ts';
+import checkAllAnchors, { ALLOWED_DOMAINS } from '../modules/anchors.ts';
 import { parseHTML } from 'linkedom';
 
 // Mock checkFeed to avoid real network requests
@@ -256,5 +256,15 @@ describe('meta refresh redirect', () => {
 		const instance = makeInstance(html, {});
 		const result = await checkAllAnchors(instance);
 		expect(result).toEqual([]);
+	});
+});
+
+describe('ALLOWED_DOMAINS', () => {
+	it('is a module-level Set containing the FeedBurner domains', () => {
+		expect(ALLOWED_DOMAINS).toBeInstanceOf(Set);
+		expect(ALLOWED_DOMAINS.has('feedburner.com')).toBe(true);
+		expect(ALLOWED_DOMAINS.has('feeds.feedburner.com')).toBe(true);
+		expect(ALLOWED_DOMAINS.has('feedproxy.google.com')).toBe(true);
+		expect(ALLOWED_DOMAINS.has('feeds2.feedburner.com')).toBe(true);
 	});
 });
