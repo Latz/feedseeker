@@ -229,6 +229,20 @@ class Crawler extends EventEmitter {
 	}
 
 	/**
+	 * Emits the max links reached message and sets the flag to avoid duplicate messages.
+	 * @private
+	 */
+	private emitMaxLinksReached(): void {
+		if (!this.maxLinksReachedMessageEmitted) {
+			this.emit('log', {
+				module: 'deepSearch',
+				message: `Max links limit of ${this.maxLinks} reached. Stopping deep search.`,
+			});
+			this.maxLinksReachedMessageEmitted = true;
+		}
+	}
+
+	/**
 	 * Handles pre-crawl checks and validations for a given URL.
 	 * @param {string} url - The URL to check.
 	 * @param {number} depth - The current crawl depth.
@@ -240,13 +254,7 @@ class Crawler extends EventEmitter {
 		if (this.visitedUrls.has(url)) return false;
 
 		if (this.visitedUrls.size >= this.maxLinks) {
-			if (!this.maxLinksReachedMessageEmitted) {
-				this.emit('log', {
-					module: 'deepSearch',
-					message: `Max links limit of ${this.maxLinks} reached. Stopping deep search.`,
-				});
-				this.maxLinksReachedMessageEmitted = true;
-			}
+			this.emitMaxLinksReached();
 			return false;
 		}
 
@@ -295,14 +303,12 @@ class Crawler extends EventEmitter {
 		if (this.visitedUrls.has(url)) return false;
 
 		if (this.visitedUrls.size >= this.maxLinks) {
-			if (!this.maxLinksReachedMessageEmitted) {
-				this.emit('log', { module: 'deepSearch', message: `Max links limit of ${this.maxLinks} reached. Stopping deep search.` });
-				this.maxLinksReachedMessageEmitted = true;
-			}
+			this.emitMaxLinksReached();
 			return true;
 		}
 
-		if (!this.isValidUrl(url) && !this.checkForeignFeeds) return false;
+		const validUrl = this.isValidUrl(url);
+		if (!validUrl && !this.checkForeignFeeds) return false;
 
 		this.emit('log', {
 			module: 'deepSearch',
@@ -323,7 +329,7 @@ class Crawler extends EventEmitter {
 			return this.handleFetchError(url, depth + 1, `Error checking feed: ${err.message}`);
 		}
 
-		if (depth + 1 <= this.maxDepth && this.isValidUrl(url)) {
+		if (depth + 1 <= this.maxDepth && validUrl) {
 			this.queue.push({ url, depth: depth + 1 });
 		}
 		return false;
