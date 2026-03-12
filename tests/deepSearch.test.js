@@ -259,6 +259,42 @@ describe('deepSearch()', () => {
     expect(EXCLUDED_EXTENSIONS.has('.html')).toBe(false);
   });
 
+  it('processes links on a page in parallel: all checkFeed calls start before any resolves', async () => {
+    // Parallel processing means all links on a page start being checked concurrently.
+    // We verify this by tracking the maximum number of simultaneous in-flight checkFeed calls.
+    // Serial: maxInFlight = 1 (next call starts only after previous resolves).
+    // Parallel: maxInFlight > 1 (multiple calls in-flight at the same time).
+    //
+    // To isolate the inner-loop behaviour (one page, no re-queuing side effects), we use
+    // fetchWithTimeout to return different content the second time so re-queued pages are empty.
+    let inFlight = 0;
+    let maxInFlight = 0;
+    let fetchCount = 0;
+
+    fetchWithTimeout.mockImplementation(async () => {
+      fetchCount++;
+      // Only first fetch (start page) has links; subsequent fetches return empty pages
+      if (fetchCount === 1) {
+        return mockResponse('<html><body><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></body></html>');
+      }
+      return mockResponse('<html><body></body></html>');
+    });
+
+    checkFeed.mockImplementation(async () => {
+      inFlight++;
+      if (inFlight > maxInFlight) maxInFlight = inFlight;
+      await new Promise(r => setTimeout(r, 30));
+      inFlight--;
+      return null;
+    });
+
+    await deepSearch('https://example.com', { depth: 2, maxLinks: 10 });
+
+    // After fix: links /a, /b, /c on the first page are processed concurrently → maxInFlight >= 3.
+    // Before fix (serial loop): maxInFlight === 1 for the inner loop calls.
+    expect(maxInFlight).toBeGreaterThan(1);
+  });
+
   it('isValidUrl uses cached mainDomain: getDomain not called with startUrl during link validation', async () => {
     // With 2 links on the page, isValidUrl runs twice.
     // Before fix: each isValidUrl call invokes getDomain(url) + getDomain(startUrl) = 4 calls

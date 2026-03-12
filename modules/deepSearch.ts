@@ -362,16 +362,16 @@ class Crawler extends EventEmitter {
 		const html = await response.text();
 		const { document } = parseHTML(html);
 
+		const links: string[] = [];
 		for (const link of document.querySelectorAll('a')) {
 			try {
-				const absoluteUrl = new URL(link.href, this.startUrl).href;
-				const shouldStop = await this.processLink(absoluteUrl, depth);
-				if (shouldStop) break;
+				links.push(new URL(link.href, this.startUrl).href);
 			} catch {
 				// Skip malformed URLs
-				continue;
 			}
 		}
+
+		await Promise.allSettled(links.map(url => this.processLink(url, depth)));
 	}
 }
 
