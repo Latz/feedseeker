@@ -239,7 +239,7 @@ describe('deepSearch()', () => {
     fetchWithTimeout.mockResolvedValue(mockResponse('<html><body></body></html>'));
     checkFeed.mockResolvedValue(null);
     await deepSearch('https://example.com', { depth: 1, timeout: 10 });
-    expect(fetchWithTimeout).toHaveBeenCalledWith(expect.any(String), 10000);
+    expect(fetchWithTimeout).toHaveBeenCalledWith(expect.any(String), { timeout: 10000, insecure: false });
   });
 
   it('handles HTTP 500 response gracefully and emits log', async () => {

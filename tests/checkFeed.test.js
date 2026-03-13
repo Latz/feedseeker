@@ -393,7 +393,7 @@ describe('checkFeed — fetch path', () => {
     fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => rssContent });
     const instance = { options: { timeout: 5 } };
     const result = await checkFeed('https://example.com/feed.xml', '', instance);
-    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.xml', 5000);
+    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.xml', { timeout: 5000, insecure: undefined });
     expect(result).not.toBeNull();
     expect(result.type).toBe('rss');
   });
@@ -415,7 +415,7 @@ describe('checkFeed — fetch path', () => {
     const instance = { options: { timeout: 0 } };
     await checkFeed('https://example.com/feed.json', '', instance);
     // timeout 0 → clamped to MIN (1s) → 1000ms
-    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', 1000);
+    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', { timeout: 1000, insecure: undefined });
   });
 
   it('throws for invalid URL protocol', async () => {

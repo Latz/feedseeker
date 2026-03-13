@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 
 describe('fetchWithTimeout Module', () => {
@@ -109,6 +109,34 @@ describe('fetchWithTimeout Module', () => {
 			} catch (error: unknown) {
 				// Should either timeout or have a network error
 				expect(error instanceof Error).toBeTruthy();
+			}
+		});
+	});
+
+	describe('insecure option', () => {
+		it('passes a dispatcher with rejectUnauthorized: false when insecure is true', async () => {
+			const mockFetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
+			const originalFetch = globalThis.fetch;
+			globalThis.fetch = mockFetch;
+			try {
+				await fetchWithTimeout('https://example.com', { timeout: 5000, insecure: true });
+				const [, options] = mockFetch.mock.calls[0];
+				expect(options.dispatcher).toBeDefined();
+			} finally {
+				globalThis.fetch = originalFetch;
+			}
+		});
+
+		it('does not set a dispatcher when insecure is false', async () => {
+			const mockFetch = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
+			const originalFetch = globalThis.fetch;
+			globalThis.fetch = mockFetch;
+			try {
+				await fetchWithTimeout('https://example.com', { timeout: 5000, insecure: false });
+				const [, options] = mockFetch.mock.calls[0];
+				expect(options.dispatcher).toBeUndefined();
+			} finally {
+				globalThis.fetch = originalFetch;
 			}
 		});
 	});

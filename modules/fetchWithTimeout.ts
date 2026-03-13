@@ -11,11 +11,14 @@
  * @since 1.0.0
  */
 
+import { Agent } from 'undici';
+
 /**
  * Extended RequestInit with timeout option
  */
 export interface FetchWithTimeoutOptions extends RequestInit {
 	timeout?: number;
+	insecure?: boolean;
 }
 
 /**
@@ -59,14 +62,16 @@ export default async function fetchWithTimeout(
 	let timeout: number;
 	let fetchOptions: RequestInit;
 
+	let insecure = false;
 	if (typeof optionsOrTimeout === 'number') {
 		// Old signature: fetchWithTimeout(url, timeout)
 		timeout = optionsOrTimeout;
 		fetchOptions = {};
 	} else {
 		// New signature: fetchWithTimeout(url, options)
-		const { timeout: optTimeout = 5000, ...restOptions } = optionsOrTimeout;
+		const { timeout: optTimeout = 5000, insecure: optInsecure = false, ...restOptions } = optionsOrTimeout;
 		timeout = optTimeout;
+		insecure = optInsecure;
 		fetchOptions = restOptions;
 	}
 
@@ -120,12 +125,15 @@ export default async function fetchWithTimeout(
 		...fetchOptions.headers,
 	};
 
+	const dispatcher = insecure ? new Agent({ connect: { rejectUnauthorized: false } }) : undefined;
+
 	try {
 		const response = await fetch(url, {
 			...fetchOptions,
 			signal: controller.signal,
 			headers,
-		});
+			...(dispatcher ? { dispatcher } : {}),
+		} as RequestInit);
 		clearTimeout(timeoutId);
 		return response;
 	} catch (error: unknown) {

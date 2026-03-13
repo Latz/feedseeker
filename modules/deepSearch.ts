@@ -85,6 +85,7 @@ export interface DeepSearchOptions {
 	maxErrors?: number;
 	maxFeeds?: number;
 	timeout?: number;
+	insecure?: boolean;
 }
 
 /**
@@ -98,6 +99,7 @@ interface CrawlerOptions {
 	maxErrors?: number;
 	maxFeeds?: number;
 	instance?: FeedSeekerInstance | null;
+	insecure?: boolean;
 }
 
 /**
@@ -117,6 +119,7 @@ class Crawler extends EventEmitter {
 	queue: QueueObject<CrawlTask>;
 	visitedUrls: Set<string>;
 	timeout: number;
+	insecure: boolean;
 	maxLinksReachedMessageEmitted: boolean;
 	feeds: Feed[];
 
@@ -129,6 +132,7 @@ class Crawler extends EventEmitter {
 			maxErrors = 5,
 			maxFeeds = 0,
 			instance = null,
+			insecure = false,
 		} = options;
 		super();
 		try {
@@ -152,6 +156,7 @@ class Crawler extends EventEmitter {
 		this.queue = queue(this.crawlPage.bind(this), this.concurrency);
 		this.visitedUrls = new Set(); // Track visited URLs to prevent infinite loops
 		this.timeout = 5000; // Default timeout value for HTTP requests
+		this.insecure = insecure;
 		this.maxLinksReachedMessageEmitted = false; // Flag to track if message was emitted
 
 		this.feeds = []; // Array to store discovered feeds
@@ -349,7 +354,7 @@ class Crawler extends EventEmitter {
 
 		this.visitedUrls.add(url);
 
-		const response = await fetchWithTimeout(url, this.timeout);
+		const response = await fetchWithTimeout(url, { timeout: this.timeout, insecure: this.insecure });
 		if (!response) {
 			this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
 			return;
@@ -394,6 +399,7 @@ export default async function deepSearch(
 		maxErrors: options.maxErrors || 5,
 		maxFeeds: options.maxFeeds || 0,
 		instance,
+		insecure: !!options.insecure,
 	});
 	crawler.timeout = (options.timeout || 5) * 1000; // Convert seconds to milliseconds
 

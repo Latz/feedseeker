@@ -59,6 +59,7 @@ export interface FeedSeekerOptions {
 	requestDelay?: number; // Delay in milliseconds between requests for rate limiting (default: 0)
 	searchMode?: 'fast' | 'standard' | 'exhaustive'; // Blind search thoroughness: fast (~25 endpoints), standard (~150 endpoints), exhaustive (~350+ endpoints)
 	concurrency?: number; // Number of concurrent requests for blind search (default: 3)
+	insecure?: boolean;
 }
 
 export interface FeedSeekerInstance {
@@ -282,7 +283,7 @@ export default async function checkFeed(url: string, content: string = '', insta
 		const timeoutSecs = validateTimeout(instance.options.timeout);
 		const timeout = timeoutSecs * 1000;
 
-		const response = await fetchWithTimeout(url, timeout);
+		const response = await fetchWithTimeout(url, { timeout, insecure: instance.options.insecure });
 		if (!response.ok) {
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}

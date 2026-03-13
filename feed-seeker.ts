@@ -37,6 +37,7 @@ export interface FeedSeekerOptions extends DeepSearchOptions {
 	anchorsonly?: boolean;
 	deepsearch?: boolean;
 	searchMode?: 'fast' | 'standard' | 'exhaustive';
+	insecure?: boolean;
 }
 
 /**
@@ -216,7 +217,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 				}
 
 				const timeout = (this.options.timeout ?? 5) * 1000;
-				const response = await fetchWithTimeout(this.site, timeout);
+				const response = await fetchWithTimeout(this.site, { timeout, insecure: this.options.insecure });
 
 				if (!response.ok) {
 					// For 403/401/other non-OK responses, continue with empty content

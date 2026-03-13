@@ -99,7 +99,6 @@ function initializeFeedFinder(
 ): FeedFinderWithError {
 	const FeedFinder = new FeedSeeker(site, options) as FeedFinderWithError;
 	FeedFinder.site = site;
-	FeedFinder.options = options;
 	FeedFinder.initializationError = false;
 
 	if (!options.json) {
@@ -347,6 +346,7 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 
 	// add hidden option '--display-errors' to program
 	program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
+	program.addOption(new Option('--insecure', 'Disable TLS certificate verification (like curl -k)').hideHelp());
 
 	return program;
 }

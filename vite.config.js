@@ -30,6 +30,7 @@ export default defineConfig({
         'truncate-url',
         'commander',
         'chalk',
+        'undici',
         'node:events',
         'node:path',
         'node:fs',
