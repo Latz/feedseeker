@@ -5,13 +5,12 @@ node_modules/
 dist/
 *.tsbuildinfo
 
-# TypeScript source duplicates (prevent .js files alongside .ts)
-# Keep test files, config files, and standalone scripts
+
+# Ignore compiled JS from TS source, but keep necessary JS files (configs, tests).
 /*.js
-!/vite.config.js
-!/*.config.js
-!/test-*.js
 /modules/*.js
+!/*.config.js
+!/tests/**/*.js
 
 # IDE / Editor
 .vscode/
@@ -64,6 +63,9 @@ DEADJOE
 
 # Total Recall working memory (personal, session-specific)
 CLAUDE.local.md
+
+# Git worktrees
+.worktrees/
 
 # Project-specific temporary files
 /x.html
