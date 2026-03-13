@@ -200,13 +200,8 @@ interface AnchorContext {
  * @param {AnchorContext} context - The context containing instance, baseUrl, and feedUrls array.
  * @returns {Promise<void>}
  */
-async function processAnchor(anchor: HTMLAnchorElement, context: AnchorContext): Promise<void> {
-	const { instance, baseUrl, feedUrls } = context;
-	const urlToCheck = getUrlFromAnchor(anchor, baseUrl, instance);
-
-	if (!urlToCheck) {
-		return;
-	}
+async function processAnchor(anchor: HTMLAnchorElement, urlToCheck: string, context: AnchorContext): Promise<void> {
+	const { instance, feedUrls } = context;
 
 	try {
 		const feedResult = await checkFeed(urlToCheck, '', instance);
@@ -248,7 +243,7 @@ function emitMaxFeedsReached(instance: MetaLinksInstance, feedCount: number, max
  * @returns {number} Number of anchors processed.
  */
 async function processAnchorPhase(
-	filteredAnchors: HTMLAnchorElement[],
+	filteredAnchors: { anchor: HTMLAnchorElement; url: string }[],
 	context: AnchorContext,
 	concurrency: number,
 	maxFeeds: number
@@ -261,11 +256,11 @@ async function processAnchorPhase(
 		}
 		const batch = filteredAnchors.slice(i, i + concurrency);
 		await Promise.allSettled(
-			batch.map(async (anchor) => {
+			batch.map(async ({ anchor, url }) => {
 				if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) return;
 				processedCount++;
 				context.instance.emit('log', { module: 'anchors', totalCount: processedCount, totalEndpoints: filteredAnchors.length });
-				await processAnchor(anchor, context);
+				await processAnchor(anchor, url, context);
 			})
 		);
 	}
@@ -343,12 +338,12 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 
 	const baseUrl = new URL(instance.site);
 	const allAnchors = instance.document.querySelectorAll('a');
-	const filteredAnchors: HTMLAnchorElement[] = [];
+	const filteredAnchors: { anchor: HTMLAnchorElement; url: string }[] = [];
 
 	for (const anchor of allAnchors) {
 		const urlToCheck = getUrlFromAnchor(anchor, baseUrl, instance);
 		if (urlToCheck && isAllowedDomain(urlToCheck, baseUrl)) {
-			filteredAnchors.push(anchor);
+			filteredAnchors.push({ anchor, url: urlToCheck });
 		}
 	}
 
