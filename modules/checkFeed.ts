@@ -20,7 +20,7 @@ const VALIDATION_LIMITS = {
 	MAX_CONTENT_SIZE: 10 * 1024 * 1024, // 10MB maximum content size
 	DEFAULT_TIMEOUT: 5, // Default timeout in seconds
 	MAX_TIMEOUT: 60, // Maximum timeout in seconds (60 seconds)
-	MIN_TIMEOUT: 1, // Minimum timeout in seconds
+	MIN_TIMEOUT: 15, // Minimum timeout in seconds
 } as const;
 
 /**

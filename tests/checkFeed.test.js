@@ -391,9 +391,9 @@ describe('checkFeed — fetch path', () => {
   it('fetches content when content is empty string and instance is provided', async () => {
     const rssContent = `<rss version="2.0"><channel><title>Fetched Feed</title><description>Desc</description><item><title>Item</title></item></channel></rss>`;
     fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => rssContent });
-    const instance = { options: { timeout: 5 } };
+    const instance = { options: { timeout: 15 } };
     const result = await checkFeed('https://example.com/feed.xml', '', instance);
-    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.xml', { timeout: 5000, insecure: undefined });
+    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.xml', { timeout: 15000, insecure: undefined });
     expect(result).not.toBeNull();
     expect(result.type).toBe('rss');
   });
@@ -414,8 +414,8 @@ describe('checkFeed — fetch path', () => {
     fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => 'null' });
     const instance = { options: { timeout: 0 } };
     await checkFeed('https://example.com/feed.json', '', instance);
-    // timeout 0 → clamped to MIN (1s) → 1000ms
-    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', { timeout: 1000, insecure: undefined });
+    // timeout 0 → clamped to MIN (15s) → 15000ms
+    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', { timeout: 15000, insecure: undefined });
   });
 
   it('throws for invalid URL protocol', async () => {
