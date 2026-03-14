@@ -20,7 +20,7 @@
 **Severity**: Medium
 **Impact**: Called once per link via `isValidUrl()` → `excludedFile()`. With up to 1000 links per crawl, the 36-element `excludedExtensions` array is allocated 1000+ times per crawl, creating GC pressure.
 
-**Root cause**: The `excludedExtensions` array is declared *inside* the function body, so a new array is allocated on every invocation.
+**Root cause**: The `excludedExtensions` array is declared _inside_ the function body, so a new array is allocated on every invocation.
 
 ```ts
 function excludedFile(url: string): boolean {
@@ -74,10 +74,10 @@ const sameDomain = tldts.getDomain(url) === this.mainDomain;
 **Impact**: Each `<a>` tag on a page is processed one-at-a-time in a `for...of` loop with `await`. A page with 200 links takes 200 × (network round-trip for `checkFeed`) in series. The outer queue has concurrency=5 for pages, but within each page all link-checks are serial.
 
 ```ts
-for (const link of document.querySelectorAll('a')) {
-    const absoluteUrl = new URL(link.href, this.startUrl).href;
-    const shouldStop = await this.processLink(absoluteUrl, depth);  // serial await
-    if (shouldStop) break;
+for (const link of document.querySelectorAll("a")) {
+  const absoluteUrl = new URL(link.href, this.startUrl).href;
+  const shouldStop = await this.processLink(absoluteUrl, depth); // serial await
+  if (shouldStop) break;
 }
 ```
 
@@ -103,6 +103,8 @@ while (shouldContinueSearch(...)) {
 
 ---
 
+FERTIG!
+
 ## B6 — `anchors.ts`: `isAllowedDomain` rebuilds `allowedDomains` array on every call
 
 **File**: `modules/anchors.ts`, lines 81–91
@@ -121,7 +123,7 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 }
 ```
 
-**Fix**: Hoist to a module-level `const Set`. Same pattern as B2.
+    **Fix**: Hoist to a module-level `const Set`. Same pattern as B2.
 
 ---
 
@@ -130,6 +132,7 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 **File**: `modules/anchors.ts`
 **Severity**: Low
 **Impact**: For each anchor in `checkAnchors`, the URL goes through:
+
 1. `getUrlFromAnchor` → calls `isValidHttpUrl` → calls `parseUrlSafely` (line 37)
 2. `getUrlFromAnchor` → calls `isRelativePath` → calls `parseUrlSafely` (line 52)
 3. `getUrlFromAnchor` → calls `parseUrlSafely` again for resolution if relative (line 137)
@@ -145,31 +148,31 @@ That's up to 4 `new URL(...)` constructions per anchor to determine a single res
 
 **File**: `modules/metaLinks.ts`, line 206
 **Severity**: Low
-**Impact**: `FEED_TYPES.map((type) => \`link[type="application/${type}"]\`).join(', ')` constructs the selector string every time `metaLinks()` is called. Since `FEED_TYPES` is a module-level `const`, this string never changes.
+**Impact**: `FEED_TYPES.map((type) => \`link[type="application/${type}"]\`).join(', ')`constructs the selector string every time`metaLinks()`is called. Since`FEED_TYPES`is a module-level`const`, this string never changes.
 
 ```ts
-const typeSelectors = FEED_TYPES.map((type) => `link[type="application/${type}"]`).join(', ');
+const typeSelectors = FEED_TYPES.map((type) => `link[type="application/${type}"]`).join(", ");
 ```
 
 **Fix**: Hoist to a module-level `const`:
 
 ```ts
-const TYPE_SELECTORS = FEED_TYPES.map(t => `link[type="application/${t}"]`).join(', ');
+const TYPE_SELECTORS = FEED_TYPES.map((t) => `link[type="application/${t}"]`).join(", ");
 ```
 
 ---
 
 ## Summary Table
 
-| ID | Module | Description | Severity | Fix Complexity |
-|----|--------|-------------|----------|----------------|
-| B1 | deepSearch | `isValidUrl()` double call | Medium | ✅ Done |
-| B2 | deepSearch | `excludedFile()` array rebuilt per call | Medium | ✅ Done |
-| B3 | deepSearch | `tldts.getDomain(startUrl)` re-parsed per call | Medium | Trivial |
-| B4 | deepSearch | `processLink` serial within page | Medium–High | Medium |
-| B5 | blindsearch | `validateRequestDelay` called per batch | Low | Trivial |
-| B6 | anchors | `allowedDomains` array rebuilt per call | Low–Medium | Low |
-| B7 | anchors | URL parsed 2–4× per anchor | Low | Low |
-| B8 | metaLinks | CSS selector string rebuilt per call | Low | Trivial |
+| ID  | Module      | Description                                    | Severity    | Fix Complexity |
+| --- | ----------- | ---------------------------------------------- | ----------- | -------------- |
+| B1  | deepSearch  | `isValidUrl()` double call                     | Medium      | ✅ Done        |
+| B2  | deepSearch  | `excludedFile()` array rebuilt per call        | Medium      | ✅ Done        |
+| B3  | deepSearch  | `tldts.getDomain(startUrl)` re-parsed per call | Medium      | Trivial        |
+| B4  | deepSearch  | `processLink` serial within page               | Medium–High | Medium         |
+| B5  | blindsearch | `validateRequestDelay` called per batch        | Low         | Trivial        |
+| B6  | anchors     | `allowedDomains` array rebuilt per call        | Low–Medium  | Low            |
+| B7  | anchors     | URL parsed 2–4× per anchor                     | Low         | Low            |
+| B8  | metaLinks   | CSS selector string rebuilt per call           | Low         | Trivial        |
 
 **Highest impact in order**: B4 > B3 > B2 > B6 > B7 > B5 > B8

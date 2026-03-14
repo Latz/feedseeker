@@ -1,4 +1,20 @@
 {
+  "b1f3a9e07c": {
+    "created_at": "2026-03-13",
+    "last_reviewed_at": "2026-03-13",
+    "pinned": false,
+    "snoozed_until": null,
+    "status": "active",
+    "tier": "registers/decisions.md"
+  },
+  "a3c7f9e2b1": {
+    "created_at": "2026-03-13",
+    "last_reviewed_at": "2026-03-13",
+    "pinned": false,
+    "snoozed_until": null,
+    "status": "active",
+    "tier": "registers/decisions.md"
+  },
   "2e7b0d4f1c": {
     "created_at": "2026-03-08",
     "last_reviewed_at": "2026-03-08",
@@ -14,6 +30,14 @@
     "snoozed_until": null,
     "status": "active",
     "tier": "registers/decisions.md"
+  },
+  "4c859fa74e": {
+    "created_at": "2026-03-10",
+    "last_reviewed_at": "2026-03-10",
+    "pinned": false,
+    "snoozed_until": null,
+    "status": "active",
+    "tier": "registers/tech-stack.md"
   },
   "5f1a8e3c9d": {
     "created_at": "2026-03-08",
@@ -38,5 +62,21 @@
     "snoozed_until": null,
     "status": "active",
     "tier": "registers/projects.md"
+  },
+  "d4e4e791d6": {
+    "created_at": "2026-03-10",
+    "last_reviewed_at": "2026-03-10",
+    "pinned": false,
+    "snoozed_until": null,
+    "status": "active",
+    "tier": "registers/tech-stack.md"
+  },
+  "f6e60a2d5f": {
+    "created_at": "2026-03-10",
+    "last_reviewed_at": "2026-03-10",
+    "pinned": false,
+    "snoozed_until": null,
+    "status": "active",
+    "tier": "registers/decisions.md"
   }
 }
