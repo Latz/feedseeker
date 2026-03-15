@@ -88,6 +88,9 @@ feed-seeker example.com --follow-meta-refresh
 
 # Show error messages
 feed-seeker example.com --display-errors
+
+# Disable TLS certificate verification (like curl -k)
+feed-seeker example.com --insecure
 ```
 
 ## Library API
@@ -223,26 +226,28 @@ Recursively crawls the website to discover feeds:
 
 ## Options Reference
 
-| Option              | Type    | Default      | Description                                      |
-| ------------------- | ------- | ------------ | ------------------------------------------------ |
-| `maxFeeds`          | number  | `Infinity`   | Maximum feeds to return                          |
-| `timeout`           | number  | `10`         | Request timeout in seconds                       |
-| `all`               | boolean | `false`      | Run all strategies sequentially                  |
-| `keepQueryParams`   | boolean | `false`      | Preserve query parameters in feed URLs           |
-| `showErrors`        | boolean | `false`      | Display error messages                           |
-| `followMetaRefresh` | boolean | `false`      | Follow meta refresh redirects                    |
-| `metasearch`        | boolean | `false`      | Run meta links search only                       |
-| `blindsearch`       | boolean | `false`      | Run blind search only                            |
-| `anchorsonly`       | boolean | `false`      | Run anchor search only                           |
-| `deepsearch`        | boolean | `false`      | Run deep search only                             |
-| `searchMode`        | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
+| Option               | Type    | Default      | Description                                      |
+| -------------------- | ------- | ------------ | ------------------------------------------------ |
+| `maxFeeds`           | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
+| `timeout`            | number  | `5`          | Request timeout in seconds                       |
+| `all`                | boolean | `false`      | Run all strategies sequentially                  |
+| `keepQueryParams`    | boolean | `false`      | Preserve query parameters in feed URLs           |
+| `showErrors`         | boolean | `false`      | Display error messages                           |
+| `followMetaRefresh`  | boolean | `false`      | Follow meta refresh redirects                    |
+| `metasearch`         | boolean | `false`      | Run meta links search only                       |
+| `blindsearch`        | boolean | `false`      | Run blind search only                            |
+| `anchorsonly`        | boolean | `false`      | Run anchor search only                           |
+| `deepsearch`         | boolean | `false`      | Run deep search only                             |
+| `searchMode`         | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
+| `checkForeignFeeds`  | boolean | `false`      | Check if foreign domain URLs are feeds           |
+| `maxErrors`          | number  | `5`          | Stop after a certain number of errors            |
 
 ### Deep Search Options
 
 | Option        | Type   | Default | Description                   |
 | ------------- | ------ | ------- | ----------------------------- |
 | `maxDepth`    | number | `3`     | Maximum crawl depth           |
-| `maxLinks`    | number | `100`   | Maximum links to process      |
+| `maxLinks`    | number | `1000`  | Maximum links to process      |
 | `concurrency` | number | `5`     | Number of concurrent requests |
 
 ## Feed Object
