@@ -18,9 +18,8 @@ import fetchWithTimeout from './fetchWithTimeout.ts';
  */
 const VALIDATION_LIMITS = {
 	MAX_CONTENT_SIZE: 10 * 1024 * 1024, // 10MB maximum content size
-	DEFAULT_TIMEOUT: 5, // Default timeout in seconds
+	DEFAULT_TIMEOUT: 15, // Default timeout in seconds
 	MAX_TIMEOUT: 60, // Maximum timeout in seconds (60 seconds)
-	MIN_TIMEOUT: 15, // Minimum timeout in seconds
 } as const;
 
 /**
@@ -170,12 +169,12 @@ function validateTimeout(timeout: number | undefined): number {
 		return VALIDATION_LIMITS.DEFAULT_TIMEOUT;
 	}
 
-	// Validate that timeout is a finite number
-	if (!Number.isFinite(timeout) || timeout < VALIDATION_LIMITS.MIN_TIMEOUT) {
+	// Validate that timeout is a positive finite number
+	if (!Number.isFinite(timeout) || timeout <= 0) {
 		console.warn(
-			`Invalid timeout value ${timeout}. Using minimum: ${VALIDATION_LIMITS.MIN_TIMEOUT} seconds.`
+			`Invalid timeout value ${timeout}. Using default: ${VALIDATION_LIMITS.DEFAULT_TIMEOUT} seconds.`
 		);
-		return VALIDATION_LIMITS.MIN_TIMEOUT;
+		return VALIDATION_LIMITS.DEFAULT_TIMEOUT;
 	}
 
 	// Clamp to maximum allowed value

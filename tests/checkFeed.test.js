@@ -402,6 +402,7 @@ describe('checkFeed — fetch path', () => {
     fetchWithTimeout.mockResolvedValue({ ok: false, status: 404, statusText: 'Not Found' });
     const instance = { options: { timeout: 5 } };
     await expect(checkFeed('https://example.com/feed.xml', '', instance)).rejects.toThrow('404');
+    expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.xml', { timeout: 5000, insecure: undefined });
   });
 
   it('throws when instance is missing and content is empty', async () => {
@@ -410,11 +411,11 @@ describe('checkFeed — fetch path', () => {
     );
   });
 
-  it('uses minimum timeout when timeout is 0', async () => {
+  it('uses default timeout when timeout is 0', async () => {
     fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => 'null' });
     const instance = { options: { timeout: 0 } };
     await checkFeed('https://example.com/feed.json', '', instance);
-    // timeout 0 → clamped to MIN (15s) → 15000ms
+    // timeout 0 is invalid → falls back to default (15s) → 15000ms
     expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', { timeout: 15000, insecure: undefined });
   });
 
