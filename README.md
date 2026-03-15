@@ -150,10 +150,8 @@ const anchorFeeds = await seeker.checkAllAnchors();
 const blindFeeds = await seeker.blindSearch();
 
 // Deep search (crawls website for feeds)
-const deepFeeds = await seeker.deepSearch({
-  maxDepth: 2,
-  maxLinks: 50,
-});
+// Options are passed via constructor, e.g. new FeedSeeker(url, { maxDepth: 2, maxLinks: 50 })
+const deepFeeds = await seeker.deepSearch();
 ```
 
 ### Event Handling
@@ -241,6 +239,7 @@ Recursively crawls the website to discover feeds:
 | `searchMode`         | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
 | `checkForeignFeeds`  | boolean | `false`      | Check if foreign domain URLs are feeds           |
 | `maxErrors`          | number  | `5`          | Stop after a certain number of errors            |
+| `insecure`           | boolean | `false`      | Disable TLS certificate verification             |
 
 ### Deep Search Options
 
@@ -256,10 +255,10 @@ Each discovered feed has the following structure:
 
 ```typescript
 interface Feed {
-  url: string; // Feed URL
-  title?: string; // Feed title (if available)
-  type: "rss" | "atom" | "json"; // Feed format
-  source?: string; // Source URL where feed was found
+  url: string;                     // Feed URL
+  title: string | null;            // Feed title (null if not found)
+  type: "rss" | "atom" | "json";  // Feed format
+  feedTitle: string | null;        // Title from feed content (null if not fetched)
 }
 ```
 
