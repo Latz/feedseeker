@@ -284,7 +284,7 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 				}
 				return num;
 			},
-			5
+			15
 		)
 		.option('--keep-query-params', 'Keep query parameters from the original URL when searching')
 		.option(

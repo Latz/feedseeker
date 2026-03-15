@@ -227,7 +227,7 @@ Recursively crawls the website to discover feeds:
 | Option               | Type    | Default      | Description                                      |
 | -------------------- | ------- | ------------ | ------------------------------------------------ |
 | `maxFeeds`           | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
-| `timeout`            | number  | `5`          | Request timeout in seconds                       |
+| `timeout`            | number  | `15`         | Request timeout in seconds (minimum: 15)         |
 | `all`                | boolean | `false`      | Run all strategies sequentially                  |
 | `keepQueryParams`    | boolean | `false`      | Preserve query parameters in feed URLs           |
 | `showErrors`         | boolean | `false`      | Display error messages                           |

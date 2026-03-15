@@ -115,7 +115,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		}
 
 		this.options = {
-			timeout: 5, // Default timeout of 5 seconds
+			timeout: 15, // Default timeout of 15 seconds (minimum enforced by checkFeed)
 			...options
 		};
 		this.initPromise = null; // Store the initialization promise
@@ -216,7 +216,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 					return;
 				}
 
-				const timeout = (this.options.timeout ?? 5) * 1000;
+				const timeout = (this.options.timeout ?? 15) * 1000;
 				const response = await fetchWithTimeout(this.site, { timeout, insecure: this.options.insecure });
 
 				if (!response.ok) {

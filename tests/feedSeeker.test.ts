@@ -71,8 +71,8 @@ describe('FeedSeeker constructor', () => {
 		expect(new FeedSeeker('https://example.com', opts).options).toMatchObject(opts);
 	});
 
-	it('defaults timeout to 5 when not provided', () => {
-		expect(new FeedSeeker('https://example.com').options.timeout).toBe(5);
+	it('defaults timeout to 15 when not provided', () => {
+		expect(new FeedSeeker('https://example.com').options.timeout).toBe(15);
 	});
 
 	it('initPromise is null before initialize() is called', () => {
