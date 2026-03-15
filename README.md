@@ -1,5 +1,7 @@
 # FeedSeeker
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Latz_feedseeker&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Latz_feedseeker)
+
 A comprehensive RSS, Atom, and JSON feed discovery tool for Node.js and the browser. FeedSeeker finds feeds on any website using multiple intelligent search strategies.
 
 ## Features
@@ -333,8 +335,8 @@ Latz <latz@elektroelch.de>
 
 ## Repository
 
-https://github.com/Latz/feed-seeker
+https://github.com/Latz/feedseeker
 
 ## Issues
 
-Report bugs at https://github.com/Latz/feed-seeker/issues
+Report bugs at https://github.com/Latz/feedseeker/issues
