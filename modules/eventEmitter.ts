@@ -170,7 +170,7 @@ export default class EventEmitter {
 			try {
 				return JSON.stringify(obj);
 			} catch {
-				return String(error);
+				return '[unserializable object]';
 			}
 		}
 
