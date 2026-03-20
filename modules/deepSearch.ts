@@ -52,7 +52,7 @@ export const EXCLUDED_EXTENSIONS = new Set([
 	'.webm',
 	'.ogg',
 	'.ogv',
-	'.ogx',
+	'.ogx'
 ]);
 
 /**
@@ -132,7 +132,7 @@ class Crawler extends EventEmitter {
 			maxErrors = 5,
 			maxFeeds = 0,
 			instance = null,
-			insecure = false,
+			insecure = false
 		} = options;
 		super();
 		try {
@@ -170,7 +170,7 @@ class Crawler extends EventEmitter {
 				explanation:
 					'An error occurred in the async queue while processing a crawling task. This could be due to network issues, invalid URLs, or server problems.',
 				suggestion:
-					'Check network connectivity and ensure the target website is accessible. The crawler will continue with other URLs.',
+					'Check network connectivity and ensure the target website is accessible. The crawler will continue with other URLs.'
 			});
 			this.incrementError();
 		});
@@ -188,7 +188,7 @@ class Crawler extends EventEmitter {
 			this.queue.kill();
 			this.emit('log', {
 				module: 'deepSearch',
-				message: `Stopped due to ${this.errorCount} errors (max ${this.maxErrors} allowed).`,
+				message: `Stopped due to ${this.errorCount} errors (max ${this.maxErrors} allowed).`
 			});
 			return true;
 		}
@@ -228,7 +228,7 @@ class Crawler extends EventEmitter {
 				explanation:
 					'A URL encountered during crawling could not be parsed or validated. This may be due to malformed URL syntax or unsupported URL schemes.',
 				suggestion:
-					'This is usually caused by broken links on the website. The crawler will skip this URL and continue with others.',
+					'This is usually caused by broken links on the website. The crawler will skip this URL and continue with others.'
 			});
 			this.incrementError();
 			return false;
@@ -243,7 +243,7 @@ class Crawler extends EventEmitter {
 		if (!this.maxLinksReachedMessageEmitted) {
 			this.emit('log', {
 				module: 'deepSearch',
-				message: `Max links limit of ${this.maxLinks} reached. Stopping deep search.`,
+				message: `Max links limit of ${this.maxLinks} reached. Stopping deep search.`
 			});
 			this.maxLinksReachedMessageEmitted = true;
 		}
@@ -291,15 +291,29 @@ class Crawler extends EventEmitter {
 	/**
 	 * Records a found feed and returns true if the max feeds limit has been reached.
 	 */
-	private recordFeed(url: string, depth: number, feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null }): boolean {
-		if (this.feeds.some(feed => feed.url === url)) return false;
-		this.feeds.push({ url, type: feedResult.type, title: feedResult.title, feedTitle: feedResult.title });
-		this.emit('log', { module: 'deepSearch', url, depth: depth + 1, feedCheck: { isFeed: true, type: feedResult.type } });
+	private recordFeed(
+		url: string,
+		depth: number,
+		feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null }
+	): boolean {
+		if (this.feeds.some((feed) => feed.url === url)) return false;
+		this.feeds.push({
+			url,
+			type: feedResult.type,
+			title: feedResult.title,
+			feedTitle: feedResult.title
+		});
+		this.emit('log', {
+			module: 'deepSearch',
+			url,
+			depth: depth + 1,
+			feedCheck: { isFeed: true, type: feedResult.type }
+		});
 		if (this.maxFeeds > 0 && this.feeds.length >= this.maxFeeds) {
 			this.queue.kill();
 			this.emit('log', {
 				module: 'deepSearch',
-				message: `Stopped due to reaching maximum feeds limit: ${this.feeds.length} feeds found (max ${this.maxFeeds} allowed).`,
+				message: `Stopped due to reaching maximum feeds limit: ${this.feeds.length} feeds found (max ${this.maxFeeds} allowed).`
 			});
 			return true;
 		}
@@ -321,7 +335,7 @@ class Crawler extends EventEmitter {
 			module: 'deepSearch',
 			url,
 			depth,
-			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() },
+			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() }
 		});
 
 		try {
@@ -329,7 +343,12 @@ class Crawler extends EventEmitter {
 			if (feedResult) {
 				if (this.recordFeed(url, depth, feedResult)) return true;
 			} else {
-				this.emit('log', { module: 'deepSearch', url, depth: depth + 1, feedCheck: { isFeed: false } });
+				this.emit('log', {
+					module: 'deepSearch',
+					url,
+					depth: depth + 1,
+					feedCheck: { isFeed: false }
+				});
 			}
 		} catch (error: unknown) {
 			const err = error instanceof Error ? error : new Error(String(error));
@@ -354,7 +373,10 @@ class Crawler extends EventEmitter {
 
 		this.visitedUrls.add(url);
 
-		const response = await fetchWithTimeout(url, { timeout: this.timeout, insecure: this.insecure });
+		const response = await fetchWithTimeout(url, {
+			timeout: this.timeout,
+			insecure: this.insecure
+		});
 		if (!response) {
 			this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
 			return;
@@ -376,7 +398,7 @@ class Crawler extends EventEmitter {
 			}
 		}
 
-		await Promise.allSettled(links.map(url => this.processLink(url, depth)));
+		await Promise.allSettled(links.map((url) => this.processLink(url, depth)));
 	}
 }
 
@@ -399,23 +421,27 @@ export default async function deepSearch(
 		maxErrors: options.maxErrors || 5,
 		maxFeeds: options.maxFeeds || 0,
 		instance,
-		insecure: !!options.insecure,
+		insecure: !!options.insecure
 	});
 	crawler.timeout = (options.timeout || 5) * 1000; // Convert seconds to milliseconds
 
 	// If we have an instance, forward crawler events to the instance
 	if (instance?.emit) {
-		crawler.on('start', data => instance.emit!('start', data));
-		crawler.on('log', data => instance.emit!('log', data));
-		crawler.on('error', data => instance.emit!('error', data));
-		crawler.on('end', data => instance.emit!('end', data));
+		crawler.on('start', (data) => instance.emit!('start', data));
+		crawler.on('log', (data) => instance.emit!('log', data));
+		crawler.on('error', (data) => instance.emit!('error', data));
+		crawler.on('end', (data) => instance.emit!('end', data));
 	}
 
 	crawler.start();
 	// Create a promise that resolves when the queue is drained
-	await new Promise<void>(resolve => {
+	await new Promise<void>((resolve) => {
 		crawler.queue.drain(() => {
-			crawler.emit('end', { module: 'deepSearch', feeds: crawler.feeds, visitedUrls: crawler.visitedUrls.size });
+			crawler.emit('end', {
+				module: 'deepSearch',
+				feeds: crawler.feeds,
+				visitedUrls: crawler.visitedUrls.size
+			});
 			resolve();
 		});
 	});

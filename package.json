@@ -1,6 +1,6 @@
 {
 	"name": "feedseeker",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website with support for preserving query parameters",
 	"type": "module",
 	"bin": {
@@ -62,12 +62,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Latz/feed-seeker.git"
+		"url": "https://github.com/Latz/feedseeker.git"
 	},
 	"bugs": {
-		"url": "https://github.com/Latz/feed-seeker/issues"
+		"url": "https://github.com/Latz/feedseeker/issues"
 	},
-	"homepage": "https://github.com/Latz/feed-seeker#readme",
+	"homepage": "https://github.com/Latz/feedseeker#readme",
 	"dependencies": {
 		"async": "^3.2.6",
 		"commander": "^14.0.1",

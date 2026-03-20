@@ -69,7 +69,11 @@ export default async function fetchWithTimeout(
 		fetchOptions = {};
 	} else {
 		// New signature: fetchWithTimeout(url, options)
-		const { timeout: optTimeout = 5000, insecure: optInsecure = false, ...restOptions } = optionsOrTimeout;
+		const {
+			timeout: optTimeout = 5000,
+			insecure: optInsecure = false,
+			...restOptions
+		} = optionsOrTimeout;
 		timeout = optTimeout;
 		insecure = optInsecure;
 		fetchOptions = restOptions;
@@ -79,7 +83,9 @@ export default async function fetchWithTimeout(
 	try {
 		const urlObj = new URL(url);
 		if (!['http:', 'https:'].includes(urlObj.protocol)) {
-			throw new Error(`Invalid URL protocol: ${urlObj.protocol}. Only http: and https: are allowed.`);
+			throw new Error(
+				`Invalid URL protocol: ${urlObj.protocol}. Only http: and https: are allowed.`
+			);
 		}
 	} catch (error: unknown) {
 		if (error instanceof TypeError) {
@@ -116,13 +122,13 @@ export default async function fetchWithTimeout(
 		'Sec-Fetch-Dest': 'document',
 		'Sec-Fetch-Mode': 'navigate',
 		'Sec-Fetch-Site': 'none',
-		'Cache-Control': 'max-age=0',
+		'Cache-Control': 'max-age=0'
 	};
 
 	// Merge default headers with custom headers (custom headers take precedence)
 	const headers = {
 		...defaultHeaders,
-		...fetchOptions.headers,
+		...fetchOptions.headers
 	};
 
 	const dispatcher = insecure ? new Agent({ connect: { rejectUnauthorized: false } }) : undefined;
@@ -132,7 +138,7 @@ export default async function fetchWithTimeout(
 			...fetchOptions,
 			signal: controller.signal,
 			headers,
-			...(dispatcher ? { dispatcher } : {}),
+			...(dispatcher ? { dispatcher } : {})
 		} as RequestInit);
 		clearTimeout(timeoutId);
 		return response;

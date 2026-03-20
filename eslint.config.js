@@ -10,10 +10,14 @@ export default [
 			'dist/**',
 			'coverage/**',
 			'.scannerwork/**',
+			'.worktrees/**',
 			'*.config.js',
 			'vite.config.js',
 			'test-*.mjs',
-			'test-*.js'
+			'test-*.js',
+			'_*.mjs',
+			'_*.js',
+			'feed-seeker.js'
 		]
 	},
 	js.configs.recommended,

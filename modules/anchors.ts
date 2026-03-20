@@ -64,7 +64,7 @@ export const ALLOWED_DOMAINS = new Set([
 	'feedburner.com',
 	'feeds.feedburner.com',
 	'feedproxy.google.com',
-	'feeds2.feedburner.com',
+	'feeds2.feedburner.com'
 ]);
 
 /**
@@ -89,7 +89,7 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 	// These services host feeds for other websites and should be considered valid external sources
 	return (
 		ALLOWED_DOMAINS.has(parsedUrl.hostname) ||
-		[...ALLOWED_DOMAINS].some(domain => parsedUrl.hostname.endsWith('.' + domain))
+		[...ALLOWED_DOMAINS].some((domain) => parsedUrl.hostname.endsWith('.' + domain))
 	);
 }
 
@@ -101,14 +101,16 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 function handleMetaRefreshRedirect(instance: MetaLinksInstance): Promise<Feed[]> | null {
 	if (instance.options.followMetaRefresh) {
 		if (instance.document && typeof instance.document.querySelector === 'function') {
-			const content = instance.document.querySelector('meta[http-equiv="refresh"]')?.getAttribute('content');
+			const content = instance.document
+				.querySelector('meta[http-equiv="refresh"]')
+				?.getAttribute('content');
 			if (content) {
 				const match = /url=(.*)/i.exec(content);
 				if (match?.[1]) {
 					const redirectUrl = new URL(match[1], instance.site).href;
 					instance.emit('log', {
 						module: 'anchors',
-						message: `Following meta refresh redirect to ${redirectUrl}`,
+						message: `Following meta refresh redirect to ${redirectUrl}`
 					});
 					// Recursively call checkAnchors on the new URL
 					return checkAnchors({ ...instance, site: redirectUrl });
@@ -126,7 +128,11 @@ function handleMetaRefreshRedirect(instance: MetaLinksInstance): Promise<Feed[]>
  * @param {MetaLinksInstance} instance - The FeedSeeker instance for emitting errors.
  * @returns {string|null} The resolved URL or null if invalid.
  */
-function getUrlFromAnchor(anchor: HTMLAnchorElement, baseUrl: URL, instance: MetaLinksInstance): string | null {
+function getUrlFromAnchor(
+	anchor: HTMLAnchorElement,
+	baseUrl: URL,
+	instance: MetaLinksInstance
+): string | null {
 	if (!anchor.href) {
 		return null;
 	}
@@ -144,7 +150,7 @@ function getUrlFromAnchor(anchor: HTMLAnchorElement, baseUrl: URL, instance: Met
 				explanation:
 					'A relative URL found in an anchor tag could not be resolved against the base URL. This may be due to malformed relative path syntax.',
 				suggestion:
-					'Check the anchor href attribute for proper relative path format (e.g., "./feed.xml", "../rss.xml", or "/feed").',
+					'Check the anchor href attribute for proper relative path format (e.g., "./feed.xml", "../rss.xml", or "/feed").'
 			});
 			return null;
 		}
@@ -200,7 +206,11 @@ interface AnchorContext {
  * @param {AnchorContext} context - The context containing instance, baseUrl, and feedUrls array.
  * @returns {Promise<void>}
  */
-async function processAnchor(anchor: HTMLAnchorElement, urlToCheck: string, context: AnchorContext): Promise<void> {
+async function processAnchor(
+	anchor: HTMLAnchorElement,
+	urlToCheck: string,
+	context: AnchorContext
+): Promise<void> {
 	const { instance, feedUrls } = context;
 
 	try {
@@ -210,7 +220,7 @@ async function processAnchor(anchor: HTMLAnchorElement, urlToCheck: string, cont
 				url: urlToCheck,
 				title: anchor.textContent?.trim() || null,
 				type: feedResult.type,
-				feedTitle: feedResult.title,
+				feedTitle: feedResult.title
 			});
 		}
 	} catch (error: unknown) {
@@ -222,7 +232,7 @@ async function processAnchor(anchor: HTMLAnchorElement, urlToCheck: string, cont
 				explanation:
 					'An error occurred while trying to fetch and validate a potential feed URL found in an anchor tag. This could be due to network timeouts, server errors, or invalid feed content.',
 				suggestion:
-					'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.',
+					'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.'
 			});
 		}
 	}
@@ -231,10 +241,14 @@ async function processAnchor(anchor: HTMLAnchorElement, urlToCheck: string, cont
 /**
  * Emits a log event indicating the max feeds limit has been reached.
  */
-function emitMaxFeedsReached(instance: MetaLinksInstance, feedCount: number, maxFeeds: number): void {
+function emitMaxFeedsReached(
+	instance: MetaLinksInstance,
+	feedCount: number,
+	maxFeeds: number
+): void {
 	instance.emit('log', {
 		module: 'anchors',
-		message: `Stopped due to reaching maximum feeds limit: ${feedCount} feeds found (max ${maxFeeds} allowed).`,
+		message: `Stopped due to reaching maximum feeds limit: ${feedCount} feeds found (max ${maxFeeds} allowed).`
 	});
 }
 
@@ -259,7 +273,11 @@ async function processAnchorPhase(
 			batch.map(async ({ anchor, url }) => {
 				if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) return;
 				processedCount++;
-				context.instance.emit('log', { module: 'anchors', totalCount: processedCount, totalEndpoints: filteredAnchors.length });
+				context.instance.emit('log', {
+					module: 'anchors',
+					totalCount: processedCount,
+					totalEndpoints: filteredAnchors.length
+				});
 				await processAnchor(anchor, url, context);
 			})
 		);
@@ -281,7 +299,7 @@ async function processPlainTextPhase(
 	const bodyHtml = context.instance.document.body?.innerHTML || '';
 	const plainTextUrls = extractUrlsFromText(bodyHtml);
 
-	const checkedUrls = new Set(context.feedUrls.map(feed => feed.url));
+	const checkedUrls = new Set(context.feedUrls.map((feed) => feed.url));
 	const urlsToCheck: string[] = [];
 	for (const url of plainTextUrls) {
 		if (!checkedUrls.has(url) && isAllowedDomain(url, baseUrl)) {
@@ -305,7 +323,12 @@ async function processPlainTextPhase(
 				try {
 					const feedResult = await checkFeed(url, '', context.instance);
 					if (feedResult) {
-						context.feedUrls.push({ url, title: null, type: feedResult.type, feedTitle: feedResult.title });
+						context.feedUrls.push({
+							url,
+							title: null,
+							type: feedResult.type,
+							feedTitle: feedResult.title
+						});
 					}
 				} catch (error: unknown) {
 					if (context.instance.options?.showErrors) {
@@ -316,7 +339,7 @@ async function processPlainTextPhase(
 							explanation:
 								'An error occurred while trying to fetch and validate a potential feed URL found in page text. This could be due to network timeouts, server errors, or invalid feed content.',
 							suggestion:
-								'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.',
+								'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.'
 						});
 					}
 				}
@@ -356,7 +379,14 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 
 	// Phase 2: plain-text URLs in body
 	if (maxFeeds === 0 || context.feedUrls.length < maxFeeds) {
-		await processPlainTextPhase(context, baseUrl, filteredAnchors.length, processedCount + 1, concurrency, maxFeeds);
+		await processPlainTextPhase(
+			context,
+			baseUrl,
+			filteredAnchors.length,
+			processedCount + 1,
+			concurrency,
+			maxFeeds
+		);
 	}
 
 	return context.feedUrls;
@@ -377,7 +407,7 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 export default async function checkAllAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 	instance.emit('start', {
 		module: 'anchors',
-		niceName: 'Check All Anchors',
+		niceName: 'Check All Anchors'
 	});
 
 	const feeds = await checkAnchors(instance);

@@ -143,8 +143,8 @@ export default class EventEmitter {
 			if (count > this.#maxListeners) {
 				console.warn(
 					`Warning: Possible EventEmitter memory leak detected. ` +
-					`${count} ${event} listeners added. ` +
-					`Use emitter.setMaxListeners() to increase limit`
+						`${count} ${event} listeners added. ` +
+						`Use emitter.setMaxListeners() to increase limit`
 				);
 			}
 		}
@@ -338,14 +338,14 @@ export default class EventEmitter {
 		}
 
 		// Convert to array to avoid issues if listeners are modified during emission
-		[...listeners].forEach(listener => {
+		[...listeners].forEach((listener) => {
 			try {
 				// Call listener without binding context
 				const result = listener(...args);
 
 				// Handle async errors if enabled
 				if (this.#captureAsyncErrors && result instanceof Promise) {
-					result.catch(error => {
+					result.catch((error) => {
 						this.#handleListenerError(error, event);
 					});
 				}
@@ -374,7 +374,7 @@ export default class EventEmitter {
 
 		// Handle both direct listeners and once() wrappers
 		// Use defensive copy to avoid modifying Set during iteration
-		[...listeners].forEach(l => {
+		[...listeners].forEach((l) => {
 			const onceWrapper = l as OnceWrapper;
 			if (l === listener || onceWrapper.originalListener === listener) {
 				listeners.delete(l);
@@ -449,7 +449,7 @@ export default class EventEmitter {
 		if (!listeners) return [];
 
 		// Return unwrapped listeners (original functions, not wrappers)
-		return [...listeners].map(l => {
+		return [...listeners].map((l) => {
 			const onceWrapper = l as OnceWrapper;
 			return onceWrapper.originalListener || l;
 		});

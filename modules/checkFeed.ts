@@ -19,7 +19,7 @@ import fetchWithTimeout from './fetchWithTimeout.ts';
 const VALIDATION_LIMITS = {
 	MAX_CONTENT_SIZE: 10 * 1024 * 1024, // 10MB maximum content size
 	DEFAULT_TIMEOUT: 15, // Default timeout in seconds
-	MAX_TIMEOUT: 60, // Maximum timeout in seconds (60 seconds)
+	MAX_TIMEOUT: 60 // Maximum timeout in seconds (60 seconds)
 } as const;
 
 /**
@@ -28,7 +28,7 @@ const VALIDATION_LIMITS = {
 const OEMBED = {
 	TYPES: ['rich', 'video', 'photo', 'link'] as const,
 	VERSIONS: ['1.0', '2.0'] as const,
-	URL_PATTERNS: ['/wp-json/oembed/', '/oembed'] as const,
+	URL_PATTERNS: ['/wp-json/oembed/', '/oembed'] as const
 } as const;
 
 /**
@@ -97,7 +97,7 @@ const FEED_PATTERNS = {
 		CHANNEL_CONTENT: /<channel>([\s\S]*?)<\/channel>/i,
 
 		// Captures title content between title tags (feed or item title)
-		TITLE: /<title>([\s\S]*?)<\/title>/i,
+		TITLE: /<title>([\s\S]*?)<\/title>/i
 	},
 
 	// Atom feed detection patterns
@@ -119,8 +119,8 @@ const FEED_PATTERNS = {
 		TITLE_TAG: /<title[^>]*>/i,
 
 		// Captures title content between title tags
-		TITLE_CONTENT: /<title>([\s\S]*?)<\/title>/i,
-	},
+		TITLE_CONTENT: /<title>([\s\S]*?)<\/title>/i
+	}
 };
 
 /**
@@ -194,7 +194,7 @@ function validateTimeout(timeout: number | undefined): number {
  * @returns True if URL matches oEmbed patterns
  */
 function isOEmbedEndpoint(url: string): boolean {
-	return OEMBED.URL_PATTERNS.some(pattern => url.includes(pattern));
+	return OEMBED.URL_PATTERNS.some((pattern) => url.includes(pattern));
 }
 
 /**
@@ -262,7 +262,11 @@ function cleanTitle(title: string | null | undefined): string | null {
  * const result = await checkFeed('https://example.com/not-a-feed');
  * console.log(result); // null
  */
-export default async function checkFeed(url: string, content: string = '', instance?: FeedSeekerInstance): Promise<FeedResult | null> {
+export default async function checkFeed(
+	url: string,
+	content: string = '',
+	instance?: FeedSeekerInstance
+): Promise<FeedResult | null> {
 	// Security: Validate URL format and protocol
 	validateUrl(url);
 

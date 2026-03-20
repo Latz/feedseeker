@@ -52,15 +52,13 @@ async function N(t, e = {}) {
     throw clearTimeout(o), l instanceof Error && l.name === "AbortError" ? new Error(`Request to ${t} timed out after ${r}ms`) : l;
   }
 }
-const p = {
+const g = {
   MAX_CONTENT_SIZE: 10 * 1024 * 1024,
   // 10MB maximum content size
-  DEFAULT_TIMEOUT: 5,
+  DEFAULT_TIMEOUT: 15,
   // Default timeout in seconds
-  MAX_TIMEOUT: 60,
+  MAX_TIMEOUT: 60
   // Maximum timeout in seconds (60 seconds)
-  MIN_TIMEOUT: 1
-  // Minimum timeout in seconds
 }, M = {
   TYPES: ["rich", "video", "photo", "link"],
   VERSIONS: ["1.0", "2.0"],
@@ -119,17 +117,17 @@ function W(t) {
     );
 }
 function Y(t) {
-  if (t.length > p.MAX_CONTENT_SIZE)
+  if (t.length > g.MAX_CONTENT_SIZE)
     throw new Error(
-      `Content too large: ${t.length} bytes. Maximum allowed: ${p.MAX_CONTENT_SIZE} bytes.`
+      `Content too large: ${t.length} bytes. Maximum allowed: ${g.MAX_CONTENT_SIZE} bytes.`
     );
 }
 function V(t) {
-  return t == null ? p.DEFAULT_TIMEOUT : !Number.isFinite(t) || t < p.MIN_TIMEOUT ? (console.warn(
-    `Invalid timeout value ${t}. Using minimum: ${p.MIN_TIMEOUT} seconds.`
-  ), p.MIN_TIMEOUT) : t > p.MAX_TIMEOUT ? (console.warn(
-    `Timeout value ${t} exceeds maximum. Clamping to ${p.MAX_TIMEOUT} seconds.`
-  ), p.MAX_TIMEOUT) : Math.floor(t);
+  return t == null ? g.DEFAULT_TIMEOUT : !Number.isFinite(t) || t <= 0 ? (console.warn(
+    `Invalid timeout value ${t}. Using default: ${g.DEFAULT_TIMEOUT} seconds.`
+  ), g.DEFAULT_TIMEOUT) : t > g.MAX_TIMEOUT ? (console.warn(
+    `Timeout value ${t} exceeds maximum. Clamping to ${g.MAX_TIMEOUT} seconds.`
+  ), g.MAX_TIMEOUT) : Math.floor(t);
 }
 function B(t) {
   return M.URL_PATTERNS.some((e) => t.includes(e));
@@ -290,7 +288,7 @@ async function oe(t) {
     t.emit("end", { module: "metalinks", feeds: e });
   }
 }
-function T(t, e) {
+function x(t, e) {
   try {
     return new URL(t, e);
   } catch {
@@ -298,21 +296,21 @@ function T(t, e) {
   }
 }
 function ae(t) {
-  const e = T(t);
+  const e = x(t);
   return e ? e.protocol === "http:" || e.protocol === "https:" : !1;
 }
 function le(t) {
-  return T(t) ? !1 : !t.includes("://");
+  return x(t) ? !1 : !t.includes("://");
 }
-const I = /* @__PURE__ */ new Set([
+const F = /* @__PURE__ */ new Set([
   "feedburner.com",
   "feeds.feedburner.com",
   "feedproxy.google.com",
   "feeds2.feedburner.com"
 ]);
 function O(t, e) {
-  const r = T(t);
-  return !r || r.hostname === e.hostname ? !0 : I.has(r.hostname) || [...I].some((s) => r.hostname.endsWith("." + s));
+  const r = x(t);
+  return !r || r.hostname === e.hostname ? !0 : F.has(r.hostname) || [...F].some((s) => r.hostname.endsWith("." + s));
 }
 function ce(t) {
   if (t.options.followMetaRefresh && t.document && typeof t.document.querySelector == "function") {
@@ -324,7 +322,7 @@ function ce(t) {
         return t.emit("log", {
           module: "anchors",
           message: `Following meta refresh redirect to ${s}`
-        }), D({ ...t, site: s });
+        }), _({ ...t, site: s });
       }
     }
   }
@@ -336,7 +334,7 @@ function de(t, e, r) {
   if (ae(t.href))
     return t.href;
   if (le(t.href)) {
-    const s = T(t.href, e);
+    const s = x(t.href, e);
     return s ? s.href : (r.emit("error", {
       module: "anchors",
       error: `Invalid relative URL: ${t.href}`,
@@ -381,7 +379,7 @@ async function fe(t, e, r) {
     }
   }
 }
-function _(t, e, r) {
+function D(t, e, r) {
   t.emit("log", {
     module: "anchors",
     message: `Stopped due to reaching maximum feeds limit: ${e} feeds found (max ${r} allowed).`
@@ -391,7 +389,7 @@ async function ue(t, e, r, s) {
   let i = 0;
   for (let n = 0; n < t.length; n += r) {
     if (s > 0 && e.feedUrls.length >= s) {
-      _(e.instance, e.feedUrls.length, s);
+      D(e.instance, e.feedUrls.length, s);
       break;
     }
     const o = t.slice(n, n + r);
@@ -411,12 +409,12 @@ async function me(t, e, r, s, i, n) {
   const m = r + d.length;
   for (let h = 0; h < d.length; h += i) {
     if (n > 0 && t.feedUrls.length >= n) {
-      _(t.instance, t.feedUrls.length, n);
+      D(t.instance, t.feedUrls.length, n);
       break;
     }
-    const x = d.slice(h, h + i);
+    const T = d.slice(h, h + i);
     await Promise.allSettled(
-      x.map(async (w) => {
+      T.map(async (w) => {
         if (!(n > 0 && t.feedUrls.length >= n)) {
           t.instance.emit("log", { module: "anchors", totalCount: l++, totalEndpoints: m });
           try {
@@ -438,7 +436,7 @@ async function me(t, e, r, s, i, n) {
     );
   }
 }
-async function D(t) {
+async function _(t) {
   const e = ce(t);
   if (e)
     return e;
@@ -455,32 +453,32 @@ async function pe(t) {
     module: "anchors",
     niceName: "Check All Anchors"
   });
-  const e = await D(t);
+  const e = await _(t);
   return t.emit("end", { module: "anchors", feeds: e }), e;
 }
-const ge = ["feed", "rss", "atom", "feed.xml", "rss.xml", "atom.xml", "index.xml", "feeds", ".rss", ".atom", ".xml", "?feed=rss2", "?feed=atom", "feed/rss/", "feed/atom/", "blog/feed", "blog/rss", "feed.json", "rss.php", "feed.php", "news/rss", "latest/feed", "?format=rss", "?format=feed"], we = ["rssfeed.xml", "feed.rss", "feed.atom", "feeds/", "rss/", "index.rss", "index.atom", "rss/index.xml", "atom/index.xml", "syndication/", "rssfeed.rdf", "&_rss=1", "blog/atom", "blog/feeds", "blog?format=rss", "blog-feed.xml", "weblog/atom", "weblog/rss", "?format=feed", "feed/rdf/", "feed/rss2/", "wp-atom.php", "wp-feed.php", "wp-rdf.php", "wp-rss.php", "wp-rss2.php", "index.php?format=feed", "articles/feed", "atom/news/", "latest.rss", "news.xml", "news/atom", "rss/articles/", "rss/latest/", "rss/news/", "rss/news/rss.xml", "rss/rss.php", "api/feed", "api/rss", "api/atom", "api/rss.xml", "api/feed.xml", "api/v1/feed", "api/v2/feed", "v1/feed", "v2/feed", "feed.aspx", "rss.aspx", "rss.cfm", "feed.jsp", "feed.pl", "feed.py", "feed.rb", "feed/atom", "feed/rdf", "feed/atom.rss", "feed/atom.xml", "feed/rss.xml", "feed/rss2", "posts.rss", "_site/feed.xml", "build/feed.xml", "dist/feed.xml", "out/feed.xml", "?atom=1", "?rss=1", "?feed=atom", "?feed=rss", "?format=atom", "?output=rss", "?output=atom", "?type=rss", "?type=atom", "?view=feed", "?view=rss"], Ee = ["atomfeed", "jsonfeed", "newsfeed", "rssfeed", "feeds.json", "feeds.php", "feeds.xml", ".json", ".opml", ".rdf", "opml", "opml/", "rdf", "rdf/", "feed.cml", "feed.csv", "feed.txt", "feed.yaml", "feed.yml", "?download=atom", "?download=rss", "?export=atom", "?export=rss", "?syndicate=atom", "?syndicate=rss", "export/rss.xml", "extern.php?action=feed&type=atom", "external?type=rss2", "index.php?action=.xml;type=rss", "public/feed.xml", "spip.php?page=backend", "spip.php?page=backend-breve", "spip.php?page=backend-sites", "syndicate/rss.xml", "syndication.php", "xml", "sitenews", "api/mobile/feed", "catalog.xml", "catalog/feed", "deals.xml", "deals/feed", "inventory.rss", "inventory/feed", "products.rss", "products/atom", "products/rss", "promotions/feed", "specials/feed", "audio/feed", "episodes.rss", "episodes/feed", "gallery.rss", "media/feed", "podcast.rss", "podcast/atom", "podcast/rss", "podcasts/feed", "shows/feed", "video/feed", "videos.rss", "comments/feed", "community/feed", "discussions/feed", "forum.rss", "forum/atom", "forum/rss", "reviews/feed", "agenda/feed", "calendar/feed", "events.rss", "events/feed", "schedule/feed", "careers/feed", "jobs.rss", "jobs/feed", "opportunities/feed", "vacancies/feed", "content/feed", "documents/feed", "pages/feed", "resources/feed", "emails/feed", "mailinglist/feed", "newsletter/feed", "subscription/feed", "category/*/feed", "tag/*/feed", "tags/feed", "topics/feed", "author/*/feed", "profile/*/feed", "user/*/feed", "archive/feed", "daily/feed", "monthly/feed", "weekly/feed", "yearly/feed", "announcements/feed", "changelog/feed", "press/feed", "updates/feed", "revisions/feed", "app/feed", "mobile/feed", "international/feed", "local/feed", "national/feed", "regional/feed", "education/feed", "entertainment/feed", "finance/feed", "health/feed", "industry/feed", "market/feed", "science/feed", "sector/feed", "sports/feed", "technology/feed", "aggregate/feed", "all/feed", "combined/feed", "compilation/feed", "everything/feed", "actualites/feed", "nachrichten/feed", "nieuws/feed", "noticias/feed", "novosti/feed", "cms/feed", "contentful/feed", "sanity/feed", "strapi/feed", "docs/feed", "documentation/feed", "help/feed", "kb/feed", "support/feed", "wiki/feed", "branches/feed", "commits/feed", "issues/feed", "pull-requests/feed", "releases/feed", "tags/feed", "analytics/feed", "metrics/feed", "reports/feed", "stats/feed", "de/feed", "en/feed", "es/feed", "fr/feed", "it/feed", "ja/feed", "ko/feed", "pt/feed", "ru/feed", "zh/feed", "drupal/feed", "joomla/feed", "magento/feed", "opencart/feed", "prestashop/feed", "shopify/feed", "typo3/feed", "woocommerce/feed", "discourse/feed", "invision/feed", "phpbb/feed", "vbulletin/feed", "xenforo/feed"], g = {
+const ge = ["feed", "rss", "atom", "feed.xml", "rss.xml", "atom.xml", "index.xml", "feeds", ".rss", ".atom", ".xml", "?feed=rss2", "?feed=atom", "feed/rss/", "feed/atom/", "blog/feed", "blog/rss", "feed.json", "rss.php", "feed.php", "news/rss", "latest/feed", "?format=rss", "?format=feed"], we = ["rssfeed.xml", "feed.rss", "feed.atom", "feeds/", "rss/", "index.rss", "index.atom", "rss/index.xml", "atom/index.xml", "syndication/", "rssfeed.rdf", "&_rss=1", "blog/atom", "blog/feeds", "blog?format=rss", "blog-feed.xml", "weblog/atom", "weblog/rss", "?format=feed", "feed/rdf/", "feed/rss2/", "wp-atom.php", "wp-feed.php", "wp-rdf.php", "wp-rss.php", "wp-rss2.php", "index.php?format=feed", "articles/feed", "atom/news/", "latest.rss", "news.xml", "news/atom", "rss/articles/", "rss/latest/", "rss/news/", "rss/news/rss.xml", "rss/rss.php", "api/feed", "api/rss", "api/atom", "api/rss.xml", "api/feed.xml", "api/v1/feed", "api/v2/feed", "v1/feed", "v2/feed", "feed.aspx", "rss.aspx", "rss.cfm", "feed.jsp", "feed.pl", "feed.py", "feed.rb", "feed/atom", "feed/rdf", "feed/atom.rss", "feed/atom.xml", "feed/rss.xml", "feed/rss2", "posts.rss", "_site/feed.xml", "build/feed.xml", "dist/feed.xml", "out/feed.xml", "?atom=1", "?rss=1", "?feed=atom", "?feed=rss", "?format=atom", "?output=rss", "?output=atom", "?type=rss", "?type=atom", "?view=feed", "?view=rss"], Ee = ["atomfeed", "jsonfeed", "newsfeed", "rssfeed", "feeds.json", "feeds.php", "feeds.xml", ".json", ".opml", ".rdf", "opml", "opml/", "rdf", "rdf/", "feed.cml", "feed.csv", "feed.txt", "feed.yaml", "feed.yml", "?download=atom", "?download=rss", "?export=atom", "?export=rss", "?syndicate=atom", "?syndicate=rss", "export/rss.xml", "extern.php?action=feed&type=atom", "external?type=rss2", "index.php?action=.xml;type=rss", "public/feed.xml", "spip.php?page=backend", "spip.php?page=backend-breve", "spip.php?page=backend-sites", "syndicate/rss.xml", "syndication.php", "xml", "sitenews", "api/mobile/feed", "catalog.xml", "catalog/feed", "deals.xml", "deals/feed", "inventory.rss", "inventory/feed", "products.rss", "products/atom", "products/rss", "promotions/feed", "specials/feed", "audio/feed", "episodes.rss", "episodes/feed", "gallery.rss", "media/feed", "podcast.rss", "podcast/atom", "podcast/rss", "podcasts/feed", "shows/feed", "video/feed", "videos.rss", "comments/feed", "community/feed", "discussions/feed", "forum.rss", "forum/atom", "forum/rss", "reviews/feed", "agenda/feed", "calendar/feed", "events.rss", "events/feed", "schedule/feed", "careers/feed", "jobs.rss", "jobs/feed", "opportunities/feed", "vacancies/feed", "content/feed", "documents/feed", "pages/feed", "resources/feed", "emails/feed", "mailinglist/feed", "newsletter/feed", "subscription/feed", "category/*/feed", "tag/*/feed", "tags/feed", "topics/feed", "author/*/feed", "profile/*/feed", "user/*/feed", "archive/feed", "daily/feed", "monthly/feed", "weekly/feed", "yearly/feed", "announcements/feed", "changelog/feed", "press/feed", "updates/feed", "revisions/feed", "app/feed", "mobile/feed", "international/feed", "local/feed", "national/feed", "regional/feed", "education/feed", "entertainment/feed", "finance/feed", "health/feed", "industry/feed", "market/feed", "science/feed", "sector/feed", "sports/feed", "technology/feed", "aggregate/feed", "all/feed", "combined/feed", "compilation/feed", "everything/feed", "actualites/feed", "nachrichten/feed", "nieuws/feed", "noticias/feed", "novosti/feed", "cms/feed", "contentful/feed", "sanity/feed", "strapi/feed", "docs/feed", "documentation/feed", "help/feed", "kb/feed", "support/feed", "wiki/feed", "branches/feed", "commits/feed", "issues/feed", "pull-requests/feed", "releases/feed", "tags/feed", "analytics/feed", "metrics/feed", "reports/feed", "stats/feed", "de/feed", "en/feed", "es/feed", "fr/feed", "it/feed", "ja/feed", "ko/feed", "pt/feed", "ru/feed", "zh/feed", "drupal/feed", "joomla/feed", "magento/feed", "opencart/feed", "prestashop/feed", "shopify/feed", "typo3/feed", "woocommerce/feed", "discourse/feed", "invision/feed", "phpbb/feed", "vbulletin/feed", "xenforo/feed"], p = {
   essential: ge,
   standard: we,
   comprehensive: Ee
-}, ye = 0, b = 0, Se = 3, A = "standard", P = 2083, v = 10, U = 1, F = 1e4, k = 6e4;
-function Te(t) {
+}, ye = 0, b = 0, Se = 3, A = "standard", P = 2083, v = 10, U = 1, I = 1e4, k = 6e4;
+function xe(t) {
   switch (t) {
     case "fast":
-      return g.essential;
+      return p.essential;
     case "standard":
-      return [...g.essential, ...g.standard];
+      return [...p.essential, ...p.standard];
     case "exhaustive":
     case "full":
       return [
-        ...g.essential,
-        ...g.standard,
-        ...g.comprehensive
+        ...p.essential,
+        ...p.standard,
+        ...p.comprehensive
       ];
     default:
-      return [...g.essential, ...g.standard];
+      return [...p.essential, ...p.standard];
   }
 }
-function xe(t) {
+function Te(t) {
   return t ? ["fast", "standard", "exhaustive", "full"].includes(t) ? t : (console.warn(`Invalid search mode "${t}". Falling back to "${A}".`), A) : A;
 }
 function Le(t) {
@@ -511,9 +509,9 @@ function Ae(t) {
 }
 function ve(t, e, r, s) {
   for (const i of e) {
-    if (s.length >= F)
+    if (s.length >= I)
       return console.warn(
-        `URL generation limit reached (${F} URLs). Stopping to prevent resource exhaustion.`
+        `URL generation limit reached (${I} URLs). Stopping to prevent resource exhaustion.`
       ), !1;
     const n = r ? `${t}/${i}${r}` : `${t}/${i}`;
     z(n) ? s.push(n) : console.warn(`Skipping URL (too long): ${n.substring(0, 100)}...`);
@@ -545,7 +543,7 @@ function Re(t, e, r, s, i) {
   return t >= e ? !1 : i ? !0 : !(r && s);
 }
 async function Me(t, e) {
-  const r = xe(t.options?.searchMode), s = Te(r), i = Ue(
+  const r = Te(t.options?.searchMode), s = xe(r), i = Ue(
     t.site,
     t.options?.keepQueryParams || !1,
     s
@@ -573,8 +571,8 @@ async function Ce(t, e, r, s, i, n) {
       await q(i, o, r);
       break;
     }
-    const h = Math.min(s, t.length - l), x = t.slice(l, l + h), w = await Promise.allSettled(
-      x.map((u) => $e(u, i, a, o, c, d))
+    const h = Math.min(s, t.length - l), T = t.slice(l, l + h), w = await Promise.allSettled(
+      T.map((u) => $e(u, i, a, o, c, d))
     );
     ({ rssFound: c, atomFound: d, i: l } = await Ne(
       w,
@@ -614,7 +612,7 @@ async function $e(t, e, r, s, i, n) {
     }
   } catch (o) {
     const a = o instanceof Error ? o : new Error(String(o));
-    await Ie(e, t, a);
+    await Fe(e, t, a);
   }
   return { found: !1, rssFound: i, atomFound: n };
 }
@@ -624,7 +622,7 @@ async function q(t, e, r) {
     message: `Stopped due to reaching maximum feeds limit: ${e.length} feeds found (max ${r} allowed).`
   });
 }
-async function Ie(t, e, r) {
+async function Fe(t, e, r) {
   t.options?.showErrors && t.emit("error", {
     module: "blindsearch",
     error: `Error fetching ${e}: ${r.message}`,
@@ -713,7 +711,7 @@ class E {
       try {
         return JSON.stringify(r);
       } catch {
-        return String(e);
+        return "[unserializable object]";
       }
     }
     return String(e);
@@ -926,7 +924,7 @@ class E {
     return Array.from(this.#e.keys());
   }
 }
-const { queue: Fe } = X, Oe = /* @__PURE__ */ new Set([
+const { queue: Ie } = X, Oe = /* @__PURE__ */ new Set([
   ".zip",
   ".rar",
   ".7z",
@@ -969,11 +967,11 @@ const { queue: Fe } = X, Oe = /* @__PURE__ */ new Set([
   ".ogv",
   ".ogx"
 ]);
-function _e(t) {
+function De(t) {
   const e = t.lastIndexOf(".");
   return e !== -1 && Oe.has(t.slice(e).toLowerCase());
 }
-class De extends E {
+class _e extends E {
   constructor(e, r = {}) {
     const {
       maxDepth: s = 3,
@@ -992,7 +990,7 @@ class De extends E {
     } catch {
       throw new Error(`Invalid start URL: ${e}`);
     }
-    this.maxDepth = s, this.concurrency = i, this.maxLinks = n, this.mainDomain = $.getDomain(this.startUrl), this.checkForeignFeeds = o, this.maxErrors = a, this.maxFeeds = c, this.errorCount = 0, this.instance = d, this.queue = Fe(this.crawlPage.bind(this), this.concurrency), this.visitedUrls = /* @__PURE__ */ new Set(), this.timeout = 5e3, this.insecure = l, this.maxLinksReachedMessageEmitted = !1, this.feeds = [], this.queue.error((m) => {
+    this.maxDepth = s, this.concurrency = i, this.maxLinks = n, this.mainDomain = $.getDomain(this.startUrl), this.checkForeignFeeds = o, this.maxErrors = a, this.maxFeeds = c, this.errorCount = 0, this.instance = d, this.queue = Ie(this.crawlPage.bind(this), this.concurrency), this.visitedUrls = /* @__PURE__ */ new Set(), this.timeout = 5e3, this.insecure = l, this.maxLinksReachedMessageEmitted = !1, this.feeds = [], this.queue.error((m) => {
       this.emit("error", {
         module: "deepSearch",
         error: `Async error: ${m}`,
@@ -1025,7 +1023,7 @@ class De extends E {
    */
   isValidUrl(e) {
     try {
-      const r = $.getDomain(e) === this.mainDomain, s = !_e(e);
+      const r = $.getDomain(e) === this.mainDomain, s = !De(e);
       return r && s;
     } catch {
       return this.emit("error", {
@@ -1135,7 +1133,7 @@ class De extends E {
   }
 }
 async function Pe(t, e = {}, r = null) {
-  const s = new De(t, {
+  const s = new _e(t, {
     maxDepth: e.depth || 3,
     maxLinks: e.maxLinks || 1e3,
     checkForeignFeeds: !!e.checkForeignFeeds,
@@ -1179,8 +1177,8 @@ class Xe extends E {
       this.site = s;
     }
     this.options = {
-      timeout: 5,
-      // Default timeout of 5 seconds
+      timeout: 15,
+      // Default timeout of 15 seconds (minimum enforced by checkFeed)
       ...r
     }, this.initPromise = null;
   }
@@ -1266,7 +1264,7 @@ class Xe extends E {
           this.handleInitError(`Invalid URL: ${this.site}`);
           return;
         }
-        const e = (this.options.timeout ?? 5) * 1e3, r = await N(this.site, { timeout: e, insecure: this.options.insecure });
+        const e = (this.options.timeout ?? 15) * 1e3, r = await N(this.site, { timeout: e, insecure: this.options.insecure });
         if (!r.ok) {
           this.content = "", this.document = this.createEmptyDocument(), this.initStatus = "success", this.emit("initialized");
           return;
