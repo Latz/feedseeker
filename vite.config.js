@@ -15,9 +15,9 @@ export default defineConfig({
 			name: 'FeedSeeker',
 			fileName: (format) => {
 				if (isCLI) {
-					return `feed-seeker-cli.${format === 'es' ? 'js' : 'cjs'}`;
+					return `feedseeker-cli.${format === 'es' ? 'js' : 'cjs'}`;
 				}
-				return `feed-seeker.${format === 'es' ? 'js' : 'cjs'}`;
+				return `feedseeker.${format === 'es' ? 'js' : 'cjs'}`;
 			},
 			formats: ['es', 'cjs']
 		},
@@ -61,7 +61,7 @@ export default defineConfig({
 			name: 'add-shebang-and-cleanup',
 			closeBundle() {
 				if (isCLI) {
-					const cliPath = resolve(__dirname, 'dist/feed-seeker-cli.cjs');
+					const cliPath = resolve(__dirname, 'dist/feedseeker-cli.cjs');
 					const content = readFileSync(cliPath, 'utf-8');
 					if (!content.startsWith('#!/usr/bin/env node')) {
 						writeFileSync(cliPath, '#!/usr/bin/env node\n' + content, 'utf-8');

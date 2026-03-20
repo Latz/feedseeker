@@ -4,18 +4,18 @@
 	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website with support for preserving query parameters",
 	"type": "module",
 	"bin": {
-		"feed-seeker": "dist/feed-seeker-cli.cjs"
+		"feed-seeker": "dist/feedseeker-cli.cjs"
 	},
 	"exports": {
 		".": {
 			"types": "./dist/types/feed-seeker.d.ts",
-			"import": "./dist/feed-seeker.js",
-			"require": "./dist/feed-seeker.cjs"
+			"import": "./dist/feedseeker.js",
+			"require": "./dist/feedseeker.cjs"
 		},
 		"./cli": {
 			"types": "./dist/types/feed-seeker-cli.d.ts",
-			"import": "./dist/feed-seeker-cli.js",
-			"require": "./dist/feed-seeker-cli.cjs"
+			"import": "./dist/feedseeker-cli.js",
+			"require": "./dist/feedseeker-cli.cjs"
 		}
 	},
 	"files": [
