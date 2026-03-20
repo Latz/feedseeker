@@ -73,3 +73,4 @@ CLAUDE.local.md
 /sonar-project.properties
 /.claude-dev-helper
 sonarqube_analyze.sh
+package-lock.json
