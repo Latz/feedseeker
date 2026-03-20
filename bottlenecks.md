@@ -74,10 +74,10 @@ const sameDomain = tldts.getDomain(url) === this.mainDomain;
 **Impact**: Each `<a>` tag on a page is processed one-at-a-time in a `for...of` loop with `await`. A page with 200 links takes 200 × (network round-trip for `checkFeed`) in series. The outer queue has concurrency=5 for pages, but within each page all link-checks are serial.
 
 ```ts
-for (const link of document.querySelectorAll("a")) {
-  const absoluteUrl = new URL(link.href, this.startUrl).href;
-  const shouldStop = await this.processLink(absoluteUrl, depth); // serial await
-  if (shouldStop) break;
+for (const link of document.querySelectorAll('a')) {
+	const absoluteUrl = new URL(link.href, this.startUrl).href;
+	const shouldStop = await this.processLink(absoluteUrl, depth); // serial await
+	if (shouldStop) break;
 }
 ```
 
@@ -151,13 +151,13 @@ That's up to 4 `new URL(...)` constructions per anchor to determine a single res
 **Impact**: `FEED_TYPES.map((type) => \`link[type="application/${type}"]\`).join(', ')`constructs the selector string every time`metaLinks()`is called. Since`FEED_TYPES`is a module-level`const`, this string never changes.
 
 ```ts
-const typeSelectors = FEED_TYPES.map((type) => `link[type="application/${type}"]`).join(", ");
+const typeSelectors = FEED_TYPES.map((type) => `link[type="application/${type}"]`).join(', ');
 ```
 
 **Fix**: Hoist to a module-level `const`:
 
 ```ts
-const TYPE_SELECTORS = FEED_TYPES.map((t) => `link[type="application/${t}"]`).join(", ");
+const TYPE_SELECTORS = FEED_TYPES.map((t) => `link[type="application/${t}"]`).join(', ');
 ```
 
 ---

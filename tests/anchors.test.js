@@ -4,7 +4,7 @@ import { parseHTML } from 'linkedom';
 
 // Mock checkFeed to avoid real network requests
 vi.mock('../modules/checkFeed.ts', () => ({
-	default: vi.fn(),
+	default: vi.fn()
 }));
 import checkFeed from '../modules/checkFeed.ts';
 
@@ -19,7 +19,7 @@ function makeInstance(html, options = {}) {
 		emit(event, data) {
 			events.push({ event, data });
 		},
-		_events: events,
+		_events: events
 	};
 }
 
@@ -31,7 +31,7 @@ describe('checkAllAnchors()', () => {
 	it('emits start event with module anchors', async () => {
 		const instance = makeInstance('<html><body></body></html>');
 		await checkAllAnchors(instance);
-		const startEvent = instance._events.find(e => e.event === 'start');
+		const startEvent = instance._events.find((e) => e.event === 'start');
 		expect(startEvent).toBeDefined();
 		expect(startEvent.data.module).toBe('anchors');
 	});
@@ -39,7 +39,7 @@ describe('checkAllAnchors()', () => {
 	it('emits end event with module anchors', async () => {
 		const instance = makeInstance('<html><body></body></html>');
 		await checkAllAnchors(instance);
-		const endEvent = instance._events.find(e => e.event === 'end');
+		const endEvent = instance._events.find((e) => e.event === 'end');
 		expect(endEvent).toBeDefined();
 		expect(endEvent.data.module).toBe('anchors');
 	});
@@ -48,7 +48,7 @@ describe('checkAllAnchors()', () => {
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Blog' });
 		const instance = makeInstance('<html><body><a href="/feed">Feed</a></body></html>');
 		const result = await checkAllAnchors(instance);
-		const endEvent = instance._events.find(e => e.event === 'end');
+		const endEvent = instance._events.find((e) => e.event === 'end');
 		expect(endEvent.data.feeds).toEqual(result);
 	});
 
@@ -78,12 +78,18 @@ describe('checkAllAnchors()', () => {
 		const instance = makeInstance('<html><body><a href="/feed.xml">Feed</a></body></html>');
 		const result = await checkAllAnchors(instance);
 		expect(result).toHaveLength(1);
-		expect(result[0]).toMatchObject({ url: 'https://example.com/feed.xml', type: 'rss', feedTitle: 'My Blog' });
+		expect(result[0]).toMatchObject({
+			url: 'https://example.com/feed.xml',
+			type: 'rss',
+			feedTitle: 'My Blog'
+		});
 	});
 
 	it('uses anchor text as title', async () => {
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed Title' });
-		const instance = makeInstance('<html><body><a href="/feed">Subscribe via RSS</a></body></html>');
+		const instance = makeInstance(
+			'<html><body><a href="/feed">Subscribe via RSS</a></body></html>'
+		);
 		const result = await checkAllAnchors(instance);
 		expect(result[0].title).toBe('Subscribe via RSS');
 	});
@@ -128,7 +134,7 @@ describe('checkAllAnchors()', () => {
 		const html = '<html><body><a href="https://feeds.feedburner.com/myblog">Feed</a></body></html>';
 		const instance = makeInstance(html);
 		const result = await checkAllAnchors(instance);
-		expect(result.some(f => f.url.includes('feedburner.com'))).toBe(true);
+		expect(result.some((f) => f.url.includes('feedburner.com'))).toBe(true);
 	});
 
 	it('handles anchor with absolute https URL on same domain', async () => {
@@ -146,7 +152,7 @@ describe('checkAllAnchors()', () => {
 		const instance = makeInstance(html, { showErrors: false });
 		const result = await checkAllAnchors(instance);
 		expect(result).toEqual([]);
-		expect(instance._events.filter(e => e.event === 'error')).toHaveLength(0);
+		expect(instance._events.filter((e) => e.event === 'error')).toHaveLength(0);
 	});
 
 	it('emits error event when checkFeed throws and showErrors is true', async () => {
@@ -154,7 +160,7 @@ describe('checkAllAnchors()', () => {
 		const html = '<html><body><a href="/feed">Feed</a></body></html>';
 		const instance = makeInstance(html, { showErrors: true });
 		await checkAllAnchors(instance);
-		const errorEvent = instance._events.find(e => e.event === 'error');
+		const errorEvent = instance._events.find((e) => e.event === 'error');
 		expect(errorEvent).toBeDefined();
 		expect(errorEvent.data.module).toBe('anchors');
 	});
@@ -185,7 +191,7 @@ describe('checkAllAnchors()', () => {
 		const instance = makeInstance(html, { maxFeeds: 1, concurrency: 1 });
 		await checkAllAnchors(instance);
 		const limitLog = instance._events.find(
-			e => e.event === 'log' && e.data?.message?.includes('maximum feeds limit')
+			(e) => e.event === 'log' && e.data?.message?.includes('maximum feeds limit')
 		);
 		expect(limitLog).toBeDefined();
 	});
@@ -195,7 +201,7 @@ describe('checkAllAnchors()', () => {
 		const html = '<html><body><a href="/page">Link</a></body></html>';
 		const instance = makeInstance(html);
 		await checkAllAnchors(instance);
-		const logEvents = instance._events.filter(e => e.event === 'log');
+		const logEvents = instance._events.filter((e) => e.event === 'log');
 		expect(logEvents.length).toBeGreaterThan(0);
 	});
 
@@ -208,7 +214,7 @@ describe('checkAllAnchors()', () => {
 		const html = '<html><body>Subscribe at https://example.com/rss.xml for updates</body></html>';
 		const instance = makeInstance(html);
 		const result = await checkAllAnchors(instance);
-		expect(result.some(f => f.url === 'https://example.com/rss.xml')).toBe(true);
+		expect(result.some((f) => f.url === 'https://example.com/rss.xml')).toBe(true);
 	});
 
 	it('plain-text feed has null title (no anchor text)', async () => {
@@ -219,7 +225,7 @@ describe('checkAllAnchors()', () => {
 		const html = '<html><body>https://example.com/feed</body></html>';
 		const instance = makeInstance(html);
 		const result = await checkAllAnchors(instance);
-		const found = result.find(f => f.url === 'https://example.com/feed');
+		const found = result.find((f) => f.url === 'https://example.com/feed');
 		if (found) {
 			expect(found.title).toBeNull();
 		}
@@ -228,11 +234,12 @@ describe('checkAllAnchors()', () => {
 	it('skips plain-text URLs already found via anchors', async () => {
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
 		// Same URL in anchor tag and in body text
-		const html = '<html><body><a href="/feed">Feed</a> Also at https://example.com/feed</body></html>';
+		const html =
+			'<html><body><a href="/feed">Feed</a> Also at https://example.com/feed</body></html>';
 		const instance = makeInstance(html);
 		await checkAllAnchors(instance);
 		// checkFeed should only be called once for that URL
-		const calls = checkFeed.mock.calls.filter(c => c[0] === 'https://example.com/feed');
+		const calls = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed');
 		expect(calls.length).toBeLessThanOrEqual(1);
 	});
 });

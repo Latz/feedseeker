@@ -32,7 +32,7 @@ function isAllowedDomain(url, baseUrl) {
 		'feedburner.com',
 		'feeds.feedburner.com',
 		'feedproxy.google.com',
-		'feeds2.feedburner.com',
+		'feeds2.feedburner.com'
 	];
 	return (
 		allowedDomains.includes(parsedUrl.hostname) ||

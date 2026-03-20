@@ -84,18 +84,18 @@ const feedFinder = new FeedSeeker('https://example.com');
 
 // Listen for events
 feedFinder.on('initialized', () => {
-  console.log('Page fetched and parsed');
+	console.log('Page fetched and parsed');
 });
 
 feedFinder.on('end', (data) => {
-  if (data.feeds.length > 0) {
-    console.log(`Found ${data.feeds.length} feeds:`);
-    data.feeds.forEach(feed => {
-      console.log(`- ${feed.url} (${feed.type})`);
-    });
-  } else {
-    console.log('No feeds found');
-  }
+	if (data.feeds.length > 0) {
+		console.log(`Found ${data.feeds.length} feeds:`);
+		data.feeds.forEach((feed) => {
+			console.log(`- ${feed.url} (${feed.type})`);
+		});
+	} else {
+		console.log('No feeds found');
+	}
 });
 
 // Run the search

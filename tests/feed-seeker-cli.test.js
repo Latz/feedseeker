@@ -27,7 +27,9 @@ describe('FeedSeeker CLI', () => {
 
 		it('calling run() with no URL exits with an error indication', async () => {
 			const { run } = await import('../feed-seeker-cli.ts');
-			exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('exit'); });
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
+				throw new Error('exit');
+			});
 			// Commander calls process.exit(1) when required arg is missing
 			await expect(run(['node', 'cli'])).rejects.toThrow();
 		});

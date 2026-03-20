@@ -1,4 +1,5 @@
 # Performance Review — feed-seeker CLI Improvements
+
 **Review Date**: 2026-03-10
 **Commits Reviewed**: d1d052c..ae1898e (4 commits)
 **Reviewer**: Claude Code (Senior Code Reviewer)
@@ -125,13 +126,13 @@ The stated deliverables include: "Fixed build: unclosed JSDoc comment swallowed 
 
 ## Plan Alignment Assessment
 
-| Requirement | Status |
-|---|---|
-| 301 tests passing, 13 files | Met — 301 tests, 13 files pass at HEAD |
-| `pnpm run build` succeeds, no TypeScript errors | Not met at HEAD (ae1898e) — 3 type errors exist; fix is present in uncommitted working tree only |
-| CLI shows feed titles when available | Met — `printFeeds` displays `feedTitle ?? title` in cyan above the URL |
-| Exit codes: 0=found, 2=not found, 1=error | Met — logic is correct; implicit exit 0 is fine |
-| niceName values consistent title-case across all modules | Partially met — `metaLinks.ts` fixed but other three modules still use sentence case |
+| Requirement                                              | Status                                                                                           |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 301 tests passing, 13 files                              | Met — 301 tests, 13 files pass at HEAD                                                           |
+| `pnpm run build` succeeds, no TypeScript errors          | Not met at HEAD (ae1898e) — 3 type errors exist; fix is present in uncommitted working tree only |
+| CLI shows feed titles when available                     | Met — `printFeeds` displays `feedTitle ?? title` in cyan above the URL                           |
+| Exit codes: 0=found, 2=not found, 1=error                | Met — logic is correct; implicit exit 0 is fine                                                  |
+| niceName values consistent title-case across all modules | Partially met — `metaLinks.ts` fixed but other three modules still use sentence case             |
 
 ---
 

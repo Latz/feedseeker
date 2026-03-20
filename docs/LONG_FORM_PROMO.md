@@ -26,6 +26,7 @@ First, it does the obvious stuff: scanning for `<link>` tags in the HTML head an
 This is where Feed Seeker starts to shine. When a site doesn't advertise its feed, we find it anyway. The blind search module intelligently tests over **320 common endpoint patterns** against the target URL and its parent paths.
 
 For a URL like `https://example.com/blog/posts/my-article`, it will check for feeds at:
+
 - `/blog/posts/my-article/...`
 - `/blog/posts/...`
 - `/blog/...`
@@ -46,6 +47,7 @@ For the most stubborn cases, Feed Seeker can crawl the entire website. It follow
 Feed Seeker isn't just powerful; it's designed with a great Developer Experience (DX) in mind.
 
 - **Simple, Programmatic API:** Get started in seconds.
+
   ```javascript
   import FeedSeeker from 'feed-seeker';
 
@@ -55,6 +57,7 @@ Feed Seeker isn't just powerful; it's designed with a great Developer Experience
   ```
 
 - **Powerful CLI:** Need to find a feed from your terminal? No problem.
+
   ```bash
   # Run a full deep search from the command line
   npx feed-seeker https://example.com --deepsearch
@@ -76,6 +79,7 @@ Feed Seeker isn't just powerful; it's designed with a great Developer Experience
 Ready to stop hunting and start finding? Install Feed Seeker today and see what you can uncover.
 
 **Installation:**
+
 ```bash
 npm install feed-seeker
 ```

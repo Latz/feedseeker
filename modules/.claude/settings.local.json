@@ -1,21 +1,21 @@
 {
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:patorjk.com)",
-      "Read(//home/latz/**)",
-      "Bash(node dist/feed-seeker-cli.js:*)",
-      "Bash(cat:*)",
-      "Bash(xxd:*)",
-      "Bash(node:*)",
-      "Bash(find:*)",
-      "Bash(npm run build:*)",
-      "Bash(npm run clean:*)",
-      "Bash(npm run build:lib:*)",
-      "Bash(npx vite build:*)",
-      "Bash(npx tsc:*)",
-      "Bash(figlet:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
+	"permissions": {
+		"allow": [
+			"WebFetch(domain:patorjk.com)",
+			"Read(//home/latz/**)",
+			"Bash(node dist/feed-seeker-cli.js:*)",
+			"Bash(cat:*)",
+			"Bash(xxd:*)",
+			"Bash(node:*)",
+			"Bash(find:*)",
+			"Bash(npm run build:*)",
+			"Bash(npm run clean:*)",
+			"Bash(npm run build:lib:*)",
+			"Bash(npx vite build:*)",
+			"Bash(npx tsc:*)",
+			"Bash(figlet:*)"
+		],
+		"deny": [],
+		"ask": []
+	}
 }

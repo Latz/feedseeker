@@ -1,38 +1,27 @@
 {
-  "compilerOptions": {
-    "target": "ES2021",
-    "module": "ESNext",
-    "lib": ["ES2021", "DOM", "DOM.Iterable"],
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "checkJs": false,
-    "outDir": "./dist",
-    "declarationDir": "./dist/types",
-    "rootDir": "./",
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
-    "types": ["node"]
-  },
-  "include": [
-    "feed-seeker.ts",
-    "feed-seeker-cli.ts",
-    "modules/**/*.ts",
-    "types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests",
-    "**/*.old.js",
-    "**/*.test.js"
-  ]
+	"compilerOptions": {
+		"target": "ES2021",
+		"module": "ESNext",
+		"lib": ["ES2021", "DOM", "DOM.Iterable"],
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"allowJs": true,
+		"checkJs": false,
+		"outDir": "./dist",
+		"declarationDir": "./dist/types",
+		"rootDir": "./",
+		"declaration": true,
+		"declarationMap": true,
+		"emitDeclarationOnly": true,
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
+		"allowImportingTsExtensions": true,
+		"types": ["node"]
+	},
+	"include": ["feed-seeker.ts", "feed-seeker-cli.ts", "modules/**/*.ts", "types/**/*.ts"],
+	"exclude": ["node_modules", "dist", "tests", "**/*.old.js", "**/*.test.js"]
 }

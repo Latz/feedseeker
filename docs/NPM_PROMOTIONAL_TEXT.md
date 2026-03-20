@@ -7,23 +7,27 @@ Feed Seeker is a powerful, intelligent Node.js library that automatically discov
 ## ✨ Why Choose Feed Seeker?
 
 ### 🚀 **Multiple Discovery Strategies**
+
 - **Meta Tag Analysis** - Lightning-fast HTML `<link>` tag scanning
 - **Anchor Link Detection** - Smart analysis of page links with domain filtering
 - **Blind Search** - Tests 320+ common feed endpoints with intelligent path traversal
 - **Deep Crawling** - Comprehensive website exploration with circuit breaker protection
 
 ### 🎯 **Intelligent & Reliable**
+
 - **Feed Validation** - Verifies discovered URLs are actual feeds, not false positives
 - **Format Support** - RSS 2.0, Atom 1.0, and JSON Feed detection
 - **Error Recovery** - Graceful handling of timeouts, 403 errors, and malformed content
 
 ### ⚡ **Performance Optimized**
+
 - **Concurrent Processing** - Async queue management with configurable concurrency
 - **Early Termination** - Stops searching when target feeds are found
 - **Memory Efficient** - Single-pass processing and optimized data structures
 - **Configurable Timeouts** - Prevents hanging on slow or unresponsive sites
 
 ### 🔧 **Developer Friendly**
+
 - **Event-Driven API** - Real-time progress updates and error handling
 - **TypeScript Support** - Full type definitions included
 - **Comprehensive Options** - Fine-tune behavior for your specific use case
@@ -42,68 +46,71 @@ const feedScout = new FeedSeeker('https://techcrunch.com');
 const feeds = await feedScout.metaLinks();
 
 console.log(`Found ${feeds.length} feeds:`);
-feeds.forEach(feed => {
-  console.log(`📡 ${feed.url} (${feed.type})`);
+feeds.forEach((feed) => {
+	console.log(`📡 ${feed.url} (${feed.type})`);
 });
 ```
 
 ## 🎪 Real-World Examples
 
 ### News Aggregator
+
 ```javascript
 const feedScout = new FeedSeeker('https://arstechnica.com', {
-  timeout: 10,
-  maxFeeds: 5
+	timeout: 10,
+	maxFeeds: 5
 });
 
 // Try multiple strategies for comprehensive discovery
 let feeds = await feedScout.metaLinks();
 if (feeds.length === 0) {
-  feeds = await feedScout.blindSearch();
+	feeds = await feedScout.blindSearch();
 }
 
-feeds.forEach(feed => {
-  console.log(`📰 ${feed.feedTitle || feed.title}: ${feed.url}`);
+feeds.forEach((feed) => {
+	console.log(`📰 ${feed.feedTitle || feed.title}: ${feed.url}`);
 });
 ```
 
 ### Podcast Directory
+
 ```javascript
 const feedScout = new FeedSeeker('https://gimletmedia.com', {
-  deepsearch: true,
-  depth: 3,
-  maxLinks: 1000
+	deepsearch: true,
+	depth: 3,
+	maxLinks: 1000
 });
 
 // Comprehensive search with progress tracking
 feedScout.on('log', (data) => {
-  console.log(`🔍 Checking ${data.totalCount} items...`);
+	console.log(`🔍 Checking ${data.totalCount} items...`);
 });
 
 const podcastFeeds = await feedScout.deepSearch();
 ```
 
 ### Express.js API
+
 ```javascript
 app.post('/api/discover-feeds', async (req, res) => {
-  const { url } = req.body;
-  
-  try {
-    const feedScout = new FeedSeeker(url, { timeout: 10 });
-    const feeds = await feedScout.metaLinks();
-    
-    res.json({
-      success: true,
-      feedsFound: feeds.length,
-      feeds: feeds.map(f => ({
-        url: f.url,
-        title: f.feedTitle || f.title,
-        type: f.type
-      }))
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+	const { url } = req.body;
+
+	try {
+		const feedScout = new FeedSeeker(url, { timeout: 10 });
+		const feeds = await feedScout.metaLinks();
+
+		res.json({
+			success: true,
+			feedsFound: feeds.length,
+			feeds: feeds.map((f) => ({
+				url: f.url,
+				title: f.feedTitle || f.title,
+				type: f.type
+			}))
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
 });
 ```
 
@@ -111,14 +118,14 @@ app.post('/api/discover-feeds', async (req, res) => {
 
 ```javascript
 const options = {
-  timeout: 15,              // Request timeout in seconds
-  maxFeeds: 10,            // Maximum feeds to discover
-  deepsearch: true,        // Enable website crawling
-  depth: 4,                // Crawling depth
-  maxLinks: 2000,          // Maximum links to process
-  checkForeignFeeds: true, // Check external domains
-  keepQueryParams: true,   // Preserve URL parameters
-  all: false              // Find all feeds (no early termination)
+	timeout: 15, // Request timeout in seconds
+	maxFeeds: 10, // Maximum feeds to discover
+	deepsearch: true, // Enable website crawling
+	depth: 4, // Crawling depth
+	maxLinks: 2000, // Maximum links to process
+	checkForeignFeeds: true, // Check external domains
+	keepQueryParams: true, // Preserve URL parameters
+	all: false // Find all feeds (no early termination)
 };
 
 const feedScout = new FeedSeeker('https://example.com', options);
@@ -130,24 +137,24 @@ const feedScout = new FeedSeeker('https://example.com', options);
 const feedScout = new FeedSeeker('https://news-site.com');
 
 feedScout.on('start', (data) => {
-  console.log(`🚀 Starting ${data.niceName}`);
+	console.log(`🚀 Starting ${data.niceName}`);
 });
 
 feedScout.on('log', (data) => {
-  if (data.foundFeedsCount) {
-    console.log(`✅ Found ${data.foundFeedsCount} feeds so far`);
-  }
+	if (data.foundFeedsCount) {
+		console.log(`✅ Found ${data.foundFeedsCount} feeds so far`);
+	}
 });
 
 feedScout.on('error', (data) => {
-  console.warn(`⚠️ ${data.error}`);
-  if (data.explanation) {
-    console.log(`💡 ${data.explanation}`);
-  }
+	console.warn(`⚠️ ${data.error}`);
+	if (data.explanation) {
+		console.log(`💡 ${data.explanation}`);
+	}
 });
 
 feedScout.on('end', (data) => {
-  console.log(`🎉 Discovery complete: ${data.feeds.length} feeds found`);
+	console.log(`🎉 Discovery complete: ${data.feeds.length} feeds found`);
 });
 
 const feeds = await feedScout.blindSearch();
@@ -156,24 +163,28 @@ const feeds = await feedScout.blindSearch();
 ## 🌟 Key Features
 
 ### **Smart Feed Detection**
+
 - Validates feed content to prevent false positives
 - Handles RSS, Atom, and JSON Feed formats
 - Filters out oEmbed and non-feed responses
 - Extracts feed titles and metadata
 
 ### **Robust Error Handling**
+
 - Detailed error messages with explanations
 - Graceful handling of network timeouts
 - Circuit breaker pattern for error resilience
 - Helpful suggestions for common issues
 
 ### **Security & Performance**
+
 - Domain whitelist for external feed checking
 - Configurable concurrency limits
 - Memory-efficient processing
 - Respectful request patterns
 
 ### **Comprehensive Endpoint Coverage**
+
 - 320+ common feed endpoint patterns
 - Platform-specific paths (WordPress, Ghost, etc.)
 - Multi-language support (en/feed, es/feed, etc.)
@@ -208,15 +219,19 @@ feed-seeker --all --timeout 15 https://complex-site.com
 ## 🏆 Why Feed Seeker Stands Out
 
 ### **Comprehensive Coverage**
+
 Most feed discovery tools only check obvious locations. Feed Seeker uses four different strategies and tests hundreds of potential endpoints, finding feeds that others miss.
 
 ### **Production Ready**
+
 Built with real-world challenges in mind - handles timeouts, errors, malformed content, and anti-bot protection gracefully.
 
 ### **Developer Experience**
+
 Event-driven API provides real-time feedback, detailed error messages include explanations and suggestions, and comprehensive documentation gets you started quickly.
 
 ### **Battle Tested**
+
 Includes 142+ comprehensive tests covering edge cases, error conditions, and integration scenarios.
 
 ## 📚 Documentation

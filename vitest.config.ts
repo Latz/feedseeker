@@ -8,7 +8,7 @@ export default defineConfig({
 			reporter: ['lcov', 'text'],
 			reportsDirectory: 'coverage',
 			include: ['feed-seeker.ts', 'modules/**/*.ts'],
-			exclude: ['modules/banner.ts'],
-		},
-	},
+			exclude: ['modules/banner.ts']
+		}
+	}
 });

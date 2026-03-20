@@ -253,7 +253,7 @@ describe('blindsearch internal functions', () => {
 
 // Mock checkFeed to avoid real network requests
 vi.mock('../modules/checkFeed.ts', () => ({
-	default: vi.fn(),
+	default: vi.fn()
 }));
 import checkFeed from '../modules/checkFeed.ts';
 
@@ -286,7 +286,7 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		await blindSearch(instance);
-		const startEvent = instance._events.find(e => e.event === 'start');
+		const startEvent = instance._events.find((e) => e.event === 'start');
 		expect(startEvent).toBeDefined();
 		expect(startEvent.data.module).toBe('blindsearch');
 		expect(startEvent.data.endpointUrls).toBeGreaterThan(0);
@@ -297,7 +297,7 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
-		const endEvent = instance._events.find(e => e.event === 'end');
+		const endEvent = instance._events.find((e) => e.event === 'end');
 		expect(endEvent).toBeDefined();
 		expect(endEvent.data.module).toBe('blindsearch');
 		expect(endEvent.data.feeds).toEqual(result);
@@ -308,7 +308,7 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		await blindSearch(instance);
-		const logEvents = instance._events.filter(e => e.event === 'log');
+		const logEvents = instance._events.filter((e) => e.event === 'log');
 		expect(logEvents.length).toBeGreaterThan(0);
 	});
 
@@ -320,9 +320,9 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
-		expect(result.some(f => f.url === 'https://example.com/feed')).toBe(true);
-		expect(result.find(f => f.url === 'https://example.com/feed').type).toBe('rss');
-		expect(result.find(f => f.url === 'https://example.com/feed').feedTitle).toBe('My Blog');
+		expect(result.some((f) => f.url === 'https://example.com/feed')).toBe(true);
+		expect(result.find((f) => f.url === 'https://example.com/feed').type).toBe('rss');
+		expect(result.find((f) => f.url === 'https://example.com/feed').feedTitle).toBe('My Blog');
 	});
 
 	it('title on returned feed is null (blind search has no link element)', async () => {
@@ -333,7 +333,7 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
-		const found = result.find(f => f.url === 'https://example.com/rss');
+		const found = result.find((f) => f.url === 'https://example.com/rss');
 		expect(found).toBeDefined();
 		expect(found.title).toBeNull();
 	});
@@ -350,8 +350,8 @@ describe('blindSearch() module', () => {
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: false });
 		const result = await blindSearch(instance);
 		// Should have found at least RSS + Atom and stopped early
-		expect(result.some(f => f.type === 'rss')).toBe(true);
-		expect(result.some(f => f.type === 'atom')).toBe(true);
+		expect(result.some((f) => f.type === 'rss')).toBe(true);
+		expect(result.some((f) => f.type === 'atom')).toBe(true);
 	});
 
 	it('emits log when maxFeeds limit is reached', async () => {
@@ -360,11 +360,14 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		// maxFeeds=1, concurrency=1 to ensure the limit check fires between batches
 		const instance = new MockInstance('https://example.com', {
-			searchMode: 'fast', maxFeeds: 1, all: true, concurrency: 1
+			searchMode: 'fast',
+			maxFeeds: 1,
+			all: true,
+			concurrency: 1
 		});
 		await blindSearch(instance);
 		const limitLog = instance._events.find(
-			e => e.event === 'log' && e.data?.message?.includes('maximum feeds limit')
+			(e) => e.event === 'log' && e.data?.message?.includes('maximum feeds limit')
 		);
 		expect(limitLog).toBeDefined();
 	});
@@ -374,25 +377,31 @@ describe('blindSearch() module', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: true });
 		const result = await blindSearch(instance);
-		const urls = result.map(f => f.url);
+		const urls = result.map((f) => f.url);
 		expect(new Set(urls).size).toBe(urls.length);
 	});
 
 	it('handles checkFeed errors gracefully (no emit when showErrors is false)', async () => {
 		checkFeed.mockRejectedValue(new Error('Network error'));
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
-		const instance = new MockInstance('https://example.com', { searchMode: 'fast', showErrors: false });
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			showErrors: false
+		});
 		const result = await blindSearch(instance);
 		expect(result).toEqual([]);
-		expect(instance._events.filter(e => e.event === 'error')).toHaveLength(0);
+		expect(instance._events.filter((e) => e.event === 'error')).toHaveLength(0);
 	});
 
 	it('emits error events when checkFeed throws and showErrors is true', async () => {
 		checkFeed.mockRejectedValue(new Error('Connection refused'));
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
-		const instance = new MockInstance('https://example.com', { searchMode: 'fast', showErrors: true });
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			showErrors: true
+		});
 		await blindSearch(instance);
-		const errorEvents = instance._events.filter(e => e.event === 'error');
+		const errorEvents = instance._events.filter((e) => e.event === 'error');
 		expect(errorEvents.length).toBeGreaterThan(0);
 		expect(errorEvents[0].data.module).toBe('blindsearch');
 	});
@@ -421,16 +430,18 @@ describe('blindsearch module — endpoint getters', () => {
 		let standardCount = 0;
 
 		const fastInstance = new MockInstance('https://example.com', { searchMode: 'fast' });
-		const a1 = new AbortController(); a1.abort();
+		const a1 = new AbortController();
+		a1.abort();
 		fastInstance._events = [];
 		await blindSearch(fastInstance, a1.signal).catch(() => {});
-		const fastStart = fastInstance._events.find(e => e.event === 'start');
+		const fastStart = fastInstance._events.find((e) => e.event === 'start');
 		fastCount = fastStart?.data?.endpointUrls ?? 0;
 
 		const standardInstance = new MockInstance('https://example.com', { searchMode: 'standard' });
-		const a2 = new AbortController(); a2.abort();
+		const a2 = new AbortController();
+		a2.abort();
 		await blindSearch(standardInstance, a2.signal).catch(() => {});
-		const standardStart = standardInstance._events.find(e => e.event === 'start');
+		const standardStart = standardInstance._events.find((e) => e.event === 'start');
 		standardCount = standardStart?.data?.endpointUrls ?? 0;
 
 		expect(fastCount).toBeGreaterThan(0);
@@ -445,15 +456,19 @@ describe('blindsearch module — endpoint getters', () => {
 		let exhaustiveCount = 0;
 
 		const standardInstance = new MockInstance('https://example.com', { searchMode: 'standard' });
-		const a1 = new AbortController(); a1.abort();
+		const a1 = new AbortController();
+		a1.abort();
 		await blindSearch(standardInstance, a1.signal).catch(() => {});
-		const standardStart = standardInstance._events.find(e => e.event === 'start');
+		const standardStart = standardInstance._events.find((e) => e.event === 'start');
 		standardCount = standardStart?.data?.endpointUrls ?? 0;
 
-		const exhaustiveInstance = new MockInstance('https://example.com', { searchMode: 'exhaustive' });
-		const a2 = new AbortController(); a2.abort();
+		const exhaustiveInstance = new MockInstance('https://example.com', {
+			searchMode: 'exhaustive'
+		});
+		const a2 = new AbortController();
+		a2.abort();
 		await blindSearch(exhaustiveInstance, a2.signal).catch(() => {});
-		const exhaustiveStart = exhaustiveInstance._events.find(e => e.event === 'start');
+		const exhaustiveStart = exhaustiveInstance._events.find((e) => e.event === 'start');
 		exhaustiveCount = exhaustiveStart?.data?.endpointUrls ?? 0;
 
 		expect(exhaustiveCount).toBeGreaterThan(standardCount);
@@ -469,10 +484,10 @@ describe('blindsearch module — endpoint getters', () => {
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 		const instance = new MockInstance('https://example.com', {
 			searchMode: 'fast',
-			requestDelay: -1, // invalid → triggers console.warn in validateRequestDelay
+			requestDelay: -1 // invalid → triggers console.warn in validateRequestDelay
 		});
 		await blindSearch(instance);
-		const delayWarnCount = warnSpy.mock.calls.filter(args =>
+		const delayWarnCount = warnSpy.mock.calls.filter((args) =>
 			args[0]?.includes('Invalid request delay')
 		).length;
 		warnSpy.mockRestore();

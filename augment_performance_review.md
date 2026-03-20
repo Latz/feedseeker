@@ -76,7 +76,7 @@ while (shouldContinueSearch(i, endpointUrls.length, rssFound, atomFound, shouldC
 
 ```typescript
 if (rssFound && atomFound && !shouldCheckAll) {
-  return feeds; // Stop immediately
+	return feeds; // Stop immediately
 }
 ```
 
@@ -123,7 +123,7 @@ if (rssFound && atomFound && !shouldCheckAll) {
    ```typescript
    // modules/blindsearch.ts
    const COMPREHENSIVE_ENDPOINTS: string[] = [
-     /* 350+ items */
+   	/* 350+ items */
    ];
    ```
    **Impact:** ~15KB loaded on every import
@@ -181,7 +181,7 @@ const timeoutId = setTimeout(() => controller.abort(), timeout);
 ```typescript
 const requestDelay = validateRequestDelay(instance.options?.requestDelay);
 if (requestDelay > 0) {
-  await new Promise((resolve) => setTimeout(resolve, requestDelay));
+	await new Promise((resolve) => setTimeout(resolve, requestDelay));
 }
 ```
 
@@ -230,10 +230,10 @@ const batchResults = await Promise.allSettled(
 
 ```typescript
 const defaultHeaders = {
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-  "Accept-Language": "en-US,en;q=0.5",
-  "Accept-Encoding": "gzip, deflate, br",
+	'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+	Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+	'Accept-Language': 'en-US,en;q=0.5',
+	'Accept-Encoding': 'gzip, deflate, br'
 };
 ```
 
@@ -339,7 +339,7 @@ this.document = document;
    ```typescript
    const MAX_HTML_SIZE = 5 * 1024 * 1024; // 5MB
    if (content.length > MAX_HTML_SIZE) {
-     content = content.substring(0, MAX_HTML_SIZE);
+   	content = content.substring(0, MAX_HTML_SIZE);
    }
    ```
 
@@ -356,7 +356,7 @@ this.document = document;
 3. **Consider Worker Threads for Large Documents:**
    ```typescript
    if (content.length > 1024 * 1024) {
-     // Use worker thread for parsing
+   	// Use worker thread for parsing
    }
    ```
 
@@ -413,14 +413,14 @@ this.queue = queue(this.crawlPage.bind(this), this.concurrency);
 
 // Error handling
 this.queue.error((err: Error) => {
-  this.emit("error", { module: "deepSearch", error: err });
-  this.incrementError();
+	this.emit('error', { module: 'deepSearch', error: err });
+	this.incrementError();
 });
 
 // Drain handling
 crawler.queue.drain(() => {
-  crawler.emit("end", { module: "deepSearch", feeds: crawler.feeds });
-  resolve();
+	crawler.emit('end', { module: 'deepSearch', feeds: crawler.feeds });
+	resolve();
 });
 ```
 
@@ -455,14 +455,14 @@ crawler.queue.drain(() => {
 ```typescript
 // modules/blindsearch.ts:722
 while (shouldContinueSearch(i, endpointUrls.length, rssFound, atomFound, shouldCheckAll)) {
-  const batchSize = Math.min(concurrency, endpointUrls.length - i);
-  const batch = endpointUrls.slice(i, i + batchSize);
+	const batchSize = Math.min(concurrency, endpointUrls.length - i);
+	const batch = endpointUrls.slice(i, i + batchSize);
 
-  const batchResults = await Promise.allSettled(
-    batch.map((url) => processSingleFeedUrl(url, instance, foundUrls, feeds, rssFound, atomFound)),
-  );
+	const batchResults = await Promise.allSettled(
+		batch.map((url) => processSingleFeedUrl(url, instance, foundUrls, feeds, rssFound, atomFound))
+	);
 
-  i += batchSize;
+	i += batchSize;
 }
 ```
 
@@ -501,12 +501,12 @@ while (shouldContinueSearch(i, endpointUrls.length, rssFound, atomFound, shouldC
 // modules/anchors.ts:265
 const concurrency = instance.options?.concurrency ?? 3;
 for (let i = 0; i < filteredAnchors.length; i += concurrency) {
-  const batch = filteredAnchors.slice(i, i + concurrency);
-  await Promise.allSettled(
-    batch.map(async (anchor) => {
-      await processAnchor(anchor, context);
-    }),
-  );
+	const batch = filteredAnchors.slice(i, i + concurrency);
+	await Promise.allSettled(
+		batch.map(async (anchor) => {
+			await processAnchor(anchor, context);
+		})
+	);
 }
 ```
 
@@ -564,8 +564,8 @@ const feedMap = new Map<string, Feed>();
 
 ```typescript
 if (maxFeeds > 0 && feeds.length >= maxFeeds) {
-  await handleMaxFeedsReached(instance, feeds, maxFeeds);
-  break;
+	await handleMaxFeedsReached(instance, feeds, maxFeeds);
+	break;
 }
 ```
 
@@ -645,11 +645,11 @@ this.visitedUrls = new Set<string>();
 const MAX_VISITED_URLS = 10000;
 
 if (this.visitedUrls.size >= MAX_VISITED_URLS) {
-  this.queue.kill();
-  this.emit("log", {
-    module: "deepSearch",
-    message: `Stopped: visited ${MAX_VISITED_URLS} URLs (limit reached)`,
-  });
+	this.queue.kill();
+	this.emit('log', {
+		module: 'deepSearch',
+		message: `Stopped: visited ${MAX_VISITED_URLS} URLs (limit reached)`
+	});
 }
 ```
 
@@ -676,18 +676,18 @@ this.document = document; // Kept in memory
 
 ```typescript
 class FeedSeeker {
-  private clearDocument(): void {
-    this.document = null;
-    // Hint to GC that memory can be freed
-    if (global.gc) global.gc();
-  }
+	private clearDocument(): void {
+		this.document = null;
+		// Hint to GC that memory can be freed
+		if (global.gc) global.gc();
+	}
 
-  async metaLinks(): Promise<Feed[]> {
-    await this.initialize();
-    const feeds = await metaLinks(this);
-    this.clearDocument(); // Free memory after use
-    return feeds;
-  }
+	async metaLinks(): Promise<Feed[]> {
+		await this.initialize();
+		const feeds = await metaLinks(this);
+		this.clearDocument(); // Free memory after use
+		return feeds;
+	}
 }
 ```
 
@@ -718,24 +718,24 @@ class FeedSeeker {
 
 ```javascript
 // benchmark/feed-detection.bench.js
-import { bench, describe } from "vitest";
-import FeedSeeker from "../feed-seeker.ts";
+import { bench, describe } from 'vitest';
+import FeedSeeker from '../feed-seeker.ts';
 
-describe("Feed Detection Performance", () => {
-  bench("metaLinks - typical blog", async () => {
-    const seeker = new FeedSeeker("https://example-blog.com");
-    await seeker.metaLinks();
-  });
+describe('Feed Detection Performance', () => {
+	bench('metaLinks - typical blog', async () => {
+		const seeker = new FeedSeeker('https://example-blog.com');
+		await seeker.metaLinks();
+	});
 
-  bench("blindSearch - standard mode", async () => {
-    const seeker = new FeedSeeker("https://example.com");
-    await seeker.blindSearch();
-  });
+	bench('blindSearch - standard mode', async () => {
+		const seeker = new FeedSeeker('https://example.com');
+		await seeker.blindSearch();
+	});
 
-  bench("deepSearch - depth 2", async () => {
-    const seeker = new FeedSeeker("https://example.com");
-    await seeker.deepSearch({ maxDepth: 2 });
-  });
+	bench('deepSearch - depth 2', async () => {
+		const seeker = new FeedSeeker('https://example.com');
+		await seeker.deepSearch({ maxDepth: 2 });
+	});
 });
 ```
 
@@ -749,13 +749,13 @@ describe("Feed Detection Performance", () => {
 
 ```javascript
 // benchmark/memory-usage.bench.js
-describe("Memory Usage", () => {
-  bench("Memory footprint - single instance", () => {
-    const before = process.memoryUsage().heapUsed;
-    const seeker = new FeedSeeker("https://example.com");
-    const after = process.memoryUsage().heapUsed;
-    console.log(`Memory used: ${(after - before) / 1024 / 1024}MB`);
-  });
+describe('Memory Usage', () => {
+	bench('Memory footprint - single instance', () => {
+		const before = process.memoryUsage().heapUsed;
+		const seeker = new FeedSeeker('https://example.com');
+		const after = process.memoryUsage().heapUsed;
+		console.log(`Memory used: ${(after - before) / 1024 / 1024}MB`);
+	});
 });
 ```
 
@@ -769,13 +769,13 @@ describe("Memory Usage", () => {
 #### 3. Concurrency Comparison
 
 ```javascript
-describe("Concurrency Performance", () => {
-  [1, 3, 5, 10].forEach((concurrency) => {
-    bench(`blindSearch - concurrency ${concurrency}`, async () => {
-      const seeker = new FeedSeeker("https://example.com", { concurrency });
-      await seeker.blindSearch();
-    });
-  });
+describe('Concurrency Performance', () => {
+	[1, 3, 5, 10].forEach((concurrency) => {
+		bench(`blindSearch - concurrency ${concurrency}`, async () => {
+			const seeker = new FeedSeeker('https://example.com', { concurrency });
+			await seeker.blindSearch();
+		});
+	});
 });
 ```
 
@@ -803,11 +803,11 @@ describe("Concurrency Performance", () => {
 const MAX_VISITED_URLS = 10000;
 
 if (this.visitedUrls.size >= MAX_VISITED_URLS) {
-  this.queue.kill();
-  this.emit("log", {
-    module: "deepSearch",
-    message: `Stopped: visited ${MAX_VISITED_URLS} URLs`,
-  });
+	this.queue.kill();
+	this.emit('log', {
+		module: 'deepSearch',
+		message: `Stopped: visited ${MAX_VISITED_URLS} URLs`
+	});
 }
 ```
 
@@ -847,9 +847,9 @@ async metaLinks(): Promise<Feed[]> {
 ```typescript
 // feed-seeker.ts
 this.options = {
-  timeout: 5,
-  maxFeeds: 100, // Add default limit
-  ...options,
+	timeout: 5,
+	maxFeeds: 100, // Add default limit
+	...options
 };
 ```
 
@@ -866,12 +866,12 @@ this.options = {
 let COMPREHENSIVE_ENDPOINTS: string[] | null = null;
 
 function getComprehensiveEndpoints(): string[] {
-  if (!COMPREHENSIVE_ENDPOINTS) {
-    COMPREHENSIVE_ENDPOINTS = [
-      /* load on demand */
-    ];
-  }
-  return COMPREHENSIVE_ENDPOINTS;
+	if (!COMPREHENSIVE_ENDPOINTS) {
+		COMPREHENSIVE_ENDPOINTS = [
+			/* load on demand */
+		];
+	}
+	return COMPREHENSIVE_ENDPOINTS;
 }
 ```
 
@@ -884,11 +884,11 @@ function getComprehensiveEndpoints(): string[] {
 ```typescript
 const MAX_HTML_SIZE = 5 * 1024 * 1024; // 5MB
 if (content.length > MAX_HTML_SIZE) {
-  content = content.substring(0, MAX_HTML_SIZE);
-  this.emit("log", {
-    module: "initialize",
-    message: `HTML truncated to ${MAX_HTML_SIZE} bytes`,
-  });
+	content = content.substring(0, MAX_HTML_SIZE);
+	this.emit('log', {
+		module: 'initialize',
+		message: `HTML truncated to ${MAX_HTML_SIZE} bytes`
+	});
 }
 ```
 
@@ -915,10 +915,10 @@ await queue.drain();
 
 ```typescript
 if (content.length > 1024 * 1024) {
-  // Parse in worker thread
-  const { Worker } = await import("worker_threads");
-  const worker = new Worker("./parse-worker.js");
-  this.document = await parseInWorker(worker, content);
+	// Parse in worker thread
+	const { Worker } = await import('worker_threads');
+	const worker = new Worker('./parse-worker.js');
+	this.document = await parseInWorker(worker, content);
 }
 ```
 
@@ -930,7 +930,7 @@ if (content.length > 1024 * 1024) {
 
 ```typescript
 // Use streaming parser for large documents
-import { SAXParser } from "parse5-sax-parser";
+import { SAXParser } from 'parse5-sax-parser';
 const parser = new SAXParser();
 // Process HTML as it arrives
 ```
@@ -942,11 +942,11 @@ const parser = new SAXParser();
 **Estimated Improvement:** 10-20% faster for same-domain requests
 
 ```typescript
-import { Agent } from "https";
+import { Agent } from 'https';
 const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 2,
+	keepAlive: true,
+	maxSockets: 10,
+	maxFreeSockets: 2
 });
 ```
 
@@ -958,19 +958,19 @@ const agent = new Agent({
 
 ```javascript
 // tests/performance/unit.bench.js
-import { bench, describe } from "vitest";
+import { bench, describe } from 'vitest';
 
-describe("Regex Performance", () => {
-  const testContent = '<rss version="2.0">...</rss>'.repeat(100);
+describe('Regex Performance', () => {
+	const testContent = '<rss version="2.0">...</rss>'.repeat(100);
 
-  bench("Pre-compiled regex", () => {
-    const RSS_REGEX = /<rss[^>]*>/i;
-    testContent.match(RSS_REGEX);
-  });
+	bench('Pre-compiled regex', () => {
+		const RSS_REGEX = /<rss[^>]*>/i;
+		testContent.match(RSS_REGEX);
+	});
 
-  bench("Inline regex (anti-pattern)", () => {
-    testContent.match(/<rss[^>]*>/i);
-  });
+	bench('Inline regex (anti-pattern)', () => {
+		testContent.match(/<rss[^>]*>/i);
+	});
 });
 ```
 
@@ -978,13 +978,13 @@ describe("Regex Performance", () => {
 
 ```javascript
 // tests/performance/integration.bench.js
-describe("End-to-End Performance", () => {
-  bench("Full discovery workflow", async () => {
-    const seeker = new FeedSeeker("https://example.com");
-    await seeker.metaLinks();
-    await seeker.checkAllAnchors();
-    await seeker.blindSearch();
-  });
+describe('End-to-End Performance', () => {
+	bench('Full discovery workflow', async () => {
+		const seeker = new FeedSeeker('https://example.com');
+		await seeker.metaLinks();
+		await seeker.checkAllAnchors();
+		await seeker.blindSearch();
+	});
 });
 ```
 
@@ -992,11 +992,11 @@ describe("End-to-End Performance", () => {
 
 ```javascript
 // tests/performance/load.bench.js
-describe("Load Testing", () => {
-  bench("100 concurrent instances", async () => {
-    const seekers = Array.from({ length: 100 }, () => new FeedSeeker("https://example.com"));
-    await Promise.all(seekers.map((s) => s.metaLinks()));
-  });
+describe('Load Testing', () => {
+	bench('100 concurrent instances', async () => {
+		const seekers = Array.from({ length: 100 }, () => new FeedSeeker('https://example.com'));
+		await Promise.all(seekers.map((s) => s.metaLinks()));
+	});
 });
 ```
 
@@ -1032,44 +1032,44 @@ describe("Load Testing", () => {
 
 ```javascript
 class PerformanceMonitor {
-  constructor(seeker) {
-    this.seeker = seeker;
-    this.metrics = {
-      startTime: Date.now(),
-      endTime: null,
-      peakMemory: 0,
-      requestCount: 0,
-      feedsFound: 0,
-    };
+	constructor(seeker) {
+		this.seeker = seeker;
+		this.metrics = {
+			startTime: Date.now(),
+			endTime: null,
+			peakMemory: 0,
+			requestCount: 0,
+			feedsFound: 0
+		};
 
-    this.seeker.on("log", (data) => {
-      if (data.totalCount) this.metrics.requestCount = data.totalCount;
-    });
+		this.seeker.on('log', (data) => {
+			if (data.totalCount) this.metrics.requestCount = data.totalCount;
+		});
 
-    this.seeker.on("end", (data) => {
-      this.metrics.endTime = Date.now();
-      this.metrics.feedsFound = data.feeds.length;
-      this.report();
-    });
+		this.seeker.on('end', (data) => {
+			this.metrics.endTime = Date.now();
+			this.metrics.feedsFound = data.feeds.length;
+			this.report();
+		});
 
-    // Monitor memory every second
-    this.memoryInterval = setInterval(() => {
-      const usage = process.memoryUsage().heapUsed;
-      this.metrics.peakMemory = Math.max(this.metrics.peakMemory, usage);
-    }, 1000);
-  }
+		// Monitor memory every second
+		this.memoryInterval = setInterval(() => {
+			const usage = process.memoryUsage().heapUsed;
+			this.metrics.peakMemory = Math.max(this.metrics.peakMemory, usage);
+		}, 1000);
+	}
 
-  report() {
-    clearInterval(this.memoryInterval);
-    const duration = this.metrics.endTime - this.metrics.startTime;
-    console.log({
-      duration: `${duration}ms`,
-      peakMemory: `${(this.metrics.peakMemory / 1024 / 1024).toFixed(2)}MB`,
-      requestCount: this.metrics.requestCount,
-      feedsFound: this.metrics.feedsFound,
-      efficiency: `${(this.metrics.requestCount / this.metrics.feedsFound).toFixed(2)} requests/feed`,
-    });
-  }
+	report() {
+		clearInterval(this.memoryInterval);
+		const duration = this.metrics.endTime - this.metrics.startTime;
+		console.log({
+			duration: `${duration}ms`,
+			peakMemory: `${(this.metrics.peakMemory / 1024 / 1024).toFixed(2)}MB`,
+			requestCount: this.metrics.requestCount,
+			feedsFound: this.metrics.feedsFound,
+			efficiency: `${(this.metrics.requestCount / this.metrics.feedsFound).toFixed(2)} requests/feed`
+		});
+	}
 }
 ```
 

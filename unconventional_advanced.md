@@ -13,6 +13,7 @@ This document explores cutting-edge, unconventional, and deeply technical method
 **Why It Works:** CDNs often cache feed files separately and may expose them through cache APIs or edge locations.
 
 **Techniques:**
+
 ```bash
 # Cloudflare cache check
 curl -sI "https://example.com" | grep -i "cf-cache"
@@ -31,6 +32,7 @@ curl -s "https://api.cloudflare.com/client/v4/zones/ZONE_ID/cache/purge"
 **Why It Works:** Some servers push feed resources proactively to clients.
 
 **Technique:**
+
 ```bash
 # Capture HTTP/2 push promises
 curl --http2 -sI https://example.com -v 2>&1 | grep -i "push\|link"
@@ -41,14 +43,16 @@ curl --http2 -sI https://example.com -v 2>&1 | grep -i "push\|link"
 **Why It Works:** Sites often hint at resources they expect users to access next.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -i "preconnect\|prefetch\|prerender"
 ```
 
 **Look for:**
+
 ```html
-<link rel="preconnect" href="https://feeds.example.com">
-<link rel="prefetch" href="/rss/latest.xml">
+<link rel="preconnect" href="https://feeds.example.com" />
+<link rel="prefetch" href="/rss/latest.xml" />
 ```
 
 ### 1.4 Service Worker Inspection
@@ -56,6 +60,7 @@ curl -s https://example.com | grep -i "preconnect\|prefetch\|prerender"
 **Why It Works:** Service workers cache resources and may reveal feed URLs in their caching strategies.
 
 **Technique:**
+
 ```bash
 # Find service worker file
 curl -s https://example.com | grep -oP 'navigator\.serviceWorker\.register\(["'\'']([^"'\'']+)["'\'']' | head -1
@@ -69,12 +74,14 @@ curl -s https://example.com/sw.js | grep -i "feed\|rss\|atom\|cache"
 **Why It Works:** Some sites publish feed metadata in DNS records.
 
 **Technique:**
+
 ```bash
 dig example.com TXT
 nslookup -type=TXT example.com
 ```
 
 **Look for:**
+
 ```
 "feed-url=https://example.com/feed.xml"
 ```
@@ -84,6 +91,7 @@ nslookup -type=TXT example.com
 **Why It Works:** Service Discovery protocols sometimes expose feed services on local networks.
 
 **Technique:**
+
 ```bash
 # Bonjour/Avahi discovery
 avahi-browse -art | grep -i feed
@@ -97,6 +105,7 @@ dig _rss._tcp.example.com PTR
 **Why It Works:** Some sites host different content on IPv6 vs IPv4.
 
 **Technique:**
+
 ```bash
 # Get AAAA record
 dig example.com AAAA
@@ -114,6 +123,7 @@ curl -6 -sI "https://example.com/feed.xml"
 **Why It Works:** JavaScript source maps can reveal original code with feed URLs stripped from production builds.
 
 **Technique:**
+
 ```bash
 # Find source map files
 curl -s https://example.com | grep -oP 'sourceMappingURL=[^ ]+'
@@ -127,6 +137,7 @@ curl -s https://example.com/app.js.map | jq '.sourcesContent[]' | grep -i feed
 **Why It Works:** Some sites embed feed URLs in Wasm modules for obfuscation.
 
 **Technique:**
+
 ```bash
 # Find Wasm files
 curl -s https://example.com | grep -oP '[^"'\''>]+\.wasm'
@@ -140,6 +151,7 @@ wasm2obj module.wasm | strings | grep -i "feed\|rss\|atom"
 **Why It Works:** Some sites hide feed URLs in CSS `content:` properties.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com/styles.css | grep -oP 'content:\s*["'\''][^"'\'']*feed[^"'\'']*["'\'']'
 ```
@@ -149,6 +161,7 @@ curl -s https://example.com/styles.css | grep -oP 'content:\s*["'\''][^"'\'']*fe
 **Why It Works:** SVG files can contain clickable links to feeds.
 
 **Technique:**
+
 ```bash
 # Find all SVGs
 curl -s https://example.com | grep -oP '[^"'\''>]+\.svg'
@@ -162,6 +175,7 @@ curl -s https://example.com/logo.svg | grep -i "xlink:href.*feed"
 **Why It Works:** PWA manifests sometimes reference feed endpoints.
 
 **Technique:**
+
 ```bash
 # Find manifest
 curl -s https://example.com | grep -oP 'manifest\.json'
@@ -175,6 +189,7 @@ curl -s https://example.com/manifest.json | jq '.related_applications[].url'
 **Why It Works:** OpenSearch files sometimes include feed URLs for search results.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -i "opensearch"
 curl -s https://example.com/opensearch.xml | grep -i "feed\|rss\|atom"
@@ -185,6 +200,7 @@ curl -s https://example.com/opensearch.xml | grep -i "feed\|rss\|atom"
 **Why It Works:** Developers leave comments with feed URLs; some sites hide feeds in invisible elements.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -oP '<!--[^>]*feed[^>]*-->'
 curl -s https://example.com | grep -oP 'style=["'\'']display:\s*none[^>]*feed'
@@ -195,6 +211,7 @@ curl -s https://example.com | grep -oP 'style=["'\'']display:\s*none[^>]*feed'
 **Why It Works:** Some sites embed feed URLs in base64-encoded data URIs.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -oP 'data:[^,]+;base64,[A-Za-z0-9+/=]+' | \
   while read uri; do
@@ -208,6 +225,7 @@ curl -s https://example.com | grep -oP 'data:[^,]+;base64,[A-Za-z0-9+/=]+' | \
 **Why It Works:** Feed URLs often exist as string literals in JS even if not actively used.
 
 **Technique:**
+
 ```bash
 # Extract all JS files
 curl -s https://example.com | grep -oP 'src=["'\''][^"'\'']*\.js["'\'']'
@@ -221,6 +239,7 @@ curl -s https://example.com/app.js | grep -oP 'https?://[^"'\''<> ]*(?:feed|rss|
 **Why It Works:** ES6 template literals may construct feed URLs dynamically.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com/app.js | grep -oP '`[^`]*\$\{[^}]*\}[^`]*`' | \
   grep -i "feed\|rss\|atom"
@@ -235,6 +254,7 @@ curl -s https://example.com/app.js | grep -oP '`[^`]*\$\{[^}]*\}[^`]*`' | \
 **Why It Works:** Aggregators maintain databases of known feeds.
 
 **Services to Query:**
+
 ```
 # Feedly API
 https://api.feedly.com/v3/search/feeds?q=example.com
@@ -254,6 +274,7 @@ https://api.feedbin.com/v2/feeds.json?q=example.com
 **Why It Works:** Automation platforms index RSS feeds for triggers.
 
 **Technique:**
+
 ```
 https://ifttt.com/search?query=site:example.com+rss
 https://zapier.com/app/search?q=example.com+feed
@@ -264,6 +285,7 @@ https://zapier.com/app/search?q=example.com+feed
 **Why It Works:** Social platforms often auto-discover feeds when links are shared.
 
 **Techniques:**
+
 ```bash
 # Twitter oEmbed (reveals discovered content)
 curl "https://publish.twitter.com/oembed?url=https://example.com"
@@ -280,6 +302,7 @@ curl "https://api.linkedin.com/v2/ogp?url=https://example.com"
 **Why It Works:** Chat platforms fetch feed data for link previews.
 
 **Technique:**
+
 ```bash
 # Slack unfurl endpoint (requires token)
 curl -X POST "https://slack.com/api/chat.unfurl" \
@@ -297,6 +320,7 @@ curl -X POST "https://slack.com/api/chat.unfurl" \
 **Why It Works:** If the site has audio content, it may be in podcast directories.
 
 **Services:**
+
 ```
 https://podcastindex.org/search?q=example.com
 https://listennotes.com/search/?q=example.com
@@ -308,6 +332,7 @@ https://podchaser.com/search?q=example.com
 **Why It Works:** Google Discover uses RSS-like feeds internally.
 
 **Technique:**
+
 ```bash
 # Try Google's internal feed format
 https://www.google.com/search?q=site:example.com&tbm=nws
@@ -318,6 +343,7 @@ https://www.google.com/search?q=site:example.com&tbm=nws
 **Why It Works:** MSN aggregates feeds from publishers.
 
 **Check:**
+
 ```
 https://www.msn.com/en-us/feed/publisher/example
 ```
@@ -327,6 +353,7 @@ https://www.msn.com/en-us/feed/publisher/example
 **Why It Works:** Publishers submit RSS feeds to Apple News.
 
 **Check:**
+
 ```
 https://publisher.apple.com/news
 ```
@@ -336,6 +363,7 @@ https://publisher.apple.com/news
 **Why It Works:** Flipboard curates RSS feeds into magazines.
 
 **Check:**
+
 ```
 https://flipboard.com/search?q=example.com
 ```
@@ -345,6 +373,7 @@ https://flipboard.com/search?q=example.com
 **Why It Works:** Feed directories maintain categorized RSS databases.
 
 **Services:**
+
 ```
 https://blog.feedspot.com/
 https://www.rssmicro.com/search?q=example.com
@@ -360,6 +389,7 @@ https://feedsearch.dev/search?q=example.com
 **Why It Works:** Source code often contains feed URLs not deployed to production.
 
 **Technique:**
+
 ```bash
 # Search GitHub
 https://github.com/search?q=example.com+feed.xml&type=code
@@ -376,6 +406,7 @@ curl -s https://raw.githubusercontent.com/org/repo/main/README.md | grep -i feed
 **Why It Works:** RSS-related packages may indicate feed endpoints.
 
 **Technique:**
+
 ```bash
 # Check package.json
 curl -s https://raw.githubusercontent.com/org/repo/main/package.json | \
@@ -387,6 +418,7 @@ curl -s https://raw.githubusercontent.com/org/repo/main/package.json | \
 **Why It Works:** Docker images may contain feed configuration.
 
 **Technique:**
+
 ```bash
 docker pull example/app
 docker history example/app
@@ -398,6 +430,7 @@ docker inspect example/app | grep -i feed
 **Why It Works:** Build pipelines may reference feed endpoints for testing.
 
 **Check:**
+
 ```bash
 # GitHub Actions
 curl -s https://raw.githubusercontent.com/org/repo/main/.github/workflows/ci.yml | \
@@ -417,6 +450,7 @@ curl -s https://raw.githubusercontent.com/org/repo/main/.travis.yml | \
 **Why It Works:** Some sites accidentally expose feed URLs in environment configs.
 
 **Check:**
+
 ```bash
 # Common env file locations
 curl -s https://example.com/.env
@@ -429,6 +463,7 @@ curl -s https://example.com/api/.env
 **Why It Works:** Build tools create directories that may contain feeds.
 
 **Check:**
+
 ```
 /dist/feed.xml
 /build/rss.xml
@@ -442,6 +477,7 @@ curl -s https://example.com/api/.env
 **Why It Works:** Type definitions may reference feed URL constants.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com/types/index.d.ts | grep -i "feed\|rss\|atom"
 ```
@@ -451,6 +487,7 @@ curl -s https://example.com/types/index.d.ts | grep -i "feed\|rss\|atom"
 **Why It Works:** GraphQL APIs may have feed-related queries.
 
 **Technique:**
+
 ```bash
 curl -X POST https://example.com/graphql \
   -H "Content-Type: application/json" \
@@ -467,6 +504,7 @@ curl -X POST https://example.com/graphql \
 **Why It Works:** GA may track feed link clicks, revealing feed URLs.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -oP 'ga\(["'\'']send["'\''],['\s]*["'\'']event["'\''],['\s]*["'\''][^"'\'']*feed'
 ```
@@ -482,6 +520,7 @@ curl -s https://example.com | grep -oP 'ga\(["'\'']send["'\''],['\s]*["'\'']even
 **Why It Works:** A/B test variants may include/exclude feed links.
 
 **Check:**
+
 ```bash
 curl -s https://example.com | grep -i "optimizely\|vwo\|ab-test"
 ```
@@ -491,6 +530,7 @@ curl -s https://example.com | grep -i "optimizely\|vwo\|ab-test"
 **Why It Works:** Site search may suggest feed-related queries.
 
 **Technique:**
+
 ```bash
 curl "https://example.com/api/search/autocomplete?q=fee"
 curl "https://example.com/search/suggest?q=rss"
@@ -501,6 +541,7 @@ curl "https://example.com/search/suggest?q=rss"
 **Why It Works:** Some sites let users export their data including subscribed feeds.
 
 **Check:**
+
 ```
 https://example.com/settings/export
 https://example.com/account/data
@@ -515,6 +556,7 @@ https://example.com/account/data
 **Why It Works:** Apps use deep links that may point to feeds.
 
 **Technique:**
+
 ```bash
 # Check apple-app-site-association
 curl -s https://example.com/.well-known/apple-app-site-association | \
@@ -530,6 +572,7 @@ curl -s https://example.com/.well-known/assetlinks.json | \
 **Why It Works:** App descriptions may mention RSS features.
 
 **Check:**
+
 ```
 https://apps.apple.com/app/idAPP_ID (search description)
 https://play.google.com/store/apps/details?id=com.example.app
@@ -540,6 +583,7 @@ https://play.google.com/store/apps/details?id=com.example.app
 **Why It Works:** Mobile app binaries contain hardcoded URLs.
 
 **Technique:**
+
 ```bash
 # Download APK
 curl -L "https://play.google.com/store/apps/details?id=com.example" > app.apk
@@ -554,6 +598,7 @@ strings classes.dex | grep -i "feed\|rss\|atom"
 **Why It Works:** JS bundles in mobile apps contain API endpoints.
 
 **Technique:**
+
 ```bash
 # Extract iOS app bundle
 unzip App.ipa
@@ -565,6 +610,7 @@ strings Payload/App.app/main.jsbundle | grep -i feed
 **Why It Works:** Firebase/OneSignal configs may reference feed endpoints.
 
 **Check:**
+
 ```bash
 curl -s https://example.com/firebase-messaging-sw.js | grep -i feed
 ```
@@ -578,6 +624,7 @@ curl -s https://example.com/firebase-messaging-sw.js | grep -i feed
 **Why It Works:** Custom 404 pages sometimes suggest feed alternatives.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com/nonexistent | grep -i "feed\|rss\|atom\|subscribe"
 ```
@@ -587,6 +634,7 @@ curl -s https://example.com/nonexistent | grep -i "feed\|rss\|atom\|subscribe"
 **Why It Works:** Error responses may reveal feed endpoints.
 
 **Technique:**
+
 ```bash
 # Try invalid feed paths and analyze errors
 curl -s https://example.com/invalid-feed.xml | grep -oP 'href=["'\''][^"'\'']*'
@@ -597,6 +645,7 @@ curl -s https://example.com/invalid-feed.xml | grep -oP 'href=["'\''][^"'\'']*'
 **Why It Works:** Rate-limited endpoints may be valid feeds.
 
 **Technique:**
+
 ```bash
 curl -sI https://example.com/feed.xml | grep -i "rate-limit\|x-ratelimit"
 ```
@@ -606,6 +655,7 @@ curl -sI https://example.com/feed.xml | grep -i "rate-limit\|x-ratelimit"
 **Why It Works:** Redirects may lead to feed endpoints.
 
 **Technique:**
+
 ```bash
 curl -sL -I https://example.com/rss 2>&1 | grep -i "location:"
 ```
@@ -615,6 +665,7 @@ curl -sL -I https://example.com/rss 2>&1 | grep -i "location:"
 **Why It Works:** OPTIONS may reveal allowed endpoints including feeds.
 
 **Technique:**
+
 ```bash
 curl -sX OPTIONS https://example.com | grep -i "allow\|accept"
 ```
@@ -624,6 +675,7 @@ curl -sX OPTIONS https://example.com | grep -i "allow\|accept"
 **Why It Works:** CORS headers may reveal feed endpoints accessible from other origins.
 
 **Technique:**
+
 ```bash
 curl -sI -X OPTIONS https://example.com/feed.xml \
   -H "Origin: https://evil.com" | grep -i "access-control"
@@ -634,6 +686,7 @@ curl -sI -X OPTIONS https://example.com/feed.xml \
 **Why It Works:** Partial requests can reveal file types.
 
 **Technique:**
+
 ```bash
 curl -sI https://example.com/feed.xml -H "Range: bytes=0-100"
 ```
@@ -647,6 +700,7 @@ curl -sI https://example.com/feed.xml -H "Range: bytes=0-100"
 **Why It Works:** Sites may have feeds for different language versions.
 
 **Check:**
+
 ```
 https://example.com/es/feed.xml
 https://example.com/fr/rss.xml
@@ -659,6 +713,7 @@ https://example.com/jp/feed
 **Why It Works:** Regional sites may have separate feeds.
 
 **Check:**
+
 ```
 https://example.co.uk/feed.xml
 https://example.de/rss.xml
@@ -671,6 +726,7 @@ https://example.com.au/feed
 **Why It Works:** hreflang tags point to localized versions that may have feeds.
 
 **Technique:**
+
 ```bash
 curl -s https://example.com | grep -oP 'hreflang=["'\''][^"'\'']*["'\'']\s+href=["'\''][^"'\'']*'
 ```
@@ -680,6 +736,7 @@ curl -s https://example.com | grep -oP 'hreflang=["'\''][^"'\'']*["'\'']\s+href=
 **Why It Works:** Internationalized domains may have separate feeds.
 
 **Check:**
+
 ```
 https://xn--example-9ta.com/feed.xml
 ```
@@ -693,6 +750,7 @@ https://xn--example-9ta.com/feed.xml
 **Why It Works:** Some sites have feeds for different time periods.
 
 **Check:**
+
 ```
 https://example.com/feed/2024.xml
 https://example.com/rss/archive/2023.xml
@@ -704,6 +762,7 @@ https://example.com/atom/monthly/2024-03.xml
 **Why It Works:** API versioning may apply to feeds.
 
 **Check:**
+
 ```
 https://api.example.com/v1/feed
 https://api.example.com/v2/rss
@@ -715,6 +774,7 @@ https://api.example.com/v3/atom
 **Why It Works:** Old commits may reference removed feed endpoints.
 
 **Technique:**
+
 ```bash
 # Search GitHub commit history
 https://github.com/org/repo/commits/main?q=feed
@@ -729,6 +789,7 @@ curl -s https://raw.githubusercontent.com/org/repo/COMMIT_HASH/config.json | \
 **Why It Works:** Public data dumps may contain feed URLs.
 
 **Check:**
+
 ```bash
 # Common backup locations (often misconfigured)
 curl -s https://example.com/backup.sql
@@ -744,6 +805,7 @@ curl -s https://example.com/db/dump.sql
 **Why It Works:** Similar sites often use similar feed structures.
 
 **Technique:**
+
 ```
 # If competitor.com has /feed.xml
 # Try example.com/feed.xml
@@ -754,6 +816,7 @@ curl -s https://example.com/db/dump.sql
 **Why It Works:** Industries have common feed conventions.
 
 **Examples:**
+
 - News sites: `/rss/headlines.xml`
 - E-commerce: `/feed/products.xml`
 - Podcasts: `/feed/podcast.xml`
@@ -764,6 +827,7 @@ curl -s https://example.com/db/dump.sql
 **Why It Works:** Same tech stack = same feed patterns.
 
 **Technique:**
+
 ```bash
 # BuiltWith lookup
 curl "https://api.builtwith.com/free1/api.json?KEY=YOUR_KEY&LOOKUP=example.com" | \
@@ -777,6 +841,7 @@ curl "https://api.builtwith.com/free1/api.json?KEY=YOUR_KEY&LOOKUP=example.com" 
 **Why It Works:** Same hosting = similar configurations.
 
 **Check:**
+
 ```bash
 # Find sites on same IP
 curl -s "https://api.hackertarget.com/reverseiplookup/?q=IP_ADDRESS" | \
@@ -790,6 +855,7 @@ curl -s "https://api.hackertarget.com/reverseiplookup/?q=IP_ADDRESS" | \
 **Why It Works:** CT logs reveal subdomains that may host feeds.
 
 **Check:**
+
 ```
 https://crt.sh/?q=example.com
 https://transparencyreport.google.com/https/certificates
@@ -800,6 +866,7 @@ https://transparencyreport.google.com/https/certificates
 **Why It Works:** Old WHOIS records may reference feed URLs in admin contacts.
 
 **Check:**
+
 ```
 https://whois-history.whoisxmlapi.com/
 https://domainbigdata.com/
@@ -814,6 +881,7 @@ https://domainbigdata.com/
 **Why It Works:** ML models can predict likely feed URLs based on domain patterns.
 
 **Approach:**
+
 - Train on known feed URLs
 - Generate probability scores for URL patterns
 - Test high-probability candidates
@@ -823,6 +891,7 @@ https://domainbigdata.com/
 **Why It Works:** NLP can identify feed-related text on pages.
 
 **Approach:**
+
 - Scrape all text from site
 - Use NER to find URL entities
 - Classify as feed/non-feed
@@ -832,6 +901,7 @@ https://domainbigdata.com/
 **Why It Works:** RSS icons may be visible in screenshots but not in HTML.
 
 **Technique:**
+
 ```bash
 # Use Puppeteer to screenshot
 # Run RSS icon detection with OpenCV
@@ -842,6 +912,7 @@ https://domainbigdata.com/
 **Why It Works:** Sites in same cluster often share feed patterns.
 
 **Approach:**
+
 - Cluster by technology, content, design
 - Propagate known feed patterns within clusters
 
@@ -854,6 +925,7 @@ https://domainbigdata.com/
 **Why It Works:** Sites using WebSub register with hub services.
 
 **Check:**
+
 ```
 https://pubsubhubbub.appspot.com/
 https://superfeedr.com/
@@ -868,6 +940,7 @@ https://superfeedr.com/
 **Why It Works:** Fediverse-compatible sites expose ActivityPub feeds.
 
 **Check:**
+
 ```bash
 curl -sI https://example.com/.well-known/webfinger
 curl -s https://example.com/users/admin | grep -i "activitypub"
@@ -878,6 +951,7 @@ curl -s https://example.com/users/admin | grep -i "activitypub"
 **Why It Works:** h-feed, h-entry microformats indicate feed-like content.
 
 **Check:**
+
 ```bash
 curl -s https://example.com | grep -i "h-feed\|h-entry\|h-card"
 ```
@@ -887,6 +961,7 @@ curl -s https://example.com | grep -i "h-feed\|h-entry\|h-card"
 **Why It Works:** Some sites use JSON Feed instead of RSS/Atom.
 
 **Check:**
+
 ```
 https://example.com/feed.json
 https://example.com/jsonfeed
@@ -897,6 +972,7 @@ https://example.com/jsonfeed
 **Why It Works:** Sites with Webmention may have feeds for mentions.
 
 **Check:**
+
 ```bash
 curl -s https://example.com | grep -i "webmention"
 curl -s https://example.com/webmention | grep -i "feed"
@@ -907,6 +983,7 @@ curl -s https://example.com/webmention | grep -i "feed"
 **Why It Works:** IndieWeb sites often have feeds.
 
 **Check:**
+
 ```bash
 curl -s https://example.com | grep -i "indieauth\|micropub"
 ```
@@ -920,6 +997,7 @@ curl -s https://example.com | grep -i "indieauth\|micropub"
 **Why It Works:** May mention alternative content formats including feeds.
 
 **Check:**
+
 ```
 https://example.com/accessibility
 ```
@@ -929,6 +1007,7 @@ https://example.com/accessibility
 **Why It Works:** Print CSS may reference feed URLs for "print this feed" functionality.
 
 **Check:**
+
 ```bash
 curl -s https://example.com/print.css | grep -i feed
 ```
@@ -938,6 +1017,7 @@ curl -s https://example.com/print.css | grep -i feed
 **Why It Works:** AMP pages may have separate feed endpoints.
 
 **Check:**
+
 ```bash
 curl -s https://example.com | grep -i "amphtml"
 curl -s https://example.com/amp/feed.xml
@@ -956,6 +1036,7 @@ curl -s https://example.com/amp/feed.xml
 **Why It Works:** ToS may mention feed usage policies, revealing existence.
 
 **Check:**
+
 ```
 https://example.com/terms
 https://example.com/legal
@@ -966,6 +1047,7 @@ https://example.com/legal
 **Why It Works:** API docs may reference RSS/Atom endpoints.
 
 **Check:**
+
 ```
 https://example.com/api/docs
 https://example.com/developers
@@ -977,6 +1059,7 @@ https://example.com/docs/api
 **Why It Works:** May mention data collection from feed subscribers.
 
 **Check:**
+
 ```
 https://example.com/privacy
 ```
@@ -986,6 +1069,7 @@ https://example.com/privacy
 **Why It Works:** Feed subscriptions may set cookies.
 
 **Check:**
+
 ```
 https://example.com/cookies
 ```
@@ -995,6 +1079,7 @@ https://example.com/cookies
 **Why It Works:** May reference feed content distribution.
 
 **Check:**
+
 ```
 https://example.com/copyright
 https://example.com/dmca
@@ -1009,6 +1094,7 @@ https://example.com/dmca
 **Why It Works:** QR codes may link to feed subscription pages.
 
 **Technique:**
+
 - Screenshot pages with QR codes
 - Decode with zbarimg or online tools
 
@@ -1021,6 +1107,7 @@ https://example.com/dmca
 **Why It Works:** Google My Business, Yelp may list feed URLs.
 
 **Check:**
+
 ```
 https://www.google.com/business/
 https://www.yelp.com/biz/
@@ -1035,6 +1122,7 @@ https://www.yelp.com/biz/
 **Why It Works:** Newsletters may include "View in RSS" links.
 
 **Technique:**
+
 - Subscribe to newsletter
 - Check email headers and body for feed links
 
@@ -1043,6 +1131,7 @@ https://www.yelp.com/biz/
 **Why It Works:** Email templates may reference feed endpoints.
 
 **Check:**
+
 ```bash
 # View email source (Gmail: Show Original)
 # Search for feed URLs
@@ -1053,6 +1142,7 @@ https://www.yelp.com/biz/
 **Why It Works:** Some ESPs archive newsletters with RSS feeds.
 
 **Check:**
+
 ```
 https://us1.campaign-archive.com/home/?u=USER_ID
 https://example.substack.com/feed
@@ -1063,6 +1153,7 @@ https://example.substack.com/feed
 **Why It Works:** Mail servers may reveal feed-related subdomains.
 
 **Technique:**
+
 ```bash
 dig example.com MX
 # Check mail server banners
@@ -1077,6 +1168,7 @@ dig example.com MX
 **Why It Works:** Open source projects may have feed configs.
 
 **Queries:**
+
 ```
 "example.com" + "feed.xml"
 "example.com" + "rss"
@@ -1088,6 +1180,7 @@ dig example.com MX
 **Why It Works:** Shodan indexes HTTP headers and content.
 
 **Query:**
+
 ```
 hostname:example.com http.title:"rss"
 hostname:example.com http.title:"atom"
@@ -1102,6 +1195,7 @@ hostname:example.com http.title:"atom"
 **Why It Works:** Web archive with searchable content.
 
 **Check:**
+
 ```
 https://commoncrawl.org/
 ```
@@ -1111,6 +1205,7 @@ https://commoncrawl.org/
 **Why It Works:** Historical captures may have feed links.
 
 **Check:**
+
 ```
 https://archive.org/advancedsearch.php
 ```
@@ -1120,6 +1215,7 @@ https://archive.org/advancedsearch.php
 **Why It Works:** Developers may paste configs with feed URLs.
 
 **Search:**
+
 ```
 https://pastebin.com/search?query=example.com+feed
 ```
@@ -1137,6 +1233,7 @@ https://pastebin.com/search?query=example.com+feed
 **Why It Works:** Public support forums may have feed-related questions.
 
 **Check:**
+
 ```
 https://support.example.com/search?q=rss
 https://help.example.com/search?q=feed
@@ -1147,6 +1244,7 @@ https://help.example.com/search?q=feed
 **Why It Works:** Users may discuss feed subscriptions.
 
 **Check:**
+
 ```
 https://forum.example.com/search?q=rss
 https://reddit.com/r/example/search?q=feed
@@ -1157,6 +1255,7 @@ https://reddit.com/r/example/search?q=feed
 **Why It Works:** Users may share feed URLs.
 
 **Search:**
+
 ```
 site:example.com rss OR feed OR atom
 from:example_support rss
@@ -1167,6 +1266,7 @@ from:example_support rss
 **Why It Works:** Company updates may link to blog feeds.
 
 **Check:**
+
 ```
 https://www.linkedin.com/company/example
 ```
@@ -1180,6 +1280,7 @@ https://www.linkedin.com/company/example
 **Why It Works:** RSS extensions may have example URLs.
 
 **Check:**
+
 ```
 https://chrome.google.com/webstore/search/rss
 ```
@@ -1205,6 +1306,7 @@ https://chrome.google.com/webstore/search/rss
 **Why It Works:** Sites on IPFS may have different feed endpoints.
 
 **Check:**
+
 ```
 ipfs://example.com/feed.xml
 ```
@@ -1214,6 +1316,7 @@ ipfs://example.com/feed.xml
 **Why It Works:** .onion versions may have separate feeds.
 
 **Check:**
+
 ```
 http://example.onion/feed.xml
 ```
@@ -1223,6 +1326,7 @@ http://example.onion/feed.xml
 **Why It Works:** Some sites have Gemini feeds.
 
 **Check:**
+
 ```
 gemini://example.com/feed.gmi
 ```
@@ -1236,6 +1340,7 @@ gemini://example.com/feed.gmi
 **Why It Works:** Matrix rooms may bridge RSS feeds.
 
 **Check:**
+
 ```
 https://matrix.to/#/#example:matrix.org
 ```
@@ -1245,6 +1350,7 @@ https://matrix.to/#/#example:matrix.org
 **Why It Works:** Some projects store feed URLs in contracts.
 
 **Check:**
+
 ```
 Etherscan contract data for domain-related contracts
 ```

@@ -40,7 +40,9 @@ describe('FeedSeeker CLI', () => {
 		vi.restoreAllMocks();
 	});
 
-	const mockFeeds: Feed[] = [{ url: 'https://example.com/feed.xml', type: 'rss', title: null, feedTitle: null }];
+	const mockFeeds: Feed[] = [
+		{ url: 'https://example.com/feed.xml', type: 'rss', title: null, feedTitle: null }
+	];
 
 	describe('--json flag', () => {
 		it('should output only JSON when --json flag is used', async () => {

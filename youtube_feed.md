@@ -11,26 +11,31 @@ YouTube provides official RSS/Atom feeds for channels, but they're not linked fr
 YouTube supports **three** official feed URL formats:
 
 ### 1. By Channel ID (Recommended)
+
 ```
 https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
 ```
 
 **Example:**
+
 ```
 https://www.youtube.com/feeds/videos.xml?channel_id=UC_x5XG1OV2P6uZZ5FSM9Ttw
 ```
 
 ### 2. By Username (Legacy)
+
 ```
 https://www.youtube.com/feeds/videos.xml?user=USERNAME
 ```
 
 **Example:**
+
 ```
 https://www.youtube.com/feeds/videos.xml?user=YouTube
 ```
 
 ### 3. By Channel URL (Redirect Method)
+
 ```
 https://www.youtube.com/feeds/videos.xml?channel_url=CHANNEL_URL
 ```
@@ -46,16 +51,17 @@ https://www.youtube.com/feeds/videos.xml?channel_url=CHANNEL_URL
 2. **View page source** (`Ctrl+U` or right-click → "View Page Source")
 
 3. **Search for** one of these patterns:
-   - `channel_id=` 
+   - `channel_id=`
    - `UC` followed by 22 alphanumeric characters
    - `<link rel="canonical" href="https://www.youtube.com/channel/CHANNEL_ID">`
 
 4. **Construct the feed URL** using the Channel ID
 
 ### Example:
+
 ```html
 <!-- In page source, find: -->
-<link rel="canonical" href="https://www.youtube.com/channel/UC_x5XG1OV2P6uZZ5FSM9Ttw">
+<link rel="canonical" href="https://www.youtube.com/channel/UC_x5XG1OV2P6uZZ5FSM9Ttw" />
 
 <!-- Feed URL becomes: -->
 https://www.youtube.com/feeds/videos.xml?channel_id=UC_x5XG1OV2P6uZZ5FSM9Ttw
@@ -72,6 +78,7 @@ curl https://www.youtube.com/robots.txt
 ```
 
 Look for:
+
 ```
 Disallow: /feeds/videos.xml
 ```
@@ -88,6 +95,7 @@ For channels with handles (e.g., `@YouTube`):
 2. **Use the channel ID** in the feed URL
 
 Or try the username format directly:
+
 ```
 https://www.youtube.com/feeds/videos.xml?user=YouTube
 ```
@@ -107,12 +115,15 @@ https://www.youtube.com/feeds/videos.xml?user=YouTube
 ## Strategy 5: Third-Party Tools
 
 ### YouTube Data API
+
 ```bash
 curl "https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=USERNAME&key=YOUR_API_KEY"
 ```
 
 ### RSS-Bridge
+
 Services like RSS-Bridge can generate YouTube feeds:
+
 ```
 https://rss-bridge.org/bridge.php?bridge=Youtube&username=CHANNEL_NAME&format=RSS
 ```
@@ -125,8 +136,8 @@ YouTube feeds are **Atom 1.0** format:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" 
-      xmlns:media="http://search.yahoo.com/mrss/" 
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015"
+      xmlns:media="http://search.yahoo.com/mrss/"
       xmlns="http://www.w3.org/2005/Atom">
   <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UC_x5XG1OV2P6uZZ5FSM9Ttw"/>
   <id>yt:channel:_x5XG1OV2P6uZZ5FSM9Ttw</id>
@@ -164,17 +175,18 @@ YouTube feeds are **Atom 1.0** format:
 
 ## Quick Reference
 
-| Method | URL Pattern | Reliability |
-|--------|-------------|-------------|
-| Channel ID | `https://youtube.com/feeds/videos.xml?channel_id=UC...` | ⭐⭐⭐⭐⭐ |
-| Username | `https://youtube.com/feeds/videos.xml?user=NAME` | ⭐⭐⭐ (legacy) |
-| RSS-Bridge | Varies by instance | ⭐⭐⭐⭐ |
+| Method     | URL Pattern                                             | Reliability     |
+| ---------- | ------------------------------------------------------- | --------------- |
+| Channel ID | `https://youtube.com/feeds/videos.xml?channel_id=UC...` | ⭐⭐⭐⭐⭐      |
+| Username   | `https://youtube.com/feeds/videos.xml?user=NAME`        | ⭐⭐⭐ (legacy) |
+| RSS-Bridge | Varies by instance                                      | ⭐⭐⭐⭐        |
 
 ---
 
 ## Common Channel ID Patterns
 
 Channel IDs always start with `UC` followed by 22 characters:
+
 - `UC` + 22 alphanumeric characters (base64-like)
 - Example: `UC_x5XG1OV2P6uZZ5FSM9Ttw`
 
@@ -183,14 +195,17 @@ Channel IDs always start with `UC` followed by 22 characters:
 ## Troubleshooting
 
 ### Feed returns 400 Bad Request
+
 - Channel ID may be incorrect
 - Try extracting from page source again
 
 ### Feed is empty
+
 - Channel may have no public videos
 - Channel may be private or deleted
 
 ### Rate limiting
+
 - YouTube may rate-limit frequent requests
 - Consider caching feed results
 

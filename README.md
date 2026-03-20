@@ -98,35 +98,35 @@ feed-seeker example.com --insecure
 ### Basic Example
 
 ```javascript
-import FeedSeeker from "feedseeker";
+import FeedSeeker from 'feedseeker';
 
 // Create instance
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 
 // Listen for events
-seeker.on("initialized", () => {
-  console.log("FeedSeeker initialized");
+seeker.on('initialized', () => {
+	console.log('FeedSeeker initialized');
 });
 
-seeker.on("error", (data) => {
-  console.error("Error:", data.error);
+seeker.on('error', (data) => {
+	console.error('Error:', data.error);
 });
 
 // Search for feeds using meta links
 const feeds = await seeker.metaLinks();
-console.log("Found feeds:", feeds);
+console.log('Found feeds:', feeds);
 ```
 
 ### With Options
 
 ```javascript
-import FeedSeeker from "feedseeker";
+import FeedSeeker from 'feedseeker';
 
-const seeker = new FeedSeeker("https://blog.example.com", {
-  maxFeeds: 10,
-  timeout: 15,
-  keepQueryParams: true,
-  followMetaRefresh: true,
+const seeker = new FeedSeeker('https://blog.example.com', {
+	maxFeeds: 10,
+	timeout: 15,
+	keepQueryParams: true,
+	followMetaRefresh: true
 });
 
 // Initialize and search
@@ -137,7 +137,7 @@ const feeds = await seeker.metaLinks();
 ### Using Different Search Strategies
 
 ```javascript
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 await seeker.initialize();
 
 // Meta links (fastest, checks HTML <link> tags)
@@ -157,31 +157,31 @@ const deepFeeds = await seeker.deepSearch();
 ### Event Handling
 
 ```javascript
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 
 // Initialization complete
-seeker.on("initialized", () => {
-  console.log("Ready to search");
+seeker.on('initialized', () => {
+	console.log('Ready to search');
 });
 
 // Strategy started
-seeker.on("start", (data) => {
-  console.log(`Starting ${data.niceName}`);
+seeker.on('start', (data) => {
+	console.log(`Starting ${data.niceName}`);
 });
 
 // Progress updates
-seeker.on("log", (data) => {
-  console.log(`Progress: ${data.module}`);
+seeker.on('log', (data) => {
+	console.log(`Progress: ${data.module}`);
 });
 
 // Strategy completed
-seeker.on("end", (data) => {
-  console.log(`Found ${data.feeds.length} feeds`);
+seeker.on('end', (data) => {
+	console.log(`Found ${data.feeds.length} feeds`);
 });
 
 // Error occurred
-seeker.on("error", (data) => {
-  console.error(`Error: ${data.error}`);
+seeker.on('error', (data) => {
+	console.error(`Error: ${data.error}`);
 });
 ```
 
@@ -224,22 +224,22 @@ Recursively crawls the website to discover feeds:
 
 ## Options Reference
 
-| Option               | Type    | Default      | Description                                      |
-| -------------------- | ------- | ------------ | ------------------------------------------------ |
-| `maxFeeds`           | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
-| `timeout`            | number  | `15`         | Request timeout in seconds (minimum: 15)         |
-| `all`                | boolean | `false`      | Run all strategies sequentially                  |
-| `keepQueryParams`    | boolean | `false`      | Preserve query parameters in feed URLs           |
-| `showErrors`         | boolean | `false`      | Display error messages                           |
-| `followMetaRefresh`  | boolean | `false`      | Follow meta refresh redirects                    |
-| `metasearch`         | boolean | `false`      | Run meta links search only                       |
-| `blindsearch`        | boolean | `false`      | Run blind search only                            |
-| `anchorsonly`        | boolean | `false`      | Run anchor search only                           |
-| `deepsearch`         | boolean | `false`      | Run deep search only                             |
-| `searchMode`         | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
-| `checkForeignFeeds`  | boolean | `false`      | Check if foreign domain URLs are feeds           |
-| `maxErrors`          | number  | `5`          | Stop after a certain number of errors            |
-| `insecure`           | boolean | `false`      | Disable TLS certificate verification             |
+| Option              | Type    | Default      | Description                                      |
+| ------------------- | ------- | ------------ | ------------------------------------------------ |
+| `maxFeeds`          | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
+| `timeout`           | number  | `15`         | Request timeout in seconds (minimum: 15)         |
+| `all`               | boolean | `false`      | Run all strategies sequentially                  |
+| `keepQueryParams`   | boolean | `false`      | Preserve query parameters in feed URLs           |
+| `showErrors`        | boolean | `false`      | Display error messages                           |
+| `followMetaRefresh` | boolean | `false`      | Follow meta refresh redirects                    |
+| `metasearch`        | boolean | `false`      | Run meta links search only                       |
+| `blindsearch`       | boolean | `false`      | Run blind search only                            |
+| `anchorsonly`       | boolean | `false`      | Run anchor search only                           |
+| `deepsearch`        | boolean | `false`      | Run deep search only                             |
+| `searchMode`        | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
+| `checkForeignFeeds` | boolean | `false`      | Check if foreign domain URLs are feeds           |
+| `maxErrors`         | number  | `5`          | Stop after a certain number of errors            |
+| `insecure`          | boolean | `false`      | Disable TLS certificate verification             |
 
 ### Deep Search Options
 
@@ -255,10 +255,10 @@ Each discovered feed has the following structure:
 
 ```typescript
 interface Feed {
-  url: string;                     // Feed URL
-  title: string | null;            // Feed title (null if not found)
-  type: "rss" | "atom" | "json";  // Feed format
-  feedTitle: string | null;        // Title from feed content (null if not fetched)
+	url: string; // Feed URL
+	title: string | null; // Feed title (null if not found)
+	type: 'rss' | 'atom' | 'json'; // Feed format
+	feedTitle: string | null; // Title from feed content (null if not fetched)
 }
 ```
 
@@ -267,14 +267,14 @@ interface Feed {
 FeedSeeker is written in TypeScript and includes full type definitions:
 
 ```typescript
-import FeedSeeker, { type FeedSeekerOptions, type Feed } from "feedseeker";
+import FeedSeeker, { type FeedSeekerOptions, type Feed } from 'feedseeker';
 
 const options: FeedSeekerOptions = {
-  maxFeeds: 5,
-  timeout: 10,
+	maxFeeds: 5,
+	timeout: 10
 };
 
-const seeker = new FeedSeeker("https://example.com", options);
+const seeker = new FeedSeeker('https://example.com', options);
 const feeds: Feed[] = await seeker.metaLinks();
 ```
 
@@ -283,16 +283,16 @@ const feeds: Feed[] = await seeker.metaLinks();
 ### Find All Feeds on a Site
 
 ```javascript
-import FeedSeeker from "feedseeker";
+import FeedSeeker from 'feedseeker';
 
 async function findAllFeeds(url) {
-  // The `startSearch()` method is the easiest way to find all feeds.
-  // It runs all strategies and returns a single, deduplicated list.
-  const seeker = new FeedSeeker(url);
-  const feeds = await seeker.startSearch();
-  return feeds;
+	// The `startSearch()` method is the easiest way to find all feeds.
+	// It runs all strategies and returns a single, deduplicated list.
+	const seeker = new FeedSeeker(url);
+	const feeds = await seeker.startSearch();
+	return feeds;
 
-  /*
+	/*
   // Alternatively, you can run strategies manually:
   const manualSeeker = new FeedSeeker(url);
   await manualSeeker.initialize();
@@ -311,7 +311,7 @@ async function findAllFeeds(url) {
   */
 }
 
-const feeds = await findAllFeeds("https://techcrunch.com");
+const feeds = await findAllFeeds('https://techcrunch.com');
 console.log(`Found ${feeds.length} unique feeds:`, feeds);
 ```
 

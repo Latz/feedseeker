@@ -12,24 +12,28 @@ memory/archive/         ← Superseded/completed items (cold storage)
 ```
 
 ### Tier 1: Working Memory (`CLAUDE.local.md`)
+
 - Auto-loaded every session
 - ~1500 word limit — ruthlessly curated
 - Only behavior-changing facts: active context, critical preferences, key decisions, open loops
 - Updated at end of session or when facts change
 
 ### Tier 2: Registers (`memory/registers/`)
+
 - Domain-specific files loaded on-demand
 - Load when the topic comes up (see `_index.md`)
 - More detail than working memory, less than daily logs
 - Updated when decisions solidify or preferences are confirmed
 
 ### Tier 3: Daily Logs (`memory/daily/`)
+
 - Append-only chronological captures
 - Raw notes, observations, learnings from each session
 - Never edited after writing (except corrections marked clearly)
 - Source material for register promotion
 
 ### Tier 4: Archive (`memory/archive/`)
+
 - Completed projects, superseded decisions, old daily logs
 - Cold storage — rarely accessed
 - Move here when content is no longer actionable
@@ -40,42 +44,42 @@ memory/archive/         ← Superseded/completed items (cold storage)
 
 Before writing to memory, ask: **"Does this change future behavior?"**
 
-| Condition | Action |
-|-----------|--------|
-| New preference discovered | Write to daily log → promote to preferences register |
-| Decision made with rationale | Write to daily log → promote to decisions register |
-| Project state changes | Update projects register directly |
-| Person context learned | Write to people register |
-| Technical constraint discovered | Write to tech-stack register |
-| Deadline or commitment | Write to open-loops register immediately |
-| Casual observation, one-off fact | Skip — don't pollute memory |
+| Condition                        | Action                                               |
+| -------------------------------- | ---------------------------------------------------- |
+| New preference discovered        | Write to daily log → promote to preferences register |
+| Decision made with rationale     | Write to daily log → promote to decisions register   |
+| Project state changes            | Update projects register directly                    |
+| Person context learned           | Write to people register                             |
+| Technical constraint discovered  | Write to tech-stack register                         |
+| Deadline or commitment           | Write to open-loops register immediately             |
+| Casual observation, one-off fact | Skip — don't pollute memory                          |
 
 ---
 
 ## Read Rules
 
-| Tier | When Loaded |
-|------|-------------|
-| `CLAUDE.local.md` | Every session (auto) |
-| `memory/registers/_index.md` | Every session (auto) |
-| `memory/registers/open-loops.md` | Every session (auto) |
-| Other registers | On-demand when topic arises |
-| Daily logs | Rarely — only for historical research |
-| Archive | Almost never — only for deep archaeology |
+| Tier                             | When Loaded                              |
+| -------------------------------- | ---------------------------------------- |
+| `CLAUDE.local.md`                | Every session (auto)                     |
+| `memory/registers/_index.md`     | Every session (auto)                     |
+| `memory/registers/open-loops.md` | Every session (auto)                     |
+| Other registers                  | On-demand when topic arises              |
+| Daily logs                       | Rarely — only for historical research    |
+| Archive                          | Almost never — only for deep archaeology |
 
 ---
 
 ## Routing Table
 
-| Trigger | Destination |
-|---------|-------------|
+| Trigger                                   | Destination    |
+| ----------------------------------------- | -------------- |
 | "I prefer...", "always do...", "never..." | preferences.md |
-| Decision with tradeoffs | decisions.md |
-| Person mentioned by name | people.md |
-| Project discussed | projects.md |
-| Tech choice, language, framework | tech-stack.md |
-| Follow-up needed, deadline, commitment | open-loops.md |
-| Everything else | daily log |
+| Decision with tradeoffs                   | decisions.md   |
+| Person mentioned by name                  | people.md      |
+| Project discussed                         | projects.md    |
+| Tech choice, language, framework          | tech-stack.md  |
+| Follow-up needed, deadline, commitment    | open-loops.md  |
+| Everything else                           | daily log      |
 
 ---
 
@@ -88,6 +92,7 @@ Before writing to memory, ask: **"Does this change future behavior?"**
 3. Note what changed and why
 
 Example:
+
 ```markdown
 ~~Prefers tabs for indentation~~ (superseded 2026-02-22)
 Prefers 2-space indentation — confirmed explicitly during TypeScript refactor
@@ -108,12 +113,12 @@ Corrections have highest priority and must propagate:
 
 ## Maintenance Cadences
 
-| Cadence | Action |
-|---------|--------|
-| Immediate | Write open loops, deadlines, critical decisions |
-| End of session | Update working memory, promote key daily log entries |
-| Periodic (weekly) | Review open-loops register, close completed items |
-| Quarterly | Archive old daily logs, prune stale register entries |
+| Cadence           | Action                                               |
+| ----------------- | ---------------------------------------------------- |
+| Immediate         | Write open loops, deadlines, critical decisions      |
+| End of session    | Update working memory, promote key daily log entries |
+| Periodic (weekly) | Review open-loops register, close completed items    |
+| Quarterly         | Archive old daily logs, prune stale register entries |
 
 ---
 
