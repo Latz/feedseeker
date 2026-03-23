@@ -77,3 +77,4 @@ package-lock.json
 /docs
 /examples
 /memory
+sonar-scanner.sh

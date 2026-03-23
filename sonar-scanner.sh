@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SONAR_TOKEN="f10672d7230ba96f4f46c359dcb5617378c10c7e"
+SONAR_TOKEN="e612e8833ba0cfee91cff4abbb65826bc6c010a6"
 PROJECT_KEY="Latz_feedseeker"
 ORGANIZATION="latz-1"
 OUTPUT_FILE="sonar-report.json"
