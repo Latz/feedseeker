@@ -1,3 +1,7 @@
 
 # Use bd merge for beads JSONL files
 .beads/issues.jsonl merge=beads
+
+# Ensure consistent LF line endings for .gitignore and .gitattributes
+.gitignore text eol=lf
+.gitattributes text eol=lf

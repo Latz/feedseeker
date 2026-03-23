@@ -74,3 +74,6 @@ CLAUDE.local.md
 /.claude-dev-helper
 sonarqube_analyze.sh
 package-lock.json
+/docs
+/examples
+/memory
