@@ -7,7 +7,7 @@
 
 - **Status**: active
 - **Goal**: TypeScript RSS/Atom/JSON feed discovery library with CLI
-- **Current State** (2026-03-15): 308 tests passing across 13 test files; `tsc --noEmit` clean; `pnpm run build` succeeds; SonarCloud remediation complete; performance bottlenecks B3–B7 fixed; v1.0.1 released
+- **Current State** (2026-03-23): 317 tests passing across 13 test files; `tsc --noEmit` clean; `pnpm run build` succeeds; SonarCloud remediation complete; performance bottlenecks B3–B7 fixed; v1.0.1 released; feed-seeker.ts 100% line coverage; fetchWithTimeout 96.9% lines / 95.2% branches; overall 88.8% lines
 - **Key Decisions**: Lazy-load STANDARD/COMPREHENSIVE endpoint arrays in blindsearch.ts; Vitest as test runner; ES2021 target for `replaceAll()` support; concurrent anchor checking with `Promise.allSettled`; TypeScript test files are canonical (delete .js equivalents); exit codes 0/1/2; crawlPage parallelises link processing with Promise.allSettled; checkFeed has no minimum timeout
 - **Blockers**: S1444 on `eventEmitter.ts` is permanently unresolvable (see decisions.md)
 - **Recent Changes** (2026-03-15):

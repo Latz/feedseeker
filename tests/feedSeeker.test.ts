@@ -206,6 +206,30 @@ describe('initialize()', () => {
 		await fs.initialize();
 		expect(errData.error).toContain('timed out');
 	});
+
+	it('emits error for empty string site during initialize', async () => {
+		const fs = new FeedSeeker('');
+		const errors: any[] = [];
+		fs.on('error', (d) => errors.push(d));
+		await fs.initialize();
+		expect(errors.length).toBeGreaterThan(0);
+		expect(fs.getInitStatus()).toBe('error');
+		expect(errors[0].error).toContain('non-empty string');
+	});
+
+	it('includes error cause in the error message when fetch throws with a cause', async () => {
+		const causeErr = Object.assign(new Error('connection reset'), {
+			cause: { code: 'ECONNRESET' }
+		});
+		(fetchWithTimeout as Mock).mockRejectedValue(causeErr);
+		const fs = new FeedSeeker('https://example.com');
+		let errData: any;
+		fs.on('error', (d) => {
+			errData = d;
+		});
+		await fs.initialize();
+		expect(errData.error).toContain('ECONNRESET');
+	});
 });
 
 // ─── search methods delegate to modules ──────────────────────────────────────
@@ -357,6 +381,20 @@ describe('startSearch()', () => {
 		const fs = new FeedSeeker('https://example.com', { deepsearch: true, maxFeeds: 1 });
 		await fs.startSearch();
 		expect(deepSearchMod).not.toHaveBeenCalled();
+	});
+
+	it('with deepsearch:true stops collecting deepSearch results mid-loop when maxFeeds is reached', async () => {
+		(metaLinksMod as Mock).mockResolvedValue([]);
+		(anchorsMod as Mock).mockResolvedValue([]);
+		(blindSearchMod as Mock).mockResolvedValue([]);
+		(deepSearchMod as Mock).mockResolvedValue([
+			{ url: 'https://example.com/feed1', type: 'rss' },
+			{ url: 'https://example.com/feed2', type: 'rss' },
+			{ url: 'https://example.com/feed3', type: 'rss' }
+		] as Feed[]);
+		const fs = new FeedSeeker('https://example.com', { deepsearch: true, maxFeeds: 2 });
+		const result = await fs.startSearch();
+		expect(result).toHaveLength(2);
 	});
 
 	it('emits "end" event with found feeds', async () => {

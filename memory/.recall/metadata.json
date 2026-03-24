@@ -87,6 +87,22 @@
 		"status": "active",
 		"tier": "registers/decisions.md"
 	},
+	"d5f8b2e4a0": {
+		"created_at": "2026-03-23",
+		"last_reviewed_at": "2026-03-23",
+		"pinned": false,
+		"snoozed_until": null,
+		"status": "active",
+		"tier": "registers/projects.md"
+	},
+	"e2a7f3c1b9": {
+		"created_at": "2026-03-23",
+		"last_reviewed_at": "2026-03-23",
+		"pinned": false,
+		"snoozed_until": null,
+		"status": "active",
+		"tier": "registers/decisions.md"
+	},
 	"f6e60a2d5f": {
 		"created_at": "2026-03-10",
 		"last_reviewed_at": "2026-03-10",

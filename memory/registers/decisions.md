@@ -68,6 +68,14 @@
 - **Outcome**: Remote URL updated to `https://github.com/Latz/feedseeker.git`; GitHub auto-redirects old URLs
 - **Status**: active
 
+## Dropped integration tests were fake — no restoration needed — 2026-03-23 ^tre2a7f3c1b9
+
+- **Decision**: Do not restore the 14 integration tests dropped during the JS→TS migration
+- **Rationale**: All 14 were fake — they tested JS builtins (`new URL()`, array spread, object merge), contained vacuous assertions (`expect(x.includes(y))` without `.toBeTruthy()`), or simulated their own mini event emitter unconnected to FeedSeeker. The 6 remaining `.ts` tests are substantively better.
+- **Alternatives Considered**: Restoring the tests (adds noise, masks real gaps); rewriting the original tests (done instead — 9 real coverage-gap tests added)
+- **Outcome**: 9 new tests added targeting actual uncovered lines; 317 tests passing; feed-seeker.ts at 100% line coverage
+- **Status**: active
+
 ## Concurrent anchor checking with Promise.allSettled — 2026-03-08 ^tr4a9f2c1e8b
 
 - **Decision**: Replace serial `for...of` loops in `modules/anchors.ts` (Phase 1: anchor tags, Phase 2: plain-text URLs) with batched `Promise.allSettled` pattern

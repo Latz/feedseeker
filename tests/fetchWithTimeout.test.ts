@@ -82,6 +82,46 @@ describe('fetchWithTimeout Module', () => {
 		});
 	});
 
+	describe('URL Protocol Validation', () => {
+		it('should throw for non-http/https protocols', async () => {
+			await expect(fetchWithTimeout('ftp://example.com', 5000)).rejects.toThrow(
+				'Invalid URL protocol: ftp:'
+			);
+		});
+
+		it('should throw a clear error for a completely invalid URL string', async () => {
+			await expect(fetchWithTimeout('not a url at all', 5000)).rejects.toThrow(
+				'Invalid URL: not a url at all'
+			);
+		});
+	});
+
+	describe('Timeout Validation', () => {
+		it('should throw a TypeError for zero timeout', async () => {
+			await expect(fetchWithTimeout('https://example.com', 0)).rejects.toThrow(
+				'Invalid timeout: 0'
+			);
+		});
+
+		it('should throw a TypeError for negative timeout', async () => {
+			await expect(fetchWithTimeout('https://example.com', -1)).rejects.toThrow(
+				'Invalid timeout: -1'
+			);
+		});
+
+		it('should throw a TypeError for infinite timeout', async () => {
+			await expect(fetchWithTimeout('https://example.com', Infinity)).rejects.toThrow(
+				'Invalid timeout: Infinity'
+			);
+		});
+
+		it('should throw a TypeError for NaN timeout', async () => {
+			await expect(fetchWithTimeout('https://example.com', NaN)).rejects.toThrow(
+				'Invalid timeout: NaN'
+			);
+		});
+	});
+
 	describe('Error Handling', () => {
 		it('should handle network errors gracefully', async () => {
 			// Test with an invalid URL that should fail
