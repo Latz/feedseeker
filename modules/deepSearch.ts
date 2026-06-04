@@ -125,6 +125,7 @@ class Crawler extends EventEmitter {
 	insecure: boolean;
 	maxLinksReachedMessageEmitted: boolean;
 	feeds: Feed[];
+	resolve: (() => void) | null;
 
 	constructor(startUrl: string, options: CrawlerOptions = {}) {
 		const {
@@ -165,6 +166,7 @@ class Crawler extends EventEmitter {
 		this.maxLinksReachedMessageEmitted = false; // Flag to track if message was emitted
 
 		this.feeds = []; // Array to store discovered feeds
+		this.resolve = null;
 
 		// Error handling strategy: Implement circuit breaker pattern
 		// Stop crawling after maxErrors to prevent endless error loops on problematic sites
@@ -195,6 +197,7 @@ class Crawler extends EventEmitter {
 				module: 'deepSearch',
 				message: `Stopped due to ${this.errorCount} errors (max ${this.maxErrors} allowed).`
 			});
+			this.resolve?.();
 			return true;
 		}
 		return false;
@@ -322,6 +325,7 @@ class Crawler extends EventEmitter {
 				module: 'deepSearch',
 				message: `Stopped due to reaching maximum feeds limit: ${this.feeds.length} feeds found (max ${this.maxFeeds} allowed).`
 			});
+			this.resolve?.();
 			return true;
 		}
 		return false;
@@ -438,16 +442,20 @@ export default async function deepSearch(
 	}
 
 	crawler.start();
-	// Create a promise that resolves when the queue is drained
 	await new Promise<void>((resolve) => {
-		crawler.queue.drain(() => {
+		let settled = false;
+		const finish = () => {
+			if (settled) return;
+			settled = true;
 			crawler.emit('end', {
 				module: 'deepSearch',
 				feeds: crawler.feeds,
 				visitedUrls: crawler.visitedUrls.size
 			});
 			resolve();
-		});
+		};
+		crawler.resolve = finish;
+		crawler.queue.drain(finish);
 	});
 	return crawler.feeds;
 }
