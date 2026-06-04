@@ -61,13 +61,14 @@ export default defineConfig({
 			name: 'add-shebang-and-cleanup',
 			closeBundle() {
 				if (isCLI) {
-					const cliPath = resolve(__dirname, 'dist/feedseeker-cli.cjs');
-					const content = readFileSync(cliPath, 'utf-8');
-					if (!content.startsWith('#!/usr/bin/env node')) {
-						writeFileSync(cliPath, '#!/usr/bin/env node\n' + content, 'utf-8');
+					for (const cliFile of ['dist/feedseeker-cli.cjs', 'dist/feedseeker-cli.js']) {
+						const cliPath = resolve(__dirname, cliFile);
+						const content = readFileSync(cliPath, 'utf-8');
+						if (!content.startsWith('#!/usr/bin/env node')) {
+							writeFileSync(cliPath, '#!/usr/bin/env node\n' + content, 'utf-8');
+						}
+						chmodSync(cliPath, 0o755);
 					}
-					// Make the CLI executable (755 permissions)
-					chmodSync(cliPath, 0o755);
 
 					// Clean up package-* chunk files (only during CLI build)
 					const distDir = resolve(__dirname, 'dist');
