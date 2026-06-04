@@ -14,6 +14,12 @@
 import checkFeed from './checkFeed.ts';
 import { type Feed, type MetaLinksInstance } from './metaLinks.ts';
 
+// Pre-converted array for subdomain suffix checks — avoids re-allocating on every isAllowedDomain() call
+const ALLOWED_DOMAINS_ARRAY: string[] = [];
+
+// Regex hoisted to module level — String.prototype.match with /g resets lastIndex implicitly, so reuse is safe
+const URL_REGEX = /https?:\/\/[^\s"'<>)]+/gi;
+
 /**
  * Safely parses a URL and returns the parsed URL object or null if invalid
  * @param {string} url - The URL to parse
@@ -66,6 +72,7 @@ export const ALLOWED_DOMAINS = new Set([
 	'feedproxy.google.com',
 	'feeds2.feedburner.com'
 ]);
+ALLOWED_DOMAINS_ARRAY.push(...ALLOWED_DOMAINS);
 
 /**
  * Checks if a URL is on the same domain as the base URL or is an allowed external domain (like feed hosting services)
@@ -89,7 +96,7 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 	// These services host feeds for other websites and should be considered valid external sources
 	return (
 		ALLOWED_DOMAINS.has(parsedUrl.hostname) ||
-		[...ALLOWED_DOMAINS].some((domain) => parsedUrl.hostname.endsWith('.' + domain))
+		ALLOWED_DOMAINS_ARRAY.some((domain) => parsedUrl.hostname.endsWith('.' + domain))
 	);
 }
 
@@ -167,10 +174,7 @@ function getUrlFromAnchor(
  * @returns {string[]} Array of unique URLs found in the text
  */
 function extractUrlsFromText(text: string): string[] {
-	// Regex to match http:// or https:// URLs
-	// Matches URLs until whitespace, quotes, or common punctuation that typically ends a URL
-	const urlRegex = /https?:\/\/[^\s"'<>)]+/gi;
-	const matches = text.match(urlRegex);
+	const matches = text.match(URL_REGEX);
 
 	if (!matches) {
 		return [];
@@ -296,8 +300,8 @@ async function processPlainTextPhase(
 	concurrency: number,
 	maxFeeds: number
 ): Promise<void> {
-	const bodyHtml = context.instance.document.body?.innerHTML || '';
-	const plainTextUrls = extractUrlsFromText(bodyHtml);
+	const bodyText = context.instance.document.body?.textContent || '';
+	const plainTextUrls = extractUrlsFromText(bodyText);
 
 	const checkedUrls = new Set(context.feedUrls.map((feed) => feed.url));
 	const urlsToCheck: string[] = [];

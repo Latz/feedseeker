@@ -390,13 +390,23 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 */
 	private async collectFeedsFromStrategies(feedMap: Map<string, Feed>): Promise<void> {
 		const searchStrategies = [this.metaLinks, this.checkAllAnchors, this.blindSearch];
+		const { all, maxFeeds } = this.options;
+		const hasLimit = !all && maxFeeds !== undefined && maxFeeds > 0;
 
-		for (const strategy of searchStrategies) {
-			const feeds = await strategy.call(this);
-			this.addFeedsToMap(feedMap, feeds);
-
-			if (this.hasReachedLimit(feedMap)) {
-				break;
+		if (hasLimit) {
+			// Sequential with early exit when a feed limit is set
+			for (const strategy of searchStrategies) {
+				const feeds = await strategy.call(this);
+				this.addFeedsToMap(feedMap, feeds);
+				if (this.hasReachedLimit(feedMap)) break;
+			}
+		} else {
+			// Parallel when no limit — all strategies run concurrently
+			const results = await Promise.allSettled(searchStrategies.map((s) => s.call(this)));
+			for (const result of results) {
+				if (result.status === 'fulfilled') {
+					this.addFeedsToMap(feedMap, result.value);
+				}
 			}
 		}
 	}

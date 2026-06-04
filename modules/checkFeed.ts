@@ -125,6 +125,8 @@ const FEED_PATTERNS = {
 	}
 };
 
+const WHITESPACE_PATTERN = /\s+/g;
+
 /**
  * Validates that a URL uses HTTP or HTTPS protocol
  * @param url - The URL to validate
@@ -239,7 +241,7 @@ function removeCDATA(text: string): string {
 function cleanTitle(title: string | null | undefined): string | null {
 	if (!title) return null; // Explicitly return null for falsy values
 	// Remove leading/trailing whitespace and collapse multiple whitespace characters
-	return title.replaceAll(/\s+/g, ' ').trim();
+	return title.replaceAll(WHITESPACE_PATTERN, ' ').trim();
 }
 
 /**
