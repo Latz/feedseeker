@@ -13,6 +13,8 @@
 
 import { Agent } from 'undici';
 
+let insecureAgent: Agent | undefined;
+
 /**
  * Extended RequestInit with timeout option
  */
@@ -131,7 +133,8 @@ export default async function fetchWithTimeout(
 		...fetchOptions.headers
 	};
 
-	const dispatcher = insecure ? new Agent({ connect: { rejectUnauthorized: false } }) : undefined;
+	if (insecure) insecureAgent ??= new Agent({ connect: { rejectUnauthorized: false } });
+	const dispatcher = insecure ? insecureAgent : undefined;
 
 	try {
 		const response = await fetch(url, {
