@@ -335,57 +335,23 @@ class Crawler extends EventEmitter {
 	 * Crawls a single page: checks if it's a feed, then extracts links and enqueues them.
 	 * Uses a single fetch per URL — no secondary feed-check fetch per link.
 	 */
-	async crawlPage(task: CrawlTask): Promise<void> {
-		const { url, depth, foreignOnly = false } = task;
-
-		if (this.visitedUrls.has(url)) return;
-		if (depth > this.maxDepth) return;
-		if (foreignOnly && !this.checkForeignFeeds) return;
-
-		this.visitedUrls.add(url);
-
-		this.emit('log', {
-			module: 'deepSearch',
-			url,
-			depth,
-			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() }
-		});
-
-		let html: string;
+	private async fetchHtml(url: string, depth: number): Promise<string | null> {
 		if (this.instance?.site === url && this.instance.content !== undefined) {
-			html = this.instance.content;
-		} else {
-			const response = await fetchWithTimeout(url, {
-				timeout: this.timeout,
-				insecure: this.insecure
-			});
-			if (!response) {
-				this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
-				return;
-			}
-			if (!response.ok) {
-				this.handleFetchError(url, depth, `HTTP ${response.status} ${response.statusText}`);
-				return;
-			}
-			html = await response.text();
+			return this.instance.content;
 		}
-
-		// Check if the fetched content is itself a feed — no extra HTTP request needed.
-		try {
-			const feedResult = await checkFeed(url, html);
-			if (feedResult) {
-				this.recordFeed(url, depth, feedResult);
-				return;
-			}
-		} catch (error: unknown) {
-			const err = error instanceof Error ? error : new Error(String(error));
-			this.handleFetchError(url, depth, `Error checking feed: ${err.message}`);
-			return;
+		const response = await fetchWithTimeout(url, { timeout: this.timeout, insecure: this.insecure });
+		if (!response) {
+			this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
+			return null;
 		}
+		if (!response.ok) {
+			this.handleFetchError(url, depth, `HTTP ${response.status} ${response.statusText}`);
+			return null;
+		}
+		return response.text();
+	}
 
-		// Foreign-only tasks are feed-check only — no link extraction.
-		if (foreignOnly || depth >= this.maxDepth) return;
-
+	private enqueueLinks(html: string, depth: number): void {
 		const { document } = parseHTML(html);
 		for (const link of document.querySelectorAll('a')) {
 			try {
@@ -407,6 +373,44 @@ class Crawler extends EventEmitter {
 				// Skip malformed URLs
 			}
 		}
+	}
+
+	async crawlPage(task: CrawlTask): Promise<void> {
+		const { url, depth, foreignOnly = false } = task;
+
+		if (this.visitedUrls.has(url)) return;
+		if (depth > this.maxDepth) return;
+		if (foreignOnly && !this.checkForeignFeeds) return;
+
+		this.visitedUrls.add(url);
+
+		this.emit('log', {
+			module: 'deepSearch',
+			url,
+			depth,
+			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() }
+		});
+
+		const html = await this.fetchHtml(url, depth);
+		if (html === null) return;
+
+		// Check if the fetched content is itself a feed — no extra HTTP request needed.
+		try {
+			const feedResult = await checkFeed(url, html);
+			if (feedResult) {
+				this.recordFeed(url, depth, feedResult);
+				return;
+			}
+		} catch (error: unknown) {
+			const err = error instanceof Error ? error : new Error(String(error));
+			this.handleFetchError(url, depth, `Error checking feed: ${err.message}`);
+			return;
+		}
+
+		// Foreign-only tasks are feed-check only — no link extraction.
+		if (foreignOnly || depth >= this.maxDepth) return;
+
+		this.enqueueLinks(html, depth);
 	}
 }
 

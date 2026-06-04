@@ -137,12 +137,13 @@ export default async function fetchWithTimeout(
 	const dispatcher = insecure ? insecureAgent : undefined;
 
 	try {
-		const response = await fetch(url, {
+		const fetchInit: RequestInit = {
 			...fetchOptions,
 			signal: controller.signal,
 			headers,
 			...(dispatcher ? { dispatcher } : {})
-		} as RequestInit);
+		};
+		const response = await fetch(url, fetchInit);
 		clearTimeout(timeoutId);
 		return response;
 	} catch (error: unknown) {

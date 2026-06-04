@@ -6,7 +6,7 @@ import endpointsData from './blindsearch-endpoints.json' with { type: 'json' };
 const DEFAULT_MAX_FEEDS = 0; // 0 means no limit
 const DEFAULT_REQUEST_DELAY = 0; // 0 means no delay (in milliseconds)
 const DEFAULT_CONCURRENCY = 3; // Number of concurrent requests to make
-const DEFAULT_SEARCH_MODE = 'standard'; // Default search thoroughness
+const DEFAULT_SEARCH_MODE: SearchMode = 'standard';
 
 /**
  * Security and resource limits
@@ -49,13 +49,13 @@ function getEndpointsByMode(mode: SearchMode): string[] {
  */
 function validateSearchMode(mode: string | undefined): SearchMode {
 	if (!mode) {
-		return DEFAULT_SEARCH_MODE as SearchMode;
+		return DEFAULT_SEARCH_MODE;
 	}
 
 	const validModes: SearchMode[] = ['fast', 'standard', 'exhaustive', 'full'];
 	if (!validModes.includes(mode as SearchMode)) {
 		console.warn(`Invalid search mode "${mode}". Falling back to "${DEFAULT_SEARCH_MODE}".`);
-		return DEFAULT_SEARCH_MODE as SearchMode;
+		return DEFAULT_SEARCH_MODE;
 	}
 
 	return mode as SearchMode;

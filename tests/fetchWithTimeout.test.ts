@@ -129,10 +129,7 @@ describe('fetchWithTimeout Module', () => {
 
 			try {
 				await fetchWithTimeout(invalidUrl, 1000);
-				// If it doesn't throw, that's okay - we just want to verify it handles errors
-				expect(true).toBeTruthy();
 			} catch (error: unknown) {
-				// If it throws, that's expected for network errors
 				expect(error instanceof Error).toBeTruthy();
 			}
 		});
@@ -144,10 +141,7 @@ describe('fetchWithTimeout Module', () => {
 
 			try {
 				await fetchWithTimeout(slowUrl, shortTimeout);
-				// If it doesn't timeout, that's okay for this test
-				expect(true).toBeTruthy();
 			} catch (error: unknown) {
-				// Should either timeout or have a network error
 				expect(error instanceof Error).toBeTruthy();
 			}
 		});
