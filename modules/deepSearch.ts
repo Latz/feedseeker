@@ -73,6 +73,7 @@ function excludedFile(url: string): boolean {
 interface CrawlTask {
 	url: string;
 	depth: number;
+	foreignOnly?: boolean; // When true: check for feed content only, skip link extraction
 }
 
 /**
@@ -118,6 +119,8 @@ class Crawler extends EventEmitter {
 	instance: FeedSeekerInstance | null;
 	queue: QueueObject<CrawlTask>;
 	visitedUrls: Set<string>;
+	enqueuedUrls: Set<string>;
+	feedUrls: Set<string>;
 	timeout: number;
 	insecure: boolean;
 	maxLinksReachedMessageEmitted: boolean;
@@ -154,7 +157,9 @@ class Crawler extends EventEmitter {
 		// The queue processes crawlPage tasks with limited concurrency to prevent overwhelming the target server
 		// bind(this) ensures 'this' context is preserved when crawlPage is called by the queue
 		this.queue = queue(this.crawlPage.bind(this), this.concurrency);
-		this.visitedUrls = new Set(); // Track visited URLs to prevent infinite loops
+		this.visitedUrls = new Set(); // Track fetched URLs (for stats/reporting)
+		this.enqueuedUrls = new Set(); // Track enqueued URLs to prevent duplicate queue entries
+		this.feedUrls = new Set(); // O(1) dedup for discovered feed URLs
 		this.timeout = 5000; // Default timeout value for HTTP requests
 		this.insecure = insecure;
 		this.maxLinksReachedMessageEmitted = false; // Flag to track if message was emitted
@@ -199,6 +204,7 @@ class Crawler extends EventEmitter {
 	 * Starts the crawling process
 	 */
 	start(): void {
+		this.enqueuedUrls.add(this.startUrl);
 		this.queue.push({ url: this.startUrl, depth: 0 });
 		this.emit('start', { module: 'deepSearch', niceName: 'Deep Search' });
 	}
@@ -256,16 +262,16 @@ class Crawler extends EventEmitter {
 	 * @returns {boolean} True if the crawl should continue, false otherwise.
 	 * @private
 	 */
-	shouldCrawl(url: string, depth: number): boolean {
+	shouldCrawl(url: string, depth: number, foreignOnly = false): boolean {
 		if (depth > this.maxDepth) return false;
-		if (this.visitedUrls.has(url)) return false;
+		if (this.enqueuedUrls.has(url)) return false;
 
-		if (this.visitedUrls.size >= this.maxLinks) {
+		if (this.enqueuedUrls.size >= this.maxLinks) {
 			this.emitMaxLinksReached();
 			return false;
 		}
 
-		return this.isValidUrl(url);
+		return this.isValidUrl(url) || (foreignOnly && this.checkForeignFeeds);
 	}
 
 	/**
@@ -296,7 +302,8 @@ class Crawler extends EventEmitter {
 		depth: number,
 		feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null }
 	): boolean {
-		if (this.feeds.some((feed) => feed.url === url)) return false;
+		if (this.feedUrls.has(url)) return false;
+		this.feedUrls.add(url);
 		this.feeds.push({
 			url,
 			type: feedResult.type,
@@ -320,16 +327,18 @@ class Crawler extends EventEmitter {
 		return false;
 	}
 
-	async processLink(url: string, depth: number): Promise<boolean> {
-		if (this.visitedUrls.has(url)) return false;
+	/**
+	 * Crawls a single page: checks if it's a feed, then extracts links and enqueues them.
+	 * Uses a single fetch per URL — no secondary feed-check fetch per link.
+	 */
+	async crawlPage(task: CrawlTask): Promise<void> {
+		const { url, depth, foreignOnly = false } = task;
 
-		if (this.visitedUrls.size >= this.maxLinks) {
-			this.emitMaxLinksReached();
-			return true;
-		}
+		if (this.visitedUrls.has(url)) return;
+		if (depth > this.maxDepth) return;
+		if (foreignOnly && !this.checkForeignFeeds) return;
 
-		const validUrl = this.isValidUrl(url);
-		if (!validUrl && !this.checkForeignFeeds) return false;
+		this.visitedUrls.add(url);
 
 		this.emit('log', {
 			module: 'deepSearch',
@@ -337,41 +346,6 @@ class Crawler extends EventEmitter {
 			depth,
 			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() }
 		});
-
-		try {
-			const feedResult = await checkFeed(url, '', this.instance || undefined);
-			if (feedResult) {
-				if (this.recordFeed(url, depth, feedResult)) return true;
-			} else {
-				this.emit('log', {
-					module: 'deepSearch',
-					url,
-					depth: depth + 1,
-					feedCheck: { isFeed: false }
-				});
-			}
-		} catch (error: unknown) {
-			const err = error instanceof Error ? error : new Error(String(error));
-			return this.handleFetchError(url, depth + 1, `Error checking feed: ${err.message}`);
-		}
-
-		if (depth + 1 <= this.maxDepth && validUrl) {
-			this.queue.push({ url, depth: depth + 1 });
-		}
-		return false;
-	}
-
-	/**
-	 * Crawls a single page, extracting links and checking for feeds
-	 * @param {CrawlTask} task - The task object containing the URL and depth
-	 * @returns {Promise<void>} A promise that resolves when the page has been crawled
-	 */
-	async crawlPage(task: CrawlTask): Promise<void> {
-		let { url, depth } = task;
-
-		if (!this.shouldCrawl(url, depth)) return;
-
-		this.visitedUrls.add(url);
 
 		const response = await fetchWithTimeout(url, {
 			timeout: this.timeout,
@@ -387,18 +361,44 @@ class Crawler extends EventEmitter {
 		}
 
 		const html = await response.text();
-		const { document } = parseHTML(html);
 
-		const links: string[] = [];
+		// Check if the fetched content is itself a feed — no extra HTTP request needed.
+		try {
+			const feedResult = await checkFeed(url, html);
+			if (feedResult) {
+				this.recordFeed(url, depth, feedResult);
+				return;
+			}
+		} catch (error: unknown) {
+			const err = error instanceof Error ? error : new Error(String(error));
+			this.handleFetchError(url, depth, `Error checking feed: ${err.message}`);
+			return;
+		}
+
+		// Foreign-only tasks are feed-check only — no link extraction.
+		if (foreignOnly || depth >= this.maxDepth) return;
+
+		const { document } = parseHTML(html);
 		for (const link of document.querySelectorAll('a')) {
 			try {
-				links.push(new URL(link.href, this.startUrl).href);
+				const linkUrl = new URL(link.href, this.startUrl).href;
+				if (this.enqueuedUrls.has(linkUrl)) continue;
+				if (this.enqueuedUrls.size >= this.maxLinks) {
+					this.emitMaxLinksReached();
+					break;
+				}
+				const isSameDomain = this.isValidUrl(linkUrl);
+				if (isSameDomain) {
+					this.enqueuedUrls.add(linkUrl);
+					this.queue.push({ url: linkUrl, depth: depth + 1 });
+				} else if (this.checkForeignFeeds) {
+					this.enqueuedUrls.add(linkUrl);
+					this.queue.push({ url: linkUrl, depth: depth + 1, foreignOnly: true });
+				}
 			} catch {
 				// Skip malformed URLs
 			}
 		}
-
-		await Promise.allSettled(links.map((url) => this.processLink(url, depth)));
 	}
 }
 
@@ -415,15 +415,15 @@ export default async function deepSearch(
 	instance: FeedSeekerInstance | null = null
 ): Promise<Feed[]> {
 	const crawler = new Crawler(url, {
-		maxDepth: options.depth || 3,
-		maxLinks: options.maxLinks || 1000,
+		maxDepth: options.depth ?? 3,
+		maxLinks: options.maxLinks ?? 1000,
 		checkForeignFeeds: !!options.checkForeignFeeds,
-		maxErrors: options.maxErrors || 5,
-		maxFeeds: options.maxFeeds || 0,
+		maxErrors: options.maxErrors ?? 5,
+		maxFeeds: options.maxFeeds ?? 0,
 		instance,
 		insecure: !!options.insecure
 	});
-	crawler.timeout = (options.timeout || 5) * 1000; // Convert seconds to milliseconds
+	crawler.timeout = (options.timeout ?? 5) * 1000; // Convert seconds to milliseconds
 
 	// If we have an instance, forward crawler events to the instance
 	if (instance?.emit) {
