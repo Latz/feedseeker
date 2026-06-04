@@ -6,35 +6,66 @@ PROJECT_KEY="Latz_feedseeker"
 ORGANIZATION="latz-1"
 OUTPUT_FILE="sonar-report.json"
 DOWNLOAD=true
+LOCAL=false
+CONTAINER_NAME="/docker/sonarqube"
+LOCAL_URL="http://localhost:9000"
 
 # Parse arguments
 for arg in "$@"; do
   case "$arg" in
     --download) DOWNLOAD=true ;;
+    --local) LOCAL=true ;;
     --output=*) OUTPUT_FILE="${arg#--output=}" ;;
     *) echo "Unknown option: $arg"; exit 1 ;;
   esac
 done
+
+if [ "$LOCAL" = true ]; then
+  echo "Starting SonarQube container..."
+  docker start "$CONTAINER_NAME"
+  trap 'echo "Stopping SonarQube container..."; docker stop "$CONTAINER_NAME"' EXIT
+
+  echo "Waiting for SonarQube to be ready..."
+  until curl -sf "${LOCAL_URL}/api/system/status" | grep -q '"status":"UP"'; do
+    sleep 2
+  done
+  echo "SonarQube is ready."
+fi
 
 # Regenerate coverage before analysis
 echo "Generating coverage report..."
 pnpm run test:coverage
 
 # Run analysis
-echo "Running SonarCloud analysis..."
-/usr/local/bin/sonar \
-  -Dsonar.token="$SONAR_TOKEN" \
-  -Dsonar.projectKey="$PROJECT_KEY" \
-  -Dsonar.organization="$ORGANIZATION" \
-  -Dsonar.qualitygate.wait=true
+if [ "$LOCAL" = true ]; then
+  echo "Running SonarQube analysis (local)..."
+  /usr/local/bin/sonar \
+    -Dsonar.token="$SONAR_TOKEN" \
+    -Dsonar.projectKey="$PROJECT_KEY" \
+    -Dsonar.host.url="$LOCAL_URL" \
+    -Dsonar.qualitygate.wait=true
+else
+  echo "Running SonarCloud analysis..."
+  /usr/local/bin/sonar \
+    -Dsonar.token="$SONAR_TOKEN" \
+    -Dsonar.projectKey="$PROJECT_KEY" \
+    -Dsonar.organization="$ORGANIZATION" \
+    -Dsonar.qualitygate.wait=true
+fi
 
 # Download report if requested
 if [ "$DOWNLOAD" = true ]; then
   echo ""
   echo "Downloading report to $OUTPUT_FILE..."
-  curl -s -u "${SONAR_TOKEN}:" \
-    "https://sonarcloud.io/api/issues/search?componentKeys=${PROJECT_KEY}&resolved=false&ps=500&organization=${ORGANIZATION}" \
-    -o "$OUTPUT_FILE"
+  if [ "$LOCAL" = true ]; then
+    curl -s -u "${SONAR_TOKEN}:" \
+      "${LOCAL_URL}/api/issues/search?componentKeys=${PROJECT_KEY}&resolved=false&ps=500" \
+      -o "$OUTPUT_FILE"
+  else
+    curl -s -u "${SONAR_TOKEN}:" \
+      "https://sonarcloud.io/api/issues/search?componentKeys=${PROJECT_KEY}&resolved=false&ps=500&organization=${ORGANIZATION}" \
+      -o "$OUTPUT_FILE"
+  fi
   echo "Report saved to $OUTPUT_FILE"
 
   # Convert JSON report to Markdown
