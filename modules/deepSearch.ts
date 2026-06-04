@@ -347,20 +347,24 @@ class Crawler extends EventEmitter {
 			progress: { processed: this.visitedUrls.size, remaining: this.queue.length() }
 		});
 
-		const response = await fetchWithTimeout(url, {
-			timeout: this.timeout,
-			insecure: this.insecure
-		});
-		if (!response) {
-			this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
-			return;
+		let html: string;
+		if (this.instance?.site === url && this.instance.content !== undefined) {
+			html = this.instance.content;
+		} else {
+			const response = await fetchWithTimeout(url, {
+				timeout: this.timeout,
+				insecure: this.insecure
+			});
+			if (!response) {
+				this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
+				return;
+			}
+			if (!response.ok) {
+				this.handleFetchError(url, depth, `HTTP ${response.status} ${response.statusText}`);
+				return;
+			}
+			html = await response.text();
 		}
-		if (!response.ok) {
-			this.handleFetchError(url, depth, `HTTP ${response.status} ${response.statusText}`);
-			return;
-		}
-
-		const html = await response.text();
 
 		// Check if the fetched content is itself a feed — no extra HTTP request needed.
 		try {

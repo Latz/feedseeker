@@ -64,6 +64,8 @@ export interface FeedSeekerOptions {
 export interface FeedSeekerInstance {
 	options: FeedSeekerOptions;
 	emit?: (event: string, data: unknown) => void;
+	site?: string;
+	content?: string;
 }
 
 // Pre-compiled regex patterns for all feed detection and processing
