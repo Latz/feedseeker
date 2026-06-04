@@ -29,6 +29,9 @@ function start(...args: unknown[]): void {
 function makeEndHandler(ctx: CLIRunContext) {
 	return function end(...args: unknown[]): void {
 		const data = args[0] as EndEventData;
+		if (data.module === 'deepSearch' && data.visitedUrls !== undefined) {
+			process.stdout.write(`  Done. Crawled ${data.visitedUrls} URLs.\n`);
+		}
 		if (ctx.isAllMode) {
 			// In --all mode, report per-strategy results
 			if (data.feeds.length === 0) {
@@ -63,6 +66,10 @@ async function log(...args: unknown[]): Promise<void> {
 		}
 	}
 	if (data.module === 'deepSearch') {
+		if ('message' in data) {
+			process.stdout.write(`  ${data.message}\n`);
+			return;
+		}
 		// Display deep search progress: [depth/processed+remaining] current-url
 		if ('url' in data && 'depth' in data && 'progress' in data) {
 			const progress = data.progress as Record<string, number>;
