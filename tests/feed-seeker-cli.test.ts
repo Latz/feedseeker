@@ -14,6 +14,9 @@ vi.mock('../modules/fetchWithTimeout.ts', () => ({
 }));
 
 import metaLinksMod from '../modules/metaLinks.ts';
+import anchorsMod from '../modules/anchors.ts';
+import blindsearchMod from '../modules/blindsearch.ts';
+import deepSearchMod from '../modules/deepSearch.ts';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 
 describe('FeedSeeker CLI', () => {
@@ -98,6 +101,58 @@ describe('FeedSeeker CLI', () => {
 			expect(consoleErrorSpy).not.toHaveBeenCalled();
 
 			// Exit code 2: search completed but no feeds found.
+			expect(processExitSpy).toHaveBeenCalledWith(2);
+		});
+	});
+
+	describe('--all flag', () => {
+		const feedA: Feed = { url: 'https://example.com/feed.xml', type: 'rss', title: null, feedTitle: 'Feed A' };
+		const feedB: Feed = { url: 'https://example.com/atom.xml', type: 'atom', title: null, feedTitle: null };
+
+		beforeEach(() => {
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+			(deepSearchMod as Mock).mockResolvedValue([]);
+		});
+
+		it('prints per-strategy results using printFeeds format (not raw JSON)', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([feedA]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			await run(argv);
+
+			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(allOutput).toContain(feedA.url);
+			expect(allOutput).not.toContain('"url"');
+		});
+
+		it('prints final summary with deduplicated count', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([feedA]);
+			(blindsearchMod as Mock).mockResolvedValue([feedB]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			await run(argv);
+
+			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(allOutput).toContain('All Strategies Complete');
+			expect(allOutput).toContain('Total unique feeds found: 2');
+		});
+
+		it('deduplicates feeds with the same URL across strategies', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([feedA]);
+			(blindsearchMod as Mock).mockResolvedValue([feedA]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			await run(argv);
+
+			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(allOutput).toContain('Total unique feeds found: 1');
+		});
+
+		it('exits with code 2 when no feeds found across all strategies', async () => {
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			await run(argv);
+
 			expect(processExitSpy).toHaveBeenCalledWith(2);
 		});
 	});

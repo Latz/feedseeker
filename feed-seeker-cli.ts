@@ -38,8 +38,7 @@ function makeEndHandler(ctx: CLIRunContext) {
 				process.stdout.write(styleText('yellow', ' No feeds found.\n'));
 			} else {
 				process.stdout.write(styleText('green', ` Found ${data.feeds.length} feeds.\n`));
-				// Display feeds from this strategy
-				console.log(JSON.stringify(data.feeds, null, 2));
+				printFeeds(data.feeds);
 			}
 		} else if (data.feeds.length === 0) {
 			// Normal mode
