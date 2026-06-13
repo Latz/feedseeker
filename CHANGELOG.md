@@ -2,6 +2,30 @@
 
 All notable changes to feedseeker are documented here.
 
+## [1.0.4] — 2026-06-13
+
+### Features
+
+- **CLI `--file <path>` — batch mode for auditing multiple sites** (`fdd9428`): Reads a list of URLs from a plain-text file (one URL per line; blank lines and `#` comment lines are ignored) and searches each site in sequence, aggregating all discovered feeds into a single result set. Combines with all output formats — `--format json`, `--format opml`, `--quiet` — so a full site audit can be piped or exported in one command.
+
+- **Library `findAll(urls, options)` — parallel multi-site search** (`dd83bd2`): New named export that accepts an array of URLs, runs a `FeedSeeker` search for each concurrently using `Promise.all`, and returns `Promise<Map<string, Feed[]>>` where each key is the original input URL. Useful for programmatic audits without managing parallel instances manually.
+
+- **CLI `-q` / `-f` short flags** (`940edd6`): Added `-q` as a short alias for `--quiet` and `-c` as a short alias for `--check`, consistent with common Unix CLI conventions.
+
+- **CLI `--quiet` / `-q` — pipe-friendly output** (`25f408a`): Suppresses the banner, progress indicators, and decorative output; prints only feed URLs, one per line. Designed for use in shell pipelines (`feed-seeker example.com -q | xargs ...`).
+
+- **CLI `--format opml` — OPML export** (`c7582ba`): Outputs discovered feeds as a valid OPML 2.0 document, directly importable into any feed reader. Feed type (`rss`, `atom`, `json`) is preserved in the `type` attribute of each `<outline>` element.
+
+### Chore
+
+- **Knip dead-code analysis added to `bin/check`** (`86c9177`): `bin/check` now runs ESLint, TypeScript type-checking, and Knip in sequence. All Knip findings in the codebase have been resolved — unused exports, unused re-exports, and transitive type-only imports are now clean.
+
+- **Removed unused dependencies** (`86c9177`): `lint-staged` removed from `devDependencies`; replaced by direct `knip` and explicit `@eslint/js` version pin.
+
+- **TypeScript target bumped to ES2022** (`86c9177`): Required for `Error.cause` support. Safe given `engines: { node: ">=22.0.0" }`.
+
+---
+
 ## [1.0.3] — 2026-06-13
 
 ### Features
