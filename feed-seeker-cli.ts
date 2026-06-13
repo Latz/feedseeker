@@ -265,7 +265,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.command('version')
 		.description('Get version')
 		.action(async () => {
-			const packageModule = await import('./package.json', { assert: { type: 'json' } });
+			const packageModule = await import('./package.json', { with: { type: 'json' } });
 			const packageConfig = packageModule.default;
 			process.stdout.write(`${packageConfig.version}\n`);
 		});

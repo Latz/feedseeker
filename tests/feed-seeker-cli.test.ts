@@ -8,6 +8,7 @@ vi.mock('../modules/anchors.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/blindsearch.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/deepSearch.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/checkFreshness.ts', () => ({ checkFeedFreshness: vi.fn() }));
+vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
 
 // Mock fetchWithTimeout as well, since initialize() is called.
 vi.mock('../modules/fetchWithTimeout.ts', () => ({
@@ -20,6 +21,7 @@ import blindsearchMod from '../modules/blindsearch.ts';
 import deepSearchMod from '../modules/deepSearch.ts';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 import { checkFeedFreshness } from '../modules/checkFreshness.ts';
+import { readFile } from 'node:fs/promises';
 
 describe('FeedSeeker CLI', () => {
 	let stdoutWriteSpy: Mock;
@@ -408,11 +410,7 @@ describe('FeedSeeker CLI', () => {
 		const fileFeed2: Feed = { url: 'https://site2.com/atom.xml', type: 'atom', title: null, feedTitle: null };
 
 		it('reads URLs from a file and searches each site', async () => {
-			const { readFile } = await import('node:fs/promises');
-			vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
-
-			const readFileMock = readFile as unknown as Mock;
-			readFileMock.mockResolvedValue('https://site1.com\nhttps://site2.com\n');
+			(readFile as unknown as Mock).mockResolvedValue('https://site1.com\nhttps://site2.com\n');
 
 			(metaLinksMod as Mock)
 				.mockResolvedValueOnce([fileFeed1])
@@ -432,9 +430,7 @@ describe('FeedSeeker CLI', () => {
 		});
 
 		it('skips blank lines and comment lines in the file', async () => {
-			const { readFile } = await import('node:fs/promises');
-			const readFileMock = readFile as unknown as Mock;
-			readFileMock.mockResolvedValue('# comment\nhttps://site1.com\n\n  \n');
+			(readFile as unknown as Mock).mockResolvedValue('# comment\nhttps://site1.com\n\n  \n');
 
 			(metaLinksMod as Mock).mockResolvedValue([fileFeed1]);
 

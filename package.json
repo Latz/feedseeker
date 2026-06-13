@@ -1,7 +1,7 @@
 {
 	"name": "feedseeker",
 	"version": "1.0.4",
-	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website with support for preserving query parameters",
+	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website.",
 	"type": "module",
 	"bin": {
 		"feed-seeker": "dist/feedseeker-cli.cjs"
@@ -71,27 +71,27 @@
 	"dependencies": {
 		"async": "^3.2.6",
 		"commander": "^14.0.1",
-		"linkedom": "^0.18.7",
-		"tldts": "^7.0.16",
+		"linkedom": "^0.18.12",
+		"tldts": "^7.4.2",
 		"truncate-url": "^3.0.0",
-		"undici": "^7.24.1"
+		"undici": "^8.4.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.2",
 		"@types/async": "^3.2.25",
-		"@types/node": "^22.19.1",
-		"@typescript-eslint/eslint-plugin": "^8.49.0",
-		"@typescript-eslint/parser": "^8.49.0",
-		"@vitest/coverage-v8": "^4.0.18",
+		"@types/node": "^25.9.3",
+		"@typescript-eslint/eslint-plugin": "^8.61.0",
+		"@typescript-eslint/parser": "^8.61.0",
+		"@vitest/coverage-v8": "^4.1.8",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"husky": "^9.1.7",
 		"knip": "^6.16.1",
-		"prettier": "^3.7.4",
-		"rimraf": "^5.0.10",
-		"typescript": "^5.9.3",
-		"vite": "^7.1.7",
-		"vitest": "^4.0.15"
+		"prettier": "^3.8.4",
+		"rimraf": "^6.1.3",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.16",
+		"vitest": "^4.1.8"
 	},
 	"lint-staged": {
 		"*.{ts,js}": [

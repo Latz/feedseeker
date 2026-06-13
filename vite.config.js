@@ -21,7 +21,7 @@ export default defineConfig({
 			},
 			formats: ['es', 'cjs']
 		},
-		rollupOptions: {
+		rolldownOptions: {
 			external: [
 				'linkedom',
 				'async',
