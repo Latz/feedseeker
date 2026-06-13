@@ -264,4 +264,93 @@ describe('FeedSeeker CLI', () => {
 			expect(checkFeedFreshness).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('--format opml', () => {
+		const opmlFeeds: Feed[] = [
+			{ url: 'https://example.com/feed.xml', type: 'rss', title: 'Example Blog', feedTitle: 'Example Blog' },
+			{ url: 'https://example.com/atom.xml', type: 'atom', title: null, feedTitle: null },
+		];
+
+		it('outputs a valid OPML document', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(output).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+			expect(output).toContain('<opml version="2.0">');
+			expect(output).toContain('<body>');
+			expect(output).toContain('</body>');
+			expect(output).toContain('</opml>');
+		});
+
+		it('includes an outline element for each feed', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(output).toContain('xmlUrl="https://example.com/feed.xml"');
+			expect(output).toContain('xmlUrl="https://example.com/atom.xml"');
+			expect(output).toContain('type="rss"');
+			expect(output).toContain('type="atom"');
+		});
+
+		it('uses feed title in outline text/title attributes', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(output).toContain('text="Example Blog"');
+			expect(output).toContain('title="Example Blog"');
+		});
+
+		it('falls back to URL when feed has no title', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([opmlFeeds[1]]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(output).toContain('text="https://example.com/atom.xml"');
+		});
+
+		it('escapes XML special characters in titles', async () => {
+			const feed: Feed = { url: 'https://example.com/feed.xml', type: 'rss', title: 'Foo & "Bar"', feedTitle: 'Foo & "Bar"' };
+			(metaLinksMod as Mock).mockResolvedValue([feed]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(output).toContain('text="Foo &amp; &quot;Bar&quot;"');
+		});
+
+		it('suppresses the banner', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			await run(argv);
+
+			// Only one console.log call: the OPML output itself (no banner)
+			const calls = consoleLogSpy.mock.calls;
+			expect(calls.length).toBe(1);
+			expect(calls[0][0]).toContain('<?xml');
+		});
+
+		it('--json flag still works as an alias for json format', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			await run(argv);
+
+			const output = consoleLogSpy.mock.calls.flat().join('');
+			expect(output).toContain('"url"');
+			expect(output).not.toContain('<opml');
+		});
+	});
 });

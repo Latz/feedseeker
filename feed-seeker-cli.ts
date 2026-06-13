@@ -13,6 +13,7 @@ interface CLIOptions extends FeedSeekerOptions {
 	displayErrors?: boolean;
 	searchMode?: 'fast' | 'standard' | 'exhaustive';
 	json?: boolean;
+	format?: 'text' | 'json' | 'opml';
 	check?: number;
 }
 
@@ -226,6 +227,7 @@ async function getFeeds(
 interface ExtendedCommand extends Command {
 	feeds?: Feed[];
 	ctx?: CLIRunContext;
+	site?: string;
 }
 
 // =======================================================================================================
@@ -256,7 +258,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.option('-a, --anchorsonly', 'Anchors search only')
 		.option('-d, --deepsearch', 'Enable deep search')
 		.option('--all', 'Execute all strategies and combine results')
-		.option('--json', 'Output feeds as JSON only (suppresses logging)')
+		.option('--format <format>', 'Output format: text (default), json, opml')
 		.option('--deepsearch-only', 'Deep search only')
 		.option(
 			'--depth <number>',
@@ -341,6 +343,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 				// Store the result directly on the program object
 				program.feeds = await getFeeds(site, options, ctx);
 				program.ctx = ctx;
+				program.site = site;
 			} catch (error) {
 				if (options.displayErrors) {
 					console.error('\nError details:', error);
@@ -366,11 +369,39 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 
 	// add hidden option '--display-errors' to program
 	program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
+	// --json kept as hidden alias for --format json (backwards compat)
+	program.addOption(new Option('--json', 'Output feeds as JSON (alias for --format json)').hideHelp());
 	program.addOption(
 		new Option('--insecure', 'Disable TLS certificate verification (like curl -k)').hideHelp()
 	);
 
 	return program;
+}
+
+function escapeXml(s: string): string {
+	return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function formatOpml(feeds: Feed[], siteUrl: string): string {
+	const title = escapeXml(`Feeds from ${siteUrl}`);
+	const outlines = feeds
+		.map((f) => {
+			const label = escapeXml(f.feedTitle ?? f.title ?? f.url);
+			const type = f.type === 'atom' ? 'atom' : f.type === 'json' ? 'json' : 'rss';
+			return `  <outline type="${type}" text="${label}" title="${label}" xmlUrl="${f.url}"/>`;
+		})
+		.join('\n');
+	return [
+		'<?xml version="1.0" encoding="UTF-8"?>',
+		'<opml version="2.0">',
+		'<head>',
+		`  <title>${title}</title>`,
+		'</head>',
+		'<body>',
+		outlines,
+		'</body>',
+		'</opml>',
+	].join('\n');
 }
 
 /**
@@ -393,7 +424,10 @@ function printFeeds(feeds: Feed[]): void {
  * @returns Promise that resolves when CLI execution completes
  */
 export async function run(argv: string[] = process.argv): Promise<void> {
-	if (!argv.includes('--json')) {
+	const suppressBanner =
+		argv.includes('--json') ||
+		(argv.includes('--format') && argv[argv.indexOf('--format') + 1] !== 'text');
+	if (!suppressBanner) {
 		console.log(`${bannerText}\n`);
 	}
 
@@ -418,11 +452,14 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 			);
 		}
 
-		if (opts.json) {
-			// JSON mode: just print the final array of feeds.
+		const format = opts.json ? 'json' : (opts.format ?? 'text');
+
+		if (format === 'json') {
 			console.log(JSON.stringify(program.feeds, null, 2));
+		} else if (format === 'opml') {
+			console.log(formatOpml(program.feeds, program.site ?? ''));
 		} else {
-			// Interactive mode
+			// Interactive text mode
 			if (opts.all) {
 				// In --all mode, per-strategy results were already printed.
 				// Now print a final summary with the deduplicated list.
