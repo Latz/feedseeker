@@ -2,7 +2,7 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Latz_feedseeker&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Latz_feedseeker)
 
-A comprehensive RSS, Atom, and JSON feed discovery tool for Node.js and the browser. FeedSeeker finds feeds on any website using multiple intelligent search strategies.
+A comprehensive RSS, Atom, and JSON feed discovery tool for Node.js. FeedSeeker finds feeds on any website using multiple intelligent search strategies.
 
 ## Features
 
@@ -42,20 +42,56 @@ feed-seeker example.com
 feed-seeker example.com --max-feeds 5
 ```
 
-### Search Modes
+### Output Formats
 
 ```bash
-# Fast mode - meta links and anchors only
-feed-seeker example.com --search-mode fast
+# JSON output
+feed-seeker example.com --format json
 
-# Standard mode - meta links, anchors, and blind search (default)
-feed-seeker example.com --search-mode standard
+# OPML export (importable into any feed reader)
+feed-seeker example.com --format opml > feeds.opml
 
-# Exhaustive mode - all strategies including deep crawling
-feed-seeker example.com --search-mode exhaustive
+# Quiet mode — one URL per line, no banner or progress (pipe-friendly)
+feed-seeker example.com --quiet
+feed-seeker example.com -q
+
+# Pipe URLs directly into another tool
+feed-seeker example.com -q | xargs -I{} curl -s {}
 ```
 
-### Specific Strategies
+### Batch Mode
+
+```bash
+# Read URLs from a file (one per line, # comments and blank lines ignored)
+feed-seeker --file sites.txt
+feed-seeker -f sites.txt
+
+# Combine with output formats
+feed-seeker --file sites.txt --format opml > all-feeds.opml
+feed-seeker --file sites.txt -q
+```
+
+sites.txt format:
+```
+# My sites
+https://example.com
+https://blog.example.org
+# https://skip-this.com
+```
+
+### Freshness Filter
+
+```bash
+# Only show feeds with a post in the last 30 days (default)
+feed-seeker example.com --check
+feed-seeker example.com -c
+
+# Custom window
+feed-seeker example.com --check 7
+feed-seeker example.com -c 90
+```
+
+### Search Strategies
 
 ```bash
 # Meta links only (fastest)
@@ -67,8 +103,11 @@ feed-seeker example.com --blindsearch
 # Anchors only
 feed-seeker example.com --anchorsonly
 
-# Deep search only
+# Enable deep search (crawls the site)
 feed-seeker example.com --deepsearch
+
+# Deep search only
+feed-seeker example.com --deepsearch-only
 
 # Run all strategies and show results from each
 feed-seeker example.com --all
@@ -82,9 +121,6 @@ feed-seeker example.com --timeout 30
 
 # Keep query parameters in feed URLs
 feed-seeker example.com --keep-query-params
-
-# Follow meta refresh redirects
-feed-seeker example.com --follow-meta-refresh
 
 # Show error messages
 feed-seeker example.com --display-errors
@@ -100,22 +136,29 @@ feed-seeker example.com --insecure
 ```javascript
 import FeedSeeker from "feedseeker";
 
-// Create instance
 const seeker = new FeedSeeker("https://example.com");
-
-// Listen for events
-seeker.on("initialized", () => {
-  console.log("FeedSeeker initialized");
-});
-
-seeker.on("error", (data) => {
-  console.error("Error:", data.error);
-});
-
-// Search for feeds using meta links
-const feeds = await seeker.metaLinks();
+const feeds = await seeker.startSearch();
 console.log("Found feeds:", feeds);
 ```
+
+### Multi-Site Search
+
+```javascript
+import { findAll } from "feedseeker";
+
+// Search multiple sites in parallel
+const results = await findAll([
+  "https://example.com",
+  "https://blog.example.org",
+  "https://news.example.net",
+]);
+
+for (const [url, feeds] of results) {
+  console.log(`${url}: ${feeds.length} feeds`);
+}
+```
+
+`findAll` returns `Promise<Map<string, Feed[]>>` where each key is the input URL.
 
 ### With Options
 
@@ -126,10 +169,8 @@ const seeker = new FeedSeeker("https://blog.example.com", {
   maxFeeds: 10,
   timeout: 15,
   keepQueryParams: true,
-  followMetaRefresh: true,
 });
 
-// Initialize and search
 await seeker.initialize();
 const feeds = await seeker.metaLinks();
 ```
@@ -150,7 +191,6 @@ const anchorFeeds = await seeker.checkAllAnchors();
 const blindFeeds = await seeker.blindSearch();
 
 // Deep search (crawls website for feeds)
-// Options are passed via constructor, e.g. new FeedSeeker(url, { maxDepth: 2, maxLinks: 50 })
 const deepFeeds = await seeker.deepSearch();
 ```
 
@@ -159,27 +199,18 @@ const deepFeeds = await seeker.deepSearch();
 ```javascript
 const seeker = new FeedSeeker("https://example.com");
 
-// Initialization complete
-seeker.on("initialized", () => {
-  console.log("Ready to search");
-});
-
-// Strategy started
 seeker.on("start", (data) => {
   console.log(`Starting ${data.niceName}`);
 });
 
-// Progress updates
 seeker.on("log", (data) => {
   console.log(`Progress: ${data.module}`);
 });
 
-// Strategy completed
 seeker.on("end", (data) => {
   console.log(`Found ${data.feeds.length} feeds`);
 });
 
-// Error occurred
 seeker.on("error", (data) => {
   console.error(`Error: ${data.error}`);
 });
@@ -217,6 +248,7 @@ Tests hundreds of common feed endpoint patterns:
 
 Recursively crawls the website to discover feeds:
 
+- Seeds from `sitemap.xml` / `robots.txt` before crawling
 - Follows internal links up to specified depth
 - Checks each page for feeds
 - Configurable depth and link limits
@@ -227,16 +259,8 @@ Recursively crawls the website to discover feeds:
 | Option              | Type    | Default      | Description                                      |
 | ------------------- | ------- | ------------ | ------------------------------------------------ |
 | `maxFeeds`          | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
-| `timeout`           | number  | `15`         | Request timeout in seconds (minimum: 15)         |
-| `all`               | boolean | `false`      | Run all strategies sequentially                  |
+| `timeout`           | number  | `15`         | Request timeout in seconds                       |
 | `keepQueryParams`   | boolean | `false`      | Preserve query parameters in feed URLs           |
-| `showErrors`        | boolean | `false`      | Display error messages                           |
-| `followMetaRefresh` | boolean | `false`      | Follow meta refresh redirects                    |
-| `metasearch`        | boolean | `false`      | Run meta links search only                       |
-| `blindsearch`       | boolean | `false`      | Run blind search only                            |
-| `anchorsonly`       | boolean | `false`      | Run anchor search only                           |
-| `deepsearch`        | boolean | `false`      | Run deep search only                             |
-| `searchMode`        | string  | `'standard'` | Search mode: `fast`, `standard`, or `exhaustive` |
 | `checkForeignFeeds` | boolean | `false`      | Check if foreign domain URLs are feeds           |
 | `maxErrors`         | number  | `5`          | Stop after a certain number of errors            |
 | `insecure`          | boolean | `false`      | Disable TLS certificate verification             |
@@ -255,10 +279,10 @@ Each discovered feed has the following structure:
 
 ```typescript
 interface Feed {
-  url: string; // Feed URL
-  title: string | null; // Feed title (null if not found)
-  type: "rss" | "atom" | "json"; // Feed format
-  feedTitle: string | null; // Title from feed content (null if not fetched)
+  url: string;            // Feed URL
+  title: string | null;   // Page title (null if not found)
+  type: "rss" | "atom" | "json";  // Feed format
+  feedTitle: string | null;       // Title from feed content
 }
 ```
 
@@ -267,7 +291,7 @@ interface Feed {
 FeedSeeker is written in TypeScript and includes full type definitions:
 
 ```typescript
-import FeedSeeker, { type FeedSeekerOptions, type Feed } from "feedseeker";
+import FeedSeeker, { findAll, type FeedSeekerOptions, type Feed } from "feedseeker";
 
 const options: FeedSeekerOptions = {
   maxFeeds: 5,
@@ -276,72 +300,31 @@ const options: FeedSeekerOptions = {
 
 const seeker = new FeedSeeker("https://example.com", options);
 const feeds: Feed[] = await seeker.metaLinks();
+
+// Multi-site
+const results: Map<string, Feed[]> = await findAll(["https://example.com"], options);
 ```
-
-## Examples
-
-### Find All Feeds on a Site
-
-```javascript
-import FeedSeeker from "feedseeker";
-
-async function findAllFeeds(url) {
-  // The `startSearch()` method is the easiest way to find all feeds.
-  // It runs all strategies and returns a single, deduplicated list.
-  const seeker = new FeedSeeker(url);
-  const feeds = await seeker.startSearch();
-  return feeds;
-
-  /*
-  // Alternatively, you can run strategies manually:
-  const manualSeeker = new FeedSeeker(url);
-  await manualSeeker.initialize();
-
-  const results = await Promise.all([
-    manualSeeker.metaLinks(),
-    manualSeeker.checkAllAnchors(),
-    manualSeeker.blindSearch(),
-  ]);
-
-  const allFeeds = results.flat();
-
-  // Then you must deduplicate the results yourself
-  const uniqueFeeds = [...new Map(allFeeds.map((f) => [f.url, f])).values()];
-  return uniqueFeeds;
-  */
-}
-
-const feeds = await findAllFeeds("https://techcrunch.com");
-console.log(`Found ${feeds.length} unique feeds:`, feeds);
-```
-
-### CLI Batch Processing
-
-```bash
-# Process multiple sites
-for site in example.com blog.example.org news.example.net; do
-  echo "Searching $site..."
-  feed-seeker $site --max-feeds 3
-done
-```
-
-## Requirements
-
-- Node.js >= 22.0.0
 
 ## Changelog
 
+### [1.0.4] — 2026-06-13
+- **feat**: `--file <path>` / `-f` batch mode — read URLs from a file and search each site
+- **feat**: `findAll(urls, options)` library API — parallel multi-site search returning `Map<url, Feed[]>`
+- **feat**: `--format opml` — export discovered feeds as OPML 2.0
+- **feat**: `--quiet` / `-q` — pipe-friendly output (one URL per line)
+- **feat**: `-c` short alias for `--check`
+- **chore**: updated dependencies (vite 8, undici 8, typescript 6)
+
 ### [1.0.3] — 2026-06-13
-- **feat**: deepSearch now seeds URLs from `sitemap.xml` before crawling, discovering pages unreachable via static link following
-- **fix**: www/non-www URL variants, fragments, and trailing slashes are now normalized before deduplication — no more duplicate page fetches
-- **fix**: relative links resolved against current page URL instead of start URL
+- **feat**: deepSearch now seeds URLs from `sitemap.xml` before crawling
+- **fix**: www/non-www URL variants deduplicated correctly
+- **fix**: relative links resolved against current page URL
 
 ### [1.0.2] — 2026-06-04
-- **fix**: deepSearch no longer hangs when crawl stops early due to errors or feed limit
+- **fix**: deepSearch no longer hangs when crawl stops early
 - **fix**: concurrent crawlers no longer fetch the same URL multiple times
-- **fix**: CLI `--all` mode now shows human-readable output and final summary
+- **fix**: CLI `--all` mode shows human-readable output and final summary
 - **perf**: eliminated double-fetch per crawled link; O(1) feed deduplication
-- **feat**: CLI shows crawl completion count and stop-reason messages
 
 ### [1.0.1] — 2026-03-15
 - Fixed `checkFeed` minimum timeout; aligned default to 15s across all callers
@@ -351,6 +334,10 @@ done
 - Initial stable release
 
 → [Full changelog](https://github.com/Latz/feedseeker/blob/main/CHANGELOG.md)
+
+## Requirements
+
+- Node.js >= 22.0.0
 
 ## License
 
