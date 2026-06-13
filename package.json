@@ -1,6 +1,6 @@
 {
 	"name": "feedseeker",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website with support for preserving query parameters",
 	"type": "module",
 	"bin": {

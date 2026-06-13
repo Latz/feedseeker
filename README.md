@@ -329,6 +329,29 @@ done
 
 - Node.js >= 22.0.0
 
+## Changelog
+
+### [1.0.3] — 2026-06-13
+- **feat**: deepSearch now seeds URLs from `sitemap.xml` before crawling, discovering pages unreachable via static link following
+- **fix**: www/non-www URL variants, fragments, and trailing slashes are now normalized before deduplication — no more duplicate page fetches
+- **fix**: relative links resolved against current page URL instead of start URL
+
+### [1.0.2] — 2026-06-04
+- **fix**: deepSearch no longer hangs when crawl stops early due to errors or feed limit
+- **fix**: concurrent crawlers no longer fetch the same URL multiple times
+- **fix**: CLI `--all` mode now shows human-readable output and final summary
+- **perf**: eliminated double-fetch per crawled link; O(1) feed deduplication
+- **feat**: CLI shows crawl completion count and stop-reason messages
+
+### [1.0.1] — 2026-03-15
+- Fixed `checkFeed` minimum timeout; aligned default to 15s across all callers
+- Switched to pnpm; renamed dist files to `feedseeker.*`
+
+### [1.0.0] — 2026-01-09
+- Initial stable release
+
+→ [Full changelog](https://github.com/Latz/feedseeker/blob/main/CHANGELOG.md)
+
 ## License
 
 MIT

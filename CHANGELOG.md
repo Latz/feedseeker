@@ -2,6 +2,22 @@
 
 All notable changes to feedseeker are documented here.
 
+## [1.0.3] — 2026-06-13
+
+### Features
+
+- **deepSearch — sitemap seeding** (`68b9a68`): Before crawling, the crawler now fetches `robots.txt` to find a `Sitemap:` directive, falling back to `<origin>/sitemap.xml`. All same-domain URLs from the sitemap are seeded into the queue at depth 1, enabling discovery of pages that are only reachable via JavaScript rendering and would otherwise be missed by static link crawling.
+
+### Bug Fixes
+
+- **deepSearch — www/non-www variants crawled as separate pages** (`68b9a68`): `darioamodei.com/essay/foo` and `www.darioamodei.com/essay/foo` were treated as distinct URLs by the deduplication set, causing both to be fetched even though they resolve to the same content. Added `normalizeUrl()` which strips the `www.` prefix, URL fragments (`#section`), and trailing path slashes before storing in `enqueuedUrls` and `visitedUrls`, so all variants of the same page are deduplicated correctly.
+
+- **deepSearch — relative links resolved against start URL instead of current page** (`68b9a68`): `enqueueLinks` used `this.startUrl` as the base for resolving relative hrefs. On pages under a different subdomain (e.g. `www.`), relative links were resolved against the wrong origin. The current page URL is now passed as the base.
+
+- **deepSearch — race condition: queue could drain before `drain()` handler was registered** (`68b9a68`): With fast-resolving mocks (or a very fast network), the async queue could finish processing all tasks during `await crawler.start()`, before `crawler.queue.drain(finish)` was registered in the calling code. The promise would then never resolve. Fixed by pausing the queue in the constructor and resuming it at the end of `start()` after all initial URLs are pushed, ensuring the drain handler is always in place before any work begins.
+
+---
+
 ## [1.0.2] — 2026-06-04
 
 ### Bug Fixes
