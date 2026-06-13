@@ -152,7 +152,9 @@ describe('deepSearch()', () => {
 		);
 		checkFeed.mockResolvedValue(null);
 		await deepSearch('https://example.com', { depth: 3, maxLinks: 1 });
-		expect(fetchWithTimeout).toHaveBeenCalledTimes(1);
+		// fetchWithTimeout is called for robots.txt and sitemap.xml during sitemap seeding,
+		// plus once for the single allowed page — total 3.
+		expect(fetchWithTimeout).toHaveBeenCalledTimes(3);
 	});
 
 	it('does not revisit the same URL twice', async () => {
@@ -290,8 +292,10 @@ describe('deepSearch()', () => {
 
 		fetchWithTimeout.mockImplementation(async () => {
 			fetchCount++;
-			// Only first fetch (start page) has links; subsequent fetches return empty pages
-			if (fetchCount === 1) {
+			// First 2 fetches are robots.txt and sitemap.xml (sitemap seeding); return empty.
+			// 3rd fetch is the start page — return content with links.
+			// Subsequent fetches (linked pages) return empty pages.
+			if (fetchCount === 3) {
 				return mockResponse(
 					'<html><body><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></body></html>'
 				);

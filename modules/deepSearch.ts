@@ -158,6 +158,7 @@ class Crawler extends EventEmitter {
 		// The queue processes crawlPage tasks with limited concurrency to prevent overwhelming the target server
 		// bind(this) ensures 'this' context is preserved when crawlPage is called by the queue
 		this.queue = queue(this.crawlPage.bind(this), this.concurrency);
+		this.queue.pause(); // Hold until start() pushes all initial URLs and resume() is called
 		this.visitedUrls = new Set(); // Track fetched URLs (for stats/reporting)
 		this.enqueuedUrls = new Set(); // Track enqueued URLs to prevent duplicate queue entries
 		this.feedUrls = new Set(); // O(1) dedup for discovered feed URLs
@@ -203,13 +204,71 @@ class Crawler extends EventEmitter {
 		return false;
 	}
 
+	private normalizeUrl(url: string): string {
+		try {
+			const u = new URL(url);
+			if (u.hostname.startsWith('www.')) u.hostname = u.hostname.slice(4);
+			u.hash = '';
+			if (u.pathname !== '/' && u.pathname.endsWith('/')) {
+				u.pathname = u.pathname.slice(0, -1);
+			}
+			return u.href;
+		} catch {
+			return url;
+		}
+	}
+
+	private async fetchSitemapUrls(): Promise<string[]> {
+		const origin = new URL(this.startUrl).origin;
+		let sitemapUrl = `${origin}/sitemap.xml`;
+		try {
+			const robots = await fetchWithTimeout(`${origin}/robots.txt`, { timeout: this.timeout, insecure: this.insecure });
+			if (robots?.ok) {
+				const text = await robots.text();
+				const match = text.match(/^Sitemap:\s*(\S+)/im);
+				if (match) sitemapUrl = match[1];
+			}
+		} catch { /* ignore, fall back to default sitemap URL */ }
+
+		try {
+			const res = await fetchWithTimeout(sitemapUrl, { timeout: this.timeout, insecure: this.insecure });
+			if (!res?.ok) return [];
+			const xml = await res.text();
+			return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+				.map(m => this.normalizeUrl(m[1].trim()))
+				.filter(u => this.isValidUrl(u));
+		} catch {
+			return [];
+		}
+	}
+
 	/**
-	 * Starts the crawling process
+	 * Starts the crawling process, seeding from sitemap if available
 	 */
-	start(): void {
-		this.enqueuedUrls.add(this.startUrl);
-		this.queue.push({ url: this.startUrl, depth: 0 });
+	async start(): Promise<void> {
+		const normalizedStart = this.normalizeUrl(this.startUrl);
+		this.enqueuedUrls.add(normalizedStart);
+
+		const sitemapUrls = await this.fetchSitemapUrls();
+		const newFromSitemap: string[] = [];
+		for (const url of sitemapUrls) {
+			if (this.enqueuedUrls.has(url)) continue;
+			if (this.enqueuedUrls.size >= this.maxLinks) break;
+			this.enqueuedUrls.add(url);
+			newFromSitemap.push(url);
+		}
 		this.emit('start', { module: 'deepSearch', niceName: 'Deep Search' });
+
+		if (newFromSitemap.length > 0) {
+			this.emit('log', { module: 'deepSearch', message: `Seeded ${newFromSitemap.length} URLs from sitemap.` });
+		}
+
+		this.queue.push({ url: this.startUrl, depth: 0 });
+		for (const url of newFromSitemap) {
+			this.queue.push({ url, depth: 1 });
+		}
+
+		this.queue.resume();
 	}
 
 	/**
@@ -351,11 +410,12 @@ class Crawler extends EventEmitter {
 		return response.text();
 	}
 
-	private enqueueLinks(html: string, depth: number): void {
+	private enqueueLinks(html: string, depth: number, pageUrl: string): void {
 		const { document } = parseHTML(html);
 		for (const link of document.querySelectorAll('a')) {
 			try {
-				const linkUrl = new URL(link.href, this.startUrl).href;
+				const rawUrl = new URL(link.href, pageUrl).href;
+				const linkUrl = this.normalizeUrl(rawUrl);
 				if (this.enqueuedUrls.has(linkUrl)) continue;
 				if (this.enqueuedUrls.size >= this.maxLinks) {
 					this.emitMaxLinksReached();
@@ -377,12 +437,13 @@ class Crawler extends EventEmitter {
 
 	async crawlPage(task: CrawlTask): Promise<void> {
 		const { url, depth, foreignOnly = false } = task;
+		const normalizedUrl = this.normalizeUrl(url);
 
-		if (this.visitedUrls.has(url)) return;
+		if (this.visitedUrls.has(normalizedUrl)) return;
 		if (depth > this.maxDepth) return;
 		if (foreignOnly && !this.checkForeignFeeds) return;
 
-		this.visitedUrls.add(url);
+		this.visitedUrls.add(normalizedUrl);
 
 		this.emit('log', {
 			module: 'deepSearch',
@@ -410,7 +471,7 @@ class Crawler extends EventEmitter {
 		// Foreign-only tasks are feed-check only — no link extraction.
 		if (foreignOnly || depth >= this.maxDepth) return;
 
-		this.enqueueLinks(html, depth);
+		this.enqueueLinks(html, depth, url);
 	}
 }
 
@@ -445,8 +506,7 @@ export default async function deepSearch(
 		crawler.on('end', (data) => instance.emit!('end', data));
 	}
 
-	crawler.start();
-	await new Promise<void>((resolve) => {
+	const result = new Promise<void>((resolve) => {
 		let settled = false;
 		const finish = () => {
 			if (settled) return;
@@ -461,5 +521,7 @@ export default async function deepSearch(
 		crawler.resolve = finish;
 		crawler.queue.drain(finish);
 	});
+	await crawler.start(); // fetches sitemap, pushes all URLs, then resumes the queue
+	await result;
 	return crawler.feeds;
 }
