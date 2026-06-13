@@ -16,10 +16,28 @@
 import { parseHTML } from 'linkedom';
 import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLinks.ts';
 import checkAllAnchors from './modules/anchors.ts';
-import blindSearch from './modules/blindsearch.ts';
+import blindSearch, { type BlindSearchFeed } from './modules/blindsearch.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
+import type {
+	ErrorEventData,
+	MetaLinksLogData,
+	AnchorsLogData,
+	BlindSearchLogData,
+	DeepSearchLogData,
+	EventEmitter as EventEmitterInterface,
+} from './types/events.ts';
+
+export type {
+	BlindSearchFeed,
+	ErrorEventData,
+	MetaLinksLogData,
+	AnchorsLogData,
+	BlindSearchLogData,
+	DeepSearchLogData,
+	EventEmitterInterface,
+};
 
 /**
  * FeedSeeker options interface

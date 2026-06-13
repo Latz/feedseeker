@@ -7,6 +7,7 @@ vi.mock('../modules/metaLinks.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/anchors.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/blindsearch.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/deepSearch.ts', () => ({ default: vi.fn() }));
+vi.mock('../modules/checkFreshness.ts', () => ({ checkFeedFreshness: vi.fn() }));
 
 // Mock fetchWithTimeout as well, since initialize() is called.
 vi.mock('../modules/fetchWithTimeout.ts', () => ({
@@ -18,6 +19,7 @@ import anchorsMod from '../modules/anchors.ts';
 import blindsearchMod from '../modules/blindsearch.ts';
 import deepSearchMod from '../modules/deepSearch.ts';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
+import { checkFeedFreshness } from '../modules/checkFreshness.ts';
 
 describe('FeedSeeker CLI', () => {
 	let stdoutWriteSpy: Mock;
@@ -174,6 +176,92 @@ describe('FeedSeeker CLI', () => {
 			await run(argv);
 
 			expect(processExitSpy).toHaveBeenCalledWith(2);
+		});
+	});
+
+	describe('--check flag', () => {
+		const freshFeed: Feed = { url: 'https://example.com/fresh.xml', type: 'rss', title: null, feedTitle: 'Fresh Feed' };
+		const staleFeed: Feed = { url: 'https://example.com/stale.xml', type: 'rss', title: null, feedTitle: 'Stale Feed' };
+
+		beforeEach(() => {
+			(checkFeedFreshness as Mock).mockResolvedValue(true);
+		});
+
+		it('applies freshness filter with default 30 days when --check is passed alone', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check'];
+			await run(argv);
+
+			expect(checkFeedFreshness).toHaveBeenCalledWith(
+				freshFeed,
+				30,
+				expect.objectContaining({ options: expect.any(Object) })
+			);
+		});
+
+		it('uses custom days threshold from --check 60', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '60'];
+			await run(argv);
+
+			expect(checkFeedFreshness).toHaveBeenCalledWith(
+				freshFeed,
+				60,
+				expect.any(Object)
+			);
+		});
+
+		it('keeps fresh feeds in output', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
+			(checkFeedFreshness as Mock).mockResolvedValue(true);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			await run(argv);
+
+			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([freshFeed], null, 2));
+		});
+
+		it('removes stale feeds from output', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([staleFeed]);
+			(checkFeedFreshness as Mock).mockResolvedValue(false);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			await run(argv);
+
+			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([], null, 2));
+		});
+
+		it('filters mix of fresh and stale — only fresh in output', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([freshFeed, staleFeed]);
+			(checkFeedFreshness as Mock)
+				.mockResolvedValueOnce(true)
+				.mockResolvedValueOnce(false);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			await run(argv);
+
+			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([freshFeed], null, 2));
+		});
+
+		it('exits with code 2 when all feeds are stale', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([staleFeed]);
+			(checkFeedFreshness as Mock).mockResolvedValue(false);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			await run(argv);
+
+			expect(processExitSpy).toHaveBeenCalledWith(2);
+		});
+
+		it('does not call checkFeedFreshness when --check is not passed', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			await run(argv);
+
+			expect(checkFeedFreshness).not.toHaveBeenCalled();
 		});
 	});
 });

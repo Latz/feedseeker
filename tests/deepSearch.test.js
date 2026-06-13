@@ -338,3 +338,71 @@ describe('deepSearch()', () => {
 		expect(startUrlCalls.length).toBeLessThanOrEqual(2);
 	});
 });
+
+describe('deepSearch — maxFeeds limit', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('emits maxFeeds log message and resolves when limit is reached', async () => {
+		// 10 linked feeds with concurrency 1 so the limit can actually halt progress
+		const links = Array.from({ length: 10 }, (_, i) => `<a href="https://example.com/feed${i}.xml">f${i}</a>`).join('');
+		const html = `<html><body>${links}</body></html>`;
+		fetchWithTimeout.mockResolvedValue(mockResponse(html));
+		checkFeed.mockImplementation(async (url) => {
+			if (url.endsWith('.xml')) return { type: 'rss', title: 'Feed' };
+			return null;
+		});
+
+		const instance = makeInstance();
+		const result = await deepSearch('https://example.com', { depth: 2, maxFeeds: 2, concurrency: 1 }, instance);
+
+		// maxFeeds is a soft cap — in-flight tasks may still complete, but the log must fire
+		const maxFeedsLog = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.includes('maximum feeds limit')
+		);
+		expect(maxFeedsLog).toBeTruthy();
+		expect(result.length).toBeGreaterThanOrEqual(2);
+	});
+});
+
+describe('deepSearch — fetchHtml instance cache', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('uses pre-fetched content from instance instead of fetching again', async () => {
+		const cachedHtml = '<rss version="2.0"><channel><title>Cached</title><description>d</description><item><title>i</title></item></channel></rss>';
+		const instance = makeInstance();
+		instance.site = 'https://example.com';
+		instance.content = cachedHtml;
+		checkFeed.mockResolvedValue({ type: 'rss', title: 'Cached' });
+
+		await deepSearch('https://example.com', { depth: 1 }, instance);
+
+		// fetchWithTimeout should not have been called because content was cached
+		expect(fetchWithTimeout).not.toHaveBeenCalledWith(
+			'https://example.com',
+			expect.anything()
+		);
+	});
+});
+
+describe('deepSearch — checkFeed throws during crawl', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('handles checkFeed throwing an error without crashing', async () => {
+		fetchWithTimeout.mockResolvedValue(mockResponse('<html><body></body></html>'));
+		checkFeed.mockRejectedValue(new Error('parse failure'));
+
+		const instance = makeInstance();
+		const result = await deepSearch('https://example.com', { depth: 1, maxErrors: 5 }, instance);
+
+		expect(result).toEqual([]);
+		// crawlPage catch → handleFetchError → emits 'log' with an error field
+		const logEvents = instance._events.filter((e) => e.event === 'log');
+		expect(logEvents.some((e) => e.data?.error?.includes('parse failure'))).toBe(true);
+	});
+});

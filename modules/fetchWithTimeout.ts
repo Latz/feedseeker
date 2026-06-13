@@ -91,7 +91,9 @@ export default async function fetchWithTimeout(
 		}
 	} catch (error: unknown) {
 		if (error instanceof TypeError) {
-			throw new Error(`Invalid URL: ${url}`);
+			const err = new Error(`Invalid URL: ${url}`);
+			err.cause = error;
+			throw err;
 		}
 		throw error;
 	}
@@ -151,7 +153,9 @@ export default async function fetchWithTimeout(
 
 		// Provide clear error message for timeout
 		if (error instanceof Error && error.name === 'AbortError') {
-			throw new Error(`Request to ${url} timed out after ${timeout}ms`);
+			const err = new Error(`Request to ${url} timed out after ${timeout}ms`);
+			err.cause = error;
+			throw err;
 		}
 
 		// Re-throw other errors

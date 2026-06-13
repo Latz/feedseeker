@@ -439,4 +439,63 @@ describe('checkFeed — fetch path', () => {
 	it('throws for completely invalid URL', async () => {
 		await expect(checkFeed('not-a-url', 'content')).rejects.toThrow('Invalid URL');
 	});
+
+	it('throws when content exceeds maximum size', async () => {
+		const oversized = 'x'.repeat(10 * 1024 * 1024 + 1);
+		await expect(checkFeed('https://example.com/feed.xml', oversized)).rejects.toThrow(
+			'Content too large'
+		);
+	});
+
+	it('uses default timeout when timeout is null', async () => {
+		fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => 'null' });
+		const instance = { options: { timeout: null } };
+		await checkFeed('https://example.com/feed.json', '', instance);
+		expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', {
+			timeout: 15000,
+			insecure: undefined
+		});
+	});
+
+	it('clamps timeout to maximum when timeout exceeds max', async () => {
+		fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => 'null' });
+		const instance = { options: { timeout: 9999 } };
+		await checkFeed('https://example.com/feed.json', '', instance);
+		expect(fetchWithTimeout).toHaveBeenCalledWith('https://example.com/feed.json', {
+			timeout: 60000,
+			insecure: undefined
+		});
+	});
+});
+
+describe('checkFeed — oEmbed detection', () => {
+	it('returns null for oEmbed response with type+version+html (secondary branch)', async () => {
+		const oembed = JSON.stringify({
+			type: 'rich',
+			version: '1.0',
+			html: '<iframe src="..."></iframe>'
+		});
+		const result = await checkFeed('https://example.com/oembed', oembed);
+		expect(result).toBeNull();
+	});
+});
+
+describe('checkFeed — RSS title fallback', () => {
+	it('falls back to direct title match when channel wrapper is missing', async () => {
+		// CHANNEL_CONTENT requires bare <channel>; using <channel id="x"> breaks that match
+		// so extractRssTitle must fall back to the bare TITLE pattern on the full content.
+		const rssContent = `<rss version="2.0"><channel id="x"><title>Fallback Title</title><description>desc</description><item><title>i</title></item></channel></rss>`;
+		const result = await checkFeed('https://example.com/feed.xml', rssContent);
+		expect(result).not.toBeNull();
+		expect(result.type).toBe('rss');
+		expect(result.title).toBe('Fallback Title');
+	});
+});
+
+describe('checkFeed — JSON non-feed', () => {
+	it('returns null for JSON that is not a feed', async () => {
+		const json = JSON.stringify({ name: 'John', age: 30 });
+		const result = await checkFeed('https://example.com/data.json', json);
+		expect(result).toBeNull();
+	});
 });

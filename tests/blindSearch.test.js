@@ -426,23 +426,20 @@ describe('blindsearch module — endpoint getters', () => {
 		checkFeed.mockResolvedValue(null);
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 
-		let fastCount = 0;
-		let standardCount = 0;
-
 		const fastInstance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const a1 = new AbortController();
 		a1.abort();
 		fastInstance._events = [];
 		await blindSearch(fastInstance, a1.signal).catch(() => {});
 		const fastStart = fastInstance._events.find((e) => e.event === 'start');
-		fastCount = fastStart?.data?.endpointUrls ?? 0;
+		const fastCount = fastStart?.data?.endpointUrls ?? 0;
 
 		const standardInstance = new MockInstance('https://example.com', { searchMode: 'standard' });
 		const a2 = new AbortController();
 		a2.abort();
 		await blindSearch(standardInstance, a2.signal).catch(() => {});
 		const standardStart = standardInstance._events.find((e) => e.event === 'start');
-		standardCount = standardStart?.data?.endpointUrls ?? 0;
+		const standardCount = standardStart?.data?.endpointUrls ?? 0;
 
 		expect(fastCount).toBeGreaterThan(0);
 		expect(standardCount).toBeGreaterThan(fastCount);
@@ -452,15 +449,12 @@ describe('blindsearch module — endpoint getters', () => {
 		checkFeed.mockResolvedValue(null);
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
 
-		let standardCount = 0;
-		let exhaustiveCount = 0;
-
 		const standardInstance = new MockInstance('https://example.com', { searchMode: 'standard' });
 		const a1 = new AbortController();
 		a1.abort();
 		await blindSearch(standardInstance, a1.signal).catch(() => {});
 		const standardStart = standardInstance._events.find((e) => e.event === 'start');
-		standardCount = standardStart?.data?.endpointUrls ?? 0;
+		const standardCount = standardStart?.data?.endpointUrls ?? 0;
 
 		const exhaustiveInstance = new MockInstance('https://example.com', {
 			searchMode: 'exhaustive'
@@ -469,7 +463,7 @@ describe('blindsearch module — endpoint getters', () => {
 		a2.abort();
 		await blindSearch(exhaustiveInstance, a2.signal).catch(() => {});
 		const exhaustiveStart = exhaustiveInstance._events.find((e) => e.event === 'start');
-		exhaustiveCount = exhaustiveStart?.data?.endpointUrls ?? 0;
+		const exhaustiveCount = exhaustiveStart?.data?.endpointUrls ?? 0;
 
 		expect(exhaustiveCount).toBeGreaterThan(standardCount);
 	});

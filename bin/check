@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+echo "==> ESLint"
+pnpm run lint
+
+echo "==> TypeScript"
+pnpm run typecheck
+
+echo "==> Knip"
+pnpm knip || true
+
+echo "==> Done"

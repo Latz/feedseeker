@@ -39,7 +39,7 @@ export interface FeedResult {
 	title: string | null;
 }
 
-export interface FeedSeekerOptions {
+interface FeedSeekerOptions {
 	timeout?: number;
 	maxFeeds?: number;
 	showErrors?: boolean;

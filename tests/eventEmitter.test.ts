@@ -474,4 +474,33 @@ describe('EventEmitter Module', () => {
 			expect(rawListeners).toEqual([]);
 		});
 	});
+
+	describe('error edge cases', () => {
+		it('throws unhandled error event when arg is not an Error instance', () => {
+			expect(() => {
+				emitter.emit('error', 'string error message');
+			}).toThrow('Unhandled error event: string error message');
+		});
+
+		it('throws when error listener itself throws', () => {
+			emitter.on('error', () => {
+				throw new Error('listener failure');
+			});
+			emitter.on('test', () => {
+				throw new Error('original error');
+			});
+			expect(() => {
+				emitter.emit('test');
+			}).toThrow('listener failure');
+		});
+
+		it('throws when listener throws and there are no error listeners', () => {
+			emitter.on('test', () => {
+				throw new Error('no error handler');
+			});
+			expect(() => {
+				emitter.emit('test');
+			}).toThrow('no error handler');
+		});
+	});
 });

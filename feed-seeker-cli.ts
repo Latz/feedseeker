@@ -6,12 +6,14 @@ import { styleText } from 'node:util';
 import { type Feed } from './modules/metaLinks.ts';
 import type { StartEventData, EndEventData, LogEventData } from './types/events.ts';
 import bannerText from './modules/banner.ts';
+import { checkFeedFreshness } from './modules/checkFreshness.ts';
 
 // CLI-specific options that extend FeedSeekerOptions
 interface CLIOptions extends FeedSeekerOptions {
 	displayErrors?: boolean;
 	searchMode?: 'fast' | 'standard' | 'exhaustive';
 	json?: boolean;
+	check?: number;
 }
 
 let counterLength = 0; // needed for fancy blindsearch log display
@@ -233,7 +235,7 @@ interface ExtendedCommand extends Command {
  * @param argv - Command line arguments (defaults to process.argv)
  * @returns Configured Command instance
  */
-export function createProgram(_argv?: string[]): ExtendedCommand {
+function createProgram(_argv?: string[]): ExtendedCommand {
 	const program: ExtendedCommand = new Command();
 	program
 		.name(`feed-seeker`)
@@ -350,6 +352,18 @@ export function createProgram(_argv?: string[]): ExtendedCommand {
 			}
 		});
 
+	program.addOption(
+		new Option(
+			'--check [days]',
+			'Filter out feeds with no item published in the last N days (default: 30)'
+		)
+			.preset(30)
+			.argParser((val: string) => {
+				const n = parseInt(val, 10);
+				return isNaN(n) || n < 1 ? 30 : n;
+			})
+	);
+
 	// add hidden option '--display-errors' to program
 	program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
 	program.addOption(
@@ -391,6 +405,19 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 	const opts = program.opts<CLIOptions>();
 
 	if (program.feeds !== undefined) {
+		if (opts.check !== undefined) {
+			const days = typeof opts.check === 'number' ? opts.check : 30;
+			const minimalInstance = { options: { timeout: opts.timeout, insecure: opts.insecure } };
+			const checks = await Promise.allSettled(
+				program.feeds.map((f) => checkFeedFreshness(f, days, minimalInstance))
+			);
+			program.feeds = program.feeds.filter(
+				(_, i) =>
+					checks[i].status === 'fulfilled' &&
+					(checks[i] as PromiseFulfilledResult<boolean>).value
+			);
+		}
+
 		if (opts.json) {
 			// JSON mode: just print the final array of feeds.
 			console.log(JSON.stringify(program.feeds, null, 2));
