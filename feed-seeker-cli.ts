@@ -14,6 +14,7 @@ interface CLIOptions extends FeedSeekerOptions {
 	searchMode?: 'fast' | 'standard' | 'exhaustive';
 	json?: boolean;
 	format?: 'text' | 'json' | 'opml';
+	quiet?: boolean;
 	check?: number;
 }
 
@@ -21,16 +22,21 @@ let counterLength = 0; // needed for fancy blindsearch log display
 
 interface CLIRunContext {
 	isAllMode: boolean;
+	quiet: boolean;
 }
 
-function start(...args: unknown[]): void {
-	const data = args[0] as StartEventData;
-	counterLength = 0; // Reset counter length for new module
-	process.stdout.write(`Starting ${data.niceName} `);
+function makeStartHandler(ctx: CLIRunContext) {
+	return function start(...args: unknown[]): void {
+		if (ctx.quiet) return;
+		const data = args[0] as StartEventData;
+		counterLength = 0;
+		process.stdout.write(`Starting ${data.niceName} `);
+	};
 }
 
 function makeEndHandler(ctx: CLIRunContext) {
 	return function end(...args: unknown[]): void {
+		if (ctx.quiet) return;
 		const data = args[0] as EndEventData;
 		if (data.module === 'deepSearch' && data.visitedUrls !== undefined) {
 			process.stdout.write(`  Done. Crawled ${data.visitedUrls} URLs.\n`);
@@ -52,8 +58,10 @@ function makeEndHandler(ctx: CLIRunContext) {
 	};
 }
 
-async function log(...args: unknown[]): Promise<void> {
-	const data = args[0] as LogEventData;
+function makeLogHandler(ctx: CLIRunContext) {
+	return async function log(...args: unknown[]): Promise<void> {
+		if (ctx.quiet) return;
+		const data = args[0] as LogEventData;
 	if (data.module === 'metalinks') {
 		process.stdout.write('.');
 	}
@@ -95,6 +103,7 @@ async function log(...args: unknown[]): Promise<void> {
 			}
 		}
 	}
+	};
 }
 
 interface FeedFinderWithError extends FeedSeeker {
@@ -111,8 +120,8 @@ function initializeFeedFinder(
 	FeedFinder.initializationError = false;
 
 	if (!options.json) {
-		FeedFinder.on('start', start);
-		FeedFinder.on('log', log);
+		FeedFinder.on('start', makeStartHandler(ctx));
+		FeedFinder.on('log', makeLogHandler(ctx));
 		FeedFinder.on('end', makeEndHandler(ctx));
 	}
 
@@ -259,6 +268,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.option('-d, --deepsearch', 'Enable deep search')
 		.option('--all', 'Execute all strategies and combine results')
 		.option('--format <format>', 'Output format: text (default), json, opml')
+		.option('--quiet', 'Print only feed URLs, one per line (suppresses banner and progress)')
 		.option('--deepsearch-only', 'Deep search only')
 		.option(
 			'--depth <number>',
@@ -338,7 +348,8 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 			}
 			try {
 				const ctx: CLIRunContext = {
-					isAllMode: !!options.all
+					isAllMode: !!options.all,
+					quiet: !!options.quiet,
 				};
 				// Store the result directly on the program object
 				program.feeds = await getFeeds(site, options, ctx);
@@ -426,6 +437,7 @@ function printFeeds(feeds: Feed[]): void {
 export async function run(argv: string[] = process.argv): Promise<void> {
 	const suppressBanner =
 		argv.includes('--json') ||
+		argv.includes('--quiet') ||
 		(argv.includes('--format') && argv[argv.indexOf('--format') + 1] !== 'text');
 	if (!suppressBanner) {
 		console.log(`${bannerText}\n`);
@@ -458,6 +470,8 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 			console.log(JSON.stringify(program.feeds, null, 2));
 		} else if (format === 'opml') {
 			console.log(formatOpml(program.feeds, program.site ?? ''));
+		} else if (opts.quiet) {
+			program.feeds.forEach((f) => console.log(f.url));
 		} else {
 			// Interactive text mode
 			if (opts.all) {

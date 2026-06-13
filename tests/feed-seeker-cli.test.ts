@@ -353,4 +353,53 @@ describe('FeedSeeker CLI', () => {
 			expect(output).not.toContain('<opml');
 		});
 	});
+
+	describe('--quiet flag', () => {
+		const quietFeeds: Feed[] = [
+			{ url: 'https://example.com/feed.xml', type: 'rss', title: 'My Blog', feedTitle: 'My Blog' },
+			{ url: 'https://example.com/atom.xml', type: 'atom', title: 'My Blog Atom', feedTitle: 'My Blog Atom' },
+		];
+
+		it('prints only URLs, one per line', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			await run(argv);
+
+			const calls = consoleLogSpy.mock.calls;
+			expect(calls).toHaveLength(quietFeeds.length);
+			expect(calls[0][0]).toBe('https://example.com/feed.xml');
+			expect(calls[1][0]).toBe('https://example.com/atom.xml');
+		});
+
+		it('suppresses the banner', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			await run(argv);
+
+			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+			expect(allOutput).not.toContain('feedseeker');
+			expect(allOutput).not.toContain('FeedSeeker');
+		});
+
+		it('suppresses progress output (no stdout.write calls)', async () => {
+			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			await run(argv);
+
+			expect(stdoutWriteSpy).not.toHaveBeenCalled();
+		});
+
+		it('exits with code 2 when no feeds found', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			await run(argv);
+
+			expect(processExitSpy).toHaveBeenCalledWith(2);
+			expect(consoleLogSpy).not.toHaveBeenCalled();
+		});
+	});
 });
