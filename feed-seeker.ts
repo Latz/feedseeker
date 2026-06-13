@@ -493,3 +493,23 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 			: feeds;
 	}
 }
+
+/**
+ * Search multiple sites in parallel and return results keyed by input URL.
+ * @param urls - Array of site URLs to search
+ * @param options - Shared FeedSeekerOptions applied to every site
+ * @returns Map from input URL to Feed[] for that site
+ */
+export async function findAll(
+	urls: string[],
+	options: FeedSeekerOptions = {}
+): Promise<Map<string, Feed[]>> {
+	const entries = await Promise.all(
+		urls.map(async (url) => {
+			const seeker = new FeedSeeker(url, options);
+			const feeds = await seeker.startSearch();
+			return [url, feeds] as const;
+		})
+	);
+	return new Map(entries);
+}

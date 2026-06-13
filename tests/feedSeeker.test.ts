@@ -1,5 +1,5 @@
 import { describe, it, beforeEach, afterEach, expect, vi, type Mock } from 'vitest';
-import FeedSeeker, { type FeedSeekerOptions } from '../feed-seeker.ts';
+import FeedSeeker, { findAll, type FeedSeekerOptions } from '../feed-seeker.ts';
 import { type Feed } from '../modules/metaLinks.ts';
 
 // Mock fetchWithTimeout so initialize() never makes real network requests
@@ -414,5 +414,60 @@ describe('startSearch()', () => {
 		const fs = new FeedSeeker('https://example.com');
 		const result = await fs.startSearch();
 		expect(result).toEqual([]);
+	});
+});
+
+describe('findAll()', () => {
+	const feed1: Feed = { url: 'https://a.com/feed.xml', type: 'rss', title: 'A', feedTitle: 'A' };
+	const feed2: Feed = { url: 'https://b.com/feed.xml', type: 'atom', title: 'B', feedTitle: 'B' };
+
+	it('returns an empty Map for an empty input array', async () => {
+		const result = await findAll([]);
+		expect(result).toBeInstanceOf(Map);
+		expect(result.size).toBe(0);
+	});
+
+	it('returns a Map with one entry per input URL', async () => {
+		(metaLinksMod as Mock).mockResolvedValueOnce([feed1]).mockResolvedValueOnce([feed2]);
+
+		const result = await findAll(['https://a.com', 'https://b.com']);
+
+		expect(result.size).toBe(2);
+		expect(result.has('https://a.com')).toBe(true);
+		expect(result.has('https://b.com')).toBe(true);
+	});
+
+	it('maps input URLs to their respective Feed arrays', async () => {
+		(metaLinksMod as Mock).mockResolvedValueOnce([feed1]).mockResolvedValueOnce([feed2]);
+
+		const result = await findAll(['https://a.com', 'https://b.com']);
+
+		expect(result.get('https://a.com')).toEqual([feed1]);
+		expect(result.get('https://b.com')).toEqual([feed2]);
+	});
+
+	it('uses the input URL as the map key, not the normalized URL', async () => {
+		(metaLinksMod as Mock).mockResolvedValue([feed1]);
+
+		const result = await findAll(['https://a.com']);
+
+		expect(result.has('https://a.com')).toBe(true);
+	});
+
+	it('returns empty Feed[] for sites with no feeds', async () => {
+		const result = await findAll(['https://a.com', 'https://b.com']);
+
+		expect(result.get('https://a.com')).toEqual([]);
+		expect(result.get('https://b.com')).toEqual([]);
+	});
+
+	it('forwards options to each search', async () => {
+		(metaLinksMod as Mock).mockResolvedValue([feed1]);
+
+		await findAll(['https://a.com'], { metasearch: true });
+
+		// metasearch: true means only metaLinks is called per site
+		expect(metaLinksMod).toHaveBeenCalledTimes(1);
+		expect(blindSearchMod).not.toHaveBeenCalled();
 	});
 });
