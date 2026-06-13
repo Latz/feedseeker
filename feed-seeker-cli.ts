@@ -268,7 +268,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.option('-d, --deepsearch', 'Enable deep search')
 		.option('--all', 'Execute all strategies and combine results')
 		.option('--format <format>', 'Output format: text (default), json, opml')
-		.option('--quiet', 'Print only feed URLs, one per line (suppresses banner and progress)')
+		.option('-q, --quiet', 'Print only feed URLs, one per line (suppresses banner and progress)')
 		.option('--deepsearch-only', 'Deep search only')
 		.option(
 			'--depth <number>',
@@ -368,7 +368,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 
 	program.addOption(
 		new Option(
-			'--check [days]',
+			'-c, --check [days]',
 			'Filter out feeds with no item published in the last N days (default: 30)'
 		)
 			.preset(30)
@@ -437,7 +437,7 @@ function printFeeds(feeds: Feed[]): void {
 export async function run(argv: string[] = process.argv): Promise<void> {
 	const suppressBanner =
 		argv.includes('--json') ||
-		argv.includes('--quiet') ||
+		argv.includes('--quiet') || argv.includes('-q') ||
 		(argv.includes('--format') && argv[argv.indexOf('--format') + 1] !== 'text');
 	if (!suppressBanner) {
 		console.log(`${bannerText}\n`);
