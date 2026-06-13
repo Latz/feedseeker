@@ -3,6 +3,7 @@
 import { Command, Option } from 'commander';
 import FeedSeeker, { type FeedSeekerOptions } from './feed-seeker.ts';
 import { styleText } from 'node:util';
+import { readFile } from 'node:fs/promises';
 import { type Feed } from './modules/metaLinks.ts';
 import type { StartEventData, EndEventData, LogEventData } from './types/events.ts';
 import bannerText from './modules/banner.ts';
@@ -16,6 +17,7 @@ interface CLIOptions extends FeedSeekerOptions {
 	format?: 'text' | 'json' | 'opml';
 	quiet?: boolean;
 	check?: number;
+	file?: string;
 }
 
 let counterLength = 0; // needed for fancy blindsearch log display
@@ -232,6 +234,14 @@ async function getFeeds(
 	return feeds;
 }
 
+async function readUrlsFromFile(filePath: string): Promise<string[]> {
+	const content = await readFile(filePath, 'utf-8');
+	return content
+		.split('\n')
+		.map((line) => line.trim())
+		.filter((line) => line.length > 0 && !line.startsWith('#'));
+}
+
 // Extended program type to store feeds and run context
 interface ExtendedCommand extends Command {
 	feeds?: Feed[];
@@ -269,6 +279,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.option('--all', 'Execute all strategies and combine results')
 		.option('--format <format>', 'Output format: text (default), json, opml')
 		.option('-q, --quiet', 'Print only feed URLs, one per line (suppresses banner and progress)')
+		.option('-f, --file <path>', 'Read URLs from a file (one per line) and search each site')
 		.option('--deepsearch-only', 'Deep search only')
 		.option(
 			'--depth <number>',
@@ -342,7 +353,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		)
 		.description('Find feeds for site\n')
 		.action(async (site: string, options: CLIOptions & { all?: boolean }) => {
-			if (!site) {
+			if (!site && !options.file) {
 				program.help();
 				process.exit(0);
 			}
@@ -351,10 +362,21 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 					isAllMode: !!options.all,
 					quiet: !!options.quiet,
 				};
-				// Store the result directly on the program object
-				program.feeds = await getFeeds(site, options, ctx);
 				program.ctx = ctx;
-				program.site = site;
+
+				if (options.file) {
+					const urls = await readUrlsFromFile(options.file);
+					const allFeeds: Feed[] = [];
+					for (const url of urls) {
+						const feeds = await getFeeds(url, options, ctx);
+						allFeeds.push(...feeds);
+					}
+					program.feeds = allFeeds;
+					program.site = options.file;
+				} else {
+					program.feeds = await getFeeds(site, options, ctx);
+					program.site = site;
+				}
 			} catch (error) {
 				if (options.displayErrors) {
 					console.error('\nError details:', error);

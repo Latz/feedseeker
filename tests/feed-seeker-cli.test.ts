@@ -402,4 +402,52 @@ describe('FeedSeeker CLI', () => {
 			expect(consoleLogSpy).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('--file flag', () => {
+		const fileFeed1: Feed = { url: 'https://site1.com/feed.xml', type: 'rss', title: null, feedTitle: null };
+		const fileFeed2: Feed = { url: 'https://site2.com/atom.xml', type: 'atom', title: null, feedTitle: null };
+
+		it('reads URLs from a file and searches each site', async () => {
+			const { readFile } = await import('node:fs/promises');
+			vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
+
+			const readFileMock = readFile as unknown as Mock;
+			readFileMock.mockResolvedValue('https://site1.com\nhttps://site2.com\n');
+
+			(metaLinksMod as Mock)
+				.mockResolvedValueOnce([fileFeed1])
+				.mockResolvedValueOnce([fileFeed2]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+			await run(argv);
+
+			const jsonCall = consoleLogSpy.mock.calls.find((c) => {
+				try { JSON.parse(c[0]); return true; } catch { return false; }
+			});
+			expect(jsonCall).toBeDefined();
+			const result = JSON.parse(jsonCall![0]) as Feed[];
+			expect(result).toHaveLength(2);
+			expect(result[0].url).toBe('https://site1.com/feed.xml');
+			expect(result[1].url).toBe('https://site2.com/atom.xml');
+		});
+
+		it('skips blank lines and comment lines in the file', async () => {
+			const { readFile } = await import('node:fs/promises');
+			const readFileMock = readFile as unknown as Mock;
+			readFileMock.mockResolvedValue('# comment\nhttps://site1.com\n\n  \n');
+
+			(metaLinksMod as Mock).mockResolvedValue([fileFeed1]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+			await run(argv);
+
+			expect(metaLinksMod).toHaveBeenCalledTimes(1);
+		});
+
+		it('shows help and exits 0 when neither site nor --file is provided', async () => {
+			const argv = ['node', 'feed-seeker-cli.ts'];
+			await run(argv);
+			expect(processExitSpy).toHaveBeenCalledWith(0);
+		});
+	});
 });
