@@ -1,0 +1,2202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/atom-style.xsl" type="text/xsl"?>
+<feed
+	xmlns="http://www.w3.org/2005/Atom"
+	xmlns:thr="http://purl.org/syndication/thread/1.0"
+	xml:lang="en-GB"
+	>
+	<title type="text">Terence Eden’s Blog</title>
+	<subtitle type="text">Regular nonsense about tech and its effects 🙃</subtitle>
+
+	<updated>2026-06-22T14:36:54Z</updated>
+
+	<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog" />
+	<id>https://shkspr.mobi/blog/feed/atom/</id>
+	<link rel="self" type="application/atom+xml" href="https://shkspr.mobi/blog/feed/atom/" />
+
+	<generator uri="https://wordpress.org/" version="7.0">WordPress</generator>
+<icon>https://shkspr.mobi/blog/wp-content/uploads/2023/07/cropped-avatar-32x32.jpeg</icon>
+	<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Auth0 PHP - manually authenticating JWT idTokens]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/auth0-php-manually-authenticating-tokens/" />
+
+		<id>https://shkspr.mobi/blog/?p=70732</id>
+		<updated>2026-04-28T20:42:25Z</updated>
+		<published>2026-06-24T11:34:25Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="Auth0" /><category scheme="https://shkspr.mobi/blog" term="HowTo" /><category scheme="https://shkspr.mobi/blog" term="php" /><category scheme="https://shkspr.mobi/blog" term="Symfony" />
+		<summary type="html"><![CDATA[I find it baffling just how poorly documented most big projects are. Auth0 by Okta has a fair bit of cash, lots of customers, and almost completely absent documentation.  Here&#039;s how to successfully authenticate a JWT supplied by Auth0.  Once your user has authenticated with Auth0, they will be given an accessToken and an idToken. Only the idToken is needed for our purposes.  It will look…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/auth0-php-manually-authenticating-tokens/"><![CDATA[<p>I find it baffling just how poorly documented most big projects are. Auth0 by Okta has a fair bit of cash, lots of customers, and almost completely absent documentation.</p>
+
+<p>Here's how to successfully authenticate a JWT supplied by Auth0.</p>
+
+<p>Once your user has authenticated with Auth0, they will be given an <code>accessToken</code> and an <code>idToken</code>. Only the <code>idToken</code> is needed for our purposes.</p>
+
+<p>It will look something like this:</p>
+
+<p><code>eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYzEyMyJ9.eyJnaXZlbl9uYW1lIjoiSm8iLCJmYW1pbHlfbmFtZSI6IlRlc3QiLCJuaWNrbmFtZSI6IkpvVGVzdCIsIm5hbWUiOiJKbyBMZSBUZXN0IiwicGljdHVyZSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vam8ucG5nIiwidXBkYXRlZF9hdCI6IjIwMjYtMDQtMjhUMTM6NTk6NTUuNjcxWiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczovL2V4YW1wbGUuZXUuYXV0aDAuY29tLyIsImF1ZCI6ImFiYzEyMyIsInN1YiI6ImZhY2Vib29rfDEyMzQ1NiIsImlhdCI6MTc3NzM4NDc5NiwiZXhwIjoxNzc3NDIwNzk2LCJzaWQiOiJhYmMxMjMtNDU2LWRlZmdoaWprIiwibm9uY2UiOiIxMjM0NTY3ODkwIn0.ZgnZxOOtfczLewlm_agK6mJMYetVTZrHlBlu5qzXbADlhvZB8RraVuFKmFutLZLibMQxz_RY0oh4hRufVWDHJ0kuocW38kRHztDg7R5KOfvJEM46WW49xvhLhKprzkx9WXDDlpCRNL0QbBK2U0F1VjmRpTp1Q5cHEd8PBsa4rGAhfqudXp5JrC2Lm5e7ji0AQ_s7HJhy59b9mTb3tMqHGsrWDZS915zHPYEQtSvg5o9sSx1tCRfsyL6kdsdkaTffQjJDUrT5hpIQ-2_9tGuqioJjP4c0edQ85TaK9UnSxfzMQ8gYez963kbo_Iv1fJyaTVwXR-AVvwK-CeGJAFrheQ</code></p>
+
+<p>Yeuch! If you stick it into <a href="https://www.jwt.io/">JWT.io</a> you'll see that it is Base64 encoded JSON containing a header, body, and signature. Each part is separated by a <code>.</code> character.</p>
+
+<p>You could manually decode it, but that's a bit of a pain in the arse. So here's how to do it with <a href="https://github.com/auth0/auth0-PHP/">the Auth0 PHP library</a>. I'm <a href="https://github.com/auth0/symfony">using the Symfony one</a>, but it should all be fairly similar.</p>
+
+<p>First, import the library:</p>
+
+<pre><code class="language-php">use Auth0\SDK\Auth0;
+</code></pre>
+
+<p>Next, you'll need to send the token to the PHP. You can do this in a header, GET, or similar:</p>
+
+<pre><code class="language-php">$authHeader = $request-&gt;headers-&gt;get("Auth0-Authorization");
+</code></pre>
+
+<p>Then, set up Auth0 so that it can parse and validate the token:</p>
+
+<pre><code class="language-php">try {
+    $token = $authHeader;
+    $auth0 = new Auth0([
+        "domain"       =&gt; $_ENV["AUTH0_DOMAIN"],
+        "clientId"     =&gt; $_ENV["AUTH0_CLIENT_ID"],
+        "clientSecret" =&gt; $_ENV["AUTH0_CLIENT_SECRET"],
+        "cookieSecret" =&gt; "_"   //  Dummy value.
+    ]);
+
+    $decoded = $auth0-&gt;decode(
+        token: $token,
+        tokenType: \Auth0\SDK\Token::TYPE_ID_TOKEN,
+    );
+} catch (\Exception $e) {
+    error_log("Auth0 Error - {$e}");
+}
+</code></pre>
+
+<p>The <code>cookieSecret</code> <em>must</em> be set - even though you aren't using cookies. Any non-null value is fine.</p>
+
+<p>The <code>tokenType</code> must also be set correctly.</p>
+
+<p>Assuming you all goes well, you will have a <code>decoded</code> object which has validated against Auth0. So how do you get the user's details from it?</p>
+
+<p>Well, you <em>could</em> split the original <code>idToken</code> at the period character and Base64 decode the middle one. Try it now to see what it contains! Or <code>print_r()</code> the decoded token to see it in all its cryptographic glory.</p>
+
+<p>The easiest way is to do:</p>
+
+<pre><code class="language-php">$claims = $decoded-&gt;toArray();
+</code></pre>
+
+<p>Then you can access various properties by doing:</p>
+
+<pre><code class="language-php">$username   = $claims["nickname"];
+$identifier = $claims["sub"]; 
+</code></pre>
+
+<p>Perhaps there is a more official way - but I couldn't find anything in the documentation. Hurrah for reading source code!</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=70732&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/auth0-php-manually-authenticating-tokens/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/auth0-php-manually-authenticating-tokens/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Cybersecurity for the paranoid business traveller]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/" />
+
+		<id>https://shkspr.mobi/blog/?p=64419</id>
+		<updated>2026-06-22T14:36:54Z</updated>
+		<published>2026-06-22T11:34:18Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="CyberSecurity" />
+		<summary type="html"><![CDATA[Over the years, I&#039;ve worked for organisations with various levels of risk tolerance for business travellers. Some have been (rightly) paranoid and others have been (wrongly) placid about the threats their employees face.  The fact is, individuals are often targeted for espionage, blackmail, or other state-sponsored attacks.  Here&#039;s a list of some of the different advice I&#039;ve received, roughly…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/"><![CDATA[<p>Over the years, I've worked for organisations with various levels of risk tolerance for business travellers. Some have been (rightly) paranoid and others have been (wrongly) placid about the threats their employees face.</p>
+
+<p>The fact is, individuals are often targeted for espionage, blackmail, or other state-sponsored attacks.</p>
+
+<p>Here's a list of some of the different advice I've received, roughly sorted into levels of suitability. Start at the top and work your way down until you reach a suitable level.</p>
+
+<h2 id="usb-sticks-no-thanks"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#usb-sticks-no-thanks">USB sticks? No thanks!</a></h2>
+
+<p>At some point, you'll be given a gift of a decorative USB pen drive. It'll either be part of a goodie-bag or you'll be told it has all of this quarter's TPS reports on it.</p>
+
+<p>You should thank them for their kind gift. On your way back to the hotel, drop the stick in a bin.</p>
+
+<p>There's just too much which can go wrong with a USB stick. Maybe it has a virus. Maybe it is an exfiltration device. Maybe it has extreme pornography and the police will catch you with it. Just chuck it. If anyone asks, say you couldn't get it to work and can they please email you the information.</p>
+
+<h2 id="usb-power-play-it-safe"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#usb-power-play-it-safe">USB Power? Play it safe!</a></h2>
+
+<p>USB powers everything from your phone and laptop, to your headphone and eReader. But USB cables also carry data. Some devices can be silently hacked by plugging them in to a dodgy power port.</p>
+
+<p>Is it <em>likely</em> that the USB socket on the airport bus has been set up to exfiltrate travellers' data? Probably not - but why take the risk?</p>
+
+<p>The best thing you can do is to always charge from your own device. Get a travel charger or, ideally, a portable battery and <em>only</em> use that for charging.</p>
+
+<p>For extra paranoia, you can buy USB condoms and charging-only cables - but they tend to be slower at charging.</p>
+
+<h2 id="reduce-your-app-attack-surface"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#reduce-your-app-attack-surface">Reduce Your App Attack Surface</a></h2>
+
+<p>Do you <em>need</em> all those apps on your phone? Will you cope without your banking apps, dating apps, streaming apps? Each one is a potential vector for abuse.</p>
+
+<p>Is it legal for you to date your preferred romantic partner in your intended destination? You shouldn't have to hide yourself, but having an illegal app on your phone is a great way to get picked up by the police.</p>
+
+<p>Go through your phone and uninstall anything which isn't important to the trip.</p>
+
+<h2 id="a-vpn-probably-draws-more-attention-than-it-is-worth-but-browse-cautiously"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#a-vpn-probably-draws-more-attention-than-it-is-worth-but-browse-cautiously">A VPN probably draws more attention than it is worth, but browse cautiously</a></h2>
+
+<p>This is slightly counter-intuitive. Every important site on the web uses HTTPS. The really important ones <a href="https://hstspreload.org/">are on a special list</a> which means your browser will <em>only</em> use a secure connection. The chances of your data being intercepted is minimal.</p>
+
+<p>But using a VPN immediately makes your traffic look suspicious and, in some countries, may be illegal.</p>
+
+<p>That said, while the contents of your communications will be private, their destination is easy to figure out. Don't browse pornography or any other site which is liable to get you in trouble. This may include news sites from outside the country.</p>
+
+<h2 id="what-passwords-do-you-need"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#what-passwords-do-you-need">What passwords do you need?</a></h2>
+
+<p>Hopefully you use a password manager - and hopefully all your passwords are unique. But do you really need to carry around <em>all</em> of them? You password manager almost certainly allows you to create a sub-account into which you can deposit anything you need for your trip.</p>
+
+<p>Similarly, you don't need <em>all</em> your MFA codes with you. If you <em>do</em> need MFA please make sure it isn't coming through SMS.</p>
+
+<h2 id="theyre-not-flirting-with-you"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#theyre-not-flirting-with-you">They're not flirting with you.</a></h2>
+
+<p>Mate, you're a middle-aged sales rep who scored a trip to a conference in an exotic country. Do you <em>really</em> think that pretty young thing is enthralled by your tales of middle-management?</p>
+
+<p>No.</p>
+
+<p>At best, the photos will be used to blackmail you. At worst the police will claim that they're under the age of consent and <em>that</em> will be used to blackmail you.</p>
+
+<h2 id="laptops-and-liability"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#laptops-and-liability">Laptops and Liability</a></h2>
+
+<p>Your IT team has provided you with a laptop which is encrypted and biometrically secured, right?  But do you need that <em>specific</em> laptop?</p>
+
+<p>They should grab a cheap laptop. Fill it with only the documents you need. When you get back home, toss it.</p>
+
+<p>I'm quite serious, a £200 Chromebook is a cheap price to pay to prevent your secrets getting stolen or your network being infiltrated.</p>
+
+<h2 id="what-else"><a href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#what-else">What Else?</a></h2>
+
+<p>Possibly you think some of these are overkill. Perhaps you think I'm not being paranoid enough. What would you add to the list?</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=64419&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/#comments" thr:count="6" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/cybersecurity-for-the-paranoid-business-traveller/feed/atom/" thr:count="6" />
+			<thr:total>6</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Which Copyleft Licence is Suitable for an SVG?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/" />
+
+		<id>https://shkspr.mobi/blog/?p=68741</id>
+		<updated>2026-04-27T08:29:16Z</updated>
+		<published>2026-06-20T11:34:22Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="Copyleft" /><category scheme="https://shkspr.mobi/blog" term="copyright" /><category scheme="https://shkspr.mobi/blog" term="Creative Commons" /><category scheme="https://shkspr.mobi/blog" term="foss" /><category scheme="https://shkspr.mobi/blog" term="GPL" /><category scheme="https://shkspr.mobi/blog" term="images" /><category scheme="https://shkspr.mobi/blog" term="svg" />
+		<summary type="html"><![CDATA[The Scalable Vector Graphics (SVG) format is amazing. It allows you to precisely define how an image should look. Written in XML, it uses various mathematical operations to display an image which looks crisp and clear at any size.  Here&#039;s a trivial example:  &#60;svg height=&#34;100&#34; viewBox=&#34;0 0 100 100&#34; width=&#34;100&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34;&#62;    &#60;circle cx=&#34;50&#34; cy=&#34;50&#34;  fill=&#34;#fff&#34; r=&#34;100&#34;/&#62;…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/"><![CDATA[<p>The Scalable Vector Graphics (SVG) format is amazing. It allows you to precisely define how an image should look. Written in XML, it uses various mathematical operations to display an image which looks crisp and clear at any size.</p>
+
+<p>Here's a trivial example:</p>
+
+<pre><code class="language-SVG">&lt;svg height="100" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"&gt;
+   &lt;circle cx="50" cy="50"  fill="#fff" r="100"/&gt;
+&lt;/svg&gt;
+</code></pre>
+
+<p>That code produces this circle:</p>
+
+<svg height="100" viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg">
+   <circle cx="50" cy="50" fill="#f00" r="50"></circle>
+</svg>
+
+<p>You could print that out with a kilometre radius and it would still be a perfect circle - unlike a traditional raster image which is just a grid of blocky pixels.</p>
+
+<p>But suppose you wanted to freely share your SVG with others - and ensure that they <em>also</em> freely share it. What sort of "Copyleft" licence would you give it?</p>
+
+<h2 id="creative-commons"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#creative-commons">Creative Commons</a></h2>
+
+<p>The obvious choice seems to be a Creative Commons Share-Alike licence. SVGs are images. Images are creative works. Creative Commons is suitable for creative works. Job done!</p>
+
+<p>But…</p>
+
+<p>SVGs are <em>not</em> images. The are code which <em>produce</em> images. If we assume that an SVG is software, this entry in the FAQ becomes relevant:</p>
+
+<blockquote><p><a href="https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software"><strong>Can I apply a Creative Commons license to software?</strong></a></p>
+
+<p>We recommend against using Creative Commons licenses for software.</p>
+
+<p>[…]</p>
+
+<p>Unlike software-specific licenses, CC licenses do not contain specific terms about the distribution of source code, which is often important to ensuring the free reuse and modifiability of software.</p>
+
+<p>[…]</p>
+
+<p>Additionally, our licenses are currently not compatible with the major software licenses, so it would be difficult to integrate CC-licensed work with other free software. Existing software licenses were designed specifically for use with software and offer a similar set of rights to the Creative Commons licenses.</p></blockquote>
+
+<p>At the end of that FAQ, they also say:</p>
+
+<blockquote><p>While we recommend against using a CC license on software itself, CC licenses may be used for software documentation, as well as for separate artistic elements such as game art or music.</p></blockquote>
+
+<p>So, that's a <em>perhaps?</em></p>
+
+<h2 id="gpl"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#gpl">GPL</a></h2>
+
+<p>But let us assume that an SVG is a piece of media rather than software. Would it be suitable to use a software licence for it?</p>
+
+<p>The various Gnu Public Licences have this to say:</p>
+
+<blockquote><p><a href="https://www.gnu.org/licenses/gpl-faq.en.html#GPLOtherThanSoftware"><strong>Can I use the GPL for something other than software?</strong></a></p>
+
+<p>You can apply the GPL to any kind of work, as long as it is clear what constitutes the “source code” for the work. The GPL defines this as the preferred form of the work for making changes in it.</p></blockquote>
+
+<p>A photo JPEG might be derived from the RAW image file. In which case, the RAW is suitable for being GPL'd, not the resultant JPEG.</p>
+
+<p>Similarly, the Photoshop file of a complex and multi-layered illustration would suitable, but not the outputted PNG.</p>
+
+<p>An SVG can straddle both worlds.  It's possible to build an SVG with layers, groups, and transformations, and then simplify it for output. You <em>could</em> edit the optimised version, but it's hardly the preferred format.</p>
+
+<p>I read <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">the GPL</a> (so you don't have to) and right at the start it says:</p>
+
+<blockquote><p>The GNU General Public License is a free, copyleft license for software and <strong>other kinds of works</strong>.</p></blockquote>
+
+<p>(Emphasis added.)</p>
+
+<p>But do they mean that?</p>
+
+<blockquote><p><a href="https://www.gnu.org/licenses/licenses.en.html#OtherWorks"><strong>Licenses for Other Types of Works</strong></a></p>
+
+<p>[…]</p>
+
+<p>We don't take the position that artistic or entertainment works must be free, but if you want to make one free, we recommend the <a href="https://directory.fsf.org/wiki/License:LAL-1.3">Free Art License</a>.</p></blockquote>
+
+<p>But, as delightful as the Free Art License is, the FSF say:</p>
+
+<blockquote><p>Please don't use it for software or documentation, since it is incompatible with the GNU GPL and with the GNU FDL.</p></blockquote>
+
+<h2 id="is-an-svg-software-or-not"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#is-an-svg-software-or-not">Is an SVG software or not?</a></h2>
+
+<p>I think so.</p>
+
+<ul>
+<li>It's written in plain text.</li>
+<li>It contains definitions, variables, and instructions.</li>
+<li>It can contain scripting.</li>
+</ul>
+
+<p>That sure looks like software to me!</p>
+
+<p>But, at the same time, the user <em>experiences</em> it as a graphic. An animated GIF, for example, contains a small amount of code-like data to say how long each frame should last for and when to stop running. Is a GIF software? Is the basic circle above software? How much code do you need before something becomes software?</p>
+
+<h2 id="are-svgs-libraries"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#are-svgs-libraries">Are SVGs Libraries?</a></h2>
+
+<p>Licences like the <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL</a> and <a href="https://www.mozilla.org/en-US/MPL/2.0/">MPL</a> allow copyleft libraries to be integrated into non-free software.</p>
+
+<p>A proprietary application could treat an SVG as a library by asking the SVG to render the output and then displaying that. A bit of a reach, perhaps?</p>
+
+<h2 id="what-about-embedded-raster-graphics"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#what-about-embedded-raster-graphics">What about embedded raster graphics?</a></h2>
+
+<p>Just to complicate things, an SVG can <em>also</em> contain raster graphics. That is, it is possible to embed a PNG, JPEG, or any other traditional image within an SVG.</p>
+
+<p>In this case, the embedded image <em>can</em> be Creative Commons licenced because <a href="https://wiki.creativecommons.org/wiki/ShareAlike_compatibility:_GPLv3">CC BY-SA is compatible with GPLv3</a>.</p>
+
+<blockquote><p>When someone creates an adaptation of a BY-SA licensed work and includes it in a GPLv3-licensed project, both licenses apply and downstream users must comply with both licenses. However, Section 2(a)(5)(B) of BY-SA 4.0 allows anyone who receives the adapted material downstream to satisfy the conditions of both BY-SA and GPLv3 (i.e. attribution and ShareAlike) <strong>in the manner dictated by the GPLv3</strong>.</p></blockquote>
+
+<p>(Emphasis added.)</p>
+
+<p>The barest of SVGs containing only an embedded image probably wouldn't count as software. But what if you started applying programmatic transformations to them? This SVG embeds an image and uses software to rotate it upside down.</p>
+
+<pre><code class="language-svg">&lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"&gt;
+  &lt;image x="0" y="0" width="64" height="64"
+    transform="rotate(180)"
+    href="data:image/png;base64,iVB…" /&gt;
+&lt;/svg&gt;
+</code></pre>
+
+<p>Is that enough code to count as software?</p>
+
+<h2 id="wisdom-of-the-crowds"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#wisdom-of-the-crowds">Wisdom of the Crowds</a></h2>
+
+<p>I conducted a rigorously accurate public survey. Here are the results:</p>
+
+<blockquote class="mastodon-embed" data-embed-url="https://mastodon.social/@Edent/116221315864205051/embed" style="background: #FCF8FF; border-radius: 8px; border: 1px solid #C9C4DA; margin: 0; max-width: 540px; min-width: 270px; overflow: hidden; padding: 0;"> <a href="https://mastodon.social/@Edent/116221315864205051" target="_blank" style="align-items: center; color: #1C1A25; display: flex; flex-direction: column; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Roboto, sans-serif; font-size: 14px; justify-content: center; letter-spacing: 0.25px; line-height: 20px; padding: 24px; text-decoration: none;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 79 75"><path d="M63 45.3v-20c0-4.1-1-7.3-3.2-9.7-2.1-2.4-5-3.7-8.5-3.7-4.1 0-7.2 1.6-9.3 4.7l-2 3.3-2-3.3c-2-3.1-5.1-4.7-9.2-4.7-3.5 0-6.4 1.3-8.6 3.7-2.1 2.4-3.1 5.6-3.1 9.7v20h8V25.9c0-4.1 1.7-6.2 5.2-6.2 3.8 0 5.8 2.5 5.8 7.4V37.7H44V27.1c0-4.9 1.9-7.4 5.8-7.4 3.5 0 5.2 2.1 5.2 6.2V45.3h8ZM74.7 16.6c.6 6 .1 15.7.1 17.3 0 .5-.1 4.8-.1 5.3-.7 11.5-8 16-15.6 17.5-.1 0-.2 0-.3 0-4.9 1-10 1.2-14.9 1.4-1.2 0-2.4 0-3.6 0-4.8 0-9.7-.6-14.4-1.7-.1 0-.1 0-.1 0s-.1 0-.1 0 0 .1 0 .1 0 0 0 0c.1 1.6.4 3.1 1 4.5.6 1.7 2.9 5.7 11.4 5.7 5 0 9.9-.6 14.8-1.7 0 0 0 0 0 0 .1 0 .1 0 .1 0 0 .1 0 .1 0 .1.1 0 .1 0 .1.1v5.6s0 .1-.1.1c0 0 0 0 0 .1-1.6 1.1-3.7 1.7-5.6 2.3-.8.3-1.6.5-2.4.7-7.5 1.7-15.4 1.3-22.7-1.2-6.8-2.4-13.8-8.2-15.5-15.2-.9-3.8-1.6-7.6-1.9-11.5-.6-5.8-.6-11.7-.8-17.5C3.9 24.5 4 20 4.9 16 6.7 7.9 14.1 2.2 22.3 1c1.4-.2 4.1-1 16.5-1h.1C51.4 0 56.7.8 58.1 1c8.4 1.2 15.5 7.5 16.6 15.6Z" fill="currentColor"></path></svg> <div style="color: #787588; margin-top: 16px;">Post by @Edent@mastodon.social</div> <div style="font-weight: 500;">View on Mastodon</div> </a> </blockquote>
+
+<script data-allowed-prefixes="https://mastodon.social/" async="" src="https://mastodon.social/embed.js"></script>
+
+<h2 id="final-thoughts"><a href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#final-thoughts">Final Thoughts</a></h2>
+
+<p>Personally, I think SVGs <em>are</em> software. I understand the argument that they're suitable for Creative Commons, but I disagree with it. Even the simplest SVG is distributed in a way that its contents are <em>executed</em> by the computer.</p>
+
+<p>While SVGs may be minified and stripped of comments, they still retain the essence of source code. I suppose you could <em>try</em> to obfuscate them, or package them up in a quasi-binary form, but I maintain the source is still viewable and editable.</p>
+
+<p>If you choose to use a Creative Commons Share-Alike licence, it probably won't cause any harm. But given CC's reluctance to endorse its use on software, it probably makes sense to use a copyleft source-code licence.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68741&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/#comments" thr:count="10" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/which-copyleft-licence-is-suitable-for-an-svg/feed/atom/" thr:count="10" />
+			<thr:total>10</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Book Review: The Great When by Alan Moore ★★★★☆]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-the-great-when-by-alan-moore/" />
+
+		<id>https://shkspr.mobi/blog/?p=72033</id>
+		<updated>2026-06-18T06:18:50Z</updated>
+		<published>2026-06-18T11:34:19Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="Book Review" />
+		<summary type="html"><![CDATA[This is the most overwritten book I&#039;ve ever read. Unfortunately, Alan Moore knows exactly how much polysyllabic pressure it takes to transmogrify base coal into precious gems.  With lines like &#34;his shaved suede skull made him look like a wilted thistle&#34; and &#34;There was a rumour of pink lipstick circling her mouth&#34; you know you&#039;re in for a treat. Even better than the joyful prose of Bob…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/book-review-the-great-when-by-alan-moore/"><![CDATA[<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/great-when.webp" alt="Book cover featuring Tower Bridge." width="270" class="alignleft size-full wp-image-72034">
+
+<p>This is the most overwritten book I've ever read. Unfortunately, Alan Moore knows exactly how much polysyllabic pressure it takes to transmogrify base coal into precious gems.</p>
+
+<p>With lines like "his shaved suede skull made him look like a wilted thistle" and "There was a rumour of pink lipstick circling her mouth" you know you're in for a treat. Even better than the joyful prose of <a href="https://shkspr.mobi/blog/2025/12/book-review-the-satsuma-complex-by-bob-mortimer/">Bob Mortimer's Satsuma Complex</a>.</p>
+
+<p>I'm also pretty sure Moore is <em>actually</em> a wizard. I've just finished reading a book about <a href="https://shkspr.mobi/blog/2026/03/book-review-under-fire-black-britain-in-wartime-by-stephen-bourne/">Black Britain in Wartime</a> - which features Ras Prince Monolulu, who also appears in this book. Along with M. P. Shiel - who I did my GCSE coursework on. And, no spoilers, but I'm fairly sure I'd met other characters too. The only logical conclusion is that Moore is stalking my brain.</p>
+
+<p>It is an epic tale full of rogues and reprobates. The story is excellent even though the plot follows a fairly basic structure. Although set up to be a series, it is a satisfying stand-alone tale.</p>
+
+<p>My only real criticism of it is the trope of the "failing light of English magic" - much like Jonathan Strange &amp; Mr Norrell, <a href="https://shkspr.mobi/blog/2021/03/book-review-shades-of-milk-and-honey-glamourist-histories-series-book-1-mary-robinette-kowal/">Shades of Milk and Honey</a>, <a href="https://shkspr.mobi/blog/2020/02/book-review-sorcerer-to-the-crown/">Sorcerer to the Crown</a>, <a href="https://shkspr.mobi/blog/2024/01/book-review-babel-r-f-kuang/">Babel</a>, and a hundred other books. Britain was a great (magical) power and it's up to our hero to Make Magic Great Again. Well, sort of. I suspect that's going to feature more heavily in the sequels.</p>
+
+<p>A pleasure to read and I look forward to both Alan and I being bitterly disappointed in the Bowdlerised Apple TV miniseries.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=72033&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-the-great-when-by-alan-moore/#comments" thr:count="2" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/book-review-the-great-when-by-alan-moore/feed/atom/" thr:count="2" />
+			<thr:total>2</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Two Way TV - product photos of 1997's hottest gadget]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/two-way-tv-product-photos-of-1997s-hottest-gadget/" />
+
+		<id>https://shkspr.mobi/blog/?p=72448</id>
+		<updated>2026-06-18T11:20:03Z</updated>
+		<published>2026-06-16T11:34:18Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="BBC" /><category scheme="https://shkspr.mobi/blog" term="history" /><category scheme="https://shkspr.mobi/blog" term="internet" /><category scheme="https://shkspr.mobi/blog" term="retrotech" /><category scheme="https://shkspr.mobi/blog" term="tv" />
+		<summary type="html"><![CDATA[Back in the late 1990s, I did a brief stint of work experience at the BBC. One of the most memorable moments was sitting in on a meeting about early forms of Interactive TV.  I saw a demo of &#34;Two Way TV&#34;. A flimsy grey box which (somehow) integrated with your OnDigital TV Box and connected to a server via a modem. If you were watching &#34;Who Wants To Be A Millionaire&#34; you could play along at home,…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/two-way-tv-product-photos-of-1997s-hottest-gadget/"><![CDATA[<p>Back in the late 1990s, I did a brief stint of work experience at the BBC. One of the most memorable moments was sitting in on a meeting about <a href="https://shkspr.mobi/blog/2022/12/early-forms-of-interactive-tv/">early forms of Interactive TV</a>.</p>
+
+<p>I saw a demo of "Two Way TV". A flimsy grey box which (somehow) integrated with your OnDigital TV Box and connected to a server via a modem. If you were watching "Who Wants To Be A Millionaire" you could play along at home, send in your answers in realtime, and win REAL CASH PRIZES!!!</p>
+
+<p>An anonymous benefactor read my blog post about the tech, had a pootle through their loft, and found one of the trial boxes they'd been sent in June 1997. With their kind permission, here are some photos of the future we never got.</p>
+
+<p>The unit came in a chunky box with enough logos to convince you it was safe to plug in to the phone network.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Box.webp" alt="Orange box with regulatory logos." width="739" height="344" class="aligncenter size-full wp-image-72449">
+
+<p>Flipping it over, we see a little more of the tech-specs and a defunct barcode (<code>5033936000023</code> for anyone searching) and product number (<code>SD2044N</code>).</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Rear-Box.webp" alt="Box with a barcode and promises of NICAM stereo." width="445" height="751" class="aligncenter size-full wp-image-72450">
+
+<p>Mmmm! NICAM! So, what did the Set Top Box (STB) actually look like:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/STB.webp" alt="Boring grey box." width="435" height="219" class="aligncenter size-full wp-image-72452">
+
+<p>Pretty much the same as every other Digital TV STB of the era. A featureless grey slab. Here's a closer view.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/STB-detail.webp" alt="A slight close up showing the logo." width="693" height="126" class="aligncenter size-full wp-image-72451">
+
+<p>How was it all connected? Here's the rear of the box:
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Rear-panel-with-scart-connectors.webp" alt="SCART and other connectors." width="756" height="252" class="aligncenter size-full wp-image-72453"></p>
+
+<p>Aerial in and out - I assume it had a digital decoder in it, but could pass the analogue channels through to the TV.</p>
+
+<p>Stereo out, for plugging in to your sound system.</p>
+
+<p>SCART in and out. I assume that let you connect your VCR or games console in pass-through mode.</p>
+
+<p>Keyboard looks like a PS/2 port - which would have been the standard at the time. Comms and Remove Receiver both appear to be 8 pin serial connectors.</p>
+
+<p>Finally, there's a standard telephone port for connecting to the dial-up service which makes it all work.</p>
+
+<p>So, you've plugged in all the wires, how do you actually play the games? The unit comes with two controllers - one red and one blue.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Red-Controller.webp" alt="Game controller. Four blue buttons and a primitive touch screen with a red background." width="680" height="435" class="aligncenter size-full wp-image-72454">
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Blue-Controller.webp" alt="Game controller. Four blue buttons and a primitive touch screen with a blue background." width="640" height="413" class="aligncenter size-full wp-image-72455">
+
+<p>The four buttons (triangle, square, circle, lozenge) were for answering on-screen questions. There's an up and down scroller in the middle and a help button above it. I don't know what the large grey circle does.</p>
+
+<p>But what's the peculiar button on the coloured background? That's an early cursor control! Commercially available touchscreens were still in their infancy. This physical controller allowed you to position a digital cursor on screen. Nifty!</p>
+
+<p>Also in the box was a TV guide:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Two-Way-TV-Guide.webp" alt="Magazine offering you the ability to play Wheel of Fortune with Jenny." width="374" height="521" class="aligncenter size-full wp-image-72456">
+
+<p>A getting started leaflet:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Getting-Started-Guide.webp" alt="Getting Started Guide." width="416" height="296" class="aligncenter size-full wp-image-72458">
+
+<p>There's also a service manual:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Field-Service-SD2044-and-SD2044N.webp" alt="Field Service SD2044 and SD2044N." width="420" height="546" class="aligncenter size-full wp-image-72457">
+
+<p>I don't know what the difference was between SD2044 and SD2044<strong>N</strong>. Do you?</p>
+
+<p>How much would this amazing interactive experience cost you? I've no idea about the upfront payment for the kit, but there's a Direct Debit form for the monthly subscription.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Direct-Debit-cost.webp" alt="£6.95 per month." width="670" height="466" class="aligncenter size-full wp-image-72459">
+
+<p>That's about £14 in today's money.</p>
+
+<p>So there you have it! A snapshot of 1997's vision of the future. From my understanding, the box was never a hit with the public. Two Way TV pivoted to other forms of interactive content like premium-rate phone-ins before <a href="https://www.tvforum.co.uk/tvhome/two-way-tv-goes-administration-7314">going bust in 2003</a>.</p>
+
+<p>If you have any more memories of the service, or interesting photos, please leave a comment or <a href="https://edent.tel">get in touch with me</a>.</p>
+
+<p><ins datetime="2026-06-18T11:12:48+00:00">Update!</ins> Some more information has been found:</p>
+
+<blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:pm2zufo32pvn5pkewamnzfcp/app.bsky.feed.post/3moi2iq22zk2s" data-bluesky-cid="bafyreiadpzf356ebgp3tu43h4ecofd4aidn4ahlxs52lu4seaaiovap4ve" data-bluesky-embed-color-mode="system"><p lang="en">Ooh! Ooh! I have some niche information about this. It appears that stuff was broadcast to these boxes via teletext databroadcast packets - we've seen mysterious data streams with references to two way tv in teletext recoveries from Channel 4 recordings.</p>— ZXGuesser (<a href="https://bsky.app/profile/did:plc:pm2zufo32pvn5pkewamnzfcp?ref_src=embed">@zxguesser.bsky.social</a>) <a href="https://bsky.app/profile/did:plc:pm2zufo32pvn5pkewamnzfcp/post/3moi2iq22zk2s?ref_src=embed">17 June 2026 at 12:59</a></blockquote>
+
+<script async="" src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
+
+<p>With ZXGuesser's kind permission, here are some of the recovered data packets. They're fairly corrupt (recording Teletext to VHS isn't an exact science) but you can see some clear mentions of Two Way TV.</p>
+
+<p>Here's something about a trial period being extended:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/teletext1.webp" alt="Corrupted text code." width="356" height="719" class="aligncenter size-full wp-image-72538">
+
+<p>This looks like code for a game:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/teletext2.webp" alt="Corrupted text code." width="347" height="704" class="aligncenter size-full wp-image-72537">
+
+<p>Quiz results by household (possibly test data):</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/teletext3.webp" alt="Corrupted text code." width="351" height="687" class="aligncenter size-full wp-image-72536">
+
+<p>Control code and UI code, possibly for a 68000 device:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/teletext4.webp" alt="Corrupted text code." width="349" height="752" class="aligncenter size-full wp-image-72535">
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/teletext5.webp" alt="Corrupted text code." width="352" height="740" class="aligncenter size-full wp-image-72534">
+
+<p>If you have more info to share, please let me know.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=72448&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/two-way-tv-product-photos-of-1997s-hottest-gadget/#comments" thr:count="3" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/two-way-tv-product-photos-of-1997s-hottest-gadget/feed/atom/" thr:count="3" />
+			<thr:total>3</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[[RSS Club] What happens to old posts?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/" />
+
+		<id>https://shkspr.mobi/blog/?p=72429</id>
+		<updated>2026-06-13T12:43:01Z</updated>
+		<published>2026-06-15T11:34:34Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="[RSS Club]" /><category scheme="https://shkspr.mobi/blog" term="rss" /><category scheme="https://shkspr.mobi/blog" term="RSS Club" />
+		<summary type="html"><![CDATA[Welcome to RSS Club! These posts are only available to RSS and Atom subscribers. You can read more about the idea at Dave Rupert&#039;s site.  I recently received an email from a distraught reader:  I was going through my recent bookmarks and I found https://shkspr.mobi/blog/2026/04/rss-club-for-wordpress which I had clearly saved to reference again later.  However, as with the nature of RSS Club™, I c…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/"><![CDATA[<p>Welcome to RSS Club! These posts are <em>only</em> available to RSS and Atom subscribers. You can read more about the idea at <a href="https://daverupert.com/rss-club/">Dave Rupert's site</a>.</p>
+
+<p>I recently received an email from a distraught reader:</p>
+
+<blockquote><p>I was going through my recent bookmarks and I found <code>https://shkspr.mobi/blog/2026/04/rss-club-for-wordpress</code> which I had clearly saved to reference again later.</p>
+
+<p>However, as with the nature of RSS Club™, I can't just revisit that post in my browser. I'd long since deleted the RSS item in my feed and re-adding your entire feed only fetched the last ~20 items, of which this wasn't one.</p></blockquote>
+
+<p>Oh no! It is true that my feed only goes back 20 entries. As a consequence, older posts are lost in the Time Vortex - much like several episodes of Doctor Who.</p>
+
+<p>My first thought was "is this a bug or a feature?" Perhaps those posts should be ephemeral. It is possible that they've been archived - but it is equally possible that they've drifted away on the breeze like a child's balloon. Do I want people rummaging in the archives to get old club posts?</p>
+
+<p>I think my answer is… I'm happy for them to be inaccessible for the casual reader.</p>
+
+<p>But there are a few ways the determined scholar can find older posts.</p>
+
+<h2 id="manually-save-the-contents"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#manually-save-the-contents">Manually Save The Contents</a></h2>
+
+<p>Your feed reader probably lets you store a permanent copy of a post. You should do that if you want a local version available.</p>
+
+<h2 id="archive-org"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#archive-org">Archive.org</a></h2>
+
+<p>The Internet Archive regularly grabs a copy of my RSS feed. For example - <a href="https://web.archive.org/web/20260000000000*/https://shkspr.mobi/blog/feed/atom/">https://web.archive.org/web/20260000000000*/https://shkspr.mobi/blog/feed/atom/</a></p>
+
+<p>You can peruse older versions to your heart's content.</p>
+
+<h2 id="json-api"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#json-api">JSON API</a></h2>
+
+<p>WordPress's JSON API contains the full contents of the post (albeit in a slightly verbose JSON format). You need to know the post's ID.</p>
+
+<p>For example, the JSON for this post itself can be found at <a href="https://shkspr.mobi/blog/wp-json/wp/v2/posts/72429">https://shkspr.mobi/blog/wp-json/wp/v2/posts/72429</a></p>
+
+<h2 id="feed-pagination"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#feed-pagination">Feed Pagination</a></h2>
+
+<p>By default, you only get 20 items per feed. If you'd like to go to the 2nd page of the feed, you can use:</p>
+
+<p><a href="https://shkspr.mobi/blog/feed/atom/?paged=2">https://shkspr.mobi/blog/feed/atom/?paged=2</a></p>
+
+<p>Then <code>?paged=3</code> for the next, etc.</p>
+
+<h2 id="category-feeds"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#category-feeds">Category Feeds</a></h2>
+
+<p>WordPress has build-in support for category-specific feeds. So, if you want to subscribe to <em>only</em> the RSS Club posts, you may use <a href="https://shkspr.mobi/blog/category/rss-club/feed/">https://shkspr.mobi/blog/category/rss-club/feed/</a></p>
+
+<p>This also works with tags, for example <a href="https://shkspr.mobi/blog/tag/rss-club/feed/">https://shkspr.mobi/blog/tag/rss-club/feed/</a></p>
+
+<p>They <em>should</em> both be the same, but I primarily use categories to differentiate between club and non-club posts.</p>
+
+<h2 id="email"><a href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#email">Email</a></h2>
+
+<p>Feel free to email me if you can't find something. My contact details are on <a href="https://edent.tel/">https://edent.tel/</a></p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=72429&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/#comments" thr:count="0" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/rss-club-what-happens-to-old-posts/feed/atom/" thr:count="0" />
+			<thr:total>0</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Did Frank Sinatra really think "Something" was a Lennon/McCartney song?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/" />
+
+		<id>https://shkspr.mobi/blog/?p=71464</id>
+		<updated>2026-06-14T11:08:05Z</updated>
+		<published>2026-06-14T11:34:16Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="quote" /><category scheme="https://shkspr.mobi/blog" term="yak shaving" />
+		<summary type="html"><![CDATA[Read enough articles about The Beatles and you&#039;ll repeatedly hit the claim that Frank Sinatra frequently introduced his cover of George Harrison&#039;s &#34;Something&#34; as his &#34;favourite Lennon &#38; McCartney number.&#34;  Much like the misquote about Ringo not being the best drummer in The Beatles, I think this might be one of those semi-apocryphal lines which has taken on a life of its own.  Here&#039;s what Paul…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/"><![CDATA[<p>Read enough articles about The Beatles and you'll repeatedly hit the claim that Frank Sinatra frequently introduced his cover of George Harrison's "Something" as his "favourite Lennon &amp; McCartney number."</p>
+
+<p>Much like the misquote about <a href="https://www.snopes.com/fact-check/john-lennon-ringo-best-drummer/">Ringo not being the best drummer in The Beatles</a>, I think this might be one of those semi-apocryphal lines which has taken on a life of its own.</p>
+
+<p>Here's what Paul McCartney has to say in The Beatles Anthology, Episode 4.</p>
+
+<p></p><div style="width: 620px;" class="wp-video"><video class="wp-video-shortcode" id="video-71464-2" width="620" height="511" poster="https://shkspr.mobi/blog/wp-content/uploads/2026/05/macca.webp" preload="metadata" controls="controls"><source type="video/webm" src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/Sinatra.webm?_=2"><a href="https://shkspr.mobi/blog/wp-content/uploads/2026/05/Sinatra.webm">https://shkspr.mobi/blog/wp-content/uploads/2026/05/Sinatra.webm</a></video></div><p></p>
+
+<p><a href="https://en.wikipedia.org/wiki/The_Beatles_Anthology_(TV_series)">That was broadcast in 1995</a> - so we need to look for sources from before that.</p>
+
+<p>There's not <em>much</em> Internet before the mid-1990s. Google's mismanagement of the USENET archives is a cultural obscenity. Nevertheless, we can find a <em>few</em> references which predate McCartney's broadcast.</p>
+
+<p>1994-12-26</p>
+
+<blockquote><p><a href="https://groups.google.com/g/rec.music.beatles/c/fGBPpkwUMuU/m/h_cdIFD8jRwJ">Frankie used to introduce "Something" as his "tribute to Mr. Lennon and Mr. McCartney" ;^)</a></p></blockquote>
+
+<p>1990-03-05</p>
+
+<blockquote><p><a href="https://groups.google.com/g/rec.music.beatles/c/VeAi89TapCE/m/Cc0uJloNjEoJ">In fact, a friend of mine (a supposed Beatle fan; turns out she's really just a L/M fan), were having a discussion about this very subject, she, just like Frank Sinatra, didn't know that George wrote "Something." Duh.</a></p></blockquote>
+
+<p>So it was certainly a proto-meme back then.</p>
+
+<p>Of the thousands of Beatles books, I can't find any from before the mid-1990s which mention Sinatra's misattribution.</p>
+
+<p>For example, <a href="https://www.google.co.uk/books/edition/The_Complete_Guide_to_the_Music_of_the_B/6Ss5AQAAIAAJ">1994's The Complete Guide to the Music of the Beatles</a> simply says:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/greatest-love-song.webp" alt="Frank Sinatra called &quot;the greatest love song ever written&quot;." width="600" class="aligncenter size-full wp-image-71466">
+
+<p>Similarly, there are plenty of books and articles about Sinatra - lots of them talk about Something, but never this supposed misrepresentation. In <a href="https://books.google.co.uk/books?id=veUCAAAAMBAJ&amp;pg=PA31&amp;dq=sinatra+%22something%22+lennon+mccartney&amp;hl=en&amp;sa=X&amp;ved=2ahUKEwi99q_z_amUAxW9UEEAHQonLawQ6AF6BAgNEAM#v=onepage&amp;q=sinatra%20%22something%22%20lennon%20mccartney&amp;f=false">1980's New York Magazine</a>, Sinatra is interviewed and says:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/rainy.webp" alt="George Harrison &quot;His 'Something' is a beauty.&quot;" width="600" class="aligncenter size-full wp-image-71467">
+
+<p>There are <a href="https://www.youtube.com/results?search_query=sinatra+something">many videos of Sinatra singing Something</a> on YouTube - <strong>none</strong> of them have him introducing the song as a Lennon/McCartney number.</p>
+
+<p>Indeed, here's one where he introduces it as being by George Harrison.</p>
+
+<iframe title="Frank Sinatra - Something" width="620" height="465" src="https://www.youtube.com/embed/YcIxxP_pOSc?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<p>I think that's <a href="https://www.sinatra.com/frank-sinatra-timeline/page/3/">1982's The Concert for the Americas - in the Dominican Republic</a>.</p>
+
+<p>Here's a 1985 concert where he introduces it as being by George Harrison of The Beatles.</p>
+
+<iframe title="Something Frank Sinatra (Live in HD)" width="620" height="349" src="https://www.youtube.com/embed/Y_pEu3otPX0?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<p>Way back in 1978 at Sinatra's Caesar’s Palace Concert, he introduces it with "George Harrison wrote it" and finishes with "by George Harrison".</p>
+
+<iframe title="Frank Sinatra 1978 Caesar&amp;apos;s Palace Las Vegas" width="620" height="465" src="https://www.youtube.com/embed/qJhW9R5PybA?start=1324&amp;feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<p>Even back in 1975, during a <a href="https://youtu.be/mBifNX8vzYM?t=1073">concert in Jerusalem</a> he was crediting Harrison, saying:</p>
+
+<blockquote><p>Every one of The Beatles was a very talented young man individually. And here's an example of George Harrison with a great love song."</p></blockquote>
+
+<p>I've now listened to dozens of recordings of Sinatra singing Something live and in <em>none</em> of them does he so much as mention John Lennon or Paul McCartney.</p>
+
+<p>So is the quote apocryphal? Possibly not!</p>
+
+<p>Less than a year after John Lennon was murdered, Sinatra treated Carnegie Hall<sup id="fnref:ch"><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fn:ch" class="footnote-ref" title="After all, Sinatra had a lot of practice!" role="doc-noteref">0</a></sup> to a series of 11 concerts.</p>
+
+<p>On 10th September 1981, John Rockwell published <a href="https://www.proquest.com/newspapers/pop-sinatra-at-carnegie/docview/424187532/se-2">Pop: Sinatra at Carnegie</a> - a review of the opening night of Sinatra's concert series at New York City's Carnegie Hall:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/cocky-stance.webp" alt="Mr. Sinatra is no friend of the electric pop music of the last 25 years. Yet his cocky stance dovetails neatly with the punk defiance of the rock generation. And his treatment of material by younger writers - including a John Lennon tribute with a Beatles song - while not always idiomatic, carries with it a conviction that bridges gaps again. " width="600" class="aligncenter size-full wp-image-71476">
+
+<p>Also on the 10th, <a href="https://www.newspapers.com/search/results/?country=us&amp;keyword=%22mr.+lennon.+Also+Mr.+McCartney%22&amp;sort=paper-date-asc">a clutch of US papers reproduced a story</a> by the <a href="https://www.deseret.com/2012/10/19/20442745/mary-campbell-music-writer-for-the-ap-dies-at-78/">inimitable Mary Campbell of the Associated Press</a>.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Mary-Campbell.webp" alt="By MARY CAMPBELL Associated Press Writer NEW YORK (AP) — Frank Sinatra has opened 11 concerts at Carnegie Hall proving Wednesday night he still can mine deeper into the heart of a song than just about anybody around. Some may have thought &quot;New York, New York,&quot; his final song in his hour and a quarter concert, was his best one. He sang it with verve, vigor and rich tone, bent the last note just exactly right and in general sounded about the age of Liza Minnelli, who has been known to sing it too. And it got him a standing ovation. But we thought the high point of the evening was &quot;Something.&quot; Sinatra introduced the song, written and recorded by the Beatles, by saying, &quot;In a sense this is a personal tribute to Mr. Lennon. Also Mr. McCartney.&quot; (The song was written by Beatle George Harrison.)" width="600" class="aligncenter size-full wp-image-71844">
+
+<p>Most of the syndicated versions <a href="https://www.nyshistoricnewspapers.org/?a=d&amp;d=coe19810911-01.1.2&amp;srpos=1&amp;e=------198-en-20--1--txt-txIN-sinatra+%22personal+tribute%22---------">leave out the parenthetical remarks</a>.</p>
+
+<p>On the 11th, Patricia O'Haire published a somewhat snide review of the September 9th concert in <a href="https://www.newspapers.com/image/488687995/?terms=harrison&amp;match=1">The New York Daily News</a></p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/one-quibble.webp" alt="Only one quibble, and it's minor. Sinatra started on song by saying &quot;This is my personal tribute to Mr. Lennon and Mr. McCartney&quot; then proceeded to sing &quot;Something&quot; a lovely ballad. Really lovely. Except it was written by George Harrison, whose name, unfortunately, was never mentioned." width="600" height="209" class="aligncenter size-full wp-image-71880">
+
+<p>On 14th September 1981, a British newspaper re-reported the comment:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/blue-eyes-red-face.webp" alt="Blue eyes, red face. FRANK SINATRA is now singing the old Beatles number “Something&quot; at his concerts. “In a sense,” says Ol' Blue Eyes, “ this is a personal tribute to Mr Lennon. Also to Mr McCartney.” It would be churlish, I suppose, to point out that the song was actually written by Mr Harrison." width="308" height="735" class="aligncenter size-full wp-image-71501">
+
+<p>That's the <a href="https://britishnewspaperarchive.co.uk/search/results/1970-01-01/1981-12-31?basicsearch=sinatra%20something%20lennon&amp;somesearch=sinatra%20something%20lennon&amp;exactsearch=false&amp;retrievecountrycounts=false&amp;newspapertitle=daily%2bexpress">Daily Express</a> by Rob Benson, their Los Angeles correspondent<sup id="fnref:now"><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fn:now" class="footnote-ref" title="It is odd that the reporter describes Sinatra as &quot;now&quot; singing Something when it had been in his repertoire for over a decade. About the right level of journalistic rigour expected of the Express." role="doc-noteref">1</a></sup>.</p>
+
+<p>By the 29th of September 1981, the story had made it to <a href="https://nla.gov.au/nla.obj-1240384507/view?sectionId=nla.obj-1569027603&amp;partId=nla.obj-1240470436">Australian Financial Times' The Bulletin</a>.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/australian.webp" alt="Frank Sinatra, the Mafia's favorite crooner, is soft on the Beatles. He's included their classic Something in his latest concert, effusing: &quot;In a sense this is a personal tribute to Mr Lennon. Also to Mr McCartney.&quot; All of which is a bit tough on George Harrison, who wrote the song." width="600" class="aligncenter size-full wp-image-71593">
+
+<p>It's unclear how many of those journalists were actually at the concert. I assume John Rockwell, Mary Campbell, and Patricia O'Haire were as they published fairly detailed reviews.</p>
+
+<p>Tracking down a set-list for that long-gone concert is tricky. <a href="https://www.carnegiehall.org/About/History/Performance-History-Search?q=&amp;dex=prod_PHS&amp;page=3&amp;pf=Frank%20Sinatra_">Carnegie Hall themselves</a> get the dates wrong in their archive and say the first performance was on the 8th, and their set-list is sourced from Setlist.fm rather than their own records.  The <a href="https://www.freelists.org/post/sinatraphiles/September-9-THIS-DATE-IN-SINATRA-HISTORY,13#:~:text=1981">Sinatraphiles mailing list</a> has a set-list for the 9th which does include "Something".</p>
+
+<p>There's a <a href="https://www.etsy.com/uk/listing/4408990110/frank-sinatra-carnegie-hall-1981">purported recording of the September 10th concert</a> with a set-list on the reverse:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/cd-back.webp" alt="CD track listing." width="514" height="514" class="aligncenter size-full wp-image-71477">
+
+<p>There's no "Lennon" song - the only Beatles number is "Something". Let's take a listen to the introduction from that bootleg recording.</p>
+
+<p></p><figure class="audio">
+	<figcaption>🔊 Something<br>🎤 Frank Sinatra</figcaption>
+	
+	<audio controls="" loading="lazy" src="https://shkspr.mobi/blog/wp-content/uploads/2026/07/Something.mp3">
+		<p>💾 <a href="https://shkspr.mobi/blog/wp-content/uploads/2026/07/Something.mp3">Download this audio file</a>.</p>
+	</audio>
+</figure><p></p>
+
+<p>"A beautiful song by George Harrison. Maybe one of the best love songs ever written."<sup id="fnref:intro"><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fn:intro" class="footnote-ref" title="Later on, in the introduction to &quot;Luck Be A Lady Tonight&quot;, he sarcastically describes Marlon Brando as &quot;America's great baritone!&quot;. There are quite a few jokey moments in the performance - so it is…" role="doc-noteref">2</a></sup></p>
+
+<p>So, that's a handful of contemporary sources who mention that Frank Sinatra <em>once</em> introduced "Something" as being composed by someone other than Harrison.</p>
+
+<p>The only recording is of the concert the next day - and it doesn't includes that "blooper".</p>
+
+<p>There's no other mentions I can find which directly cite a specific concert or performance.</p>
+
+<p>Did Sinatra ever say it was his "favourite Lennon and McCartney song"? He sang in thousands of shows<sup id="fnref:dean"><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fn:dean" class="footnote-ref" title="Incidentally, as far as I can tell, Sinatra first sang &quot;Something&quot; in December 1970 on The Dean Martin Show - about a year after its release on Abbey Road. Sinatra's performance doesn't contain him…" role="doc-noteref">3</a></sup>, not all of which were recorded<sup id="fnref:rec"><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fn:rec" class="footnote-ref" title="I spoke to one collector who said:
+> I also checked all of the other collectors lists I have, and they do not have it either, I do however have reference to its existence via a notecard that…" role="doc-noteref">4</a></sup>, so it is entirely possible he mentioned it. But you'd expect more than a few reporters would write about it, wouldn't you?</p>
+
+<p>The origin of the "quote", as far as I can tell, is from an interview Paul McCartney gave to David Hinckley in the <a href="https://www.newspapers.com/search/results/?city=New+York&amp;county=New+York&amp;date=1984&amp;keyword=sinatra+something+lennon+mccartney&amp;region=us-ny">New York Daily News on 21st October 1984</a>.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/Macca-Interview.webp" alt="&quot;And George - well, John and I did write most of the early material, but he developed into a helluva writer. Look at 'Something.' Sinatra still sings that.&quot; It's mentioned that Sinatra also has been known to introduce it as &quot;my favorite Lennon-McCartney song.&quot; &quot;Well, yeah,&quot; says Paul, &quot;that's what George is up against.&quot;" width="600" height="413" class="aligncenter size-full wp-image-71891">
+
+<p>That's the first time that I can see "Something" mentioned as Sinatra's "favorite Lennon-McCartney song".</p>
+
+<p>I went rummaging through some reviews of Frank's concert performance which included "Something" in the set list.</p>
+
+<p>His concert at the Palladium:</p>
+
+<blockquote><p>And Frank sings 'Something'. It's OK. The Vanilla Fudge were more adept at Beatle rewrites however.</p>
+
+<p>Chris Salewicz. "<a href="https://www.rocksbackpages.com/Library/Article/frank-sinatra-palladium-london">Frank Sinatra: Palladium, London</a>". New Musical Express (1975).</p></blockquote>
+
+<p>His concert at the Royal Albert Hall:</p>
+
+<blockquote><p>Superb renditions of Jim Webb's 'Didn't We?' and Harrison's 'Something' were recreated with a totally unique empathy. "Real Songs, beautiful songs", he said fervently, no trace of show-biz cant.</p>
+
+<p>Max Bell. "<a href="https://www.rocksbackpages.com/Library/Article/frank-sinatra-royal-albert-hall-london">Frank Sinatra: Royal Albert Hall, London</a>". New Musical Express (1975).</p></blockquote>
+
+<p>And another report of the same gig:</p>
+
+<blockquote><p>Jimmy Webb's 'Didn't We' and the classic 'Nice And Easy', were exceptionally good, standing out easily among lacklustre renditions of 'Something', 'Strangers In The Night' and a David Gates song. In between, Sinatra delivered various controversial raps designed to instigate audience loyalties but proved that Sinatra should open his mouth only when singing.</p>
+
+<p>Barbara Charone. "<a href="https://www.rocksbackpages.com/Library/Article/frank-sinatra-royal-albert-hall-london-2">Frank Sinatra: Royal Albert Hall, London</a>". Sounds (1975).</p></blockquote>
+
+<p>I've read dozens of gig reviews of old Sinatra concerts and they all contain various levels of snark about his performance, song choice, and politics - so you'd expect British reporters would have picked up on the misattribution, wouldn't you?</p>
+
+<p>Instead, there's two slightly contradictory reports of one single concert and no suggestion that Sinatra himself said it was his "favorite Lennon-McCartney song".  Given that he <em>repeatedly</em> credited George Harrison in the decade leading up to that concert, I think it is fair to say the "quote" has taken on a significance far beyond its actual importance.</p>
+
+<p>If you have a recording of Sinatra introducing "Something" as a Lennon/McCartney number - or any other <em>contemporary</em> reports of that - please drop a comment in the box.</p>
+
+<div id="footnotes" role="doc-endnotes">
+<hr aria-label="Footnotes">
+<ol start="0">
+
+<li id="fn:ch">
+<p>After all, Sinatra had a <em>lot</em> of practice!&nbsp;<a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fnref:ch" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:now">
+<p>It is odd that the reporter describes Sinatra as "now" singing Something when it had been in his repertoire for over a decade. About the right level of journalistic rigour expected of the Express.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fnref:now" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:intro">
+<p>Later on, in the introduction to "Luck Be A Lady Tonight", he sarcastically describes Marlon Brando as "America's great baritone!". There are quite a few jokey moments in the performance - so it is entirely possible his Lennon &amp; McCartney remark was a quip.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fnref:intro" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:dean">
+<p>Incidentally, as far as I can tell, Sinatra first sang "Something" in December 1970 on <a href="https://www.freelists.org/post/sinatraphiles/December-31-THIS-DATE-IN-SINATRA-HISTORY,3#:~:text=something">The Dean Martin Show</a> - about a year after its release on Abbey Road. <a href="https://www.youtube.com/watch?v=PkqjOUksnSA">Sinatra's performance</a> doesn't contain him saying anything about the song.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fnref:dean" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:rec">
+<p>I spoke to one collector who said:</p>
+
+<blockquote><p>I also checked all of the other collectors lists I have, and they do not have it either, I do however have reference to its existence via a notecard that represents a massive collection. What this means is that the concert could exist, but more than likely has never been digitized. Many Sinatra concerts are still stuck on reel to reels from the 70s and 80s and have never been transferred to the digital realm and shared on the internet.</p></blockquote>
+
+<p><a href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#fnref:rec" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+</ol>
+</div>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=71464&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+		<link href="https://shkspr.mobi/blog/wp-content/uploads/2026/05/Sinatra.webm" rel="enclosure" length="714695" type="video/webm" />
+<link href="https://shkspr.mobi/blog/wp-content/uploads/2026/07/Something.mp3" rel="enclosure" length="171206" type="audio/mpeg" />
+			<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/#comments" thr:count="4" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/did-frank-sinatra-really-think-something-was-a-lennon-mccartney-song/feed/atom/" thr:count="4" />
+			<thr:total>4</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Gadget Review: TP Link EH210 Ethernet Splitter (USB-C) ★★★★★]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/gadget-review-tp-link-eh210-ethernet-splitter-usb-c/" />
+
+		<id>https://shkspr.mobi/blog/?p=69083</id>
+		<updated>2026-04-20T13:34:04Z</updated>
+		<published>2026-06-12T11:34:18Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="gadget" /><category scheme="https://shkspr.mobi/blog" term="review" /><category scheme="https://shkspr.mobi/blog" term="usb-c" />
+		<summary type="html"><![CDATA[When I ran Ethernet around our house, I thought I was being clever. A CAT6 cable for every room - lush! Some of my rooms have lots of devices, so they get a nice big Ethernet switch with lots of ports and blinking lights.  But most of my rooms don&#039;t have that many devices. Our gym had only an Internet connected TV so that I could watch Quibi while exercising. Recently we added a Kodi box so that…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/gadget-review-tp-link-eh210-ethernet-splitter-usb-c/"><![CDATA[<p>When I ran Ethernet around our house, I thought I was being clever. A CAT6 cable for every room - lush! Some of my rooms have lots of devices, so they get a nice big Ethernet switch with lots of ports and blinking lights.</p>
+
+<p>But most of my rooms don't have <em>that</em> many devices. Our gym had only an Internet connected TV so that I could watch Quibi while exercising. Recently we added a Kodi box so that I could stream Linux ISOs while sweating on my static bike. Was it worth running another cable there? No. Did I want to buy an expensive hub or switch with multiple ports? Also no.</p>
+
+<p>Enter the EH210. I bought it because it is USB-C powered - as everything should be.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/03/tp-link-eh210.webp" alt="Square device with four cables protruding." width="1024" height="768" class="aligncenter size-full wp-image-69085">
+
+<p>The USB cable it came with was reasonably long. I shoved the A end into the TV and the C end into the device. When the TV is off, it doesn't supply any power to its USB ports - which is perfect for me. When the TV is on, the splitter wakes up quickly and starts blinking its little lights.</p>
+
+<p>The metal chassis is good at dissipating the heat. The lights aren't egregiously bright. Both outbound Ethernet work simultaneously and they are fast enough for video streaming. The supplied Ethernet cable seemed fine.</p>
+
+<p>And… That's all there is to say about it really. For a tenner (depending on The Algorithm) it's a decent bit of kit. If you dont need a fully provisioned switch integrated with your mesh network, this is just the ticket.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=69083&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/gadget-review-tp-link-eh210-ethernet-splitter-usb-c/#comments" thr:count="16" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/gadget-review-tp-link-eh210-ethernet-splitter-usb-c/feed/atom/" thr:count="16" />
+			<thr:total>16</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Book Review: The Husbands by Holly Gramazio ★★★★★]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-the-husbands-by-holly-gramazio/" />
+
+		<id>https://shkspr.mobi/blog/?p=72037</id>
+		<updated>2026-06-10T09:39:13Z</updated>
+		<published>2026-06-10T11:34:55Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="Book Review" /><category scheme="https://shkspr.mobi/blog" term="feminism" /><category scheme="https://shkspr.mobi/blog" term="Sci Fi" />
+		<summary type="html"><![CDATA[Ooooh! This is a lovely treat of a book. Every time Lauren sends her husband into the loft, a different man comes down. Her past is rewritten and she has now been married to Dave/Gary/Bob/Whoever for a year, a month, a decade, a minute.  This isn&#039;t like how Groundhog Day became On The Calculation of Volume or Sliding Doors became The Names, instead this is a new and twisty concept rendered…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/book-review-the-husbands-by-holly-gramazio/"><![CDATA[<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/9781529920369-jacket-large.webp" alt="Book cover. A woman holds a ladder with a man on it." width="326" height="500" class="alignleft size-full wp-image-72042">
+
+<p>Ooooh! This is a lovely treat of a book. Every time Lauren sends her husband into the loft, a different man comes down. Her past is rewritten and she has now been married to Dave/Gary/Bob/Whoever for a year, a month, a decade, a minute.</p>
+
+<p>This isn't like how Groundhog Day became <a href="https://shkspr.mobi/blog/2026/02/book-review-on-the-calculation-of-volume-solvej-balle/">On The Calculation of Volume</a> or Sliding Doors became <a href="https://shkspr.mobi/blog/2026/05/book-review-the-names-by-florence-knapp/">The Names</a>, instead this is a new and twisty concept rendered through the lens of a chick-lit comedy.</p>
+
+<p>It's proper laugh-aloud funny, while playing with all the clichés of both sci-fi and romcoms.</p>
+
+<p>The thing I liked most is that Lauren is an <em>active</em> and intelligent protagonist unlike, say, Carol Sturka from Pluribus. Sturka never engages with the premise of her odd situation, she doesn't try to discover the rules of the world she's living in and is content to let things happen <em>to</em> her. Lauren spends a good deal of time at least trying to get to grips with the (un)reality of her husband-dispensing portal. I found that made for a rather gratifying story and didn't leave me shouting at the pages "JUST TRY SOMETHING!"</p>
+
+<p>It's also refreshing to follow the adventures of a (slight) antihero. Lauren mostly knows when she is being monstrous. She flings between feminism and self-directed misogyny - with a smattering of misandry. Her discrimination against those of us men who wear socks with individual toes is, of course, an unforgivable sin.</p>
+
+<p>The pacing is excellent - with an perfectly timed plot twist just as things are settling down. The afterword talks briefly about the multiple possible endings that were considered. I'd love to know what ideas were rejected although, in retrospect, there's only one narratively satisfying conclusion.</p>
+
+<p>I read a lot of <a href="https://shkspr.mobi/blog/tag/sci-fi/">science fiction</a> - probably more than is healthy - and The Husbands is a welcome addition to my shelf. The practicalities of the plot-device are as unimportant as how Warp Drive works; science fiction is about exploring the possibilities of a fantastical situation. If you could instantly swap your spouse because they lost the TV remote <em>again</em> - would you? In a world of no consequences, what would you get away with? If you discovered a break in reality, what would you try in order to exploit or understand it?</p>
+
+<p>The Husbands gets fairly dark.  Never grim, exactly, but it gnaws away at the cosiness proffered by domestic bliss. Although Lauren can be a bit of a bitch, the story just about strays away from making her morally repugnant. An exemplary piece of storytelling.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=72037&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-the-husbands-by-holly-gramazio/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/book-review-the-husbands-by-holly-gramazio/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[How many consecutive hyphens can you have in a domain name?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/" />
+
+		<id>https://shkspr.mobi/blog/?p=71560</id>
+		<updated>2026-06-09T06:12:26Z</updated>
+		<published>2026-06-08T11:34:59Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="dns" /><category scheme="https://shkspr.mobi/blog" term="ICANN" /><category scheme="https://shkspr.mobi/blog" term="IETF" /><category scheme="https://shkspr.mobi/blog" term="internet" /><category scheme="https://shkspr.mobi/blog" term="standards" /><category scheme="https://shkspr.mobi/blog" term="web" />
+		<summary type="html"><![CDATA[A seemingly simple question which sent me down into the murky depths of standards. How many consecutive hyphens can you have in a domain name? It probably isn&#039;t sensible to name your online presence a----------hyphen.com - but is there anything technically stopping you?  Table of ContentsHistoryTLD RestrictionsAnomaliesSo What?  History  Let&#039;s do some history!  This is 1978&#039;s &#34;HOST NAMES…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/"><![CDATA[<p>A seemingly simple question which sent me down into the murky depths of standards. How many consecutive hyphens can you have in a domain name? It probably isn't <em>sensible</em> to name your online presence <code>a----------hyphen.com</code> - but is there anything technically stopping you?</p>
+
+<p></p><nav role="doc-toc"><menu><li><h2 id="table-of-contents"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#table-of-contents">Table of Contents</a></h2><menu><li><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#history">History</a></li><li><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#tld-restrictions">TLD Restrictions</a></li><li><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#anomalies">Anomalies</a></li><li><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#so-what">So What?</a></li></menu></li></menu></nav><p></p>
+
+<h2 id="history"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#history">History</a></h2>
+
+<p>Let's do some history!</p>
+
+<p>This is 1978's "HOST NAMES ON-LINE". Early Internet standards described the <code>-</code> character as "minus" rather than hyphen.</p>
+
+<blockquote><p><a href="https://www.rfc-editor.org/rfc/rfc608">RFC 608</a></p>
+
+<p>up to 48 characters drawn from the alphabet (A-Z),</p>
+
+<p>digits (0-9), and the minus sign (-) ... specifically, no blank or space characters allowed;</p>
+
+<p>no distinction between upper and lower case letters;</p>
+
+<p>the first character is a letter;</p>
+
+<p>the last character is NOT a minus sign;</p>
+
+<p>no other restrictions on content or syntax.</p></blockquote>
+
+<p>So, originally, you could have as many hyphens as you wanted after the first symbol - which had to be a letter. The last symbol had to be a letter or number<sup id="fnref:naughty"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fn:naughty" class="footnote-ref" title="Way back in the year 1999, several domains were registered with trailing hyphens. This was swiftly corrected and the domains deleted." role="doc-noteref">0</a></sup>.</p>
+
+<p>That was later formalised in 1981's "DoD INTERNET HOST TABLE SPECIFICATION"</p>
+
+<blockquote><p>RFC 810 <a href="https://www.rfc-editor.org/rfc/rfc810">GRAMMATICAL HOST TABLE SPECIFICATION</a></p>
+
+<p><code>&lt;name&gt;  ::= &lt;let&gt;[*[&lt;let-or-digit-or-hyphen&gt;]&lt;let-or-digit&gt;]</code></p></blockquote>
+
+<p>That's carried in the the slightly more modern <a href="https://www.rfc-editor.org/rfc/rfc952">RFC 952</a>.</p>
+
+<p>By the time we hit 1987, the word "minus" has gone. Note, there are no restrictions on the number of hyphens - just as long as your domain name doesn't start or end with one<sup id="fnref:63"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fn:63" class="footnote-ref" title="Note, I think this is when domain names expanded from 48 characters to 63. But that's a different Yak to Shave." role="doc-noteref">1</a></sup>.</p>
+
+<blockquote><p>RFC 1035 <a href="https://www.rfc-editor.org/rfc/rfc1035#section-2.3.1">2.3.1. Preferred name syntax</a></p>
+
+<p>The labels must follow the rules for ARPANET host names.  They must start with a letter, end with a letter or digit, and have as interior characters only letters, digits, and hyphen.</p></blockquote>
+
+<p>By 1989, the "DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION" was tweaked again:</p>
+
+<blockquote><p>RFC 1123 <a href="https://www.rfc-editor.org/rfc/rfc1123">2. GENERAL ISSUES</a></p>
+
+<p>The syntax of a legal Internet host name was specified in RFC-952.  One aspect of host name syntax is hereby changed: the restriction on the first character is relaxed to allow either a letter or a digit.  Host software MUST support this more liberal syntax.</p></blockquote>
+
+<p>And, from then on, things stayed pretty stable until the futuristic year 2010. That was when Internationalised Domain Names (IDN) became available. They use the <code>xn--</code> string at the start of the name so, the spec now says:</p>
+
+<blockquote><p>RFC 5891 <a href="https://www.rfc-editor.org/rfc/rfc5891#section-4.2.3.1">4.2.3.1.  Hyphen Restrictions</a></p>
+
+<p>The Unicode string MUST NOT contain "--" (two consecutive hyphens) in the third and fourth character positions and MUST NOT start or end with a "-" (hyphen).</p></blockquote>
+
+<p>What they <em>really</em> mean is that "--" is banned in position 3 &amp; 4 <em>unless</em> the first two characters are "xn"<sup id="fnref:zero"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fn:zero" class="footnote-ref" title="I wonder why this isn't zero-based like so many other computery things. But that's a different rabbit hole." role="doc-noteref">2</a></sup>.</p>
+
+<p>So, in theory, you can have up to 59 consecutive hyphens by ensuring that they start in position 4 and end at position 62.</p>
+
+<p>Something like <code>abc---[…]---z.com</code> should be fine.</p>
+
+<p>OR IS IT?!?!?</p>
+
+<h2 id="tld-restrictions"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#tld-restrictions">TLD Restrictions</a></h2>
+
+<p>There's what the RFC's say, and what a Top Level Domain (TLD) will allow. The Registry (the organisation which administers the TLD) may set their own, more restrictive, policies. Some will ban naughty words, or refuse IDN registrations, or prevent impersonation of Public Suffix domain, etc.</p>
+
+<p>For example, South Sudan's <a href="https://nic.ss/wp-content/uploads/2024/07/ssNIC-Registry-Sunrise-Registration-Policy-July-2024.pdf">.ss policies refuse to allow <em>any</em> hyphens</a>.</p>
+
+<p>Nominet, who run the .uk Registry, <a href="https://www.nominet.uk/wp-content/uploads/2025/03/UK-rules-of-registration.pdf">don't have any restrictions on the use of hyphens</a> other than refusing to register <code>xn--</code> domains.</p>
+
+<p>But, in general, you can register multi-hyphened domain names with most Registries.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/domain-names.webp" alt="List of domain names with many hyphens." width="1090" height="874" class="aligncenter size-full wp-image-71565">
+
+<h2 id="anomalies"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#anomalies">Anomalies</a></h2>
+
+<p>Of course, the mighty Internet mostly runs on spit and hope<sup id="fnref:furry"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fn:furry" class="footnote-ref" title="And, so I'm told, a cabal of vicious Furries waiting to pounce." role="doc-noteref">3</a></sup>. Naturally there are going to be mistakes, glitches, exceptions, and anomalies.</p>
+
+<p>My delightful friend <a href="https://magicalcodewit.ch/">Q Misell</a> had a rummage through her archives and helped track down some of the domain names which violate the modern rules. It's somewhat difficult to query <em>every</em> domain name, nevertheless, there are hundreds of multi-hyphened domains lurking within DNS.</p>
+
+<p>Some, like <a href="https://web.archive.org/web/20020325103751/http://www.ok--computer.com/">ok--computer.com</a> are long dead, but some are still active<sup id="fnref:sale"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fn:sale" class="footnote-ref" title="There are also quite a few for sale." role="doc-noteref">4</a></sup>!</p>
+
+<p>Possibly the most consecutive hyphens belongs to <a href="http://a-------------------------------------------------------------a.com/">http://a-------------------------------------------------------------a.com/</a></p>
+
+<p>Sixty-one hyphens! The maximum possible, and it still works! The website looks like it hasn't been updated since it was first registered in 2000.</p>
+
+<p>But what about more modern domains? The spookily named <a href="http://zz--icann-monitoring.uk/">http://zz--icann-monitoring.uk/</a> was registered in 2024 - long after the rules were updated. But as Nominet doesn't allow <code>xn--</code> domains, I guess it is fine?</p>
+
+<p>There are some domains like <code>bq--3bhauz7frjrgbka.com</code> which look like they were pseudo-randomly generated. Perhaps as command-and-control servers?</p>
+
+<p>Here's a quick table showing some of the ones Q found:</p>
+
+<table>
+<thead>
+<tr>
+  <th align="right">Domain</th>
+  <th align="left">Creation Date</th>
+  <th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="right"><code>0-------------------------------------------------------------0.com</code></td>
+  <td align="left">1999</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>0-------------------------------------------------------------5.com</code></td>
+  <td align="left">2001</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>0---------------------0.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>0----------------0.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>0---------0.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>pr--newswire.org.uk</code></td>
+  <td align="left">2005</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>0o--o0.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>a-----a.net</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>pr--newswire.uk</code></td>
+  <td align="left">2019</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>uk--domain--names.uk</code></td>
+  <td align="left">2019</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>zz--icann-monitoring.uk</code></td>
+  <td align="left">2024</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>cd--storage-shelves.co.uk</code></td>
+  <td align="left">2012</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>mb--uk.co.uk</code></td>
+  <td align="left">2015</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>o---t.co.uk</code></td>
+  <td align="left">2016</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>om--tat-sat.co.uk</code></td>
+  <td align="left">1999</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>pr--newswire.co.uk</code></td>
+  <td align="left">2005</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>uk--domain--names.co.uk</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>we--buy--any--car.co.uk</code></td>
+  <td align="left">2009</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>i---i.net</code></td>
+  <td align="left">2001</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>a-------------------------------------------------------------a.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>a---b.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>v---v.net</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>we--care.net</code></td>
+  <td align="left">1999</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>b---h.com</code></td>
+  <td align="left">2001</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--3bhauz7frjrgbka.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--3bhauz7frjrgbkdcia.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--3cbpcty2rjyq.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--744a.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--abs7czi.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--abxgt4lb.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--azbukkckjavdc.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--azdecny.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--eh7xj73b75xp62x7mh7xgah7ad7xj73b75xa.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--gbbpy2enmnhq.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--gbtfs2a.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--s7z76.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>bq--zzzz.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>c-------7.com</code></td>
+  <td align="left">2001</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>f---you.com</code></td>
+  <td align="left">1998</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>id--design.com</code></td>
+  <td align="left">1999</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>ok--computer.com</code></td>
+  <td align="left">2001</td>
+  <td align="left">Down</td>
+</tr>
+<tr>
+  <td align="right"><code>t---28.com</code></td>
+  <td align="left">2000</td>
+  <td align="left">Live</td>
+</tr>
+<tr>
+  <td align="right"><code>t---taz---t.com</code></td>
+  <td align="left">2001</td>
+  <td align="left">Down</td>
+</tr>
+</tbody>
+</table>
+
+<p>Note, "Live" just means an HTTP request returned <em>something</em>. There may, of course, be other services running on that domain, or on subdomains.</p>
+
+<h2 id="so-what"><a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#so-what">So What?</a></h2>
+
+<p>Without a full list of every domain name, it's rather hard to draw firm conclusions. But, in the absence of anything better to do, here are some thoughts.</p>
+
+<ul>
+<li>Most people don't want multiple consecutive hyphens in their domain names. They're unwieldy but mostly not prohibited.</li>
+<li>If the authors of RFC 5891 had access to a full list of domains, might they have chosen a different syntax for Punycode?</li>
+<li>Why is it so hard to look through every single registered domain name anyway? Even Certificate Logs no longer seem to be easily searchable.</li>
+<li>Are there any other weird restrictions which are violated by older domain names?</li>
+<li>When will DNS finally go all-in with Unicode rather than this kludge? (Probably around the same time as IPv6 adoption!)</li>
+</ul>
+
+<p>If you know of any weird multi-hyphenated domains, please stick a comment in the box 😊</p>
+
+<p><ins datetime="2026-06-09T06:10:32+00:00">Update!</ins> A kind anonymous benefactor has shared a list of eighty-four <em>thousand</em> <a href="https://codeberg.org/edent/Consecutive--Dash----Domains">domains with multiple hyphen</a>s. There are some very odd entries in there.</p>
+
+<div id="footnotes" role="doc-endnotes">
+<hr aria-label="Footnotes">
+<ol start="0">
+
+<li id="fn:naughty">
+<p>Way back in the year 1999, <a href="https://www.icann.org/en/announcements/details/comment-concerning-trailing-hyphen-domain-names-7-1-2000-en">several domains were registered with trailing hyphens</a>. This was swiftly corrected and the domains deleted.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fnref:naughty" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:63">
+<p>Note, I think this is when domain names expanded from 48 characters to 63. But that's a different Yak to Shave.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fnref:63" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:zero">
+<p>I wonder why this isn't zero-based like so many other computery things. But that's a different rabbit hole.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fnref:zero" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:furry">
+<p>And, so I'm told, a cabal of vicious Furries waiting to pounce.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fnref:furry" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:sale">
+<p>There are also quite a few for sale.&nbsp;<a href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#fnref:sale" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+</ol>
+</div>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=71560&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/#comments" thr:count="17" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/how-many-consecutive-hyphens-can-you-have-in-a-domain-name/feed/atom/" thr:count="17" />
+			<thr:total>17</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[There's still no point in gigabit broadband]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/theres-still-no-point-in-gigabit-broadband/" />
+
+		<id>https://shkspr.mobi/blog/?p=68135</id>
+		<updated>2026-04-13T19:40:14Z</updated>
+		<published>2026-06-06T11:34:57Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="broadband" /><category scheme="https://shkspr.mobi/blog" term="virgin" />
+		<summary type="html"><![CDATA[Six years ago, I nearly got my ISP to upgrade our fibre connection to 1Gbps. As I said at the time:  This is a curmudgeonly post which is going to look ridiculously outdated in a few years.  What&#039;s the point of Gigabit broadband?  Well, it&#039;s a few years later and Virgin Media have just given me their Gig1 package for £30 per month. Nice! With all the inflation related price rises, it&#039;s great to …]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/theres-still-no-point-in-gigabit-broadband/"><![CDATA[<p>Six years ago, I <em>nearly</em> got my ISP to upgrade our fibre connection to 1Gbps. As I said at the time:</p>
+
+<blockquote><p>This is a curmudgeonly post which is going to look ridiculously outdated in a few years.</p>
+
+<p><a href="https://shkspr.mobi/blog/2020/12/whats-the-point-in-gigabit-broadband/">What's the point of Gigabit broadband?</a></p></blockquote>
+
+<p>Well, it's a few years later and Virgin Media have just given me their Gig1 package for £30 per month. Nice! With all the inflation related price rises, it's great to get more for less.</p>
+
+<p>But I'm still left wondering if this is massive overkill.</p>
+
+<p>What can you actually do with their promised 1,130Mbps?</p>
+
+<p>Online video calling isn't that intensive. All the 4K streaming services recommend 25Mbps - so I guess I could ask 40 friends to come round and stream simultaneously. Downloading Linux ISOs is pretty speedy on a connection half as fast - and is usually limited by the upstream. Same for game updates.</p>
+
+<p>I've wired most of my house with Cat6 Ethernet - but most of my switches and ports are 1G rather than 2.5G, so the max bandwith isn't likely to get to any single device. The best I've got directly is around 940Mbps which is about what I'd expect from a gigabit port.</p>
+
+<p>All my WiFi devices are limited by the reality of radio physics in a noisy environment - so about 450Mbps when close to the router. Some of my rooms are hard to reach, so they have HomePlugs beaming data across our electrical wiring. Again, physics dictates a fairly modest speed there.</p>
+
+<p>I've got a VR headset - but haven't found anything that taxes its download speed. Especially given that it uses WiFi.</p>
+
+<p>My 4K Fire Stick has a wired Ethernet connection. Its built in speed test maxes out around 80Mbps. In fact, most of the online speed tests I tried couldn't saturate the pipe - tapping out at around 700Mbps.</p>
+
+<p>Some AI models and training sets are multiple terrabytes. But are they <em>really</em> likely to be downloaded multiple times per day? If they are, is there a real difference in waiting 7 minutes rather than 3.5?</p>
+
+<p>Everyone jokes about website bloat, but the reality is much more prosaic. Latency to a CDN is a bigger contributor to the perceived slowness than the limits of a home connection.</p>
+
+<p>So what about upload speed. The Internet is an inherently sucky medium; people download far more than they upload. In this case, upload is limited to "only" 110Mbps. Even if both of the people in this house were full-time Twitch streamers, I doubt we'd saturate that.</p>
+
+<p>It's 2026 and I can barely recommend 500Mbps broadband. For most domestic uses, including working from home, it's rare to <em>need</em> more than 100Mbps. Sure, faster is always nicer and cheaper is always preferable, but what am I actually going to <em>do</em> with this speed?</p>
+
+<p>Back in 2012, it was reasoned that <a href="https://shkspr.mobi/blog/2020/01/whats-the-fastest-legal-use-of-the-internet/">the fastest <strong>legal</strong> use of the Internet was 2.5Mbps</a>.  We've blown past that limit thanks to video streaming and calling. But, on the assumption I'm not going to be using my connection to mirror Linux ISOs, what can I do with it?</p>
+
+<p>I guess I can run a personal VPN from home. Handy if I want to stream geolocked content when I'm out of the country. But, again, 1Gbps is overkill for that - especially as I'm likely to be either on a mobile hotspot or hotel WiFi.</p>
+
+<p>I could livestream all my security cameras 24/7 to a secure back-up vault. That isn't going to touch the sides of my upload speed.</p>
+
+<p>Perhaps I could self-host all my stuff? Again, for personal use I'm limited to whatever speed my laptop or phone can get on a public connection. Given the risk of botnets, DDoS, hacking &amp; the like, I'm not sure I'd want much public-facing stuff on my residential IP address.</p>
+
+<p>To be clear, I think it is a <em>great</em> thing that the UK Government is pushing ISPs to deploy gigabit everywhere. It isn't at all useful now, but will probably be crucial in the future.</p>
+
+<p>So if you have any ideas for what I can do to saturate this connection, please drop a comment in the box.</p>
+
+<p>In the meantime, if you <a href="http://aklam.io/rOTKz1">join Virgin Media using this link</a> we will both get £50 bill credit.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68135&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/theres-still-no-point-in-gigabit-broadband/#comments" thr:count="27" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/theres-still-no-point-in-gigabit-broadband/feed/atom/" thr:count="27" />
+			<thr:total>27</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Book Review: Accessible Communications by Lisa Riemers and Matisse Hamel-Nelis ★★★★★]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-accessible-communications-by-lisa-riemers-and-matisse-hamel-nelis/" />
+
+		<id>https://shkspr.mobi/blog/?p=72013</id>
+		<updated>2026-05-30T06:46:54Z</updated>
+		<published>2026-06-04T11:34:53Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="a11y" /><category scheme="https://shkspr.mobi/blog" term="accessibility" /><category scheme="https://shkspr.mobi/blog" term="Book Review" />
+		<summary type="html"><![CDATA[My mate Lisa has written a book!  Along with her pal Matisse, she takes us through the practicalities of publishing communications which are accessible to all. This isn&#039;t just about the theory - it takes us across multiple legal jurisdictions, ethical frameworks, and business cases. Once it is done convincing you of the necessity of the work, it begins to explain how to actually create useful…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/book-review-accessible-communications-by-lisa-riemers-and-matisse-hamel-nelis/"><![CDATA[<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/xxlarge_9781398621848.jpg" alt="Book cover featuring multiple speech bubbles." width="240" class="alignleft size-full wp-image-72014">
+
+<p>My mate Lisa has written a book!</p>
+
+<p>Along with her pal Matisse, she takes us through the practicalities of publishing communications which are accessible to all. This isn't just about the theory - it takes us across multiple legal jurisdictions, ethical frameworks, and business cases. Once it is done convincing you of the necessity of the work, it begins to explain how to <em>actually</em> create useful and accessible comms.</p>
+
+<p>Some stuff you may have heard before. Everyone knows to add alt text, right? But this goes in for a slightly deeper dive, explaining how different publishing tools expose it, how to get the most out of it, and where it can all go wrong.</p>
+
+<p>Usually books like this focus only on HTML. That's great - but there is a world outside the Web. So this goes through the steps to make PDFs accessible (a necessary evil!) and other tools which comms professionals may be regularly using.</p>
+
+<p>It also doesn't just focus on the US hegemony.  Instead there are statistics and case studies from dozens of different countries and cultures. It also looks through the youth lens - are TikTok's bouncing subtitles good for accessibility? For situational stuff like not having headphones, probably but for people with cognitive impairments probably not.</p>
+
+<p>Each chapter ends with "Key Takeaways" and a decent summary of what you've learned. You probably won't read this cover to cover, but it is worth diving in to the chapters which meet your needs. Some of the stuff was intimately familiar to me - but I had no idea about how to make Podcasts accessible.</p>
+
+<p>There's a bit of AI stuff splashed through, as is <i lang="fr">de rigueur</i>, but it is realistic about its current limitations and how harmful it can be if misapplied.</p>
+
+<p>The book ends with a chunky checklist. I suggest printing it out and stapling it to anyone in your organisation who says accessibility is a waste of time.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=72013&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/book-review-accessible-communications-by-lisa-riemers-and-matisse-hamel-nelis/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/book-review-accessible-communications-by-lisa-riemers-and-matisse-hamel-nelis/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[London Data Store Relaunch]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/london-data-store-relaunch/" />
+
+		<id>https://shkspr.mobi/blog/?p=71588</id>
+		<updated>2026-05-13T13:45:32Z</updated>
+		<published>2026-06-03T11:34:49Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="Open Data" />
+		<summary type="html"><![CDATA[It has been sixteen years since the launch of data.london.gov.uk. Back then, it was a trailblazer as one of the first major cities to release Open Data in this way. Now, over a decade later, it is more than a mere repository; it is a celebration of Open Data and the way it can improve Londoners&#039; lives.  So, time for a refresh front and back. As well as a bunch of back-end updates, the front-end…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/london-data-store-relaunch/"><![CDATA[<p>It has been sixteen years since the launch of <a href="https://data.london.gov.uk/">data.london.gov.uk</a>. Back then, it was a trailblazer as one of the first major cities to release Open Data in this way. Now, over a decade later, it is more than a mere repository; it is a celebration of Open Data and the way it can improve Londoners' lives.</p>
+
+<p>So, time for a refresh front and back. As well as a bunch of back-end updates, the front-end has been spruced up which should make it easier to find the data you're looking for. I particularly the way they're now highlighting the licence under which data are available.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/06/metadata.webp" alt="Screenshots showing the difference between the old and new version." width="2187" height="876" class="aligncenter size-full wp-image-71590">
+
+<p>You can check it out right now at <a href="https://dfl.london.gov.uk/">https://dfl.london.gov.uk/</a></p>
+
+<p>If you spot any bugs, send them to datastore@london.gov.uk</p>
+
+<p>The most important thing you can do is <strong>use your library</strong>! Just like any other library, it lives or dies based on how much use it gets. Rummage around in those datasets, build interesting things, and convince your local area to send data to it.</p>
+
+<p>This is a brilliant resource and I'm glad to see it get the love it deserves.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=71588&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/london-data-store-relaunch/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/london-data-store-relaunch/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Using FourSquare's API to post location checkins to social media]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/" />
+
+		<id>https://shkspr.mobi/blog/?p=68230</id>
+		<updated>2026-06-02T07:03:18Z</updated>
+		<published>2026-06-02T11:34:51Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="api" /><category scheme="https://shkspr.mobi/blog" term="BlueSky" /><category scheme="https://shkspr.mobi/blog" term="FourSquare" /><category scheme="https://shkspr.mobi/blog" term="geolocation" /><category scheme="https://shkspr.mobi/blog" term="MastodonAPI" />
+		<summary type="html"><![CDATA[What is this, 2016?  I like sharing my location with my pocket friends sometimes. If I&#039;m in a cool bar that they know, perhaps they can recommend a drink. If they live nearby, maybe they want to come for dinner. Not everyone has FourSquare&#039;s SwarmApp, so it is handy to automatically share its updates with other people.  Of course, Swarm doesn&#039;t cross-post to social media because walled-gardens…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/"><![CDATA[<p>What is this, 2016?</p>
+
+<p>I like sharing my location with my pocket friends sometimes. If I'm in a cool bar that they know, perhaps they can recommend a drink. If they live nearby, maybe they want to come for dinner. Not everyone has FourSquare's SwarmApp, so it is handy to automatically share its updates with other people.</p>
+
+<p>Of course, Swarm doesn't cross-post to social media because walled-gardens are the most profitable. This is my attempt to open it back up again.</p>
+
+<p>Here's what they look like on BlueSky and Mastodon:</p>
+
+<blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:i6misxex577k4q6o7gloen4s/app.bsky.feed.post/3mmlb3yva3b2x" data-bluesky-cid="bafyreifyyuioy5zwpghfyqcdx7pjippygsg3o3nr3svtvf7owqsdjlygxy" data-bluesky-embed-color-mode="system"><p lang="en">Checked in to Hamburger Fischmarkt, Große Elbstr. 9 (Fischmarkt), Germany
+
+Probably a *bit* early for a breakfast beer.
+See on Swarm<br><br><a href="https://bsky.app/profile/did:plc:i6misxex577k4q6o7gloen4s/post/3mmlb3yva3b2x?ref_src=embed">[image or embed]</a></p>— Terence Eden (<a href="https://bsky.app/profile/did:plc:i6misxex577k4q6o7gloen4s?ref_src=embed">@edent.tel</a>) <a href="https://bsky.app/profile/did:plc:i6misxex577k4q6o7gloen4s/post/3mmlb3yva3b2x?ref_src=embed">24 May 2026 at 07:45</a></blockquote>
+
+<script async="" src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
+
+<blockquote class="mastodon-embed" data-embed-url="https://mastodon.social/@Edent/116642179645011519/embed" style="background: #FCF8FF; border-radius: 8px; border: 1px solid #C9C4DA; margin: 0; max-width: 540px; min-width: 270px; overflow: hidden; padding: 0;"> <a href="https://mastodon.social/@Edent/116642179645011519" target="_blank" style="align-items: center; color: #1C1A25; display: flex; flex-direction: column; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Roboto, sans-serif; font-size: 14px; justify-content: center; letter-spacing: 0.25px; line-height: 20px; padding: 24px; text-decoration: none;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 79 75"><path d="M63 45.3v-20c0-4.1-1-7.3-3.2-9.7-2.1-2.4-5-3.7-8.5-3.7-4.1 0-7.2 1.6-9.3 4.7l-2 3.3-2-3.3c-2-3.1-5.1-4.7-9.2-4.7-3.5 0-6.4 1.3-8.6 3.7-2.1 2.4-3.1 5.6-3.1 9.7v20h8V25.9c0-4.1 1.7-6.2 5.2-6.2 3.8 0 5.8 2.5 5.8 7.4V37.7H44V27.1c0-4.9 1.9-7.4 5.8-7.4 3.5 0 5.2 2.1 5.2 6.2V45.3h8ZM74.7 16.6c.6 6 .1 15.7.1 17.3 0 .5-.1 4.8-.1 5.3-.7 11.5-8 16-15.6 17.5-.1 0-.2 0-.3 0-4.9 1-10 1.2-14.9 1.4-1.2 0-2.4 0-3.6 0-4.8 0-9.7-.6-14.4-1.7-.1 0-.1 0-.1 0s-.1 0-.1 0 0 .1 0 .1 0 0 0 0c.1 1.6.4 3.1 1 4.5.6 1.7 2.9 5.7 11.4 5.7 5 0 9.9-.6 14.8-1.7 0 0 0 0 0 0 .1 0 .1 0 .1 0 0 .1 0 .1 0 .1.1 0 .1 0 .1.1v5.6s0 .1-.1.1c0 0 0 0 0 .1-1.6 1.1-3.7 1.7-5.6 2.3-.8.3-1.6.5-2.4.7-7.5 1.7-15.4 1.3-22.7-1.2-6.8-2.4-13.8-8.2-15.5-15.2-.9-3.8-1.6-7.6-1.9-11.5-.6-5.8-.6-11.7-.8-17.5C3.9 24.5 4 20 4.9 16 6.7 7.9 14.1 2.2 22.3 1c1.4-.2 4.1-1 16.5-1h.1C51.4 0 56.7.8 58.1 1c8.4 1.2 15.5 7.5 16.6 15.6Z" fill="currentColor"></path></svg> <div style="color: #787588; margin-top: 16px;">Post by @Edent@mastodon.social</div> <div style="font-weight: 500;">View on Mastodon</div> </a> </blockquote>
+
+<script data-allowed-prefixes="https://mastodon.social/" async="" src="https://mastodon.social/embed.js"></script>
+
+<h2 id="tldr"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#tldr">tl;dr</a></h2>
+
+<p>You can <a href="https://gitlab.com/edent/swarmtosocial/-/blob/main/swarmtosocial.py">get the SwarmToSocial code from my GitLab</a>.</p>
+
+<p>At the moment, developers get <a href="https://foursquare.com/pricing/">10,000 API calls for free each month</a>. That's probably more than enough for most personal uses.</p>
+
+<h2 id="documentation"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#documentation">Documentation</a></h2>
+
+<p>I was pleasantly surprised that <a href="https://docs.foursquare.com/developer/reference/create-a-checkin">FourSquare's CheckIn documentation</a> was fairly easy to use and understand.</p>
+
+<p>Once you've <a href="https://foursquare.com/developers/home">signed up for a developer account</a> you can create an OAuth app. That will generate a Client ID (<code>ABC123</code>), Client Secret (<code>XYZ789</code>), and you supply a Project URL.</p>
+
+<p>Once done you can <a href="https://docs.foursquare.com/developer/reference/personalization-apis-authentication">follow the Authentication documentation</a>. Or just visit:</p>
+
+<pre><code class="language-_">https://foursquare.com/oauth2/authenticate?
+   client_id=ABC123
+  &amp;response_type=code
+  &amp;redirect_uri=https://example.com/
+</code></pre>
+
+<p>Sign in with your FourSquare account. It will redirect you to:</p>
+
+<p><code>https://example.com/?code=456QWE</code></p>
+
+<p>Use that code to construct the final URl:</p>
+
+<pre><code class="language-_">https://foursquare.com/oauth2/access_token?
+   client_id=ABC123
+  &amp;client_secret=XYZ789
+  &amp;grant_type=authorization_code
+  &amp;redirect_uri=http://example.com/
+  &amp;code=456QWE
+</code></pre>
+
+<p>That will respond with the Access Token:</p>
+
+<pre><code class="language-json">{
+   "access_token":"asdfghjkl123456"
+}
+</code></pre>
+
+<p>Hurrah! Posting a new checkin is <em>relatively</em> simple. POST to this URl with a header of <code>accept: application/json</code></p>
+
+<pre><code class="language-_">https://api.foursquare.com/v2/checkins/add?
+   v=20260223
+  &amp;venueId=13600425
+  &amp;shout=This%20is%20a%20test
+  &amp;oauth_token=asdfghjkl123456
+</code></pre>
+
+<ul>
+<li><code>v</code> is, rather confusingly, a date. <a href="https://docs.foursquare.com/developer/reference/versioning">The versioning documentation</a> has more details but, basically, set it to the date you deployed your app.</li>
+<li><code>venuId</code> you'll need to find yourself (more on that later).</li>
+<li><code>shout</code> is up to 140 characters (!) of URl encoded text.</li>
+</ul>
+
+<p>That will send back rather a lot of JSON. Here are the important bits:</p>
+
+<pre><code class="language-json">{
+  "meta": {
+    "code": 200,
+    "requestId": "123456789"
+  },
+  "response": {
+    "checkin": {
+      "id": "987654321",
+      "createdAt": 1771843820,
+      "type": "checkin",
+      "visibility": "closeFriends",
+      "shout": "This is a test of the API",
+      "timeZoneOffset": -300,
+      "editableUntil": 1771930220000,
+      "user": {
+        "id": "56367",
+        "firstName": "Terence",
+        "lastName": "Eden",
+        "relationship": "self",
+        "displayName": "Terence Eden"
+      },
+      "venue": {
+        "id": "QWERTYUIOP",
+        "name": "My Birthday Party!",
+        "contact": {},
+        "location": {
+          "isFuzzed": true,
+          "lat": 39.123456789,
+          "lng": -84.987654321,
+          "cc": "US",
+          "city": "Cincinnati",
+          "state": "KY",
+          "country": "United States",
+          "formattedAddress": [
+            "Cincinnati, KY",
+            "United States"
+          ]
+        }
+      },
+      "checkinShortUrl": "https://swarmapp.com/user/56367/checkin/987654321?s=wRZ7ByNfCW1DNrOIpsRcytPZelE"
+    }
+  }
+}
+</code></pre>
+
+<p>For my purposes, the <code>shout</code> and <code>checkinShortUrl</code> are the most important. You can view a sample check in:</p>
+
+<p><a href="https://swarmapp.com/user/56367/checkin/699c34b55bad6b7fb1695544?s=LA7jCaAtH-s9CwSpgQrQdHrP5-8">https://swarmapp.com/user/56367/checkin/699c34b55bad6b7fb1695544?s=LA7jCaAtH-s9CwSpgQrQdHrP5-8</a></p>
+
+<h2 id="venue-id"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#venue-id">Venue ID</a></h2>
+
+<p>If you're already using <a href="https://shkspr.mobi/blog/2018/11/extracting-your-data-from-untappd/">a service like Untappd</a> you might be able to get the venue ID from that.</p>
+
+<p>If not, FourSquare provides <a href="https://opensource.foursquare.com/os-places/">100 million points of interest</a> for free - although with <a href="https://community.openstreetmap.org/t/foursquare-releases-100m-poi-dataset-under-apache-2-0/121883">questionable data quality</a>.</p>
+
+<p>Alternatively, you can <a href="https://docs.foursquare.com/fsq-developers-places/reference/place-search">search by location</a>:</p>
+
+<pre><code class="language-_">curl --request GET \
+     --url 'https://places-api.foursquare.com/places/search?ll=51.123%2C0.123&amp;radius=1000&amp;sort=POPULARITY' \
+     --header 'X-Places-Api-Version: 2025-06-17' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer ABC123'
+</code></pre>
+
+<p>As far as I can see, the <code>Bearer Token</code> only exists <a href="https://docs.foursquare.com/fsq-developers-places/reference/place-search">on the documentation page</a>. I couldn't find it in my developer console. Weird!</p>
+
+<p>That gets you back:</p>
+
+<pre><code class="language-json">{
+  "results": [
+    {
+      "fsq_place_id": "4be584ed2457a593ad8cab15",
+      "latitude": 51.11783041264215,
+      "longitude": 0.11219274871133413,
+      "categories": [
+        {
+          "fsq_category_id": "4bf58dd8d48988d1fa941735",
+          "name": "Farmers Market",
+          "short_name": "Farmers Market",
+          "plural_name": "Farmers Markets",
+          "icon": {
+            "prefix": "https://ss3.4sqi.net/img/categories_v2/shops/food_farmersmarket_",
+            "suffix": ".png"
+          }
+        }
+      ],
+      "date_created": "2010-05-08",
+      "date_refreshed": "2025-11-01",
+      "distance": 970,
+      "extended_location": {},
+      "link": "/places/4be584ed2457a593ad8cab15",
+      "location": {
+        "address": "",
+        "locality": "Hartfield",
+        "region": "East Sussex",
+        "postcode": "",
+        "admin_region": "England",
+        "country": "GB",
+        "formatted_address": "Hartfield, East Sussex"
+      },
+      "name": "Perryhill Farm Shop",
+      "placemaker_url": "https://foursquare.com/placemakers/review-place/4be584ed2457a593ad8cab15",
+      "related_places": {},
+      "social_media": {
+        "twitter": ""
+      },
+      "tel": "",
+      "website": "http://www.perryhillorchards.co.uk/index.php?sec=4"
+    },
+    {
+      "fsq_place_id": "8896f77565e54a658585301d",
+      "latitude": 51.11649,
+      "longitude": 0.13131,
+      "categories": [],
+      "date_created": "2021-12-06",
+      "date_refreshed": "2021-12-06",
+      "distance": 909,
+      "extended_location": {},
+      "link": "/places/8896f77565e54a658585301d",
+      "location": {
+        "address": "Priory Park, Beech Green Lane",
+        "locality": "Withyham",
+        "region": "East Sussex",
+        "postcode": "TN7 4DB",
+        "admin_region": "England",
+        "post_town": "Hartfield",
+        "country": "GB",
+        "formatted_address": "Priory Park, Beech Green Lane, Withyham, East Sussex, TN7 4DB"
+      },
+      "name": "Spectra Studios",
+      "placemaker_url": "https://foursquare.com/placemakers/review-place/8896f77565e54a658585301d",
+      "related_places": {},
+      "social_media": {},
+      "tel": "01892 487149"
+    },
+  ],
+  "context": {
+    "geo_bounds": {
+      "circle": {
+        "center": {
+          "latitude": 51.123,
+          "longitude": 0.1234
+        },
+        "radius": 1000
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>You can manually check a place using the Placemaker site: <a href="https://foursquare.com/placemakers/review-place/64eca80f0398c97ab52298ec">https://foursquare.com/placemakers/review-place/64eca80f0398c97ab52298ec</a></p>
+
+<h2 id="getting-existing-checkins"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#getting-existing-checkins">Getting Existing Checkins</a></h2>
+
+<p>What if you've checked in to a place using the official Swarm app? How do you get your own recent checkin data?</p>
+
+<p>Again, there is <a href="https://docs.foursquare.com/developer/reference/get-user-checkins">documentation on getting user checkins</a>.</p>
+
+<pre><code class="language-bash">curl --request GET \
+     --url 'https://api.foursquare.com/v2/users/self/checkins?v=20260223&amp;limit=2&amp;offset=0&amp;oauth_token=asdfghjkl123456' \
+     --header 'accept: application/json'
+</code></pre>
+
+<p>Where it says <code>oauth_token</code> it <em>actually</em> means the <code>access_token</code>.</p>
+
+<p>The JSON that is returned is a bit verbose, so I've simplified it here:</p>
+
+<pre><code class="language-json">{
+  "meta": {
+    "code": 200,
+    "requestId": "699c6505b488565a31e315e3"
+  },
+  "response": {
+    "checkins": {
+      "count": 2344,
+      "items": [
+        {
+          "id": "699c34b55bad6b7fb1695544",
+          "createdAt": 1771844789,
+          "type": "checkin",
+          "visibility": "closeFriends",
+          "entities": [],
+          "shout": "Testing the API using an Untappd FourSquare ID.",
+          "timeZoneOffset": 0,
+          "editableUntil": 1771931189000,
+          "venue": {
+            "id": "64eca80f0398c97ab52298ec",
+            "name": "Abbey Wood Fossil Pit",
+            "contact": {},
+            "location": {
+              "lat": 51.487514,
+              "lng": 0.13048041,
+              "postalCode": "SE2 0AX",
+              "cc": "GB",
+              "country": "United Kingdom",
+              "formattedAddress": [
+                "SE2 0AX"
+              ]
+            },
+            "createdAt": 1693231119
+          },
+        },
+</code></pre>
+
+<p>Annoyingly, there's no <code>checkinShortUrl</code> which means it can't easily be shared.</p>
+
+<p>For that, you'll need to <a href="https://docs.foursquare.com/developer/reference/get-checkin-details">use the <code>get-checkin-details</code> API</a>:</p>
+
+<pre><code class="language-bash">curl --request GET \
+     --url 'https://api.foursquare.com/v2/checkins/699c34b55bad6b7fb1695544?v=20250202&amp;oauth_token=asdfghjkl123456' \
+     --header 'accept: application/json'
+</code></pre>
+
+<p>Which will return this (truncated for brevity):</p>
+
+<pre><code class="language-json">{
+  "meta": {
+    "code": 200,
+    "requestId": "699c67de5f5c0a0e8ab234db"
+  },
+  "response": {
+    "checkin": {
+      "id": "699c34b55bad6b7fb1695544",
+      "createdAt": 1771844789,
+      "type": "checkin",
+      "shout": "Testing the API using an Untappd FourSquare ID.",
+      "timeZoneOffset": 0,
+      "checkinShortUrl": "https://swarmapp.com/user/56367/checkin/699c34b55bad6b7fb1695544?s=LA7jCaAtH-s9CwSpgQrQdHrP5-8",
+</code></pre>
+
+<h2 id="photos"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#photos">Photos</a></h2>
+
+<p>If there's a photo with the checkin, it will be return in the JSON like this:</p>
+
+<pre><code class="language-json">{
+  "response": {
+    "checkin": {
+      "photos": {
+        "count": 1,
+        "items": [
+          {
+            "id": "699f3a9f96799c05c0f16c9c",
+            "createdAt": 1772042911,
+            "prefix": "https://fastly.4sqi.net/img/general/",
+            "suffix": "/56367_5VYox4Y-hs66wURVsYc1NLgOokfwBfcWhtKQrOlMdD8.jpg",
+            "width": 1008,
+            "height": 1344,
+</code></pre>
+
+<p>The URl for the image is <code>prefix width x height suffix</code> - in this case <a href="https://fastly.4sqi.net/img/general/1008x1344/56367_5VYox4Y-hs66wURVsYc1NLgOokfwBfcWhtKQrOlMdD8.jpg">https://fastly.4sqi.net/img/general/1008x1344/56367_5VYox4Y-hs66wURVsYc1NLgOokfwBfcWhtKQrOlMdD8.jpg</a></p>
+
+<p>You can adjust the width and height if you want a thumbnail or some other resolution.</p>
+
+<p>If there's no photo, the count will be 0.</p>
+
+<h2 id="putting-it-all-together"><a href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#putting-it-all-together">Putting it all together</a></h2>
+
+<p>Every 15 minutes, <a href="https://gitlab.com/edent/swarmtosocial/-/blob/main/swarmtosocial.py">the SwarmToSocial code</a> does the following:</p>
+
+<ol>
+<li>Get the most recent checkin.</li>
+<li>Read a local file to get the previously seen checkin ID.</li>
+<li>If the checkin ID hasn't been seen before:
+
+<ol>
+<li>Get the checkin details.</li>
+<li>Get the photo if it exists</li>
+<li>Post the checkin (plus photo) to Mastodon &amp; BlueSky.</li>
+<li>Save the checkin ID to a file.</li>
+</ol></li>
+</ol>
+
+<p>Enjoy!</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68230&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/06/using-foursquares-api-to-post-location-checkins-to-social-media/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Who are the actors in the UK's 2015 passport?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/who-are-the-actors-in-the-uks-2015-passport/" />
+
+		<id>https://shkspr.mobi/blog/?p=70568</id>
+		<updated>2026-05-12T14:15:17Z</updated>
+		<published>2026-05-31T11:34:08Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="FoI" /><category scheme="https://shkspr.mobi/blog" term="government" /><category scheme="https://shkspr.mobi/blog" term="sexism" /><category scheme="https://shkspr.mobi/blog" term="shakespeare" />
+		<summary type="html"><![CDATA[I got nerdsniped by a bloody Reddit post!  In 2015, the UK Government launched a new passport design. It immediately attracted negative press for its designers&#039; &#34;sexist&#34; decision to feature more men than women.  The government has been accused of sexism over the new UK passport design, which commemorates the achievements of two women but seven men.  It&#039;s true that there are only two named women - …]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/who-are-the-actors-in-the-uks-2015-passport/"><![CDATA[<p>I got <a href="https://xkcd.com/356/">nerdsniped</a> by a bloody <a href="https://www.reddit.com/r/AskUK/comments/1ssf943/">Reddit post</a>!</p>
+
+<p>In 2015, the UK Government launched <a href="https://www.gov.uk/government/news/new-uk-passport-design-launched">a new passport design</a>. It immediately attracted negative press for its designers' <a href="https://www.bbc.co.uk/news/uk-34710261">"sexist" decision to feature more men than women</a>.</p>
+
+<blockquote><p>The government has been accused of sexism over the new UK passport design, which commemorates the achievements of two women but seven men.</p></blockquote>
+
+<p>It's true that there are only two <em>named</em> women - but there is another <em>unnamed</em> woman on the passport! Here's the "Performing Arts" page:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/04/Performing-Arts.webp" alt="Passport page, richly illustrated, featuring Shakespeare's Globe. There are three actors in the corner." width="2048" height="1455" class="aligncenter size-full wp-image-70569">
+
+<p>Shakespeare stares down at his Wooden O. Half the page is a stage, and the men and woman merely players.</p>
+
+<p>Here they are in a bit more detail:</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/04/actors.webp" alt="Close up of the actors. They are dressed in period costume and are emoting." width="1600" height="1520" class="aligncenter size-full wp-image-70570">
+
+<p>Who are they? They look like reasonably modern photos rather than portraits. They're not obviously famous. None of the press at the time mentioned who they were. No stock photography library had anything similar that I could see. Your favourite AI thought one of them was Doctor Who and the other a Congressman from Nantucket.</p>
+
+<p>The <a href="https://assets.publishing.service.gov.uk/media/5a7f516f40f0b62305b866a7/HMPO_magazine.pdf">official document describing the design</a> simply says:</p>
+
+<blockquote><p>On the left hand side there is an image of the interior of the theatre, with a play in progress.</p></blockquote>
+
+<p>I scanned in an old passport to get the faces in as much detail as possible. All three of them look like jobbing actors who you probably saw in a schools' production of Twelfth Night, don't they?
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/04/actor-faces.webp" alt="Three faces in a row." width="699" height="233" class="aligncenter size-full wp-image-70575"></p>
+
+<p>I couldn't find anything about them online. I asked my investigative-minded friends but they drew a blank.</p>
+
+<p>I even sent a <a href="https://www.whatdotheyknow.com/request/images_used_in_2015_passport">Freedom of Information request to the Passport Office</a>.</p>
+
+<p>They refused on grounds of GDPR, but they did say:</p>
+
+<blockquote><p>However, we can disclose the photographs of the individuals appearing on the passport page captured by a photographer employed by a supplier contracted to HM Passport Office.</p></blockquote>
+
+<p>So, if you're one of the actors / models - or know who they are - please drop a note in the box below!</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=70568&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/who-are-the-actors-in-the-uks-2015-passport/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/who-are-the-actors-in-the-uks-2015-passport/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[The UK Government's Low Value Purchase System is a Waste of Time]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/the-uk-governments-low-value-purchase-system-is-a-waste-of-time/" />
+
+		<id>https://shkspr.mobi/blog/?p=69983</id>
+		<updated>2026-05-28T18:23:59Z</updated>
+		<published>2026-05-29T11:34:54Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="FoI" /><category scheme="https://shkspr.mobi/blog" term="government" /><category scheme="https://shkspr.mobi/blog" term="rant" /><category scheme="https://shkspr.mobi/blog" term="statistics" />
+		<summary type="html"><![CDATA[It can be hard running a small business. If you want to sell to a large organisation like the UK Government, there are forms to fill in, checks to comply with, tenders to bid on, and a hundred other things.  Luckily, there&#039;s the RM6237 Low Value Purchase System to make everything better. If a department wants to buy something below a certain threshold, they can contact any of the registered…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/the-uk-governments-low-value-purchase-system-is-a-waste-of-time/"><![CDATA[<p>It can be hard running a small business. If you want to sell to a large organisation like the UK Government, there are forms to fill in, checks to comply with, tenders to bid on, and a hundred other things.</p>
+
+<p>Luckily, there's the <a href="https://www.gca.gov.uk/agreements/RM6237">RM6237 Low Value Purchase System</a> to make everything better. If a department wants to buy something below a certain threshold, they can contact any of the registered suppliers and just buy it. No complicated paperwork, cheaper prices, win-win!</p>
+
+<p>Except, there's on annoying bit of bureaucracy. Every month I have to tell the Government Commercial Agency what business I've done.</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/04/GCA.webp" alt="Hello Terence Eden, It’s time to report your management information to the Government Commercial Agency (GCA). If you didn’t do any business, you still need to use this service to let us know. 9 April 2026 is the deadline to report your March 2026 data You need to report for the following commercial agreement(s):-   RM6237 – Low Value Purchase System Report your management information If you don’t think you should be getting this reminder or there is a problem reporting, please email the support team: Regards, GCA MI collection team" width="840" height="1000" class="aligncenter size-full wp-image-69985">
+
+<p>Fair enough, I guess. Let them know how many paperclips I've sold to the Ministry of Administrative Affairs.</p>
+
+<p>But there's a wrinkle. What if I've sold <em>nothing</em>? Well, I <strong>still</strong> have to log on, wait for an MFA code to be send, click through, and report "No Business".</p>
+
+<img src="https://shkspr.mobi/blog/wp-content/uploads/2026/04/Screenshot-20Confirm-report-no-business-for-March-2026-on-RM6237.webp" alt="Screenshot with a button to report no business." width="1300" height="500" class="aligncenter size-full wp-image-69988">
+
+<p>I think that's a waste of time. But I wondered how much time it collectively wastes for the nation's small businesses.</p>
+
+<p>So I filed <a href="https://www.whatdotheyknow.com/request/low_value_purchase_system_nill_r">a Freedom of Information request</a> to see how many people have to sign in to let them know they haven't done any business. They replied quickly - although sent the data as a PDF rather than the requested machine-readable format.</p>
+
+<p>Here's how much of a waste of time it is for everyone:</p>
+
+<table>
+<thead>
+<tr>
+  <th align="right"><strong>Date</strong></th>
+  <th align="right"><strong>Total Returns</strong></th>
+  <th align="right"><strong>Nil Return</strong></th>
+  <th align="right"><strong>Percent<wbr>age</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="right">Mar-25</td>
+  <td align="right">768</td>
+  <td align="right">729</td>
+  <td align="right">94.9%</td>
+</tr>
+<tr>
+  <td align="right">Apr-25</td>
+  <td align="right">902</td>
+  <td align="right">876</td>
+  <td align="right">97.1%</td>
+</tr>
+<tr>
+  <td align="right">May-25</td>
+  <td align="right">948</td>
+  <td align="right">923</td>
+  <td align="right">97.4%</td>
+</tr>
+<tr>
+  <td align="right">Jun-25</td>
+  <td align="right">1,322</td>
+  <td align="right">1,270</td>
+  <td align="right">96.1%</td>
+</tr>
+<tr>
+  <td align="right">Jul-25</td>
+  <td align="right">1,406</td>
+  <td align="right">1,355</td>
+  <td align="right">96.4%</td>
+</tr>
+<tr>
+  <td align="right">Aug-25</td>
+  <td align="right">1,369</td>
+  <td align="right">1,326</td>
+  <td align="right">96.9%</td>
+</tr>
+<tr>
+  <td align="right">Sep-25</td>
+  <td align="right">1,416</td>
+  <td align="right">1,362</td>
+  <td align="right">96.2%</td>
+</tr>
+<tr>
+  <td align="right">Oct-25</td>
+  <td align="right">1,610</td>
+  <td align="right">1,556</td>
+  <td align="right">96.6%</td>
+</tr>
+<tr>
+  <td align="right">Nov-25</td>
+  <td align="right">1,713</td>
+  <td align="right">1,654</td>
+  <td align="right">96.6%</td>
+</tr>
+<tr>
+  <td align="right">Dec-25</td>
+  <td align="right">1,645</td>
+  <td align="right">1,590</td>
+  <td align="right">96.7%</td>
+</tr>
+<tr>
+  <td align="right">Jan-26</td>
+  <td align="right">1,536</td>
+  <td align="right">1,487</td>
+  <td align="right">96.8%</td>
+</tr>
+<tr>
+  <td align="right">Feb-26</td>
+  <td align="right">1,588</td>
+  <td align="right">1,531</td>
+  <td align="right">96.4%</td>
+</tr>
+</tbody>
+</table>
+
+<p>Even if you assume that it only takes 2 minutes to fill in their form, that's over 2 <em>days</em> worth of time being wasted every month.</p>
+
+<p>At best, 59 small businesses reported that they sold something via RM6237. Well over a thousand businesses are clicking on a button which, frankly, ought not to exist. Why isn't the onus on those <em>buying</em> using the system to report what they've spent and who they spent it with?</p>
+
+<p>After clicking the button, I'm always asked to rate my experience using the service. I FoI'd that data as well but was told:</p>
+
+<blockquote><p>This information is not held. Feedback scores submitted are anonymised and only available as a service-wide view; consequently, we do not capture or hold results specific to RM6237</p></blockquote>
+
+<p>So the GCA are wasting everyone's time and do not track how annoying it is.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=69983&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/the-uk-governments-low-value-purchase-system-is-a-waste-of-time/#comments" thr:count="5" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/the-uk-governments-low-value-purchase-system-is-a-waste-of-time/feed/atom/" thr:count="5" />
+			<thr:total>5</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Gadget Review: Chuwi Minibook X N150 + Linux ★★★★☆]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/" />
+
+		<id>https://shkspr.mobi/blog/?p=68038</id>
+		<updated>2026-05-27T17:36:21Z</updated>
+		<published>2026-05-27T11:34:36Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="gadget" /><category scheme="https://shkspr.mobi/blog" term="laptop" /><category scheme="https://shkspr.mobi/blog" term="linux" /><category scheme="https://shkspr.mobi/blog" term="review" /><category scheme="https://shkspr.mobi/blog" term="usb-c" />
+		<summary type="html"><![CDATA[I needed a small and light laptop to take travelling. Something with a larger screen than my phone so I can use the Big Internet™. Nothing too expensive and something that uses the same USB-C charger as everything else.  So I settled on the Chuwi Minibook N150. It&#039;s literally small enough to fit in my cargo-short pockets. For the price (around £300ish) it is basically fine. There are a few ni…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/"><![CDATA[<p>I needed a small and light laptop to take travelling. Something with a larger screen than my phone so I can use the Big Internet™. Nothing too expensive and something that uses the same USB-C charger as everything else.</p>
+
+<p>So I settled on the Chuwi Minibook N150. It's literally small enough to fit in my cargo-short pockets. For the price (around £300ish) it is basically fine. There are a few niggles, but none of them showstoppers for me.</p>
+
+<p>I took it to OggCamp and had <em>so</em> many people come and ask me about it. It's a small, cute, and distinctive looking device.</p>
+
+<p><a href="https://www.chuwi.com/product/items/chuwi-minibook-x-n150.html"><img src="https://shkspr.mobi/blog/wp-content/uploads/2026/05/minibook.webp" alt="A small laptop." width="1024" height="720" class="aligncenter size-full wp-image-71515"></a></p>
+
+<h2 id="the-bad"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#the-bad">The Bad</a></h2>
+
+<p>Here are the worst things about the laptop:</p>
+
+<ul>
+<li>US Keyboard. Yup, the @ and " are in the wrong place. I can be set to UK, but then you lose the <kbd>|</kbd> key.</li>
+<li>The trackpad sometimes goes a bit jittery. It usually works, but once it a while goes askew. The touchscreen can be used if it happens.</li>
+<li>Screen rotation works, but the keyboard and trackpad don't switch off if you bend the keyboard all the way back.</li>
+<li>No biometrics like fingerprint or camera - so you need to remember your passwords.</li>
+<li>Support from the manufacturer is haphazard. Mostly forum links and expired downloads. The firmware seems to update fine on Linux though.</li>
+</ul>
+
+<p>That's not too bad, I reckon.</p>
+
+<h2 id="installing-linux"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#installing-linux">Installing Linux</a></h2>
+
+<p>I had a brief play with Windows 11, let it update its drivers just in case there was any magic firmware, then nuked it.</p>
+
+<p>Turn the device off. Turn it on and then hammer the <kbd>Delete</kbd> button. It'll pop you into the BIOS.</p>
+
+<p>Secure Boot needs to be disabled:</p>
+
+<p>Security → Secure Boot → Secure Boot → Disabled</p>
+
+<p>You'll also need to set it to boot from a USB device:</p>
+
+<p>Boot → Boot Option #1 → USB Device</p>
+
+<p>The go to Save &amp; Exit.  I tried <a href="https://www.linuxmint.com/edition.php?id=325">Linux Mint Debian Edition</a>. It booted just fine and, after fiddling in the display settings, it automatically detected the screen rotation. Internet worked, touchscreen worked, Bluetooth worked. I tried a few distros and settled on NixOS as being the least worst option.</p>
+
+<p>Everything works except the keyboard switching off when it is folded backwards.</p>
+
+<h2 id="look-and-feel"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#look-and-feel">Look and Feel</a></h2>
+
+<p>It is a solid lump of metal. There are no decals on back of the screen (so perfect for adding stickers!) and the bottom is similarly bare apart from some air-flow grilles and the usual identifying marks.</p>
+
+<p>There are two USB-C ports on one side and a vestigial headphone jack on the other.</p>
+
+<h2 id="keyboard"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#keyboard">Keyboard</a></h2>
+
+<p>Despite coming from a UK warehouse and shipping with a UK plug, it has a US keyboard. The only real difference is the <code>£</code> symbol is missing from the <kbd>3</kbd> button, the <code>@</code> and <code>"</code> are swapped, and the <kbd>|</kbd> button is in the wrong place. None of that is disastrous and setting your OS to use a UK layout fixes things.</p>
+
+<p>Because <kbd>\|</kbd> is mapped to <kbd>#~</kbd>, there's no way to type a backslash or pipe.</p>
+
+<p>There are three levels of backlight. Off, dim, and not quite so dim. No fancy RBG effects here!</p>
+
+<h2 id="trackpad"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#trackpad">Trackpad</a></h2>
+
+<p>Supports multi-touch so you can use gestures. Obviously it is quite small, but you can touch the screen if you need to. Annoyingly, the trackpad is only "clicky" at the edges. You can click down in the middle, but it doesn't feel like it clicks. Not a show stopper, but a bit aggravating.</p>
+
+<h2 id="screen"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#screen">Screen</a></h2>
+
+<p>The screen has masked off rounded corners. Personally I think that's something which should be left to the Desktop Environment to decide. I can't really understand why they've done that. However, as the ratio is 16:10, you're not going to lose precious pixels when watching a movie.</p>
+
+<p>The screen is bright enough for most uses and goes fairly dim for night use. It is locked at 50Hz which is a bit of a baffling decision. I guess it saves a modicum of power? For almost all uses, you won't notice the difference though.</p>
+
+<h2 id="battery-and-charging"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#battery-and-charging">Battery and Charging</a></h2>
+
+<p>It ships with a USB-C PD charger with a UK plug and a hard-wired connection. Unfortunately, the charger was limited to 36W - so fairly modest.</p>
+
+<p>However, initially the Minibook would only charge at around 10W (20V⎓0.5A) eventually getting up to 16W (12V⎓1.3A or 20V⎓0.3A) - that didn't meaningfully change when I used a more powerful laptop charger. It never got up to the promised 36W while the unit was off.</p>
+
+<p>Once I turned it on, it jumped to ~35W (11.70V⎓3A).  Using the stronger charger it occasionally got to 40W (20V⎓2A) but mostly stayed around 36W.</p>
+
+<p>That's not a <em>bad</em> speed, and the battery is relatively small, but you won't be able to take it from empty to full with a quick blast. If you do need it to charge quickly, make sure it is on.</p>
+
+<h2 id="size-weight-and-tablet-mode"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#size-weight-and-tablet-mode">Size, Weight, and Tablet Mode</a></h2>
+
+<p>At just under a Kg, it is light enough to slip into a jacket pocket. Similarly, although around twice as thick as a normal 10 inch tablet, it isn't massive. Holding it up for long periods means you will feel the weight more keenly - but the keyboard acts as a pretty decent stand.</p>
+
+<p>It supports multi-touch and a pen, apparently, which is not supplied.</p>
+
+<h2 id="camera"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#camera">Camera</a></h2>
+
+<p>The small lens is sensibly placed in the top centre and is of surprisingly good quality. You're not going to shoot a movie on it, but fine for video calls.</p>
+
+<h2 id="verdict"><a href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#verdict">Verdict</a></h2>
+
+<p>Depending on how you are blessed by The Algorithm, this is around £300 - £350. You may also have to pay tax and delivery depending on where it is shipped from.</p>
+
+<p>The <a href="https://www.chuwi.com/product/items/chuwi-minibook-x-n150.html">specifications are pretty decent</a>. Look, it's no MacBook Neo - but it is cheap and runs Linux.</p>
+
+<p>If you're happy futzing around a bit, it's a decent travel companion.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68038&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/#comments" thr:count="3" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/gadget-review-chuwi-minibook-x-n150-linux/feed/atom/" thr:count="3" />
+			<thr:total>3</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[PHP - simple way to send HTTP headers before a script ends]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/php-simple-way-to-send-http-headers-before-a-script-ends/" />
+
+		<id>https://shkspr.mobi/blog/?p=68523</id>
+		<updated>2026-05-25T09:25:39Z</updated>
+		<published>2026-05-25T11:34:38Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="HowTo" /><category scheme="https://shkspr.mobi/blog" term="php" />
+		<summary type="html"><![CDATA[Suppose you want PHP to keep processing after it has sent back an HTTP response. Normally, this doesn&#039;t work:  &#60;?php    header( &#34;Location: https://example.com/&#34; );    //   Long operation.    sleep(10);    die();   Try it yourself. You&#039;ll have to wait 10 seconds before you get back  &#60; HTTP/2 302  &#60; location: https://example.com/   There are some complex ways to fix this - they usually involve…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/php-simple-way-to-send-http-headers-before-a-script-ends/"><![CDATA[<p>Suppose you want PHP to keep processing <em>after</em> it has sent back an HTTP response. Normally, this doesn't work:</p>
+
+<pre><code class="language-php">&lt;?php
+   header( "Location: https://example.com/" );
+   //   Long operation.
+   sleep(10);
+   die();
+</code></pre>
+
+<p>Try it yourself. You'll have to wait 10 seconds before you get back</p>
+
+<pre><code class="language-_">&lt; HTTP/2 302 
+&lt; location: https://example.com/
+</code></pre>
+
+<p>There are some complex ways to fix this - they usually involve spawning sub-processes or having a cron job run something. But there's a simpler way!</p>
+
+<p>Most servers do some form of output buffering. They wait for the buffer to fill (or be explicitly terminated) before they send any content. My server was set to a buffer of 4,096 bytes. So I forced some dummy output to fill it up, then told PHP to flush the buffer:</p>
+
+<pre><code class="language-php">&lt;?php
+   header( "Location: https://example.com/" );
+   echo str_repeat("😆", 4097);
+   flush();
+   sleep(10);
+   die();
+</code></pre>
+
+<p>Some clients, like Python's Requests, <a href="https://github.com/psf/requests/issues/7248">wait until they've explicitly seen the end of the response before processing it</a>.</p>
+
+<p>But, for something like curl, the above is sufficient.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68523&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/php-simple-way-to-send-http-headers-before-a-script-ends/#comments" thr:count="1" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/php-simple-way-to-send-http-headers-before-a-script-ends/feed/atom/" thr:count="1" />
+			<thr:total>1</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Which age-gates should be skill-gates and vice-versa?]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/" />
+
+		<id>https://shkspr.mobi/blog/?p=68406</id>
+		<updated>2026-03-29T10:49:49Z</updated>
+		<published>2026-05-23T11:34:31Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="politics" /><category scheme="https://shkspr.mobi/blog" term="thoughts" />
+		<summary type="html"><![CDATA[In the UK, it is illegal to buy alcohol if you are under 18.  Similarly, in most countries, you cannot vote until you have reached a specific age.  These are age-gates. You do not need to prove your competence to drink, vote, smoke, or get married; you just need to be old enough.  Some things have skill-gates. If you want an amateur radio licence in the UK, you need to pass an exam. You can be…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/"><![CDATA[<p>In the UK, <a href="https://www.gov.uk/alcohol-young-people-law">it is illegal to buy alcohol if you are under 18</a>.</p>
+
+<p>Similarly, in most countries, you cannot vote until you have reached a specific age.</p>
+
+<p>These are age-gates. You do not need to prove your competence to drink, vote, smoke, or get married; you just need to be old enough.</p>
+
+<p>Some things have skill-gates. If you want an amateur radio licence in the UK, you need to pass an exam. You can be any age<sup id="fnref:age"><a href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#fn:age" class="footnote-ref" title="OK, realistically you have to be old enough to read, write, and communicate. But there's no legal barrier to a precocious 3 year old taking and passing the exams." role="doc-noteref">0</a></sup>.</p>
+
+<p>Similarly, most jurisdictions allow you to get a medical licence once you have passed the requisite tests<sup id="fnref:doogie"><a href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#fn:doogie" class="footnote-ref" title="As seen in the insightful documentary series &quot;Doogie Howser, M.D.&quot;" role="doc-noteref">1</a></sup>.</p>
+
+<p>There are also activities which are dual-gated. You can only get a driving licence after passing a test, but you can only apply to take the test once you are a certain age.</p>
+
+<p>Where should society swap age-gates and skill-gates?</p>
+
+<p>Perhaps the big one is voting. The <a href="https://www.gov.uk/government/publications/representation-of-the-people-bill-policy-summaries/votes-at-16">UK is preparing to extend the franchise to all 16 and 17 year olds</a> - but why is there an age-gate at all?</p>
+
+<p>Children are affected by politics, they pay tax on the goods they buy, they exist in the world. Why shouldn't they vote?</p>
+
+<p>The <a href="https://shkspr.mobi/blog/2013/01/votes-for-children/">usual argument is that they are too immature</a>. But maturity isn't dependent on age. Idiots are allowed to vote. Centenarians with no stake in the consequences of their politics are allowed to vote. People who don't understand what powers a government has are allowed to vote.</p>
+
+<p>Would it <em>really</em> be so bad to introduce a voting licence? Make people take a short quiz to ensure they understand what they're voting for and why they're voting.  Perhaps there are concerns about disenfranchising eligible adults (but not mature children) or that the state will rig the test (when they could rig the election) or whatever. But if we're sticking with the fiction that some people aren't mature enough to vote then we <em>must</em> give disenfranchised people a chance to prove their maturity.</p>
+
+<p>You could make the same argument about driving. If a 7 year old is able to demonstrate mastery and control of a vehicle, are they likely to be a better driver than a 90 year old who has never taken a modern test?</p>
+
+<p>Alcohol is different. We realise that the drug is harmful and <em>especially</em> harmful to developing humans. So we age-gate it. But do people really understand the health risks? Should you have to pass a test in order to imbibe? We make the people selling alcohol pass somewhat rigorous skills assessments. Perhaps the burden of proof should be reversed?</p>
+
+<h2 id="wait-do-you-really-believe-all-this"><a href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#wait-do-you-really-believe-all-this">Wait, do you really believe all this?</a></h2>
+
+<p>No, not necessarily.</p>
+
+<p>I find it fascinating that different cultures set different limits on people's activities. I wouldn't like to live somewhere that allowed anyone to drive on the public roads. Similarly, I don't particularly want governments restricting who can vote based on an arbitrary assessment.</p>
+
+<p>But where are the limits? Why is the <a href="https://en.wikipedia.org/wiki/List_of_minimum_driving_ages">legal driving age so variable</a>? Why are some <a href="https://www.jalopnik.com/1988281/hardest-easiest-countries-to-get-drivers-license/">driving tests easier than others</a>?</p>
+
+<p>Do you want a teenage doctor diagnosing you - even if they are legally certified? Should you be able to use a radio without passing a test if you're a legal adult?</p>
+
+<p>Which age-gates and skill-gates do <em>you</em> think should be flipped?</p>
+
+<div id="footnotes" role="doc-endnotes">
+<hr aria-label="Footnotes">
+<ol start="0">
+
+<li id="fn:age">
+<p>OK, realistically you have to be old enough to read, write, and communicate. But there's no legal barrier to a precocious 3 year old taking and passing the exams.&nbsp;<a href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#fnref:age" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+<li id="fn:doogie">
+<p>As seen in the insightful documentary series "Doogie Howser, M.D."&nbsp;<a href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#fnref:doogie" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+
+</ol>
+</div>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=68406&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/#comments" thr:count="10" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/which-age-gates-should-be-skill-gates-and-vice-versa/feed/atom/" thr:count="10" />
+			<thr:total>10</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>@edent</name>
+							<uri>https://edent.tel/</uri>
+						</author>
+
+		<title type="html"><![CDATA[Whale Fall]]></title>
+		<link rel="alternate" type="text/html" href="https://shkspr.mobi/blog/2026/05/whale-fall/" />
+
+		<id>https://shkspr.mobi/blog/?p=70000</id>
+		<updated>2026-05-17T13:55:02Z</updated>
+		<published>2026-05-21T11:34:15Z</published>
+		<category scheme="https://shkspr.mobi/blog" term="/etc/" /><category scheme="https://shkspr.mobi/blog" term="technology" />
+		<summary type="html"><![CDATA[Somewhere, in the endless blue ocean, a gigantic mammal shudders as it takes its last breath. Thanks to science, we know that all dogs go to heaven, but all whales descend through the murky depths until their carcasses litter the seabed.  Imagine a giant dying. You can&#039;t. They are huge and endless. A towering presence which, so it seems, has always been part of our world. They dominate and are…]]></summary>
+
+					<content type="html" xml:base="https://shkspr.mobi/blog/2026/05/whale-fall/"><![CDATA[<p>Somewhere, in the endless blue ocean, a gigantic mammal shudders as it takes its last breath. Thanks to science, we know that all dogs go to heaven, but all whales descend through the murky depths until their carcasses litter the seabed.</p>
+
+<p>Imagine a giant dying. You can't. They are huge and endless. A towering presence which, so it seems, has <em>always</em> been part of our world. They dominate and are indomitable. It is simply unfathomable that they can ever end. Yet end they must.</p>
+
+<p>As the whale dies, we do not know what passes through its cavernous brain. But we do know what the rest of the ocean thinks.</p>
+
+<p>Lunch.</p>
+
+<p>The death of a whale is a thing to be celebrated. The thump of their still-warm body onto the floor is the starting bell for a feast. Some larger predators sense an easy meal and tear off the choicest morsels. But what of the scavengers? What about the new life not yet established? What happens to the weird little creatures just waiting for an energy boost?</p>
+
+<p>In many ways, it was fortuitous that Twitter pre-signalled its death with the Fail Whale.</p>
+
+<p>The twitching corpse is gently floating down to its watery grave. Some of the older and more established social networks have bitten out chunks of the still-fresh body and have run away with their spoils. But the fascinating thing is watching all the <em>new</em> services benefit from the death of a giant. Mastodon, Discord, BlueSky, Qaplion, Nostr, and a bunch of others hollowing out the rotting husk and using it to power their own growth.</p>
+
+<p>Will those .meow social networks ever become a gigaton behemoth capable of ruling the waves? Maybe not, but size is not the only metric of success. Finding and defending an ecological niche is its own reward. Evolution abhors a monoculture.</p>
+
+<p>Several bloated bodies meander through the brine, each one confident that its ageless wisdom will outlast the others. Had they any self-awareness, the hubris would gnaw at their tattered souls until the crushing realisation of their impending doom drove them mad.</p>
+
+<p>Perhaps it will happen to GitHub next. The endless downtime and forced injection of crappy AI will start a death spiral. Already established forges are waiting to pounce once they smell blood in the water. But what critters will emerge to suck the bones of the old giant and develop in unexpected ways? Some bizarre fungal growth will devour the stinking jelly unlocked from those shattered bones and a new ecosystem will emerge.</p>
+
+<p>Will WordPress's increasingly erratic leadership and tangle of legal disputes cause it fatal damage? Once minnows darted away from its presence; now they cautiously nip at its greying skin. Its mighty bellow still echoes through the clammy waters, but there's a tinge of frailty in its song.</p>
+
+<p>Everything dies eventually.</p>
+
+<p>The internal flora and fauna - be they parasitic or symbiotic - eagerly await their host's downfall. A chance to break free and explore new strange new world. A chance to begin a new relationship and co-evolve in unexpected ways.</p>
+
+<p>The biological pump is primed, the hungry jaws of an uncountable fleet of new ideas is just waiting to pounce, the giants swim on in blissful ignorance.</p>
+
+<p>You can read more about <a href="https://en.wikipedia.org/wiki/Whale_fall">Whale Fall on Wikipedia</a>.</p>
+<img src="https://shkspr.mobi/blog/wp-content/themes/edent-wordpress-theme/info/okgo.php?ID=70000&HTTP_REFERER=Atom" alt width="1" height="1" loading="eager">]]></content>
+		
+					<link rel="replies" type="text/html" href="https://shkspr.mobi/blog/2026/05/whale-fall/#comments" thr:count="9" />
+			<link rel="replies" type="application/atom+xml" href="https://shkspr.mobi/blog/2026/05/whale-fall/feed/atom/" thr:count="9" />
+			<thr:total>9</thr:total>
+			</entry>
+	</feed>

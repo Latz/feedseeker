@@ -1,0 +1,1445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://developers.zoom.us/blog</id>
+    <title>Zoom Developers Blog</title>
+    <updated>2026-06-22T18:51:18.964Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://developers.zoom.us/blog"/>
+    <link rel="self" href="https://developers.zoom.us/blog/atom.xml"/>
+    <subtitle>Blog RSS feed for developers.zoom.us</subtitle>
+    <logo>https://st3.zoom.us/static/6.3.14133/image/thumb.png</logo>
+    <icon>https://developers.zoom.us/img/favicon.ico</icon>
+    <rights>All rights reserved 2026, Zoom Video Communications, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[4 methods to protect sensitive personally identifiable information (PII) data in Zoom Virtual Agent integrations]]></title>
+        <id>https://developers.zoom.us/blog/4-proven-methods-to-protect-PIIdata-in-ZVA-Integration</id>
+        <link href="https://developers.zoom.us/blog/4-proven-methods-to-protect-PIIdata-in-ZVA-Integration"/>
+        <updated>2026-05-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: ZVA, Security, Marketplace, API | Learn four proven methods to filter and hide Personally Identifiable Information (PII) when integrating Zoom Virtual Agent with external APIs.]]></summary>
+        <published>2026-05-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build real-time audio and video deepfake detection with Zoom RTMS]]></title>
+        <id>https://developers.zoom.us/blog/rtms-audio-video-deepfake-detection</id>
+        <link href="https://developers.zoom.us/blog/rtms-audio-video-deepfake-detection"/>
+        <updated>2026-05-22T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: RTMS, AI, Zoom Apps | Stream individual participant audio and video from a Zoom Meeting into AI detection services and show the results inside a Zoom App.]]></summary>
+        <published>2026-05-22T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build multilingual experiences with the Zoom Translator API]]></title>
+        <id>https://developers.zoom.us/blog/build-multilingual-experiences-with-zoom-translator-api</id>
+        <link href="https://developers.zoom.us/blog/build-multilingual-experiences-with-zoom-translator-api"/>
+        <updated>2026-05-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, api, ai-services | Translate support messages, UI strings, event Q&A, templates, and feedback using the Zoom Translator API with fast, inline translation and asynchronous batch processing.]]></summary>
+        <published>2026-05-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Extract Intelligence from Transcripts with the Zoom Summarizer API]]></title>
+        <id>https://developers.zoom.us/blog/extract-intelligence-from-transcripts-with-summarizer</id>
+        <link href="https://developers.zoom.us/blog/extract-intelligence-from-transcripts-with-summarizer"/>
+        <updated>2026-05-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, api, ai-services | Turn thousands of meeting and call transcripts into structured summaries, action items, and recaps using the Zoom Summarizer API—batch processing up to 10,000 files per job from S3, with webhooks and structured JSON output for automation.]]></summary>
+        <published>2026-05-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom AI Services: Introducing Summarizer and Translator APIs]]></title>
+        <id>https://developers.zoom.us/blog/zoom-ai-services-expanding-with-summarizer-and-translator</id>
+        <link href="https://developers.zoom.us/blog/zoom-ai-services-expanding-with-summarizer-and-translator"/>
+        <updated>2026-05-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, api, ai-services | Zoom AI Services now includes two new APIs—Summarizer for structured meeting and call summaries, and Translator for text translation across 9 languages—joining Scribe to complete the speech, language, and translation suite.]]></summary>
+        <published>2026-05-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apply Real-Time Video Filters in Android with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/simple-video-filter-android-preprocessor</id>
+        <link href="https://developers.zoom.us/blog/simple-video-filter-android-preprocessor"/>
+        <updated>2026-05-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Android, Raw Data | Use the Android Video SDK pre-processor to run a GPU shader on every frame and ship a custom video effect to every participant in the session.]]></summary>
+        <published>2026-05-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Creating a subsession (breakout room) in Zoom Video SDK for iOS]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-uikit-subsession</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-uikit-subsession"/>
+        <updated>2026-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: iOS, subsession, breakout-room | A guide to splits the main session into smaller independent session known as subsession for participants to self-join, and can later return to the main session.]]></summary>
+        <published>2026-05-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Use least privilege to improve Zoom app installation and adoption]]></title>
+        <id>https://developers.zoom.us/blog/principle-of-least-privilege-blog</id>
+        <link href="https://developers.zoom.us/blog/principle-of-least-privilege-blog"/>
+        <updated>2026-04-30T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Learn how to apply the principle of least privilege when building Zoom apps]]></summary>
+        <published>2026-04-30T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building advanced applications using Zoom Quality of Service Subscription (QSS)]]></title>
+        <id>https://developers.zoom.us/blog/advanced-applications-of-qss</id>
+        <link href="https://developers.zoom.us/blog/advanced-applications-of-qss"/>
+        <updated>2026-04-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: qss, qos | Learn how to leverage Zoom Video SDK's QSS features to optimize video and audio performance in advanced application scenarios.]]></summary>
+        <published>2026-04-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing PKCE support for public and confidential clients]]></title>
+        <id>https://developers.zoom.us/blog/public-pkce</id>
+        <link href="https://developers.zoom.us/blog/public-pkce"/>
+        <updated>2026-04-17T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide, Annoucement, Public PKCE | Learn how to implement OAuth 2.0 Authorization Code Flow with PKCE for native and browser-based applications]]></summary>
+        <published>2026-04-17T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Integrating Zoom Meeting SDK into Blazor]]></title>
+        <id>https://developers.zoom.us/blog/integrating-meetingsdk-into-blazor</id>
+        <link href="https://developers.zoom.us/blog/integrating-meetingsdk-into-blazor"/>
+        <updated>2026-04-08T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Meeting SDK | How to integrate Meeting SDK into Blazor, a blog by a Zoom community member]]></summary>
+        <published>2026-04-08T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building powerful Zoom Phone experiences with the Zoom Apps SDK]]></title>
+        <id>https://developers.zoom.us/blog/zoom-apps-for-phone</id>
+        <link href="https://developers.zoom.us/blog/zoom-apps-for-phone"/>
+        <updated>2026-04-06T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: zoom apps, phone | Learn how to use the Zoom Apps SDK for Phone with OAuth, REST APIs, and Webhooks to create seamless in-call experiences.]]></summary>
+        <published>2026-04-06T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing Realtime Media Streams for Zoom Contact Center ]]></title>
+        <id>https://developers.zoom.us/blog/zcc-rtms-announcement</id>
+        <link href="https://developers.zoom.us/blog/zcc-rtms-announcement"/>
+        <updated>2026-03-30T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: RTMS, contact center, Announcement | Learn about RTMS and how it works with Zoom Contact Center]]></summary>
+        <published>2026-03-30T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Collaborate together with Video SDK whiteboards]]></title>
+        <id>https://developers.zoom.us/blog/collaborate-with-whiteboard-in-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/collaborate-with-whiteboard-in-video-sdk"/>
+        <updated>2026-03-24T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, Video SDK, web | Build a shared whiteboard workflow in Video SDK Web with presenter controls, viewer sync, and PDF export.]]></summary>
+        <published>2026-03-24T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Add phone call support to Video SDK apps]]></title>
+        <id>https://developers.zoom.us/blog/using-pstn-features-with-videosdk</id>
+        <link href="https://developers.zoom.us/blog/using-pstn-features-with-videosdk"/>
+        <updated>2026-03-19T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, pstn, video-sdk | Learn how to integrate PSTN features into your applications using Zoom Video SDK, including dial out and dial in capabilities.]]></summary>
+        <published>2026-03-19T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Real-time video effects in iOS with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-uikit-preprocessor-raw-video-data</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-uikit-preprocessor-raw-video-data"/>
+        <updated>2026-03-19T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: iOS, raw data | A guide to quickly pre-process raw video data in your iOS app]]></summary>
+        <published>2026-03-19T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Announcing Agent Skills for the Zoom Developer Platform]]></title>
+        <id>https://developers.zoom.us/blog/announcing-agent-skills</id>
+        <link href="https://developers.zoom.us/blog/announcing-agent-skills"/>
+        <updated>2026-03-17T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, ai | Agent Skills are now available on GitHub, giving coding agents the context they need to build faster and more accurately with Zoom.]]></summary>
+        <published>2026-03-17T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing Zoom AI Services]]></title>
+        <id>https://developers.zoom.us/blog/introducing-zoom-ai-services</id>
+        <link href="https://developers.zoom.us/blog/introducing-zoom-ai-services"/>
+        <updated>2026-03-10T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, api | Enterprise-grade intelligence APIs for speech, vision, and language built for scale]]></summary>
+        <published>2026-03-10T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Voice to insights: modernize customer Support with the Zoom Scribe API]]></title>
+        <id>https://developers.zoom.us/blog/voice-insights-modernize-customer-support-with-scribe</id>
+        <link href="https://developers.zoom.us/blog/voice-insights-modernize-customer-support-with-scribe"/>
+        <updated>2026-03-10T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, api, transcription | Transcribe customer support calls at scale with the Zoom Scribe API—batch and real-time transcription, speaker diarization, and webhooks so you can power sentiment analysis, keyword detection, and QA workflows.]]></summary>
+        <published>2026-03-10T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Improved React support for Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/zero-to-one-with-The-Video-SDK-react</id>
+        <link href="https://developers.zoom.us/blog/zero-to-one-with-The-Video-SDK-react"/>
+        <updated>2026-02-24T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, web, react | Announcing our new React library that makes integrating Zoom Video SDK into React applications easier than ever]]></summary>
+        <published>2026-02-24T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Next.js video conferencing app with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/nextjs-video-conferencing-app-using-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/nextjs-video-conferencing-app-using-the-zoom-video-sdk"/>
+        <updated>2026-02-19T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your Next.js/React website]]></summary>
+        <published>2026-02-19T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Implementing Gemini Live API to use alongside the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/use-videosdk-alongside-geminiliveapi</id>
+        <link href="https://developers.zoom.us/blog/use-videosdk-alongside-geminiliveapi"/>
+        <updated>2026-02-16T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, video-sdk | Build a simple React App that uses the new Gemini Live API and Zoom Video SDK.]]></summary>
+        <published>2026-02-16T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Choosing the right attribution path for your Zoom app]]></title>
+        <id>https://developers.zoom.us/blog/app-attribution-path</id>
+        <link href="https://developers.zoom.us/blog/app-attribution-path"/>
+        <updated>2026-02-11T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Authorization, RTMS, Meeting SDK, Security | Learn how to choose the right authorization model for your Zoom app, including RTMS, OBF, and ZAK, based on attribution, visibility, and media access needs.]]></summary>
+        <published>2026-02-11T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Implementing sentiment analysis with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/sentiment-analysis-with-live-transcriptions</id>
+        <link href="https://developers.zoom.us/blog/sentiment-analysis-with-live-transcriptions"/>
+        <updated>2026-02-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, live transcription, rtms, video-sdk | Add Sentiment Analysis to your apps using Zoom Video SDK features for both client-side and server-side use cases]]></summary>
+        <published>2026-02-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Attendee makes capturing RTMS meeting data simple]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-attendee</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-attendee"/>
+        <updated>2026-02-02T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Open Source, AI | Discover how Attendee pairs with Zoom’s Real Time Media Streams (RTMS) to capture, process, and display live meeting data, making it simple to build secure, self‑hosted, real‑time meeting assistants.]]></summary>
+        <published>2026-02-02T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Launching the RTMS SDK for Node.js and Python]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-sdk</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-sdk"/>
+        <updated>2026-02-02T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started | v1.0 of the Node.js and Python SDKs for Zoom RTMS. Access live meeting audio, video, and transcripts with a callback-driven API.]]></summary>
+        <published>2026-02-02T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video SDK adds support for Realtime Media Streams (RTMS)]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-video-sdk"/>
+        <updated>2026-02-02T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Announcement, AI | Zoom announces Realtime Media Streams (RTMS) support for Video SDK. Developers can now access per-participant audio, video, transcripts via WebSocket without automated clients.]]></summary>
+        <published>2026-02-02T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Transcribe Video SDK sessions with Realtime Media Streams]]></title>
+        <id>https://developers.zoom.us/blog/transcribe-vsdk-session-with-rtms</id>
+        <link href="https://developers.zoom.us/blog/transcribe-vsdk-session-with-rtms"/>
+        <updated>2026-01-29T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, rtms | Use Zoom Realtime Media Streams (RTMS) to capture audio from Video SDK sessions and transcribe it on your server.]]></summary>
+        <published>2026-01-29T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video SDK Web UI Toolkit is open source]]></title>
+        <id>https://developers.zoom.us/blog/web-uitoolkit-opensource</id>
+        <link href="https://developers.zoom.us/blog/web-uitoolkit-opensource"/>
+        <updated>2025-12-16T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web, uitoolkit | Guide for building with the open-sourced Web UI Toolkit]]></summary>
+        <published>2025-12-16T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building an AI-powered meeting evaluator with RTMS and InWorld Runtime]]></title>
+        <id>https://developers.zoom.us/blog/realtime-mediastreams-inworld-ai-evaluator</id>
+        <link href="https://developers.zoom.us/blog/realtime-mediastreams-inworld-ai-evaluator"/>
+        <updated>2025-12-11T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: RTMS, AI, Zoom Apps | See how Inworld AI combined Zoom Realtime Media Streams (RTMS) with their AI Runtime to build a realtime agent performance evaluator that analyzes both audio and video streams.]]></summary>
+        <published>2025-12-11T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Call history data model: segments and nodes]]></title>
+        <id>https://developers.zoom.us/blog/zoom-phone-call-history-data-model</id>
+        <link href="https://developers.zoom.us/blog/zoom-phone-call-history-data-model"/>
+        <updated>2025-12-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started, phone | Use Zoom Phone API to build a cloud telephony solution for your business.]]></summary>
+        <published>2025-12-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Get meeting transcripts using native WebSockets with RTMS]]></title>
+        <id>https://developers.zoom.us/blog/realtime-mediastreams-websockets</id>
+        <link href="https://developers.zoom.us/blog/realtime-mediastreams-websockets"/>
+        <updated>2025-12-02T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, RTMS, WebSockets, getting started | Build a small WebSocket server that receives live transcripts from Zoom Realtime Media Streams (RTMS) without using the SDK.]]></summary>
+        <published>2025-12-02T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Add closed captions to user videos in real-time with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/videosdk-closed-captions-processor</id>
+        <link href="https://developers.zoom.us/blog/videosdk-closed-captions-processor"/>
+        <updated>2025-12-02T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, video sdk, web | Learn how to turn live transcription into burned-in captions on video and screen share using media processors in the Zoom Video SDK for Web.]]></summary>
+        <published>2025-12-02T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Display multiple screen shares simultaneously in Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/screen-sharing-with-multiple-simultaneous-views-in-video-sdk-web</id>
+        <link href="https://developers.zoom.us/blog/screen-sharing-with-multiple-simultaneous-views-in-video-sdk-web"/>
+        <updated>2025-12-01T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, Video SDK, web | Learn how to render multiple screen shares simultaneously using the new attachShareView and detachShareView APIs in Video SDK Web v2.2.10]]></summary>
+        <published>2025-12-01T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Transitioning to On Behalf Of (OBF) tokens in Meeting SDK apps]]></title>
+        <id>https://developers.zoom.us/blog/transition-to-obf-token-meetingsdk-apps</id>
+        <link href="https://developers.zoom.us/blog/transition-to-obf-token-meetingsdk-apps"/>
+        <updated>2025-11-04T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: meeting SDK | Zoom is introducing a new authorization requirement for Meeting SDK apps joining meetings outside their account. This update enhances user trust by requiring apps to join on behalf of a user using an OAuth-based OBF token.]]></summary>
+        <published>2025-11-04T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Automating employee celebration messages using Workvivo API, Zoom webhook and AWS]]></title>
+        <id>https://developers.zoom.us/blog/employee-anniversary-serverless-automation</id>
+        <link href="https://developers.zoom.us/blog/employee-anniversary-serverless-automation"/>
+        <updated>2025-11-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Learn how to build a serverless automation system using AWS Lambda to celebrate employee work anniversaries across Workvivo and Zoom platforms.]]></summary>
+        <published>2025-11-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Getting started with Zoom Contact Center apps]]></title>
+        <id>https://developers.zoom.us/blog/get-started-contact-center-apps</id>
+        <link href="https://developers.zoom.us/blog/get-started-contact-center-apps"/>
+        <updated>2025-10-31T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: getting started, contact center | In this tutorial article, Donte Small provides a step-by-step guide on getting started with the Zoom Contact Center App using the Zoom App SDK.]]></summary>
+        <published>2025-10-31T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Improving user experience for meeting assistant apps with Realtime Media Streams]]></title>
+        <id>https://developers.zoom.us/blog/improving-ux-rtms</id>
+        <link href="https://developers.zoom.us/blog/improving-ux-rtms"/>
+        <updated>2025-10-28T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Announcement, UX, AI | Explore how Realtime Media Streams (RTMS) enables seamless, trusted AI meeting apps with direct, real-time access to Zoom data.]]></summary>
+        <published>2025-10-28T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Use OpenAI Voice Agents with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/add-realtime-voice-agents-to-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/add-realtime-voice-agents-to-zoom-video-sdk"/>
+        <updated>2025-10-27T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, video sdk, web | A guide to add OpenAI Realtime Voice Agents to the Zoom Video SDK sessions]]></summary>
+        <published>2025-10-27T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Review, annotate, and collaborate with users directly in your app’s video chat]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-uikit-screenshare-annotation</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-uikit-screenshare-annotation"/>
+        <updated>2025-10-17T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: iOS, screenshare, annotation | A guide to integrate screen share and annotation to your iOS app]]></summary>
+        <published>2025-10-17T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Real time image to text translation with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/ai-text-translator-with-videosdk-share-processor</id>
+        <link href="https://developers.zoom.us/blog/ai-text-translator-with-videosdk-share-processor"/>
+        <updated>2025-10-09T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, web, ai | Build an AI powered text translator with Video SDK share processor]]></summary>
+        <published>2025-10-09T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Programmatic Zoom webhook management with event subscriptions API endpoints]]></title>
+        <id>https://developers.zoom.us/blog/webhook-management-with-zoom-api</id>
+        <link href="https://developers.zoom.us/blog/webhook-management-with-zoom-api"/>
+        <updated>2025-10-08T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, webhooks, APIs | Learn how to event subscription API endpoints to manage webhooks across multiple tenants for a Zoom Marketplace application.]]></summary>
+        <published>2025-10-08T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Mastering logging in the RTMS SDK for Node.js]]></title>
+        <id>https://developers.zoom.us/blog/rtms-mastering-logging-node-js</id>
+        <link href="https://developers.zoom.us/blog/rtms-mastering-logging-node-js"/>
+        <updated>2025-10-03T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, troubleshooting, getting started | Learn a few fun tips and tricks when it comes to logging with the Node.js SDK for RTMS]]></summary>
+        <published>2025-10-03T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Dynamic audio processing: how to add real time audio effects to your Zoom Video SDK app]]></title>
+        <id>https://developers.zoom.us/blog/customize-vsdk-audio-with-audio-processors</id>
+        <link href="https://developers.zoom.us/blog/customize-vsdk-audio-with-audio-processors"/>
+        <updated>2025-09-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide serves as a simple example to help you add an audio processor in the Zoom Video SDK by using the example of pitch shifting.]]></summary>
+        <published>2025-09-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Contact Center: Migrating to CX Analytics]]></title>
+        <id>https://developers.zoom.us/blog/migrating-to-cx-analytics</id>
+        <link href="https://developers.zoom.us/blog/migrating-to-cx-analytics"/>
+        <updated>2025-09-23T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, contact center, API | This guide introduces the new data framework for Contact Center, CX Analytics, and guides developers through migration.]]></summary>
+        <published>2025-09-23T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Fast integration, full contact center features with six lines of code using Zoom Smart Embed]]></title>
+        <id>https://developers.zoom.us/blog/ZCC-smart-embed</id>
+        <link href="https://developers.zoom.us/blog/ZCC-smart-embed"/>
+        <updated>2025-09-22T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, contact center, smart embed | Learn how to get started with Zoom Contact Center Smart Embed and integrate it into your own application]]></summary>
+        <published>2025-09-22T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a Cocoa video chat app using the Zoom Video SDK on macOS]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-macos-getting-started-cocoa-guide</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-macos-getting-started-cocoa-guide"/>
+        <updated>2025-09-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, guide, macOS | A guide to creating your first macOS Cocoa app powered by the Zoom Video SDK]]></summary>
+        <published>2025-09-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Customize Video SDK streams with watermarks]]></title>
+        <id>https://developers.zoom.us/blog/customize-video-stream-with-watermarks</id>
+        <link href="https://developers.zoom.us/blog/customize-video-stream-with-watermarks"/>
+        <updated>2025-08-28T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide serves as a hello world sample to help you add media processor in the Zoom Video SDK by using the example of Watermarks]]></summary>
+        <published>2025-08-28T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[On-device content moderation with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/content-moderator-with-videosdk-web-processor</id>
+        <link href="https://developers.zoom.us/blog/content-moderator-with-videosdk-web-processor"/>
+        <updated>2025-08-22T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web, ai | Build a video processor for content moderation using the Zoom Video SDK & Tensorflow]]></summary>
+        <published>2025-08-22T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Cobrowse SDK adds remote scrolling, multi-tab session persistence & NPM support]]></title>
+        <id>https://developers.zoom.us/blog/cobrowse-sdk-npm-multitab-scrolling</id>
+        <link href="https://developers.zoom.us/blog/cobrowse-sdk-npm-multitab-scrolling"/>
+        <updated>2025-07-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, web | Build with the latest features introduced in Cobrowse SDK v2.7.0]]></summary>
+        <published>2025-07-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a SwiftUI video chat app using the Zoom Video SDK on iOS]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-getting-started-swiftui-guide</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-getting-started-swiftui-guide"/>
+        <updated>2025-07-25T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, guide, iOS | A guide to creating your first iOS SwiftUI app powered by the Zoom Video SDK]]></summary>
+        <published>2025-07-25T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Get Zoom transcripts in 5 lines of code]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-meeting-transcripts</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-meeting-transcripts"/>
+        <updated>2025-07-23T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Tutorial | Getting live meeting transcripts is as simple as 5 lines of code. In this quick tutorial, we'll use the RTMS SDK to access meeting transcripts (along with audio, video, screen share & chat).]]></summary>
+        <published>2025-07-23T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Getting started with Zoom Video SDK for Android]]></title>
+        <id>https://developers.zoom.us/blog/videosdk-android-quickstart</id>
+        <link href="https://developers.zoom.us/blog/videosdk-android-quickstart"/>
+        <updated>2025-07-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, guide, android, jetpack, compose | A step-by-step guide for building a Video App with Android VSDK and Jetpack Compose]]></summary>
+        <published>2025-07-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How enterprises are using realtime conversation data to power AI solutions]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-enterprise</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-enterprise"/>
+        <updated>2025-07-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: AI, Enterprise | See how enterprises are leveraging Zoom's Realtime Media Streams to build AI solutions with real-time conversation data. Learn from three detailed use cases including sales automation, identity verification, and meeting agents—complete with architecture diagrams and sample code.]]></summary>
+        <published>2025-07-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a video chat app with the Zoom Video SDK & Ruby on Rails]]></title>
+        <id>https://developers.zoom.us/blog/build-a-video-chat-app-with-the-zoom-video-sdk-and-ruby-on-rails</id>
+        <link href="https://developers.zoom.us/blog/build-a-video-chat-app-with-the-zoom-video-sdk-and-ruby-on-rails"/>
+        <updated>2025-07-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your Ruby on Rails website using the Zoom Video SDK]]></summary>
+        <published>2025-07-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Creating a CRM sample application for Zoom Phone and Zoom Contact Center]]></title>
+        <id>https://developers.zoom.us/blog/building-crm-for-enhanced-customer-experience</id>
+        <link href="https://developers.zoom.us/blog/building-crm-for-enhanced-customer-experience"/>
+        <updated>2025-07-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, phone, contact center, smart embed | Use Zoom Contact Center, Zoom Phone and Smart Embed to build a CRM Application for enhanced customer experience.]]></summary>
+        <published>2025-07-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Recapping Zoom Developer Summit 2025: Building the Future, in Realtime]]></title>
+        <id>https://developers.zoom.us/blog/developer-summit-2025-recap</id>
+        <link href="https://developers.zoom.us/blog/developer-summit-2025-recap"/>
+        <updated>2025-07-03T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: event | On June 25th, we brought together our global developer community for the 3rd annual Zoom Developer Summit — a day dedicated to the builders shaping the future of work and collaboration.]]></summary>
+        <published>2025-07-03T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Realtime Media Streams & AI orchestration: building AI agents on Zoom]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams-ai-orchestration</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams-ai-orchestration"/>
+        <updated>2025-06-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, AI, getting started | Learn how to build real-time AI agents that can listen, interpret, and respond instantly to Zoom Meeting Data using Real Time Media Streams (RTMS) and AI orchestration frameworks like LangChain, LlamaIndex, and Langflow.]]></summary>
+        <published>2025-06-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Getting started with Zoom Video SDK for iOS - UIKit]]></title>
+        <id>https://developers.zoom.us/blog/ios-vsdk-getting-started-guide</id>
+        <link href="https://developers.zoom.us/blog/ios-vsdk-getting-started-guide"/>
+        <updated>2025-06-25T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, guide, iOS | A guide to creating your first iOS app powered by the Zoom Video SDK]]></summary>
+        <published>2025-06-25T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build an AI-Powered Zoom Team Chatbot with Snowflake Cortex Agents (Node.js)]]></title>
+        <id>https://developers.zoom.us/blog/zoom-teams-snowflake-cortex-bot</id>
+        <link href="https://developers.zoom.us/blog/zoom-teams-snowflake-cortex-bot"/>
+        <updated>2025-04-28T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, ai, getting started | Learn how to build a Zoom Team Chat app that answers natural language questions with real-time insights from Snowflake Cortex]]></summary>
+        <published>2025-04-28T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Add calling capabilities to your React app with Zoom Phone Smart Embed - Part 2]]></title>
+        <id>https://developers.zoom.us/blog/phone-smart-embed-reactapp-part2</id>
+        <link href="https://developers.zoom.us/blog/phone-smart-embed-reactapp-part2"/>
+        <updated>2025-04-10T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, phone | Integrate Zoom Phone Smart Embed into your React application - Part 2]]></summary>
+        <published>2025-04-10T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Smarter support with Zoom Contact Center: no-code set up using flows]]></title>
+        <id>https://developers.zoom.us/blog/get-started-contact-center</id>
+        <link href="https://developers.zoom.us/blog/get-started-contact-center"/>
+        <updated>2025-04-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: getting started, contact center | Start strong with Zoom Contact Center—set up users, create flows, and connect with customers.]]></summary>
+        <published>2025-04-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Cobrowse SDK adds multi-agent support, custom pin & new annotation tools]]></title>
+        <id>https://developers.zoom.us/blog/cobrowse-sdk-multi-agent-byop-more-annotation-tools</id>
+        <link href="https://developers.zoom.us/blog/cobrowse-sdk-multi-agent-byop-more-annotation-tools"/>
+        <updated>2025-04-04T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement, web | Enhance your customer support experience with multiple agents in a single Cobrowse session]]></summary>
+        <published>2025-04-04T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Add calling capabilities to your React app with Zoom Phone Smart Embed]]></title>
+        <id>https://developers.zoom.us/blog/phone-smart-embed-reactapp-part1</id>
+        <link href="https://developers.zoom.us/blog/phone-smart-embed-reactapp-part1"/>
+        <updated>2025-04-02T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, phone | Integrate Zoom Phone Smart Embed into your React application]]></summary>
+        <published>2025-04-02T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Less switching, more doing: extend Zoom Contact Center productivity with Connector apps]]></title>
+        <id>https://developers.zoom.us/blog/connectors-contactcenter</id>
+        <link href="https://developers.zoom.us/blog/connectors-contactcenter"/>
+        <updated>2025-04-01T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: getting started, contact center | Introducing Connectors for Contact Center! Follow this guide to get started using this new widget.]]></summary>
+        <published>2025-04-01T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a Flutter video chat app with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/build-a-flutter-video-chat-app-with-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/build-a-flutter-video-chat-app-with-the-zoom-video-sdk"/>
+        <updated>2025-03-31T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, flutter | This guide serves as a hello world sample to help you add video conferencing to your Flutter app]]></summary>
+        <published>2025-03-31T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Upgrading and distributing Zoom Meeting SDK apps for macOS]]></title>
+        <id>https://developers.zoom.us/blog/msdk-macos-upgrade</id>
+        <link href="https://developers.zoom.us/blog/msdk-macos-upgrade"/>
+        <updated>2025-03-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, upgrade, distribute, guide, macOS | A guide to upgrading and distributing your macOS app powered by the Zoom Meeting SDK]]></summary>
+        <published>2025-03-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Server-to-Server OAuth and scaling token management]]></title>
+        <id>https://developers.zoom.us/blog/s2s-token-management</id>
+        <link href="https://developers.zoom.us/blog/s2s-token-management"/>
+        <updated>2025-03-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, tutorial, getting started | Strategies for scaling Sever-to-Server OAuth token management for streamlined Zoom API access.]]></summary>
+        <published>2025-03-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to add cloud calling to your web app using Zoom Phone]]></title>
+        <id>https://developers.zoom.us/blog/zoom-phone-smart-embed</id>
+        <link href="https://developers.zoom.us/blog/zoom-phone-smart-embed"/>
+        <updated>2025-03-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started, phone | Use Zoom Phone to build a cloud telephony solution for your business.]]></summary>
+        <published>2025-03-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Upgrading to Video SDK v2 for web]]></title>
+        <id>https://developers.zoom.us/blog/upgrade-to-videosdk-v2</id>
+        <link href="https://developers.zoom.us/blog/upgrade-to-videosdk-v2"/>
+        <updated>2025-01-30T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web | Learn how to upgrade your app to use the new Zoom Video SDK v2 on web]]></summary>
+        <published>2025-01-30T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Announcing Zoom Rivet for JavaScript!]]></title>
+        <id>https://developers.zoom.us/blog/announcing-zoom-rivet-js</id>
+        <link href="https://developers.zoom.us/blog/announcing-zoom-rivet-js"/>
+        <updated>2024-11-21T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, Video SDK, Zoom Chat, Chatbot, APIs | A server-side tool for rapid development]]></summary>
+        <published>2024-11-21T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build secure collaborative browsing with the Zoom Cobrowse SDK]]></title>
+        <id>https://developers.zoom.us/blog/build-secure-collaborative-browsing-with-the-zoom-cobrowse-sdk</id>
+        <link href="https://developers.zoom.us/blog/build-secure-collaborative-browsing-with-the-zoom-cobrowse-sdk"/>
+        <updated>2024-11-21T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases using the Zoom Cobrowse SDK to add secure collaborative browsing to your website]]></summary>
+        <published>2024-11-21T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Unsplash Chatbot for Zoom Team Chat]]></title>
+        <id>https://developers.zoom.us/blog/unsplash-chatbot-for-zoom-team-chat</id>
+        <link href="https://developers.zoom.us/blog/unsplash-chatbot-for-zoom-team-chat"/>
+        <updated>2024-11-20T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Team Chat Apps, Chatbot | How to build a Chatbot for Zoom Team Chat that sends Unsplash photos]]></summary>
+        <published>2024-11-20T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Announcing: Realtime Media Streams developer preview]]></title>
+        <id>https://developers.zoom.us/blog/realtime-media-streams</id>
+        <link href="https://developers.zoom.us/blog/realtime-media-streams"/>
+        <updated>2024-10-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Announcement, Beta | Zoom announces Realtime Media Streams (RTMS) for AI/ML workloads. Access per-participant audio, video, transcripts via WebSocket without automated clients.]]></summary>
+        <published>2024-10-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to register users for Zoom Events: understanding API limitations and workarounds]]></title>
+        <id>https://developers.zoom.us/blog/zoom-events-registering-users</id>
+        <link href="https://developers.zoom.us/blog/zoom-events-registering-users"/>
+        <updated>2024-10-15T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started | This guide clarifies registering users for Zoom events and clears API misconceptions.]]></summary>
+        <published>2024-10-15T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing app monetization: a new revenue stream for Zoom developers]]></title>
+        <id>https://developers.zoom.us/blog/app-monetization-revenue-stream</id>
+        <link href="https://developers.zoom.us/blog/app-monetization-revenue-stream"/>
+        <updated>2024-10-10T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Getting started | Zoom App developers can now monetize their apps directly through the Zoom App Marketplace, offering a seamless and trusted purchasing experience for Zoom’s vast user base]]></summary>
+        <published>2024-10-10T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Adding Picture-in-Picture to Zoom Video SDK iOS apps]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-picture-in-picture</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-picture-in-picture"/>
+        <updated>2024-10-03T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, picture-in-picture, guide, iOS | A guide to adding picture-in-picture feature and implementing CallKit and AVKit in Video SDK apps on iOS]]></summary>
+        <published>2024-10-03T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a video conferencing app with the Zoom Video SDK & Angular]]></title>
+        <id>https://developers.zoom.us/blog/angular-video-conferencing-app</id>
+        <link href="https://developers.zoom.us/blog/angular-video-conferencing-app"/>
+        <updated>2024-09-03T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your Angular/AnalogJs website]]></summary>
+        <published>2024-09-03T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[AI Builder's Night recap: exploring the future of AI development]]></title>
+        <id>https://developers.zoom.us/blog/AI-Builders-Night-Recap</id>
+        <link href="https://developers.zoom.us/blog/AI-Builders-Night-Recap"/>
+        <updated>2024-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: AI, Developer Meetup, Zoom | A recap of our first developer meetup, hosted by the Zoom Developer Ecosystem at Zoom HQ in San Jose.]]></summary>
+        <published>2024-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building a RAG chatbot on Zoom Team Chat using a vector database]]></title>
+        <id>https://developers.zoom.us/blog/building-a-ragchatbot</id>
+        <link href="https://developers.zoom.us/blog/building-a-ragchatbot"/>
+        <updated>2024-08-12T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Dev-Summit, Team Chat Apps | Tutorial on how to build a RAG Chatbot on Zoom Teams Chat using a Vector Database that can generate answers based on your mail and calendar data.]]></summary>
+        <published>2024-08-12T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a video conferencing app with the Zoom Video SDK & Solid.js]]></title>
+        <id>https://developers.zoom.us/blog/solidjs-video-conferencing-app-using-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/solidjs-video-conferencing-app-using-the-zoom-video-sdk"/>
+        <updated>2024-08-05T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your Solid.js/Solid Start website]]></summary>
+        <published>2024-08-05T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a video chat app with the Zoom Video SDK & SvelteKit]]></title>
+        <id>https://developers.zoom.us/blog/sveltekit-video-conferencing-app-using-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/sveltekit-video-conferencing-app-using-the-zoom-video-sdk"/>
+        <updated>2024-08-02T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your SvelteKit website]]></summary>
+        <published>2024-08-02T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Consolidating multiple apps using the new Zoom build flow]]></title>
+        <id>https://developers.zoom.us/blog/consolidating-multiple-apps-ussing-new-zoom-build-flow</id>
+        <link href="https://developers.zoom.us/blog/consolidating-multiple-apps-ussing-new-zoom-build-flow"/>
+        <updated>2024-07-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | We're excited to introduce a new way for developers to build apps on Zoom using the new build flow.]]></summary>
+        <published>2024-07-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Boosting app adoption through new app creation flow and optional scopes]]></title>
+        <id>https://developers.zoom.us/blog/new-app-build-flows-and-optional-scopes</id>
+        <link href="https://developers.zoom.us/blog/new-app-build-flows-and-optional-scopes"/>
+        <updated>2024-07-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: resource, announcement, web | We are excited to announce two significant updates aimed at transforming how developers create and distribute apps across Zoom Workplace]]></summary>
+        <published>2024-07-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Vue / Nuxt Video Conferencing App with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/vue-nuxt-video-conferencing-app-using-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/vue-nuxt-video-conferencing-app-using-the-zoom-video-sdk"/>
+        <updated>2024-07-15T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide showcases adding video conferencing to your Nuxt / Vue website]]></summary>
+        <published>2024-07-15T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video SDK UI Toolkit components are here!]]></title>
+        <id>https://developers.zoom.us/blog/videosdk-ui-toolkit-components</id>
+        <link href="https://developers.zoom.us/blog/videosdk-ui-toolkit-components"/>
+        <updated>2024-07-09T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, UI Toolkit | Zoom Video SDK UI Toolkit components for web launch. Build video chat apps with prebuilt components for video, chat, controls, users, and settings.RetryClaude can make mistakes. Please double-check responses.]]></summary>
+        <published>2024-07-09T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Theta Lake, the first company to launch an app on Zoom's App Marketplace, has more than doubled its new business since integrating with Zoom]]></title>
+        <id>https://developers.zoom.us/blog/theta-lake-for-zoom-contact-center</id>
+        <link href="https://developers.zoom.us/blog/theta-lake-for-zoom-contact-center"/>
+        <updated>2024-07-04T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | Theta Lake for Zoom Contact Center offers a comprehensive compliance and security suite that helps organizations manage, monitor, and retain their digital communications.]]></summary>
+        <published>2024-07-04T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing the Zoom Telehealth Starter-Kit for web, Powered by the Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-telehealth-intro</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-telehealth-intro"/>
+        <updated>2024-06-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: resource, announcement, web | Learn about our very first starter-kit application made specifically for the healthcare field]]></summary>
+        <published>2024-06-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Why we chose T3 stack to build our reference apps on Web]]></title>
+        <id>https://developers.zoom.us/blog/why-we-chose-to-build-with-the-t3-stack</id>
+        <link href="https://developers.zoom.us/blog/why-we-chose-to-build-with-the-t3-stack"/>
+        <updated>2024-06-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: web, resource | Why Zoom chose the T3 stack for Video SDK reference apps. Deep dive into TypeScript, React, Next.js, tRPC, Prisma, and modern web development tools.RetryClaude can make mistakes. Please double-check responses.]]></summary>
+        <published>2024-06-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How the Docusign eSignature app revolutionized the customer experience during the pandemic with virtual, face-to-face, and secure signing interactions in Zoom Meetings]]></title>
+        <id>https://developers.zoom.us/blog/docusign-esignature-app</id>
+        <link href="https://developers.zoom.us/blog/docusign-esignature-app"/>
+        <updated>2024-06-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | Discover how Docusign built their eSignature app for Zoom. Case study covers virtual signing solutions, development insights, and platform benefits.]]></summary>
+        <published>2024-06-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Master the Zoom Developer platform at Zoom Developer Summit 2024!]]></title>
+        <id>https://developers.zoom.us/blog/devsummit2024-announcement-and-advocate-highlights</id>
+        <link href="https://developers.zoom.us/blog/devsummit2024-announcement-and-advocate-highlights"/>
+        <updated>2024-06-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: event, getting started, announcement | Zoom Developer Summit 2024 is happening June 26th featuring sessions to help you access, surface, embed and connect the platform for your personal and enterpise development needs.]]></summary>
+        <published>2024-06-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Developing a picture-in-picture experience with Zoom Android Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-android-picture-in-picture</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-android-picture-in-picture"/>
+        <updated>2024-05-30T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, android | The goal of this article is to guide you in implementing PIP in android video sdk]]></summary>
+        <published>2024-05-30T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Phone embedded in the Salesloft Dialer platform streamlines the Sales process and enables access to key Enterprise accounts]]></title>
+        <id>https://developers.zoom.us/blog/salesloft-dialer-app</id>
+        <link href="https://developers.zoom.us/blog/salesloft-dialer-app"/>
+        <updated>2024-05-23T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | Salesloft Dialer and Zoom Phone integration case study. How seamless calling within CRM workflows eliminates context switching for sales teams.]]></summary>
+        <published>2024-05-23T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Turn your Zoom Apps data into actionable insights with the new Marketplace API & Apps Dashboards]]></title>
+        <id>https://developers.zoom.us/blog/api-dashboard</id>
+        <link href="https://developers.zoom.us/blog/api-dashboard"/>
+        <updated>2024-05-20T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Dashboard | The new Marketplace API & Apps Dashboards makes it easy for Zoom Admins and internal developers to identify usage trends, track account rate limits and drive data-based decisions]]></summary>
+        <published>2024-05-20T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Prezi Video for Zoom app has experienced 4x customer growth in the last year]]></title>
+        <id>https://developers.zoom.us/blog/prezi-app</id>
+        <link href="https://developers.zoom.us/blog/prezi-app"/>
+        <updated>2024-04-12T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | Prezi's Zoom app case study reveals how they solved meeting engagement challenges. Developer insights, integration story, and practical build recommendations.]]></summary>
+        <published>2024-04-12T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Video SDK UI Toolkit is here!]]></title>
+        <id>https://developers.zoom.us/blog/videosdk-ui-toolkits</id>
+        <link href="https://developers.zoom.us/blog/videosdk-ui-toolkits"/>
+        <updated>2024-04-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: iOS, web, Android, UI Toolkit | Embed custom video chat with Zoom Video SDK UI Toolkit in 4 lines of code. Prebuilt components for video, audio, chat, screenshare, and settings.RetryClaude can make mistakes. Please double-check responses.]]></summary>
+        <published>2024-04-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FaxSIPit has expanded its reach, attracted new users, and driven double-digit growth since the launch of the FaxSIPit app on the App Marketplace]]></title>
+        <id>https://developers.zoom.us/blog/faxsipit-app</id>
+        <link href="https://developers.zoom.us/blog/faxsipit-app"/>
+        <updated>2024-04-04T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | By integrating with Zoom Phone, FaxSIPit provides users with a seamless communication experience within Zoom, offering both phone and fax services in a unified platform.]]></summary>
+        <published>2024-04-04T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a React Native video conferencing app with the Zoom Video SDK & Expo]]></title>
+        <id>https://developers.zoom.us/blog/build-a-react-native-video-conferencing-app-with-the-zoom-video-sdk-and-expo</id>
+        <link href="https://developers.zoom.us/blog/build-a-react-native-video-conferencing-app-with-the-zoom-video-sdk-and-expo"/>
+        <updated>2024-04-02T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, react native | This guide serves as a hello world sample to help you add video conferencing to your react native app]]></summary>
+        <published>2024-04-02T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Developing a picture-in-picture experience with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-picture-in-picture</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-picture-in-picture"/>
+        <updated>2024-03-24T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, tutorial, web | Implement Document Picture-in-Picture with Zoom Video SDK for video conferencing. Complete guide with feature detection, window handling, and code examples.]]></summary>
+        <published>2024-03-24T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to play a Zoom Video SDK cloud recording]]></title>
+        <id>https://developers.zoom.us/blog/how-to-play-video-sdk-recording</id>
+        <link href="https://developers.zoom.us/blog/how-to-play-video-sdk-recording"/>
+        <updated>2024-03-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Web, Tutorial, Cloud Recording | A short guide to using a CDN to distribute a Zoom Video SDK cloud recording for playback.]]></summary>
+        <published>2024-03-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[BrightHire has grown usage 3x since launching the BrightHire Interview Assistant app with Zoom Meetings]]></title>
+        <id>https://developers.zoom.us/blog/brighthire-interview-assistant-app</id>
+        <link href="https://developers.zoom.us/blog/brighthire-interview-assistant-app"/>
+        <updated>2024-03-19T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App of the month | BrightHire built an intelligent interview assistant app with Zoom to transform hiring experiences. By combining AI and Zoom's platform, they enable every interviewer with capabilities like pre-populated questions, AI-generated notes, and integrations with applicant tracking systems. Usage grew 3x since launch.]]></summary>
+        <published>2024-03-19T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Building a telehealth waiting room with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/building-telehealth-waiting-room-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/building-telehealth-waiting-room-video-sdk"/>
+        <updated>2024-03-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, tutorial, web | Build a telehealth waiting room with Video SDK subsessions. Complete tutorial for doctor-patient video calls with lobby and private room functionality.]]></summary>
+        <published>2024-03-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to live stream with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/how-to-live-stream-with-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/how-to-live-stream-with-video-sdk"/>
+        <updated>2024-03-07T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Web, Tutorial, Getting Started | A short guide to creating a simple live streaming web app using the Zoom Video SDK.]]></summary>
+        <published>2024-03-07T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Optimize Zoom cloud recording workflows -- guidance and tips for developers for extracting data-rich AI-powered insights]]></title>
+        <id>https://developers.zoom.us/blog/openapi-guide-cloud-recording</id>
+        <link href="https://developers.zoom.us/blog/openapi-guide-cloud-recording"/>
+        <updated>2024-03-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting, getting started | Unlocking the power of Zoom cloud recordings-developer guide.]]></summary>
+        <published>2024-03-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[On-demand playback scrubbing with Amazon IVS and Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-playback-scrubbing-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/video-playback-scrubbing-video-sdk"/>
+        <updated>2024-03-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web | Stream Zoom Video SDK content to Amazon IVS for VOD playback. Tutorial covers RTMP streaming, AWS setup, and switching between live and recorded video.]]></summary>
+        <published>2024-03-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build a video conferencing app with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/build-a-video-conferencing-app-with-the-zoom-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/build-a-video-conferencing-app-with-the-zoom-video-sdk"/>
+        <updated>2024-03-04T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | This guide serves as a hello world sample to help you add video conferencing to your website]]></summary>
+        <published>2024-03-04T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to get raw streaming video and audio from Video SDK web sessions using Linux]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-raw-streaming-linux</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-raw-streaming-linux"/>
+        <updated>2024-03-04T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: linux, Getting started | Build AI/computer vision apps with Zoom Video SDK for Linux raw data sample. Complete Docker setup guide for accessing raw video, audio, and screen data.]]></summary>
+        <published>2024-03-04T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Adding Picture-in-Picture to Zoom Meeting SDK iOS apps]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-ios-picture-in-picture</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-ios-picture-in-picture"/>
+        <updated>2024-02-26T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, picture-in-picture, guide, iOS | A guide to adding picture-in-picture feature and implementing CallKit on Meeting SDK apps in iOS]]></summary>
+        <published>2024-02-26T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Processing local device media with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/processing-local-media-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/processing-local-media-video-sdk"/>
+        <updated>2024-02-20T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Access local media streams with Video SDK for external processing. Complete guide to capture camera input while streaming to Zoom using browser APIs.]]></summary>
+        <published>2024-02-20T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video Resolution with the Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/video-resolution-with-the-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/video-resolution-with-the-video-sdk"/>
+        <updated>2024-02-09T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | This article explains how to to dermine the best video resolution for your Video SDK project]]></summary>
+        <published>2024-02-09T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to use Twilio IVR Dial Trees with the Zoom Meeting SDK]]></title>
+        <id>https://developers.zoom.us/blog/ivr-dial-trees-with-meeting-sdk</id>
+        <link href="https://developers.zoom.us/blog/ivr-dial-trees-with-meeting-sdk"/>
+        <updated>2024-02-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Integrate Zoom Meeting SDK with Twilio IVR dial trees. Complete guide for connecting phone users to Zoom meetings via PSTN/SIP with code examples.]]></summary>
+        <published>2024-02-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to use Twilio IVR Dial Trees with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/ivr-dial-trees-with-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/ivr-dial-trees-with-video-sdk"/>
+        <updated>2024-02-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Integrate Zoom Video SDK with Twilio IVR dial trees. Complete guide for connecting phone users to Video SDK sessions via PSTN/SIP with code examples.]]></summary>
+        <published>2024-02-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to build a Meeting SDK join link]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-join-link</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-join-link"/>
+        <updated>2024-02-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Build custom join links for Meeting SDK implementations. Step-by-step guide with URL parameters, validation, and code examples for seamless user experience.]]></summary>
+        <published>2024-02-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to build a Video SDK join link]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-join-link</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-join-link"/>
+        <updated>2024-02-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Build custom join links for Zoom Video SDK sessions. Step-by-step guide with URL parameters, validation, and code examples for seamless user experience.]]></summary>
+        <published>2024-02-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Video SDK fact sheet]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-fact-sheet</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-fact-sheet"/>
+        <updated>2024-01-10T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Resource | Complete Zoom Video SDK factsheet for developers. Comprehensive specs covering 9 platforms, features, security, pricing, and technical capabilities.]]></summary>
+        <published>2024-01-10T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Troubleshooting Server-to-Server OAuth access tokens]]></title>
+        <id>https://developers.zoom.us/blog/s2s-token-generation-troubleshoot</id>
+        <link href="https://developers.zoom.us/blog/s2s-token-generation-troubleshoot"/>
+        <updated>2023-12-11T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting, guide, getting started | This troubleshooting guide removes common user errors with S2S OAuth token generation.]]></summary>
+        <published>2023-12-11T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Testing Zoom Webhooks with Svix Play - A Step-by-Step Guide]]></title>
+        <id>https://developers.zoom.us/blog/testing-zoom-webhooks-with-svix-play</id>
+        <link href="https://developers.zoom.us/blog/testing-zoom-webhooks-with-svix-play"/>
+        <updated>2023-12-07T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Learn how to test Zoom webhooks with Svix Play, a tool designed to simplify webhook testing and debugging]]></summary>
+        <published>2023-12-07T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Meeting API querying tips - Download recordings using webhooks]]></title>
+        <id>https://developers.zoom.us/blog/meeting-api-querying-tips-part4</id>
+        <link href="https://developers.zoom.us/blog/meeting-api-querying-tips-part4"/>
+        <updated>2023-12-05T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started | Join Developer Advocate Elisa Levet in this blog post series as she takes a deep dive into the world of the Zoom REST API.]]></summary>
+        <published>2023-12-05T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zero to one with Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/zero-to-one-with-The-Video-SDK</id>
+        <link href="https://developers.zoom.us/blog/zero-to-one-with-The-Video-SDK"/>
+        <updated>2023-12-05T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started | This guide serves as a quickstart to get you integrated video and audio within your application.]]></summary>
+        <published>2023-12-05T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[An introduction to WebAssembly]]></title>
+        <id>https://developers.zoom.us/blog/an-introduction-to-web-assembly</id>
+        <link href="https://developers.zoom.us/blog/an-introduction-to-web-assembly"/>
+        <updated>2023-10-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, web | This blog talks through what WebAssembly is, why use it, and its use in Zoom's Video SDK.]]></summary>
+        <published>2023-10-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Procedure to collect logs from Zoom Video SDK apps]]></title>
+        <id>https://developers.zoom.us/blog/vsdk-log-retrieval-instructions</id>
+        <link href="https://developers.zoom.us/blog/vsdk-log-retrieval-instructions"/>
+        <updated>2023-10-23T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting | This article explains the procedure to collect SDK logs from any platform]]></summary>
+        <published>2023-10-23T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Meeting API querying tips - Occurrences IDs and instances]]></title>
+        <id>https://developers.zoom.us/blog/meeting-api-querying-tips-part3</id>
+        <link href="https://developers.zoom.us/blog/meeting-api-querying-tips-part3"/>
+        <updated>2023-10-20T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started | Join Developer Advocate Elisa Levet in this blog post series as she takes a deep dive into the world of the Zoom REST API.]]></summary>
+        <published>2023-10-20T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Procedure to collect logs from Zoom Meeting SDK apps]]></title>
+        <id>https://developers.zoom.us/blog/msdk-log-retrieval-instructions</id>
+        <link href="https://developers.zoom.us/blog/msdk-log-retrieval-instructions"/>
+        <updated>2023-10-05T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting | This article explains the procedure to collect SDK logs from any platform]]></summary>
+        <published>2023-10-05T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to update Zoom SDKs to newer versions]]></title>
+        <id>https://developers.zoom.us/blog/how-to-update-zoom-sdks-to-newer-versions</id>
+        <link href="https://developers.zoom.us/blog/how-to-update-zoom-sdks-to-newer-versions"/>
+        <updated>2023-09-27T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, Versioning | Zoom SDK upgrade guide for developers. Troubleshoot common issues, breaking changes, dependencies, authentication updates, and version compatibility.]]></summary>
+        <published>2023-09-27T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom OAuth 2.0 Proof Key for Code Exchange (PKCE) Flow]]></title>
+        <id>https://developers.zoom.us/blog/pcke-oauth-with-postman-rest-api</id>
+        <link href="https://developers.zoom.us/blog/pcke-oauth-with-postman-rest-api"/>
+        <updated>2023-09-27T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Learn how to use PKCE OAuth flow for Zoom Rest APIs]]></summary>
+        <published>2023-09-27T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Getting started with Zoom Video SDK REST API]]></title>
+        <id>https://developers.zoom.us/blog/Getting-started-with-video-sdk-api</id>
+        <link href="https://developers.zoom.us/blog/Getting-started-with-video-sdk-api"/>
+        <updated>2023-09-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started | This guide will walk you through getting started with the Video SDK API.]]></summary>
+        <published>2023-09-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Meeting API querying tips - One person meetings and webinars]]></title>
+        <id>https://developers.zoom.us/blog/meeting-api-querying-tips-part2</id>
+        <link href="https://developers.zoom.us/blog/meeting-api-querying-tips-part2"/>
+        <updated>2023-09-26T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, getting started | Join Developer Advocate Elisa Levet in this blog post series as she takes a deep dive into the world of the Zoom REST API.]]></summary>
+        <published>2023-09-26T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[What to check when you're not receiving webhook events]]></title>
+        <id>https://developers.zoom.us/blog/not-receiving-webhooks</id>
+        <link href="https://developers.zoom.us/blog/not-receiving-webhooks"/>
+        <updated>2023-09-20T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Troubleshooting | Troubleshoot Zoom webhooks not being received. Complete checklist covers prerequisites, endpoint configuration, IP addresses, and common webhook issues.]]></summary>
+        <published>2023-09-20T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Get started with Zoom Android Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/setting-up-android-vsdk</id>
+        <link href="https://developers.zoom.us/blog/setting-up-android-vsdk"/>
+        <updated>2023-09-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, tutorial, getting started, android | This blog helps to set up the Android Video SDK with basic features]]></summary>
+        <published>2023-09-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Meeting API querying tips - understanding meeting IDs and meeting UUIDs]]></title>
+        <id>https://developers.zoom.us/blog/meeting-api-querying-tips-part1</id>
+        <link href="https://developers.zoom.us/blog/meeting-api-querying-tips-part1"/>
+        <updated>2023-09-06T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | Join Developer Advocate Elisa Levet in this blog post series as she takes a deep dive into the world of the Zoom REST API.]]></summary>
+        <published>2023-09-06T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Adding scalability and independence to dynamic provisioning environments with Server-to-Server(S2S) OAuth]]></title>
+        <id>https://developers.zoom.us/blog/adding-scalability-and-independence</id>
+        <link href="https://developers.zoom.us/blog/adding-scalability-and-independence"/>
+        <updated>2023-09-05T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | This article has intrtoduces the new behavior of generating access tokens for each server without indexes. This new behavior simplifies the token management in dynamic provisioning environments, making it easier to scale and more straightforward to maintain.]]></summary>
+        <published>2023-09-05T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Creating a virtual classroom with Zoom Video SDK pt. 2]]></title>
+        <id>https://developers.zoom.us/blog/Create-a-virtual-classroom-with-video-sdk-pt-2</id>
+        <link href="https://developers.zoom.us/blog/Create-a-virtual-classroom-with-video-sdk-pt-2"/>
+        <updated>2023-08-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web | Follow along with Developer Advocate Rehema Armorer as she describes her process of creating an online learning environment using the Video SDK. This follow-up piece walks through building out the frontend of the project.]]></summary>
+        <published>2023-08-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Zoom Apps best practices]]></title>
+        <id>https://developers.zoom.us/blog/zoom-apps-best-practices</id>
+        <link href="https://developers.zoom.us/blog/zoom-apps-best-practices"/>
+        <updated>2023-08-29T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | Tips and tricks to set yourself up for success as a Zoom Apps Developer]]></summary>
+        <published>2023-08-29T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SharedArrayBuffer overview and implementation]]></title>
+        <id>https://developers.zoom.us/blog/sharedarraybuffer-overview-and-implementation</id>
+        <link href="https://developers.zoom.us/blog/sharedarraybuffer-overview-and-implementation"/>
+        <updated>2023-08-24T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, web | The goal of this article is to guide you in implementing cross origin isolation and enable shared array buffer.]]></summary>
+        <published>2023-08-24T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to limit who can install my Marketplace App]]></title>
+        <id>https://developers.zoom.us/blog/limit-who-can-install-your-app</id>
+        <link href="https://developers.zoom.us/blog/limit-who-can-install-your-app"/>
+        <updated>2023-08-23T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Control who installs your published Zoom app using landing page restrictions. Step-by-step guide to limit marketplace app access to specific users.]]></summary>
+        <published>2023-08-23T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to embed Zoom into a website]]></title>
+        <id>https://developers.zoom.us/blog/how-to-embed-zoom-into-website</id>
+        <link href="https://developers.zoom.us/blog/how-to-embed-zoom-into-website"/>
+        <updated>2023-08-22T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Compare Zoom's two web SDKs, Meeting SDK for embedding Zoom meetings vs Video SDK for custom video experiences. Complete developer guide with use cases.]]></summary>
+        <published>2023-08-22T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Migrating from collecting developer credentials to a supported flow]]></title>
+        <id>https://developers.zoom.us/blog/migrating-from-collecting-credentials-to-supported-flow</id>
+        <link href="https://developers.zoom.us/blog/migrating-from-collecting-credentials-to-supported-flow"/>
+        <updated>2023-08-22T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Zoom policy on developer credentials and alternative integration solutions. Explore OAuth, API users, Meeting SDK, and Video SDK for compliant development.]]></summary>
+        <published>2023-08-22T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JWT deprecation guide]]></title>
+        <id>https://developers.zoom.us/blog/jwt-deprecation-guide</id>
+        <link href="https://developers.zoom.us/blog/jwt-deprecation-guide"/>
+        <updated>2023-08-01T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide, JWT | The JWT deprecation guide informs users about the deprecation process of JWT app types in the Zoom Marketplace. On June 1st, 2023, new JWT apps creation was disabled. By September 8, 2023, all JWT apps will reach their end-of-life, requiring migration to server-to-server OAuth or OAuth app types. Users must ensure third-party developers migrate their apps or work on updates to avoid disruptions. The guide provides steps to identify and migrate JWT apps, along with disabling or removing them when no longer needed. Users can seek support from the Developer Forum or Zoom Developer Open Hours.]]></summary>
+        <published>2023-08-01T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Level Up Your Productivity with Reminder Apps for Team Chat]]></title>
+        <id>https://developers.zoom.us/blog/level-up-your-productivity-with-reminder-apps-for-team-chat</id>
+        <link href="https://developers.zoom.us/blog/level-up-your-productivity-with-reminder-apps-for-team-chat"/>
+        <updated>2023-07-27T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial | In this blog, we'll build a Team Chat App that allows you to send reminders to yourself throughout your day using the popular and open-source backend Appwrite. You'll learn how to take your Apps for Team Chat to the next level using functions alongside the composability of Team Chat messages. Let’s get started!]]></summary>
+        <published>2023-07-27T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Creating a virtual classroom with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/create-a-virtual-classroom-with-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/create-a-virtual-classroom-with-video-sdk"/>
+        <updated>2023-07-24T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, web | Follow along with Developer Advocate Rehema Armorer as she describes her process of creating an online learning environment using the Video SDK.]]></summary>
+        <published>2023-07-24T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Exploring the 2023 Zoom Developer Summit]]></title>
+        <id>https://developers.zoom.us/blog/explore-the-2023-zoom-developer-summit</id>
+        <link href="https://developers.zoom.us/blog/explore-the-2023-zoom-developer-summit"/>
+        <updated>2023-06-20T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: event | Dive into the highlights of the action-packed 2023 Zoom Developer Summit! This article recaps the event's 8 technical sessions, featuring insights from Zoom's Developer Relations team, covering various aspects of the Zoom Developer Platform. Attendees explored using the Meeting SDK with AWS virtual participant framework, building apps for Team Chat, leveraging QSS and APIs for a comprehensive Meetings dashboard, and more. The summit showcased the possibilities offered by the Developer Platform and celebrated the ingenuity of the developer community. Get inspired to build with Zoom's Developer Platform by accessing on-demand recordings of the sessions and apply to become an ISV Partner for dedicated developer support. Stay connected with the Zoom developer community through the forum and explore the latest demos on YouTube. Start building innovative solutions with Zoom's video and meeting capabilities today!]]></summary>
+        <published>2023-06-20T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to fix hanging behavior of the Meeting SDK Electron sample app]]></title>
+        <id>https://developers.zoom.us/blog/fix-electron-demo-app-hanging</id>
+        <link href="https://developers.zoom.us/blog/fix-electron-demo-app-hanging"/>
+        <updated>2023-06-18T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Troubleshooting, Electron | Troubleshoot Meeting SDK demo app freezing after SDKAuth button. Fix JWT validation, Node/Electron versions, dependencies, and common setup issues.]]></summary>
+        <published>2023-06-18T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Troubleshooting Meeting SDK signature validation]]></title>
+        <id>https://developers.zoom.us/blog/troubleshooting-meeting-sdk-signature-validation</id>
+        <link href="https://developers.zoom.us/blog/troubleshooting-meeting-sdk-signature-validation"/>
+        <updated>2023-05-31T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting | placeholder description]]></summary>
+        <published>2023-05-31T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Meeting SDK in an iFrame]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-iframe</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-iframe"/>
+        <updated>2023-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, web | Embed Zoom Meeting SDK for web in iFrame with best practices guide. Covers HTTPS requirements, permissions, SharedArrayBuffer, and responsive design tips.]]></summary>
+        <published>2023-05-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[The Zoom GraphQL API playground - Your new favorite development tool]]></title>
+        <id>https://developers.zoom.us/blog/graphql-api-playground</id>
+        <link href="https://developers.zoom.us/blog/graphql-api-playground"/>
+        <updated>2023-03-15T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement | The Zoom GraphQL API Playground is a powerful in-browser IDE that enhances development with GraphQL queries and mutations. It offers a rich user interface, auto-complete, and real-time query validation. Developers can access embedded documentation, test queries, and merge fragments. The tool streamlines development, improves code quality, and ensures API functionality. Joining the Zoom GraphQL API beta provides early access to new features and the chance to shape the tool's future. Experience the impact of the GraphQL playground and elevate your development game.]]></summary>
+        <published>2023-03-15T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Meeting SDK in an Android WebView]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-android-webview</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-android-webview"/>
+        <updated>2023-03-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, android, web | Embed Zoom Meeting SDK for web in Android WebView for smaller package size. Complete guide with permissions, configuration, and implementation code.]]></summary>
+        <published>2023-03-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Meeting SDK in an iOS WebView]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-ios-webview</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-ios-webview"/>
+        <updated>2023-03-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, iOS, web | Embed Zoom Meeting SDK for web in iOS WebView for smaller package size. Complete guide with Info.plist configuration, permissions, and Swift code examples.]]></summary>
+        <published>2023-03-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Video SDK in an Android WebView]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-android-webview</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-android-webview"/>
+        <updated>2023-03-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, Android, web | Embed Zoom Video SDK for web in Android WebView for smaller package size. Complete guide with permissions, configuration, and implementation code.]]></summary>
+        <published>2023-03-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Video SDK in an iFrame]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-iframe</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-iframe"/>
+        <updated>2023-03-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, Web | Embed Zoom Video SDK for web in iFrame with best practices guide. Covers HTTPS requirements, permissions, SharedArrayBuffer, and responsive design tips.]]></summary>
+        <published>2023-03-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Best practices using the Video SDK in an iOS WebView]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-ios-webview</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-ios-webview"/>
+        <updated>2023-03-03T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, iOS, web | Embed Zoom Video SDK for web in iOS WebView for smaller package size. Complete guide with Info.plist configuration, permissions, and Swift code examples.]]></summary>
+        <published>2023-03-03T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to customize the Meeting SDK for web]]></title>
+        <id>https://developers.zoom.us/blog/customize-meeting-sdk-for-web</id>
+        <link href="https://developers.zoom.us/blog/customize-meeting-sdk-for-web"/>
+        <updated>2023-01-30T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Customize Zoom Meeting SDK for web interface. Learn to hide buttons like invite function with code examples and understand customization limitations.]]></summary>
+        <published>2023-01-30T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Using ngrok to receive Zoom Events]]></title>
+        <id>https://developers.zoom.us/blog/using-ngrok-to-receive-zoom-events</id>
+        <link href="https://developers.zoom.us/blog/using-ngrok-to-receive-zoom-events"/>
+        <updated>2023-01-30T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial | This tutorial by Elisa Levet guides users on setting up Zoom webhooks using ngrok as a secure URL to receive events from a Zoom account. The guide provides steps to implement Zoom webhooks, create a sample app, validate the endpoint URL, and receive events securely. The tutorial uses the Webhook-sample-node.js app available on GitHub and covers the necessary configurations in the Zoom Marketplace. It also explains how to trigger webhook validation, handle challenge-response checks, and ensure secure event reception in the sample app.]]></summary>
+        <published>2023-01-30T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Device authorization]]></title>
+        <id>https://developers.zoom.us/blog/device-authorization</id>
+        <link href="https://developers.zoom.us/blog/device-authorization"/>
+        <updated>2023-01-27T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial | Learn about Zoom's new Device Authorization feature designed to enhance end-user experience when granting app access to Zoom user data across multiple devices. This article presents a simple one-step process using the OAuth 2.0 Device Authorization Grant, allowing users to authorize app access on different devices without the need to re-enter user codes or log in again.]]></summary>
+        <published>2023-01-27T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Access token change FAQ]]></title>
+        <id>https://developers.zoom.us/blog/access-token-change-faq</id>
+        <link href="https://developers.zoom.us/blog/access-token-change-faq"/>
+        <updated>2023-01-18T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Announcement | test]]></summary>
+        <published>2023-01-18T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build with Me! - Getting Started with the Zoom Video SDK]]></title>
+        <id>https://developers.zoom.us/blog/getting-started-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/getting-started-video-sdk"/>
+        <updated>2023-01-06T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial, getting started, web | In this tutorial article, Rehema Armorer provides a step-by-step guide on getting started with the Zoom Video SDK. The article covers building a simplified version of the Web Video SDK app using React and demonstrates how to access video, audio, and screen-sharing functionalities. The tutorial highlights the tech stack used, including React for the frontend, Node.js with Express for the backend, and the Zoom Video SDK for creating, managing, and joining sessions.]]></summary>
+        <published>2023-01-06T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FAQ on Privacy/Embedded TDD]]></title>
+        <id>https://developers.zoom.us/blog/faq-privacy-embedded-tdd</id>
+        <link href="https://developers.zoom.us/blog/faq-privacy-embedded-tdd"/>
+        <updated>2022-11-22T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App Submission | New Zoom App Marketplace data privacy requirements explained. FAQ guide for developers updating TDD attestations and handling user data compliance.]]></summary>
+        <published>2022-11-22T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[What I learned implementing PKCE for serverless Zoom Apps]]></title>
+        <id>https://developers.zoom.us/blog/pkce-for-serverless-zoom-apps</id>
+        <link href="https://developers.zoom.us/blog/pkce-for-serverless-zoom-apps"/>
+        <updated>2022-11-09T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | The article discusses Max's experience implementing PKCE (Proof Key for Code Exchange) for serverless Zoom Apps. PKCE is essential for secure OAuth authorization and preventing CSRF attacks.]]></summary>
+        <published>2022-11-09T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to approach creating a Marketplace App Test Plan]]></title>
+        <id>https://developers.zoom.us/blog/marketplace-app-test-plan</id>
+        <link href="https://developers.zoom.us/blog/marketplace-app-test-plan"/>
+        <updated>2022-09-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App submission | test]]></summary>
+        <published>2022-09-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[What is a Test Plan and how should you approach creating it]]></title>
+        <id>https://developers.zoom.us/blog/marketplace-test-plan</id>
+        <link href="https://developers.zoom.us/blog/marketplace-test-plan"/>
+        <updated>2022-09-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App Submission, FAQ | Create effective test plans for Zoom Marketplace app submissions. Essential guide for developers with requirements, common mistakes, and review tips.]]></summary>
+        <published>2022-09-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Setting up a Postgres database to receive Zoom webhooks]]></title>
+        <id>https://developers.zoom.us/blog/setting-up-a-postgres-database-to-receive-zoom-webhooks</id>
+        <link href="https://developers.zoom.us/blog/setting-up-a-postgres-database-to-receive-zoom-webhooks"/>
+        <updated>2022-09-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial | The article guides readers through setting up a PostgreSQL database to receive Zoom webhooks. It begins by creating a webhook-only app in the Zoom App Marketplace and configuring event subscriptions with ngrok to expose the local server to the internet. The tutorial requires Node.js, ngrok, PostgreSQL, a Zoom account, and webhook-only app credentials. Readers then clone a sample app, install dependencies, and set up the database. The tutorial covers creating a role and database in PostgreSQL, creating a table, and connecting the app to the database. It concludes with instructions to run the app, enabling users to see events printed in the console and stored in the PostgreSQL database.]]></summary>
+        <published>2022-09-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Troubleshooting joining a meeting with the Meeting SDK for Windows]]></title>
+        <id>https://developers.zoom.us/blog/troubleshooting-joining-meetings-windows</id>
+        <link href="https://developers.zoom.us/blog/troubleshooting-joining-meetings-windows"/>
+        <updated>2022-09-14T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Troubleshooting', Windows | Troubleshoot Zoom Meeting SDK join issues with this comprehensive guide. Debug event callbacks, authentication errors, and connection problems step-by-step]]></summary>
+        <published>2022-09-14T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How the Zoom Meeting SDKs are versioned]]></title>
+        <id>https://developers.zoom.us/blog/meeting-sdk-versioning</id>
+        <link href="https://developers.zoom.us/blog/meeting-sdk-versioning"/>
+        <updated>2022-09-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Versioning | Understand Zoom Meeting SDK versioning scheme, backwards compatibility, new features, breaking changes, and minimum support versions for smooth upgrades.]]></summary>
+        <published>2022-09-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to reduce APK size after adding the Meeting SDK to your project]]></title>
+        <id>https://developers.zoom.us/blog/reduce-apk-size-meeting-sdk-android</id>
+        <link href="https://developers.zoom.us/blog/reduce-apk-size-meeting-sdk-android"/>
+        <updated>2022-09-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Android, Best practices | Reduce Android APK size when using Zoom SDK. Learn ABI filtering and native library optimization techniques to minimize app size with code examples.]]></summary>
+        <published>2022-09-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How the Zoom Video SDKs are versioned]]></title>
+        <id>https://developers.zoom.us/blog/video-sdk-versioning</id>
+        <link href="https://developers.zoom.us/blog/video-sdk-versioning"/>
+        <updated>2022-09-07T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Versioning | Understand Zoom Video SDK versioning scheme, backwards compatibility, new features, breaking changes, and minimum support versions for smooth upgrades.RetryClaude can make mistakes. Please double-check responses.]]></summary>
+        <published>2022-09-07T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to build breakout rooms in the Video SDK for web]]></title>
+        <id>https://developers.zoom.us/blog/build-breakout-rooms-for-video-sdk</id>
+        <link href="https://developers.zoom.us/blog/build-breakout-rooms-for-video-sdk"/>
+        <updated>2022-09-01T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide, Web | Learn how to implement breakout rooms with Video SDK for Web. Step-by-step tutorial with code examples for session management and participant APIs.]]></summary>
+        <published>2022-09-01T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to Extend the MeetingActivity]]></title>
+        <id>https://developers.zoom.us/blog/extend-the-meetingactivity</id>
+        <link href="https://developers.zoom.us/blog/extend-the-meetingactivity"/>
+        <updated>2022-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide, Android | Extend Zoom Android Meeting SDK MeetingActivity for custom functionality. Step-by-step tutorial with code examples and manifest configuration guide.]]></summary>
+        <published>2022-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Why use server-to-server OAuth?]]></title>
+        <id>https://developers.zoom.us/blog/why-use-server-to-server-oauth</id>
+        <link href="https://developers.zoom.us/blog/why-use-server-to-server-oauth"/>
+        <updated>2022-07-15T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: guide | This guide by Elisa Levet explains why the JWT app is being deprecated and encourages users to migrate to the new Server-to-Server OAuth app for more granular scoping options. It provides steps on using the new app type with Postman, facilitating OAuth-authenticated requests between servers without end-user involvement. The guide includes instructions on enabling permissions, creating the app, and obtaining an access token to make API calls. It emphasizes the benefits of scoped access for individual users and suggests referring to the linked resources for further assistance.]]></summary>
+        <published>2022-07-15T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Introducing Zoom Apps]]></title>
+        <id>https://developers.zoom.us/blog/introducing-zoom-apps</id>
+        <link href="https://developers.zoom.us/blog/introducing-zoom-apps"/>
+        <updated>2022-06-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: announcement | Zoom Apps revolutionize the meeting experience by integrating web applications into Zoom Meetings and Webinars using a JavaScript SDK. You can tailor the app's appearance and functionality, creating a unique in-meeting and post-meeting UX. OAuth mechanisms and the SDK enable granular access control and enhanced meeting experiences. Zoom Apps can appear as side panels, full-screen views, or customized experiences. Features like Meeting Bots, Collaborate Mode, Immersive Mode, and Breakout Rooms API enhance collaboration and interactivity. To get started, create an app on the App Marketplace and explore sample applications. Part 2 covers creating and configuring your app on the Zoom Marketplace.]]></summary>
+        <published>2022-06-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Setting up your Zoom App]]></title>
+        <id>https://developers.zoom.us/blog/setting-up-your-zoom-app</id>
+        <link href="https://developers.zoom.us/blog/setting-up-your-zoom-app"/>
+        <updated>2022-06-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: tutorial | This article guides you through the process of creating and configuring a Zoom App. Prerequisites include Ngrok, a Zoom account, and Zoom App Developer permissions. Ngrok is used as a local tunneling tool to expose the local server to the internet. The article covers setting up the app credentials, information, features, and scopes. Once the app is installed, readers are congratulated on creating their Zoom App. The next part of the series will focus on running the app with the provided credentials and Ngrok URL.]]></summary>
+        <published>2022-06-21T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How long does the App Review Process take?]]></title>
+        <id>https://developers.zoom.us/blog/how-long-does-app-review-take</id>
+        <link href="https://developers.zoom.us/blog/how-long-does-app-review-take"/>
+        <updated>2022-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App Submission | Zoom App Marketplace review timeline and process explained. 72-hour SLA, submission checklist, developer assessment, and approval requirements.]]></summary>
+        <published>2022-05-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Concurrent video streaming limits on desktop SDKs]]></title>
+        <id>https://developers.zoom.us/blog/concurrent-video-streaming-limits-desktop-sdks</id>
+        <link href="https://developers.zoom.us/blog/concurrent-video-streaming-limits-desktop-sdks"/>
+        <updated>2022-03-31T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices | Learn Video SDK video subscription limits for custom meeting UIs. Essential reference for concurrent video streams, resolution limits, and view sizes.]]></summary>
+        <published>2022-03-31T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to create a user and assign scheduling privilege programmatically]]></title>
+        <id>https://developers.zoom.us/blog/create-a-user-assign-scheduling-privilege</id>
+        <link href="https://developers.zoom.us/blog/create-a-user-assign-scheduling-privilege"/>
+        <updated>2021-12-19T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices | Learn to add meeting assistants with Zoom API. Complete guide to scheduling privilege, assistant management endpoints, and meeting delegation features.]]></summary>
+        <published>2021-12-19T07:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to create a sample JWT for the Meeting SDK]]></title>
+        <id>https://developers.zoom.us/blog/create-sample-jwt-meeting-sdk</id>
+        <link href="https://developers.zoom.us/blog/create-sample-jwt-meeting-sdk"/>
+        <updated>2021-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Guide | Create JWT tokens for Zoom Meeting SDK authentication. Step-by-step tutorial using JWT.io debugger with payload examples and common troubleshooting tips.]]></summary>
+        <published>2021-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Fixing a black screen on the Meeting SDK for web]]></title>
+        <id>https://developers.zoom.us/blog/fix-black-screen-meeting-sdk</id>
+        <link href="https://developers.zoom.us/blog/fix-black-screen-meeting-sdk"/>
+        <updated>2021-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Troubleshooting, Web | Fix Web Meeting SDK black screen issues with this troubleshooting guide. Step-by-step solutions for display problems and console error resolution.]]></summary>
+        <published>2021-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[How to use the Meeting SDK in an Angular app]]></title>
+        <id>https://developers.zoom.us/blog/how-to-use-meeting-sdk-angular-application</id>
+        <link href="https://developers.zoom.us/blog/how-to-use-meeting-sdk-angular-application"/>
+        <updated>2021-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Web, Angular, Guide | Integrate Zoom Meeting SDK into Angular apps with this step-by-step guide. Complete tutorial with code examples, installation, and implementation tips.]]></summary>
+        <published>2021-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Verifying the macOS Meeting SDK package was correctly added to your project]]></title>
+        <id>https://developers.zoom.us/blog/verifying-macos-meeting-sdk-was-correctly-added</id>
+        <link href="https://developers.zoom.us/blog/verifying-macos-meeting-sdk-was-correctly-added"/>
+        <updated>2021-08-13T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Best practices, macOS | Complete macOS Zoom Meeting SDK integration guide for Xcode. Step-by-step setup, verification, troubleshooting, and build configuration instructions.]]></summary>
+        <published>2021-08-13T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Troubleshooting screen sharing on the Meeting SDK for iOS]]></title>
+        <id>https://developers.zoom.us/blog/troubleshooting-screen-sharing-ios</id>
+        <link href="https://developers.zoom.us/blog/troubleshooting-screen-sharing-ios"/>
+        <updated>2021-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: Troubleshooting, iOS | Fix iOS screen sharing issues in Zoom SDK apps. Troubleshoot App Group ID, Broadcast Extension setup, and common configuration problems with solutions.]]></summary>
+        <published>2021-05-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Resolving webhook delays]]></title>
+        <id>https://developers.zoom.us/blog/webhook-delays</id>
+        <link href="https://developers.zoom.us/blog/webhook-delays"/>
+        <updated>2021-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: troubleshooting | test]]></summary>
+        <published>2021-05-11T06:00:00.000Z</published>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[What happens to my current users when I am updating my published app]]></title>
+        <id>https://developers.zoom.us/blog/what-happens-to-users-when-updating-apps</id>
+        <link href="https://developers.zoom.us/blog/what-happens-to-users-when-updating-apps"/>
+        <updated>2021-05-11T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Tags: App Submission, FAQ | Zoom app update review process explained. Development vs production environments, user notifications, scope changes, and backwards compatibility details.RetryClaude can make mistakes. Please double-check responses.]]></summary>
+        <published>2021-05-11T06:00:00.000Z</published>
+    </entry>
+</feed>

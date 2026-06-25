@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/yairEO/tagify/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/yairEO/tagify/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/yairEO/tagify/releases.atom"/>
+  <title>Release notes from tagify</title>
+  <updated>2026-04-19T06:22:47Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.37.1</id>
+    <updated>2026-04-19T06:23:18Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.37.1"/>
+    <title>v4.37.1</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fix(tagify): preserve dropdown.enabled; no reposition while dropdown visible  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/9f3c338a0b7e47d3f20230d2ef90f594115e7cae/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/9f3c338a0b7e47d3f20230d2ef90f594115e7cae&quot;&gt;&lt;tt&gt;9f3c338&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;bugfix - when moving the input field to be anywhere other than at the end (after the last tag or when there aren&#39;t any tags) then hide the placeholder and minimize the width of the input element  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/0adad219e2bb16d1a75b995596d15db7929acc4a/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/0adad219e2bb16d1a75b995596d15db7929acc4a&quot;&gt;&lt;tt&gt;0adad21&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Update README with single-row tags example  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/3d7cfc5164565acd8e306746011d30f13f0119f6/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/3d7cfc5164565acd8e306746011d30f13f0119f6&quot;&gt;&lt;tt&gt;3d7cfc5&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.37.0...v4.37.1&quot;&gt;&lt;tt&gt;v4.37.0...v4.37.1&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.37.0</id>
+    <updated>2026-04-03T18:24:05Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.37.0"/>
+    <title>v4.37.0</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;Added Cursor IDE &quot;command&quot; files  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/8a71f2bafe6b99edaabaeccda85eee8d14b1a7bd/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/8a71f2bafe6b99edaabaeccda85eee8d14b1a7bd&quot;&gt;&lt;tt&gt;8a71f2b&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;docs(readme): document caret-between-tags, build tooling, and related API  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/93369d5ec84cadc540d57718c288d131b57f3945/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/93369d5ec84cadc540d57718c288d131b57f3945&quot;&gt;&lt;tt&gt;93369d5&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;4190866207&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1489&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/yairEO/tagify/pull/1489/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/pull/1489&quot;&gt;#1489&lt;/a&gt; - improved the &quot;Backspace&quot; event listener callback to consider the input element might be anywhere between tags and not only as the last element, and so the previous tag to it should be removed and not simply the last tag, as was until now  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/7a0ca0d9ace2cc4cbaac6c4e017f6c032a8c4668/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/7a0ca0d9ace2cc4cbaac6c4e017f6c032a8c4668&quot;&gt;&lt;tt&gt;7a0ca0d&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;4190866207&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1489&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/yairEO/tagify/pull/1489/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/pull/1489&quot;&gt;#1489&lt;/a&gt; - add support for moving the input field before/after tags to reposition it and be able to insert new tags in between existing ones  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/19677afc9b6640d8c46714fa0bff84f596ca37e1/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/19677afc9b6640d8c46714fa0bff84f596ca37e1&quot;&gt;&lt;tt&gt;19677af&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Added Cursor IDE &quot;command&quot; files  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/292a53542c08ac7c11ffe9bc99f459a7c6717a86/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/292a53542c08ac7c11ffe9bc99f459a7c6717a86&quot;&gt;&lt;tt&gt;292a535&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;chore(package): require Node 22 and pnpm 10; bump dev tooling  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/6bfc4e1790f6fe5dc72cca42b292c667b2a8b7d6/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/6bfc4e1790f6fe5dc72cca42b292c667b2a8b7d6&quot;&gt;&lt;tt&gt;6bfc4e1&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Bump rollup from 2.79.2 to 2.80.0  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/e3ad3ade08083c43aae8fa6c2d59dd25ec7cb776/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/e3ad3ade08083c43aae8fa6c2d59dd25ec7cb776&quot;&gt;&lt;tt&gt;e3ad3ad&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;changed &lt;code&gt;mixumum&lt;/code&gt; to &lt;code&gt;maximum&lt;/code&gt;  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/e7d59c598afa331e06a2ac93e00d93091244f21d/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/e7d59c598afa331e06a2ac93e00d93091244f21d&quot;&gt;&lt;tt&gt;e7d59c5&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;details open=&quot;&quot; class=&quot;details-reset border rounded-2&quot;&gt;
+  &lt;summary class=&quot;tmp-px-3 py-2&quot;&gt;
+    &lt;svg aria-hidden=&quot;true&quot; data-component=&quot;Octicon&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot; version=&quot;1.1&quot; width=&quot;16&quot; data-view-component=&quot;true&quot; class=&quot;octicon octicon-device-camera-video&quot;&gt;
+    &lt;path d=&quot;M16 3.75v8.5a.75.75 0 0 1-1.136.643L11 10.575v.675A1.75 1.75 0 0 1 9.25 13h-7.5A1.75 1.75 0 0 1 0 11.25v-6.5C0 3.784.784 3 1.75 3h7.5c.966 0 1.75.784 1.75 1.75v.675l3.864-2.318A.75.75 0 0 1 16 3.75Zm-6.5 1a.25.25 0 0 0-.25-.25h-7.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5ZM11 8.825l3.5 2.1v-5.85l-3.5 2.1Z&quot;&gt;&lt;/path&gt;
+&lt;/svg&gt;
+    &lt;span class=&quot;m-1&quot;&gt;adding.tags.in-between.mp4&lt;/span&gt;
+    &lt;span class=&quot;dropdown-caret&quot;&gt;&lt;/span&gt;
+  &lt;/summary&gt;
+
+  &lt;video src=&quot;https://private-user-images.githubusercontent.com/845031/573622661-114b008d-a2c4-4b28-ba8b-f70661c8838c.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODI0MjU3MzgsIm5iZiI6MTc4MjQyNTQzOCwicGF0aCI6Ii84NDUwMzEvNTczNjIyNjYxLTExNGIwMDhkLWEyYzQtNGIyOC1iYThiLWY3MDY2MWM4ODM4Yy5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNjI1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDYyNVQyMjEwMzhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02ODU1N2RlOGFhM2E3MTJjMjNlYzAzZWRjYThjZDk2MjhhNjdkNTYwNzg2Nzg3NzA1NjlmYjYzOWQ0OTUyNmMzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9dmlkZW8lMkZtcDQifQ.hIu-0r7xLfg8bPb-BbyHArMiv9mVRYQcLs8N_V8yuq8&quot; data-canonical-src=&quot;https://private-user-images.githubusercontent.com/845031/573622661-114b008d-a2c4-4b28-ba8b-f70661c8838c.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODI0MjU3MzgsIm5iZiI6MTc4MjQyNTQzOCwicGF0aCI6Ii84NDUwMzEvNTczNjIyNjYxLTExNGIwMDhkLWEyYzQtNGIyOC1iYThiLWY3MDY2MWM4ODM4Yy5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNjI1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDYyNVQyMjEwMzhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02ODU1N2RlOGFhM2E3MTJjMjNlYzAzZWRjYThjZDk2MjhhNjdkNTYwNzg2Nzg3NzA1NjlmYjYzOWQ0OTUyNmMzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9dmlkZW8lMkZtcDQifQ.hIu-0r7xLfg8bPb-BbyHArMiv9mVRYQcLs8N_V8yuq8&quot; controls=&quot;controls&quot; muted=&quot;muted&quot; class=&quot;d-block rounded-bottom-2 border-top width-fit&quot; style=&quot;max-height:640px; min-height: 200px&quot;&gt;
+
+  &lt;/video&gt;
+&lt;/details&gt;
+
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.36.0...v4.37.0&quot;&gt;&lt;tt&gt;v4.36.0...v4.37.0&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.36.0</id>
+    <updated>2026-01-17T19:13:14Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.36.0"/>
+    <title>v4.36.0</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;README typos fixes  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/2bb3f89e8c3e1f683aa9d3268a82dc8e309b2661/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/2bb3f89e8c3e1f683aa9d3268a82dc8e309b2661&quot;&gt;&lt;tt&gt;2bb3f89&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;updated basic example to showcase content HTML escaping  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/1d488c765ef4abe78064de8ef820c5bf45969292/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/1d488c765ef4abe78064de8ef820c5bf45969292&quot;&gt;&lt;tt&gt;1d488c7&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;2662240678&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1411&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1411/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1411&quot;&gt;#1411&lt;/a&gt; - Fix XSS vulnerability in tag content rendering  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/097451e54f4536eb8415ecfa234cacde719789bc/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/097451e54f4536eb8415ecfa234cacde719789bc&quot;&gt;&lt;tt&gt;097451e&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Refactor code formatting in index.html to improve readability and consistency; update class attributes for syntax highlighting and escape HTML entities in JavaScript snippets.  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/bb0a7f17334b731fa97d3f53a9bad762279a8cbc/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/bb0a7f17334b731fa97d3f53a9bad762279a8cbc&quot;&gt;&lt;tt&gt;bb0a7f1&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Update Prism.js and CSS theme versions; adjust code block formatting in section.njk to escape injected JS content so strings won&#39;t suddenly become HTML tags. this also solves &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;2870751478&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1439&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1439/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1439&quot;&gt;#1439&lt;/a&gt;  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/611cda344573d2663237a97dda0b28f15f8bd73e/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/611cda344573d2663237a97dda0b28f15f8bd73e&quot;&gt;&lt;tt&gt;611cda3&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Add watchHomepage task to gulpfile for monitoring homepage changes  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/b2b46bb0426d5e5ed05d3bffbc1a49f619862e2a/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/b2b46bb0426d5e5ed05d3bffbc1a49f619862e2a&quot;&gt;&lt;tt&gt;b2b46bb&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;updated packages &amp;amp; browserlist  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/1de456e82a882a7f21bce4dd5501cad26e963419/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/1de456e82a882a7f21bce4dd5501cad26e963419&quot;&gt;&lt;tt&gt;1de456e&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3781193922&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1486&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1486/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1486&quot;&gt;#1486&lt;/a&gt; - Mix mode: allow pasted content  to be converted into a tags (if exists in the whitelist)  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/733bb7d132f864e224decde4f8e3a5d7a949d6e4/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/733bb7d132f864e224decde4f8e3a5d7a949d6e4&quot;&gt;&lt;tt&gt;733bb7d&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3631658350&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1482&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1482/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1482&quot;&gt;#1482&lt;/a&gt; - Backspace key does not remove tag in mix-mode  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/679cec126390130cb572e6ed88e81591eee9b813/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/679cec126390130cb572e6ed88e81591eee9b813&quot;&gt;&lt;tt&gt;679cec1&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;added .cursor files  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/bb17daf7a2e386c2d78063cd1469cf46256d7f6c/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/bb17daf7a2e386c2d78063cd1469cf46256d7f6c&quot;&gt;&lt;tt&gt;bb17daf&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;added to gitignore  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/e2a745146179b2dee3ba614742f6bfec1848f0da/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/e2a745146179b2dee3ba614742f6bfec1848f0da&quot;&gt;&lt;tt&gt;e2a7451&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;CSS: Correct capitalization of &lt;code&gt;translateX&lt;/code&gt;  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/5a65c207ffa68363a22d988ca190e48ea6239776/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/5a65c207ffa68363a22d988ca190e48ea6239776&quot;&gt;&lt;tt&gt;5a65c20&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Update README.md  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/f5f0006083471556f1a5d06e7c65a1aeedfe0bdb/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/f5f0006083471556f1a5d06e7c65a1aeedfe0bdb&quot;&gt;&lt;tt&gt;f5f0006&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Improved implementation of a11y.inputAriaLabel  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/9ba7fe4bfdafb78738c27df2d5ddb0dc5071afb6/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/9ba7fe4bfdafb78738c27df2d5ddb0dc5071afb6&quot;&gt;&lt;tt&gt;9ba7fe4&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Implemented improvements  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/4f468d5316e243c8398d3eb97247aff2c5c03cf5/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/4f468d5316e243c8398d3eb97247aff2c5c03cf5&quot;&gt;&lt;tt&gt;4f468d5&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Add new label setting for accessibility  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/d041b5f32d0259c453159df971a22a08704cab26/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/d041b5f32d0259c453159df971a22a08704cab26&quot;&gt;&lt;tt&gt;d041b5f&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.6...v4.36.0&quot;&gt;&lt;tt&gt;v4.35.6...v4.36.0&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.6</id>
+    <updated>2025-11-15T16:37:44Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.6"/>
+    <title>v4.35.6</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3628258103&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1480&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1480/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1480&quot;&gt;#1480&lt;/a&gt; - Tab key does not change focus when there is nothing to add  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/43545b0246d3ce31c7b25d62259bb30e61737f56/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/43545b0246d3ce31c7b25d62259bb30e61737f56&quot;&gt;&lt;tt&gt;43545b0&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3612976145&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1478&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1478/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1478&quot;&gt;#1478&lt;/a&gt; - should not fire &quot;remove&quot; event on initialization  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/c0516e444f451aaf808f007f22c0f9aa3b1cfe44/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/c0516e444f451aaf808f007f22c0f9aa3b1cfe44&quot;&gt;&lt;tt&gt;c0516e4&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Refactor injectAtCaret and appendMixTags methods  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/da01636f33e76caa7264b78cff0e1af549526c94/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/da01636f33e76caa7264b78cff0e1af549526c94&quot;&gt;&lt;tt&gt;da01636&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Remove debug log from events.js  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/2af8763f6d364fb3e8a41212056de91c4c5957e4/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/2af8763f6d364fb3e8a41212056de91c4c5957e4&quot;&gt;&lt;tt&gt;2af8763&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.5...v4.35.6&quot;&gt;&lt;tt&gt;v4.35.5...v4.35.6&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.5</id>
+    <updated>2025-11-02T07:22:42Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.5"/>
+    <title>v4.35.5</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3517427689&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1476&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1476/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1476&quot;&gt;#1476&lt;/a&gt; - added &quot;min-height&quot; for the input element, which is relative to the (inherited) line-height.  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/05a8920524c2d35fe332a6434ccd0398797df374/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/05a8920524c2d35fe332a6434ccd0398797df374&quot;&gt;&lt;tt&gt;05a8920&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3466432293&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1475&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1475/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1475&quot;&gt;#1475&lt;/a&gt; - Pressing Tab enters tag correctly but tagify input loses focus  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/224be278fc60c48007ed009084d7f8d26d9f8ed0/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/224be278fc60c48007ed009084d7f8d26d9f8ed0&quot;&gt;&lt;tt&gt;224be27&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.4...v4.35.5&quot;&gt;&lt;tt&gt;v4.35.4...v4.35.5&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.4</id>
+    <updated>2025-08-28T09:47:37Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.4"/>
+    <title>v4.35.4</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3628258103&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1480&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1480/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1480&quot;&gt;#1480&lt;/a&gt; - prevent new line creation when a tag is added in the events handler  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/b0e38e12ac94ecccf672de828f8de6da9920264d/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/b0e38e12ac94ecccf672de828f8de6da9920264d&quot;&gt;&lt;tt&gt;b0e38e1&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3324617812&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1469&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1469/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1469&quot;&gt;#1469&lt;/a&gt; - &quot;add&quot; event not fired in mix-mode  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/8a9d01c9cf2d65e863506588f480573a5c3c39c0/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/8a9d01c9cf2d65e863506588f480573a5c3c39c0&quot;&gt;&lt;tt&gt;8a9d01c&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3349761013&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1470&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1470/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1470&quot;&gt;#1470&lt;/a&gt; - removed wrongly documented function which does not exists  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/661b768939d67b6778c509447d3f3ca1099fe911/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/661b768939d67b6778c509447d3f3ca1099fe911&quot;&gt;&lt;tt&gt;661b768&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.3...v4.35.4&quot;&gt;&lt;tt&gt;v4.35.3...v4.35.4&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.3</id>
+    <updated>2025-07-21T17:07:58Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.3"/>
+    <title>v4.35.3</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3241773022&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1465&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1465/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1465&quot;&gt;#1465&lt;/a&gt; - &lt;code&gt;originalInputValueObserverInterval&lt;/code&gt; reading should be safer using &lt;code&gt;this.listeners?.main?.originalInputValueObserverInterval&lt;/code&gt;  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/6d95cd3a9571f580c86f33b8a5d3e1dad2089d9a/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/6d95cd3a9571f580c86f33b8a5d3e1dad2089d9a&quot;&gt;&lt;tt&gt;6d95cd3&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3243098765&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1466&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1466/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1466&quot;&gt;#1466&lt;/a&gt; - &lt;code&gt;injectAtCaret&lt;/code&gt; should be protected against injections outside the current tagify instance  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/abc647e5a988ae66215876807dbbecdf9b0b99fa/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/abc647e5a988ae66215876807dbbecdf9b0b99fa&quot;&gt;&lt;tt&gt;abc647e&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.2...v4.35.3&quot;&gt;&lt;tt&gt;v4.35.2...v4.35.3&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.2</id>
+    <updated>2025-07-12T13:13:03Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.2"/>
+    <title>v4.35.2</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3138778704&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1458&quot; data-hovercard-type=&quot;pull_request&quot; data-hovercard-url=&quot;/yairEO/tagify/pull/1458/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/pull/1458&quot;&gt;#1458&lt;/a&gt; - fix press enter to break line before a tag in mixed mode  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/4a0fb4196d5517307d085654fac312f6ca61486c/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/4a0fb4196d5517307d085654fac312f6ca61486c&quot;&gt;&lt;tt&gt;4a0fb41&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;minor improv  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/9a661c7450b7554827256bf66fe94e54c84eea83/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/9a661c7450b7554827256bf66fe94e54c84eea83&quot;&gt;&lt;tt&gt;9a661c7&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;3095904790&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/1454&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/1454/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/1454&quot;&gt;#1454&lt;/a&gt; - setting &lt;code&gt;readonly&lt;/code&gt; to &lt;code&gt;false&lt;/code&gt; (when initially was &lt;code&gt;true&lt;/code&gt;) does not re-bind events  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/213853d0ef5ff77a6de6390bea17d34c81066476/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/213853d0ef5ff77a6de6390bea17d34c81066476&quot;&gt;&lt;tt&gt;213853d&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;742332596&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/700&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/700/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/700&quot;&gt;#700&lt;/a&gt; - removing tags when the style &lt;code&gt;--tag-hide-transition: 0s&lt;/code&gt; is set does not trigger the &lt;code&gt;remove&lt;/code&gt; event before the &lt;code&gt;tagify.value&lt;/code&gt; is actually modified  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/dadc927159b246510223e78fdcb3275c65988c89/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/dadc927159b246510223e78fdcb3275c65988c89&quot;&gt;&lt;tt&gt;dadc927&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixes &lt;a class=&quot;issue-link js-issue-link&quot; data-error-text=&quot;Failed to load title&quot; data-id=&quot;742332596&quot; data-permission-text=&quot;Title is private&quot; data-url=&quot;https://github.com/yairEO/tagify/issues/700&quot; data-hovercard-type=&quot;issue&quot; data-hovercard-url=&quot;/yairEO/tagify/issues/700/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/issues/700&quot;&gt;#700&lt;/a&gt; - removing tags when the style &lt;code&gt;--tag-hide-transition: 0s&lt;/code&gt; is set does not trigger the &lt;code&gt;remove&lt;/code&gt; event before the &lt;code&gt;tagify.value&lt;/code&gt; is actually modified  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/80c0cd757cca25c6de0e859804b5d281bc63db0e/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/80c0cd757cca25c6de0e859804b5d281bc63db0e&quot;&gt;&lt;tt&gt;80c0cd7&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;refactor: update &lt;code&gt;update&lt;/code&gt; method to accept a callback and added a call to tgigger the &#39;remove&#39; event when &lt;code&gt;removeAllTags&lt;/code&gt; is called  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/ccb350f7463504ec9d7a91a2a2cbd088c4577fcd/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/ccb350f7463504ec9d7a91a2a2cbd088c4577fcd&quot;&gt;&lt;tt&gt;ccb350f&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;moved &lt;code&gt;UPDATE_DELAY&lt;/code&gt; to the &lt;code&gt;constants&lt;/code&gt; file and trigger &#39;remove&#39; event in &lt;code&gt;removeAllTags&lt;/code&gt;  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/db48a47092dac1ce67aaaa7b2bcdaf0a6bb9d7ff/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/db48a47092dac1ce67aaaa7b2bcdaf0a6bb9d7ff&quot;&gt;&lt;tt&gt;db48a47&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.1...v4.35.2&quot;&gt;&lt;tt&gt;v4.35.1...v4.35.2&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.1</id>
+    <updated>2025-05-08T10:26:45Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.1"/>
+    <title>v4.35.1</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;Fix &quot;TypeError: Cannot destructure property &#39;added&#39; of &#39;compareStrings(...)&#39; as it is undefined.&quot; bug  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/eef4bac5fd26ca428fd8eb4811e230e8ff0d0477/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/eef4bac5fd26ca428fd8eb4811e230e8ff0d0477&quot;&gt;&lt;tt&gt;eef4bac&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.35.0...v4.35.1&quot;&gt;&lt;tt&gt;v4.35.0...v4.35.1&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/70848287/v4.35.0</id>
+    <updated>2025-04-23T13:42:49Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/yairEO/tagify/releases/tag/v4.35.0"/>
+    <title>v4.35.0</title>
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;refactor: simplify isNodeTag function for improved readability  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/5f1c50d49091b9f0bd3065c213b62d453f6be291/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/5f1c50d49091b9f0bd3065c213b62d453f6be291&quot;&gt;&lt;tt&gt;5f1c50d&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fixed &lt;code&gt;readonly&lt;/code&gt; &amp;amp; &lt;code&gt;disabled&lt;/code&gt; so it is now impossible to interact with the Tagify component when these states are set. It was previously possible to edit things when tabbing &quot;into&quot; them  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/704b3b7be65ad5d96b150660a0c128a6bc86f2d1/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/704b3b7be65ad5d96b150660a0c128a6bc86f2d1&quot;&gt;&lt;tt&gt;704b3b7&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;refactor: remove unnecessary &lt;code&gt;data-can-editable&lt;/code&gt; attribute from tag template  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/1290deec41adaec6ded13211b1837f161de9c052/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/1290deec41adaec6ded13211b1837f161de9c052&quot;&gt;&lt;tt&gt;1290dee&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;undid last change. the user should control this from the outside.  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/fbd51e6063a42bc26436926a59874680ab8708c9/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/fbd51e6063a42bc26436926a59874680ab8708c9&quot;&gt;&lt;tt&gt;fbd51e6&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;fix: if &lt;code&gt;userInput&lt;/code&gt; is false, only set &lt;code&gt;dropdown.enabled = 0&lt;/code&gt; if &lt;code&gt;dropdown.enabled&lt;/code&gt; setting was not intentionally set to &lt;code&gt;false/null/undefined&lt;/code&gt;, which indicates the user does not want to show it no matter what  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/4fb23312a5075886142597e5e00ce39d777ba6e7/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/4fb23312a5075886142597e5e00ce39d777ba6e7&quot;&gt;&lt;tt&gt;4fb2331&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;refactor: update contenteditable attributes to use data-can-editable so &quot;setContentEditable&quot; method could work properly regardless of the contenteditable attribute existance  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/ced54328a3bcbf145651deb92a5a9a9d5e0894c3/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/ced54328a3bcbf145651deb92a5a9a9d5e0894c3&quot;&gt;&lt;tt&gt;ced5432&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;disabled tagify with a placeholder should still show the placeholder text, but only if there are no tags  &lt;a class=&quot;commit-link&quot; data-hovercard-type=&quot;commit&quot; data-hovercard-url=&quot;https://github.com/yairEO/tagify/commit/c69ec4d49d49cfcaa264a9ed3688a67e80d4a773/hovercard&quot; href=&quot;https://github.com/yairEO/tagify/commit/c69ec4d49d49cfcaa264a9ed3688a67e80d4a773&quot;&gt;&lt;tt&gt;c69ec4d&lt;/tt&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class=&quot;commit-link&quot; href=&quot;https://github.com/yairEO/tagify/compare/v4.34.0...v4.35.0&quot;&gt;&lt;tt&gt;v4.34.0...v4.35.0&lt;/tt&gt;&lt;/a&gt;&lt;/p&gt;</content>
+    <author>
+      <name>yairEO</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/845031?s=60&amp;v=4"/>
+  </entry>
+</feed>

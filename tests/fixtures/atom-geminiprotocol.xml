@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>gemini://geminiprotocol.net/news/</id>
+  <title>Official Project Gemini news feed</title>
+  <updated>2026-06-20T11:27:10.891548+00:00</updated>
+  <author>
+    <name>Solderpunk</name>
+    <email>solderpunk@posteo.net</email>
+  </author>
+  <link href="gemini://geminiprotocol.net/news/atom.xml" rel="self"/>
+  <link href="gemini://geminiprotocol.net/news/" rel="alternate"/>
+  <generator uri="https://lkiesow.github.io/python-feedgen" version="1.0.0">python-feedgen</generator>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2024_07_30.gmi</id>
+    <title>2024-07-30 - Moving slowly and breaking things</title>
+    <updated>2024-07-30T19:08:35.989836+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2024_07_30.gmi" rel="alternate"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2024_08_15.gmi</id>
+    <title>2024-08-18 - Progress on closing GitLab issues</title>
+    <updated>2024-08-18T13:33:42.648561+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2024_08_15.gmi" rel="alternate"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2024_08_28.gmi</id>
+    <title>2024-08-28 - Specification changes (0.24.1)</title>
+    <updated>2024-08-28T17:51:37.889909+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2024_08_28.gmi" rel="alternate"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2024_09_08.gmi</id>
+    <title>2024-09-08 - Gemini app developer's guide published</title>
+    <updated>2024-09-08T17:19:36.674657+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2024_09_08.gmi" rel="alternate"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2024_10_24.gmi</id>
+    <title>2024-10-24 - Some more GitLab issues closed</title>
+    <updated>2024-10-24T17:31:40.866783+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2024_10_24.gmi"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2025_06_20.gmi</id>
+    <title>2025-06-20 - Six years of Gemini!</title>
+    <updated>2025-06-20T17:25:00.637049+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2025_06_20.gmi"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2025_12_26.gmi</id>
+    <title>2025-12-26 - geminiprotocol.net downtime and IP change</title>
+    <updated>2025-12-26T14:42:06.240917+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2025_12_26.gmi"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2025_12_29.gmi</id>
+    <title>2025-12-29 - geminiprotocol.net migration complete</title>
+    <updated>2025-12-29T16:26:14.227702+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2025_12_29.gmi"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2026_01_14.gmi</id>
+    <title>2025-12-29 - Yet more downtime, spontaneous second migration</title>
+    <updated>2026-01-14T19:12:21.858984+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2026_01_14.gmi" rel="alternate"/>
+  </entry>
+  <entry>
+    <id>gemini://geminiprotocol.net/news/2026_06_20.gmi</id>
+    <title>2025-06-20 - Seven years of Gemini!</title>
+    <updated>2026-06-20T11:27:10.891548+00:00</updated>
+    <link href="gemini://geminiprotocol.net/news/2026_06_20.gmi" rel="alternate"/>
+  </entry>
+</feed>

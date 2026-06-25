@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	xmlns:media="http://search.yahoo.com/mrss/" >
+
+<channel>
+	<title>BetaNews</title>
+	<atom:link href="https://betanews.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://betanews.com</link>
+	<description>Technology News and Analysis</description>
+	<lastBuildDate>Thu, 25 Jun 2026 19:16:11 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.8.5</generator>
+
+<image>
+	<url>https://media.betanews.com/uploads/2017/01/cropped-BN-Social-32x32.png</url>
+	<title>BetaNews</title>
+	<link>https://betanews.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Microsoft is going to provide free Windows 10 Extended Security Updates for an extra year</title>
+		<link>https://betanews.com/article/microsoft-is-going-to-provide-free-windows-10-extended-security-updates-for-an-extra-year/</link>
+					<comments>https://betanews.com/article/microsoft-is-going-to-provide-free-windows-10-extended-security-updates-for-an-extra-year/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 19:16:09 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[ESU]]></category>
+		<category><![CDATA[Extended Security Updates]]></category>
+		<category><![CDATA[Microsoft]]></category>
+		<category><![CDATA[Windows 10]]></category>
+		<category><![CDATA[Windows Update]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540656</guid>
+
+					<description><![CDATA[Microsoft has announced – very quietly – that the Windows 10 Extended Security Updates (ESU) program is being lengthened by an entire year. The unexpected extension means that people who have decided to keep running Windows 10 on their home computers can expect to receive free updates all the way up until October 12, 2027. While Microsoft has not made a great fanfare about the extension, the news is confirmed in a couple of places. In the Windows 10 ESU documentation changes have been made to text so it now reads: “Both enrollment options provide extended security updates through October 12,&#8230; <a href="https://betanews.com/article/microsoft-is-going-to-provide-free-windows-10-extended-security-updates-for-an-extra-year/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/microsoft-is-going-to-provide-free-windows-10-extended-security-updates-for-an-extra-year/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Microsoft announces price hikes for XBOX</title>
+		<link>https://betanews.com/article/microsoft-announces-price-hikes-for-xbox/</link>
+					<comments>https://betanews.com/article/microsoft-announces-price-hikes-for-xbox/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 18:41:10 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Gaming]]></category>
+		<category><![CDATA[Microsoft]]></category>
+		<category><![CDATA[Xbox]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540653</guid>
+
+					<description><![CDATA[Anyone considering buying an XBOX console might want to consider doing so sooner than they first planned. Microsoft has announced that prices will be increasing significantly at the start of August. The cost of buying either a 512 GB XBOX or a 1TB model is increasing in response to rising memory prices. Microsoft’s announcement also sees the company saying that it is killing off the 2TB XBOX. In a blog post, Microsoft says: “Effective August 1, 2026, we will be updating prices worldwide. The price of XBOX consoles will increase by US$100 for 512 GB models and US$150 for 1&#8230; <a href="https://betanews.com/article/microsoft-announces-price-hikes-for-xbox/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/microsoft-announces-price-hikes-for-xbox/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>AI-assisted review finds Squidbleed flaw in Squid proxy’s FTP gateway</title>
+		<link>https://betanews.com/article/squidbleed-squid-proxy-ai-flaw/</link>
+					<comments>https://betanews.com/article/squidbleed-squid-proxy-ai-flaw/#respond</comments>
+		
+		<dc:creator><![CDATA[Camila Nogueira]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 16:37:01 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540650</guid>
+
+					<description><![CDATA[A memory disclosure flaw in the Squid web proxy’s FTP gateway has been disclosed as CVE-2026-47729, a moderate-severity vulnerability affecting Squid versions before 7.6. Researchers at Calif.io called the bug “Squidbleed” because it can expose stale memory from unrelated proxy transactions. Squid is a caching proxy used to handle HTTP, HTTPS, FTP and other network traffic. The project’s advisory assigns the vulnerability a CVSS score of 6.5, with high confidentiality impact and no listed impact on integrity or availability. The official advisory credits Pavel Kohout of Aisle Research, Lam Jun Rong of Calif.io in collaboration with Anthropic Research, and Youssef&#8230; <a href="https://betanews.com/article/squidbleed-squid-proxy-ai-flaw/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/squidbleed-squid-proxy-ai-flaw/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Major privacy improvements are coming to Google Search services and Google Play</title>
+		<link>https://betanews.com/article/major-privacy-improvements-are-coming-to-google-search-services-and-google-play/</link>
+					<comments>https://betanews.com/article/major-privacy-improvements-are-coming-to-google-search-services-and-google-play/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Thu, 25 Jun 2026 06:20:50 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Privacy]]></category>
+		<category><![CDATA[Search]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540645</guid>
+
+					<description><![CDATA[Google is in the process of rolling out “new privacy settings for Search services” according to an email sent out to users. The changes affect a number of products and services from Google, there are new tools as well as a reorganization of existing options to make them easier to find and use. The new arrangement should make more sense and give users easier access to the tools needed to stay in control of privacy. Saying that the likes of Search, Maps, Shopping, Hotels, Flights, Translate, and News will be impacted, Google’s email explains that it is “updating our settings&#8230; <a href="https://betanews.com/article/major-privacy-improvements-are-coming-to-google-search-services-and-google-play/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/major-privacy-improvements-are-coming-to-google-search-services-and-google-play/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>WhatsApp introduces safety pause and warning before you message unknown numbers</title>
+		<link>https://betanews.com/article/whatsapp-introduces-safety-pause-and-warning-before-you-message-unknown-numbers/</link>
+					<comments>https://betanews.com/article/whatsapp-introduces-safety-pause-and-warning-before-you-message-unknown-numbers/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Wed, 24 Jun 2026 20:00:29 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Meta]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[WhatsApp]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540641</guid>
+
+					<description><![CDATA[Meta is adding a new safety feature to WhatsApp that is designed to make users stop to consider whether they should chat with an unknown number. Originally announced last year, the company is now starting to roll out a warning system that slows down mobile users so they can hopefully avoid scammers. This is just the latest is a series of protective features Meta has been enhancing WhatsApp with. WABetaInfo explains that: “WhatsApp […] introduced a new warning that works even before users start a conversation”. The site goes on to say: It appears the moment someone tries to start&#8230; <a href="https://betanews.com/article/whatsapp-introduces-safety-pause-and-warning-before-you-message-unknown-numbers/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/whatsapp-introduces-safety-pause-and-warning-before-you-message-unknown-numbers/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Google Wallet is getting the power of autofill on mobile</title>
+		<link>https://betanews.com/article/google-wallet-is-getting-the-power-of-autofill-on-mobile/</link>
+					<comments>https://betanews.com/article/google-wallet-is-getting-the-power-of-autofill-on-mobile/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Wed, 24 Jun 2026 19:12:20 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[autofill]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Google Wallet]]></category>
+		<category><![CDATA[iOS]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540638</guid>
+
+					<description><![CDATA[Google Wallet is extraordinarily useful. Autofill is extraordinarily useful. Now Google is combining the two for mobile users so that iOS and Android fans can enjoy greater ease of use. It follows on from Google making autofill more powerful on the desktop by adding support for more complex data types. Bringing the same capabilities to mobile platforms levels the playing field for everyone. There will be understandable privacy and security concerns about the autofilling of very sensitive data in this way, but Google offers assurances that end-to-end encryption is in place to keep everything safe and away from prying eyes.&#8230; <a href="https://betanews.com/article/google-wallet-is-getting-the-power-of-autofill-on-mobile/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/google-wallet-is-getting-the-power-of-autofill-on-mobile/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>GM adds 50 robots at Detroit EV plant while laid-off workers wait</title>
+		<link>https://betanews.com/article/gm-adds-50-robots-at-detroit-ev-plant-while-laid-off-workers-wait/</link>
+					<comments>https://betanews.com/article/gm-adds-50-robots-at-detroit-ev-plant-while-laid-off-workers-wait/#respond</comments>
+		
+		<dc:creator><![CDATA[Camila Nogueira]]></dc:creator>
+		<pubDate>Wed, 24 Jun 2026 14:35:12 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540631</guid>
+
+					<description><![CDATA[General Motors has added about 50 collaborative robots at Factory ZERO in Detroit-Hamtramck, Michigan, after more than 1,000 hourly workers were listed in a state layoff filing tied to slower near-term electric vehicle adoption. The facility, formally listed as Factory ZERO Detroit-Hamtramck Assembly Center, sits at 2500 East Grand Boulevard in Detroit. GM describes it as the company’s first fully dedicated electric vehicle assembly plant and says it produces the GMC HUMMER EV Pickup and SUV, Chevrolet Silverado EV, GMC Sierra EV and Cadillac Escalade IQ. A Michigan WARN notice received Nov. 20, 2025, listed General Motors at 300 Renaissance&#8230; <a href="https://betanews.com/article/gm-adds-50-robots-at-detroit-ev-plant-while-laid-off-workers-wait/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/gm-adds-50-robots-at-detroit-ev-plant-while-laid-off-workers-wait/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Microsoft brings Point-in-Time restore feature to Windows 11 with KB5095093 update</title>
+		<link>https://betanews.com/article/microsoft-brings-point-in-time-restore-feature-to-windows-11-with-kb5095093-update/</link>
+					<comments>https://betanews.com/article/microsoft-brings-point-in-time-restore-feature-to-windows-11-with-kb5095093-update/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Wed, 24 Jun 2026 12:10:35 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Microsoft]]></category>
+		<category><![CDATA[Point-in-Time Restore]]></category>
+		<category><![CDATA[Windows 11]]></category>
+		<category><![CDATA[Windows Update]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540629</guid>
+
+					<description><![CDATA[Microsoft has released a preview version of new month’s Patch Tuesday update for Windows 11 in the form of the KB5095093 update. This cumulative update includes various changes and additions, not least of which is the arrival of Point-in-time restore. The company says that this feature “helps you quickly roll back your PC, including apps, settings, and personal files, to a recent automatic restore point”. There are various other improvements to the operating system including numerous changes to widgets. The advantage of point-in-time restore, as Microsoft says, is that it helps reduce downtime and simplifies troubleshooting when issues occur. This&#8230; <a href="https://betanews.com/article/microsoft-brings-point-in-time-restore-feature-to-windows-11-with-kb5095093-update/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/microsoft-brings-point-in-time-restore-feature-to-windows-11-with-kb5095093-update/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>John Ternus is expected to give Apple’s design team more influence as CEO</title>
+		<link>https://betanews.com/article/john-ternus-is-expected-to-give-apples-design-team-more-influence-as-ceo/</link>
+					<comments>https://betanews.com/article/john-ternus-is-expected-to-give-apples-design-team-more-influence-as-ceo/#respond</comments>
+		
+		<dc:creator><![CDATA[Camila Nogueira]]></dc:creator>
+		<pubDate>Tue, 23 Jun 2026 17:04:25 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540615</guid>
+
+					<description><![CDATA[John Ternus is preparing to take over Apple with more time inside the company’s design operation, according to a 9to5Mac report based on Bloomberg’s Power On newsletter. The report says Ternus has spent a considerable amount of time with Apple’s industrial design group before his Sept. 1, 2026, succession date, when Apple says Tim Cook will become executive chairman and Ternus will become CEO under its official CEO succession plan. Apple announced the change April 20 from Cupertino, California, saying its board of directors approved the transition unanimously after a long-term succession process. The leadership handover puts Ternus, Apple’s senior&#8230; <a href="https://betanews.com/article/john-ternus-is-expected-to-give-apples-design-team-more-influence-as-ceo/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/john-ternus-is-expected-to-give-apples-design-team-more-influence-as-ceo/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Google invests $75m in movie studio A24</title>
+		<link>https://betanews.com/article/google-invests-75m-in-movie-studio-a24/</link>
+					<comments>https://betanews.com/article/google-invests-75m-in-movie-studio-a24/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Tue, 23 Jun 2026 10:38:30 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[DeepMind]]></category>
+		<category><![CDATA[Google]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540604</guid>
+
+					<description><![CDATA[As part of its on-going push into artificial intelligence, Google is investing around $75m in movie studio A24. The teaming up means that the movie studio will have access to Google’s DeepMind AI, and there are already AI-based projects underway. Interestingly, the terms of the deal are such that A24 is not limited to using only Google’s tools – the studio is free to turn to other company’s AI powers as well. The deal is also a little restricted for Google. The company is not being given access to A24’s existing film and television library or its content data. The&#8230; <a href="https://betanews.com/article/google-invests-75m-in-movie-studio-a24/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/google-invests-75m-in-movie-studio-a24/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Google brings financial advertiser verification to the whole of Europe</title>
+		<link>https://betanews.com/article/google-brings-financial-advertiser-verification-to-the-whole-of-europe/</link>
+					<comments>https://betanews.com/article/google-brings-financial-advertiser-verification-to-the-whole-of-europe/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Tue, 23 Jun 2026 10:25:36 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Advertising]]></category>
+		<category><![CDATA[Gemini]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[safety]]></category>
+		<category><![CDATA[Security]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540601</guid>
+
+					<description><![CDATA[In a bid to stop people from falling victim to scams, Google has announced that it is expanding its financial advertiser verification program across Europe. The move means that every member state in the European Union and European Economic Area will benefit from the verification program. Google says that the idea is to help stop scams from taking off before they even start to take hold. The program requires any advertiser that wants to run financial ads to be verified by Google. If this process is not completed within the necessary timeframe, Google will restrict a company’s ads, ultimately blocking&#8230; <a href="https://betanews.com/article/google-brings-financial-advertiser-verification-to-the-whole-of-europe/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/google-brings-financial-advertiser-verification-to-the-whole-of-europe/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Instagram for TV is coming to more users and is experimenting with longer-form content</title>
+		<link>https://betanews.com/article/instagram-for-tv-is-coming-to-more-users-and-is-experimenting-with-longer-form-content/</link>
+					<comments>https://betanews.com/article/instagram-for-tv-is-coming-to-more-users-and-is-experimenting-with-longer-form-content/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Mon, 22 Jun 2026 18:44:46 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Instagram]]></category>
+		<category><![CDATA[Instagram for TV]]></category>
+		<category><![CDATA[Meta]]></category>
+		<category><![CDATA[Social]]></category>
+		<category><![CDATA[Social Media]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540597</guid>
+
+					<description><![CDATA[Meta has announced plans for its Instagram for TV app that will see the platform spreading to Samsung TVs, adding to the existing user base with other devices. But this is far from being all that Meta has planned. The company is also introducing channels to help to improve the overall viewing experience, as well as adding support for horizontal video. On top of this there are plans to experiment with not only longer-form content, but also with episodic series on the platform. Meta says that it is working with creators to find the best ways to deliver the planned&#8230; <a href="https://betanews.com/article/instagram-for-tv-is-coming-to-more-users-and-is-experimenting-with-longer-form-content/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/instagram-for-tv-is-coming-to-more-users-and-is-experimenting-with-longer-form-content/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Crypto Clipper uses USB drives and Tor to steal wallet data</title>
+		<link>https://betanews.com/article/crypto-clipper-usb-tor-wallet-malware/</link>
+					<comments>https://betanews.com/article/crypto-clipper-usb-tor-wallet-malware/#respond</comments>
+		
+		<dc:creator><![CDATA[Camila Nogueira]]></dc:creator>
+		<pubDate>Mon, 22 Jun 2026 15:12:37 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540593</guid>
+
+					<description><![CDATA[Microsoft Threat Intelligence and Microsoft Defender Experts have identified a Windows cryptocurrency clipper campaign that has affected users since February 2026. The malware targets clipboard data, wallet credentials and cryptocurrency addresses through Windows Script Host and ActiveX-driven logic. Microsoft said the campaign begins with malicious .lnk shortcut files distributed through USB storage devices. When a user opens one of the shortcuts, the file stages a worm component that checks whether the device is already infected and, if not, retrieves the payload through Tor. The malware scans the USB device for common document files such as .doc, .xlsx and .pdf, hides&#8230; <a href="https://betanews.com/article/crypto-clipper-usb-tor-wallet-malware/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/crypto-clipper-usb-tor-wallet-malware/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>YouTube has a new interface for its mobile app</title>
+		<link>https://betanews.com/article/youtube-has-a-new-interface-for-its-mobile-app/</link>
+					<comments>https://betanews.com/article/youtube-has-a-new-interface-for-its-mobile-app/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Mon, 22 Jun 2026 08:24:12 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[ad-free YouTube]]></category>
+		<category><![CDATA[creators]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Social]]></category>
+		<category><![CDATA[Social Media]]></category>
+		<category><![CDATA[YouTube]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540586</guid>
+
+					<description><![CDATA[YouTube has unveiled an updated and streamlined version of its mobile interface. It is part of a move that not only changes the look of things but also makes adjustments to the user experience in a way that should help with engagement. More information about engagement with a video is now shown as well, which is something that is helpful for both viewers and creators alike. As part of the redesign, YouTube is now making greater use of the three-dot overflow menu. By moving options such as saving, downloading and reporting video into the overflow menu, YouTube has freed up&#8230; <a href="https://betanews.com/article/youtube-has-a-new-interface-for-its-mobile-app/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/youtube-has-a-new-interface-for-its-mobile-app/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<media:content url="https://www.youtube.com/embed/CYzVSApM7tM" medium="video" width="405" height="720">
+			<media:player url="https://www.youtube.com/embed/CYzVSApM7tM" />
+			<media:title type="plain">New! Updated YouTube Viewing Experience</media:title>
+			<media:description type="html"><![CDATA[YouTube is updating the video player on the mobile watch page to provide a cleaner, less cluttered viewing experience for everyone✨ Like, Dislike, Share, and...]]></media:description>
+			<media:thumbnail url="https://media.betanews.com/uploads/2026/06/new-updated-youtube-viewing-expe.jpg" />
+			<media:rating scheme="urn:simple">nonadult</media:rating>
+		</media:content>
+	</item>
+		<item>
+		<title>WhatsApp is making it easier to see who is online</title>
+		<link>https://betanews.com/article/whatsapp-is-making-it-easier-to-see-who-is-online/</link>
+					<comments>https://betanews.com/article/whatsapp-is-making-it-easier-to-see-who-is-online/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Sun, 21 Jun 2026 16:12:44 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Meta]]></category>
+		<category><![CDATA[Social]]></category>
+		<category><![CDATA[Social Media]]></category>
+		<category><![CDATA[WhatsApp]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540580</guid>
+
+					<description><![CDATA[WhatsApp is making changing to the Android version of its mobile app that will finally bring it in line with just about every other messaging and communication platforms out there. Meta has just given Android users who are signed up for the WhatsApp beta program a new indicator that makes it easier to see at a glance which contacts are online. Borrowing a scheme that will be familiar to just about everyone, WhatsApp now shows a green dot next to online contacts. While this is most definitely a welcome addition, it is difficult not to wonder just how it took&#8230; <a href="https://betanews.com/article/whatsapp-is-making-it-easier-to-see-who-is-online/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/whatsapp-is-making-it-easier-to-see-who-is-online/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Google details its plans for its Android developer verification program</title>
+		<link>https://betanews.com/article/google-details-its-plans-for-its-android-developer-verification-program/</link>
+					<comments>https://betanews.com/article/google-details-its-plans-for-its-android-developer-verification-program/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Sun, 21 Jun 2026 15:09:57 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[Developer]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Google Play]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540577</guid>
+
+					<description><![CDATA[Google’s Android developer verification program is not exactly new – it was introduced last year, in fact – but now the company is starting to put things into effect. The program sees developers being verified for security and trustworthiness so users can confidently download apps either from the Google Play Store or from a third-party store. Starting at the end of September, the company is making steps in putting these protections in place. Writing about the program on the Android Developers Blog, Google says: “Last year, we introduced Android developer verification to strengthen ecosystem security and stop malicious actors from&#8230; <a href="https://betanews.com/article/google-details-its-plans-for-its-android-developer-verification-program/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/google-details-its-plans-for-its-android-developer-verification-program/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Midjourney jumps from AI images to full-body medical scanning hardware</title>
+		<link>https://betanews.com/article/midjourney-60-second-body-scanner/</link>
+					<comments>https://betanews.com/article/midjourney-60-second-body-scanner/#respond</comments>
+		
+		<dc:creator><![CDATA[Camila Nogueira]]></dc:creator>
+		<pubDate>Sat, 20 Jun 2026 13:10:42 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540572</guid>
+
+					<description><![CDATA[Midjourney, the AI lab best known for AI image generation, has announced an unexpected health care project: an underwater, full-body ultrasound scanner designed to map a person’s body in 60 seconds and connect the scan to a spa visit. Midjourney introduced the project in a Wednesday blog post titled “A New Era of Midjourney,” writing, “Today we're gonna announce something a little weird and a little crazy, but also spectacular and filled with hope.” The project is called Midjourney Medical, and the first hardware product is The Midjourney Scanner. Midjourney CEO David Holz showed the product and plans for a&#8230; <a href="https://betanews.com/article/midjourney-60-second-body-scanner/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/midjourney-60-second-body-scanner/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Android Switch makes it easy to switch from iOS to Android</title>
+		<link>https://betanews.com/article/android-switch-makes-it-easy-to-switch-from-ios-to-android/</link>
+					<comments>https://betanews.com/article/android-switch-makes-it-easy-to-switch-from-ios-to-android/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Sat, 20 Jun 2026 10:08:21 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[Android Switch]]></category>
+		<category><![CDATA[Apple]]></category>
+		<category><![CDATA[iOS]]></category>
+		<category><![CDATA[switch from iOS to Android]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540570</guid>
+
+					<description><![CDATA[Switching operating systems has always been a bit of a complicated process, regardless of whether you are talking about desktop or mobile platforms. Addressing the latter, the eagerly anticipated Android Switch makes it easy to switch from iOS to Android. The tool is the fruit of a rare collaboration between Apple and Google, and now it is available to coincide with the launch of Android 17. We have known about plans for this handy utility for a while, but the official launch has made the dream a reality. Writing on Threads, Paul Dunlop – the Product Lead for Android Onboarding&#8230; <a href="https://betanews.com/article/android-switch-makes-it-easy-to-switch-from-ios-to-android/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/android-switch-makes-it-easy-to-switch-from-ios-to-android/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Tim Cook says price rises are on the way for Apple customers</title>
+		<link>https://betanews.com/article/tim-cook-says-price-rises-are-on-the-way-for-apple-customers/</link>
+					<comments>https://betanews.com/article/tim-cook-says-price-rises-are-on-the-way-for-apple-customers/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Sat, 20 Jun 2026 09:51:14 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Apple]]></category>
+		<category><![CDATA[iPad]]></category>
+		<category><![CDATA[Mac]]></category>
+		<category><![CDATA[Tim Cook]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540568</guid>
+
+					<description><![CDATA[The rising price of memory cannot not have escaped the attention of anyone who is in anyway involved in the world of technology. And, proving that no one is immune from the impact of these increases in costs, Tim Cook has said that Apple products will become more expensive. While Cook has not given an indication of quite when Apple customers can expect to start paying more for their iPhone, iPads and Macs, he has said to the Wall Street Journal that price hikes are “unavoidable”. The Apple CEO points directly to the price of memory in an interview with&#8230; <a href="https://betanews.com/article/tim-cook-says-price-rises-are-on-the-way-for-apple-customers/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/tim-cook-says-price-rises-are-on-the-way-for-apple-customers/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Instagram finally lets you give carousel images individual captions</title>
+		<link>https://betanews.com/article/instagram-finally-lets-you-give-carousel-images-individual-captions/</link>
+					<comments>https://betanews.com/article/instagram-finally-lets-you-give-carousel-images-individual-captions/#respond</comments>
+		
+		<dc:creator><![CDATA[Sofia Elizabella Wyciślik-Wilson]]></dc:creator>
+		<pubDate>Sat, 20 Jun 2026 09:15:36 +0000</pubDate>
+				<category><![CDATA[Article]]></category>
+		<category><![CDATA[Instagram]]></category>
+		<category><![CDATA[Meta]]></category>
+		<category><![CDATA[Social]]></category>
+		<category><![CDATA[Social Media]]></category>
+		<guid isPermaLink="false">https://betanews.com/?p=540565</guid>
+
+					<description><![CDATA[Meta has announced a new option for Instagram which users have been practically begging for – the ability to use multiple captions on a carousel. As things stand at the moment, when you upload several images to Instagram to create a carousel, they must all share a single caption. While this can sometimes make sense, it is not always the case – and this is why the change is being seen as so important. The good news is that a simple toggle is all it takes to switch between a single caption for multiple images, or individual captions. This helps&#8230; <a href="https://betanews.com/article/instagram-finally-lets-you-give-carousel-images-individual-captions/" rel="nofollow">[Continue Reading]</a>]]></description>
+		
+					<wfw:commentRss>https://betanews.com/article/instagram-finally-lets-you-give-carousel-images-individual-captions/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

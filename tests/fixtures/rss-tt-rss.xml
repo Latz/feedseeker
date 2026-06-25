@@ -1,0 +1,1139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:discourse="http://www.discourse.org/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Zoom Developer Forum - Latest topics</title>
+    <link>https://devforum.zoom.us/latest</link>
+    <description>Latest topics</description>
+    
+      <lastBuildDate>Thu, 25 Jun 2026 21:51:55 +0000</lastBuildDate>
+      <atom:link href="https://devforum.zoom.us/latest.rss" rel="self" type="application/rss+xml" />
+        <item>
+          <title>C++ SDK error: wss_data_t::handle_audio_data, get user_name failed</title>
+          <dc:creator><![CDATA[MinhCm]]></dc:creator>
+          <category>Realtime Media Streams</category>
+          <description><![CDATA[
+            <p>Hello,<br>
+iam building a small POC application to with C++ SDK<br>
+The app has everything look correct until it supposes to get the audio, then instead of receiving audio, I see a lot of  “wss_data_t::handle_audio_data, get user_name failed” in the log till the end of the call<br>
+Please advise</p>
+<p>06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    wss_signal_t::send_stream_ack: {<br>
+“msg_type” : 7,<br>
+“rtms_stream_id” : “f4e2374d-a707-4fa0-b353-26ba74b165bd”<br>
+}<br>
+, this = 0x0000000001540310<br>
+06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    rtms_sdk_impl::on_session_start, reason: 0, this = 0x000000000153e7e0<br>
+06/25/2026 21:21:41:570 UTIL    [1474267:1474267:140395328833536]       INFO    timer_it::remove_timer(), times = 1, m_carrier = 0x000000000154bad0, m_id = 0, m_interval_ticks = 1000, this = 0x000000000153e880<br>
+06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    signal resp: {“msg_type”:8,“rtms_stream_id”:“f4e2374d-a707-4fa0-b353-26ba74b165bd”,“state”:1,“timestamp”:1782422501570}, this = 0x0000000001540310<br>
+06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    wss_session_t::on_stream_active, this = 0x00000000015403f0<br>
+06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    signal resp: {“msg_type”:9,“rtms_session_id”:“2C4BDB0B-229C-C975-2BEF-78F300777385”,“state”:2,“timestamp”:1782422501570}, this = 0x0000000001540310<br>
+06/25/2026 21:21:41:570 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    wss_session_t::on_session_create, SESSION_ADD, this = 0x00000000015403f0<br>
+06/25/2026 21:21:41:622 ZSSGW_SDK       [1474267:1474267:140395328833536]       INFO    signal resp: {“event”:{“event_type”:1,“media_type”:1,“timestamp”:1782422473062},“msg_type”:6}, this = 0x0000000001540310<br>
+06/25/2026 21:21:41:622 ZSSGW_SDK       [1474267:1474267:140395328833536]       ERROR   wss_data_t::handle_audio_data, get user_name failed, ret: 2, this = 0x000000000158b350<br>
+06/25/2026 21:21:41:683 ZSSGW_SDK       [1474267:1474267:140395328833536]       ERROR   wss_data_t::handle_audio_data, get user_name failed, ret: 2, this = 0x000000000158b350<br>
+06/25/2026 21:21:41:683 ZSSGW_SDK       [1474267:1474267:140395328833536]       ERROR   wss_data_t::handle_audio_data, get user_name failed, ret: 2, this = 0x000000000158b350<br>
+06/25/2026 21:21:41:683 ZSSGW_SDK       [1474267:1474267:140395328833536]       ERROR   wss_data_t::handle_audio_data, get user_name failed, ret: 2, this = 0x000000000158b350</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/c-sdk-error-wss-data-t-handle-audio-data-get-user-name-failed/144454">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/c-sdk-error-wss-data-t-handle-audio-data-get-user-name-failed/144454</link>
+          <pubDate>Thu, 25 Jun 2026 21:51:55 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144454</guid>
+          <source url="https://devforum.zoom.us/t/c-sdk-error-wss-data-t-handle-audio-data-get-user-name-failed/144454.rss">C++ SDK error: wss_data_t::handle_audio_data, get user_name failed</source>
+        </item>
+        <item>
+          <title>What will the error code be for Zoom SDK Key/Secret Deprecation?</title>
+          <dc:creator><![CDATA[Jer]]></dc:creator>
+          <category>Web</category>
+          <description><![CDATA[
+            <p>I recently saw this article talking about the Zoom SDK Key migration:</p><aside class="onebox allowlistedgeneric" data-onebox-src="https://developers.zoom.us/docs/meeting-sdk/sdk-key-migration/">
+  <header class="source">
+      <img src="https://developers.zoom.us/svgs/favicon.svg" class="site-icon" alt="" width="32" height="32">
+
+      <a href="https://developers.zoom.us/docs/meeting-sdk/sdk-key-migration/" target="_blank" rel="noopener nofollow ugc">Zoom</a>
+  </header>
+
+  <article class="onebox-body">
+    <div class="aspect-image" style="--aspect-ratio:690/388;"><img src="https://us1.discourse-cdn.com/flex016/uploads/zoomdeveloper/optimized/3X/d/6/d625ea10f1a55fe4658693f569b48b519e382569_2_690x388.png" class="thumbnail" alt="" data-dominant-color="080D43" width="690" height="388"></div>
+
+<h3><a href="https://developers.zoom.us/docs/meeting-sdk/sdk-key-migration/" target="_blank" rel="noopener nofollow ugc">SDK Key migration - Meeting SDK - Zoom Developer Docs</a></h3>
+
+  <p>How to update credentials for your Meeting SDK app.</p>
+
+
+  </article>
+
+  <div class="onebox-metadata">
+    
+    
+  </div>
+
+  <div style="clear: both"></div>
+</aside>
+
+<p>I want to make sure that my app can sufficiently handle these error cases. What will the error code be for these apps using the old SDK key?</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/what-will-the-error-code-be-for-zoom-sdk-key-secret-deprecation/144452">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/what-will-the-error-code-be-for-zoom-sdk-key-secret-deprecation/144452</link>
+          <pubDate>Thu, 25 Jun 2026 21:27:48 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144452</guid>
+          <source url="https://devforum.zoom.us/t/what-will-the-error-code-be-for-zoom-sdk-key-secret-deprecation/144452.rss">What will the error code be for Zoom SDK Key/Secret Deprecation?</source>
+        </item>
+        <item>
+          <title>Manual domain verification request - Eden Workplace App</title>
+          <dc:creator><![CDATA[Romina ]]></dc:creator>
+          <category>App Marketplace</category>
+          <description><![CDATA[
+            <p>Hi Zoom Team,</p>
+<p>I’m requesting manual domain verification for my Zoom OAuth app.</p>
+<p>App Name: Eden Workplace<br>
+Client ID: wwR5G8FvQECNOWTFco7pOg</p>
+<p>Domains to verify:</p>
+<p><code>eden.io</code> - I added the zoom-domain-verification value to TXT but the validation keeps failing.</p>
+<p>I’ve attempted other verification methos but the url <code>eden.io</code> redirects to edenworkplace which is already verified.</p>
+<p>Please assist with manual verification. Thank you!</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-eden-workplace-app/144450">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-eden-workplace-app/144450</link>
+          <pubDate>Thu, 25 Jun 2026 18:25:44 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144450</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-eden-workplace-app/144450.rss">Manual domain verification request - Eden Workplace App</source>
+        </item>
+        <item>
+          <title>Manual domain verification request for withampersand.com</title>
+          <dc:creator><![CDATA[Dustin]]></dc:creator>
+          <category>App Marketplace</category>
+          <description><![CDATA[
+            <p>Hey Zoom team!</p>
+<p>I’m looking to manually verify a domain (withampersand(.)com for application id d_uuMdpERhSv4GTccyMZLw), which is a 3rd-party integrations provider that we use for our callback urls.</p>
+<p>Would love help with this so we can move forward! Thank you so much!</p>
+<p>Dustin</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-for-withampersand-com/144447">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-for-withampersand-com/144447</link>
+          <pubDate>Thu, 25 Jun 2026 15:55:41 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144447</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-for-withampersand-com/144447.rss">Manual domain verification request for withampersand.com</source>
+        </item>
+        <item>
+          <title>Does Zoom Video SDK support VDI media optimization</title>
+          <dc:creator><![CDATA[Zoom]]></dc:creator>
+          <category>Video SDK</category>
+          <description><![CDATA[
+            <p>I see that Zoom provides VDI optimization for Zoom Workplace applications running in VDI environments, as described in Zoom article.</p>
+<p>Does Zoom Video SDK also support VDI media optimization for custom applications built using the Video SDK and deployed within VDI environments (e.g., Citrix, VMware Horizon, Azure Virtual Desktop)?</p>
+<p>Specifically, is there support for media offloading/optimization similar to the Zoom VDI Plugin used by Zoom Workplace, or do Video SDK applications run as standard WebRTC applications within the virtual desktop session?</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/does-zoom-video-sdk-support-vdi-media-optimization/144439">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/does-zoom-video-sdk-support-vdi-media-optimization/144439</link>
+          <pubDate>Thu, 25 Jun 2026 06:01:24 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144439</guid>
+          <source url="https://devforum.zoom.us/t/does-zoom-video-sdk-support-vdi-media-optimization/144439.rss">Does Zoom Video SDK support VDI media optimization</source>
+        </item>
+        <item>
+          <title>Galaxy Z 3 Fold_Camera_ STRETCH</title>
+          <dc:creator><![CDATA[Kelly]]></dc:creator>
+          <category>Zoom Apps</category>
+          <description><![CDATA[
+            <h3><a name="p-330005-preview-camera-screen-is-stretch-in-chat-room-1" class="anchor" href="https://devforum.zoom.us#p-330005-preview-camera-screen-is-stretch-in-chat-room-1" aria-label="Heading link"></a>Preview camera screen is stretch in chat room</h3>
+<p>Device: Galaxy Z 3 Fold</p>
+<p>Steps:</p>
+<ol>
+<li>Run Zoom app</li>
+<li>Log in</li>
+<li>Select Chat</li>
+<li>Select a room chat</li>
+<li>Select + icon</li>
+<li>Select Camera icon</li>
+<li>Observe: preview image is stretch</li>
+</ol>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/galaxy-z-3-fold-camera-stretch/144437">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/galaxy-z-3-fold-camera-stretch/144437</link>
+          <pubDate>Thu, 25 Jun 2026 03:26:09 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144437</guid>
+          <source url="https://devforum.zoom.us/t/galaxy-z-3-fold-camera-stretch/144437.rss">Galaxy Z 3 Fold_Camera_ STRETCH</source>
+        </item>
+        <item>
+          <title>Duplicate participant appears when joining with slow network and OPERATION_CANCELLED / RECONNECTING_MEETING is returned</title>
+          <dc:creator><![CDATA[Dung]]></dc:creator>
+          <category>Video SDK</category>
+          <description><![CDATA[
+            <hr>
+<h2><a name="p-330003-video-sdk-type-and-version-1" class="anchor" href="https://devforum.zoom.us#p-330003-video-sdk-type-and-version-1" aria-label="Heading link"></a><strong>Video SDK Type and Version</strong></h2>
+<p><strong>Web Video SDK</strong><br>
+Version: <strong>2.2.12</strong></p>
+<h2><a name="p-330003-description-2" class="anchor" href="https://devforum.zoom.us#p-330003-description-2" aria-label="Heading link"></a><strong>Description</strong></h2>
+<p>We are encountering an issue when a user joins a session under a slow or unstable network condition.</p>
+<p>In some cases, the joining client receives the following error message:</p>
+<p>JSON</p>
+<pre><code class="lang-auto">{"type":"OPERATION_CANCELLED","reason":"RECONNECTING_MEETING","errorCode":3}
+
+</code></pre>
+<p>However, other participants in the session can already see that user as having joined. After the reconnect process completes, the same user appears again, resulting in <strong>two participant entries for the same user</strong>.</p>
+<p>We would like to understand whether this is expected behavior, a known limitation, or a potential issue in the Web Video SDK reconnect flow.</p>
+<h2><a name="p-330003-error-3" class="anchor" href="https://devforum.zoom.us#p-330003-error-3" aria-label="Heading link"></a><strong>Error?</strong></h2>
+<p>JSON</p>
+<pre><code class="lang-auto">{"type":"OPERATION_CANCELLED","reason":"RECONNECTING_MEETING","errorCode":3}
+
+</code></pre>
+<h2><a name="p-330003-troubleshooting-routes-4" class="anchor" href="https://devforum.zoom.us#p-330003-troubleshooting-routes-4" aria-label="Heading link"></a><strong>Troubleshooting Routes</strong></h2>
+<ul>
+<li>We observed this issue when the joining user is on a slow or unstable network.</li>
+<li>The joining client receives <code>OPERATION_CANCELLED</code> with reason <code>RECONNECTING_MEETING</code>.</li>
+<li>At the same time, other participants may already see that user in the session.</li>
+<li>The same user may appear again as a duplicate participant in the participant list.</li>
+</ul>
+<h2><a name="p-330003-how-to-reproduce-5" class="anchor" href="https://devforum.zoom.us#p-330003-how-to-reproduce-5" aria-label="Heading link"></a><strong>How To Reproduce</strong></h2>
+<ol>
+<li>
+<p>Use the <strong>Web Video SDK</strong> join flow:</p>
+<p>js</p>
+<pre><code class="lang-auto">await state.zmClient.join(meetingId, token, userName, passcode);
+
+</code></pre>
+</li>
+<li>
+<p>App type / authentication method: <strong>Web Video SDK application using SDK token</strong></p>
+</li>
+<li>
+<p>Simulate a slow or unstable network condition for the joining user.</p>
+</li>
+<li>
+<p>Attempt to join the session.</p>
+</li>
+<li>
+<p>In some cases, the joining client receives:</p>
+<p>JSON</p>
+<pre><code class="lang-auto">{"type":"OPERATION_CANCELLED","reason":"RECONNECTING_MEETING","errorCode":3}
+
+</code></pre>
+</li>
+<li>
+<p>On other participants’ side, the same user may appear twice in the participant list.</p>
+</li>
+<li>
+<p>Environment:</p>
+<ul>
+<li>Browsers: Chrome, Safari</li>
+<li>Mostly observed on mobile devices</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>Session ID: ObJPZNd4Rb+r3vy3BRstYw==</li>
+</ul>
+<h2><a name="p-330003-questions-6" class="anchor" href="https://devforum.zoom.us#p-330003-questions-6" aria-label="Heading link"></a><strong>Questions</strong></h2>
+<ol>
+<li>Is this expected behavior when the SDK enters reconnect flow during join?</li>
+<li>Why can other participants see the same user twice?</li>
+<li>Is there a recommended way to prevent duplicate participants in this scenario?</li>
+</ol>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/duplicate-participant-appears-when-joining-with-slow-network-and-operation-cancelled-reconnecting-meeting-is-returned/144436">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/duplicate-participant-appears-when-joining-with-slow-network-and-operation-cancelled-reconnecting-meeting-is-returned/144436</link>
+          <pubDate>Thu, 25 Jun 2026 02:45:10 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144436</guid>
+          <source url="https://devforum.zoom.us/t/duplicate-participant-appears-when-joining-with-slow-network-and-operation-cancelled-reconnecting-meeting-is-returned/144436.rss">Duplicate participant appears when joining with slow network and OPERATION_CANCELLED / RECONNECTING_MEETING is returned</source>
+        </item>
+        <item>
+          <title>Title: Video Management API: Channel permissions return internal hashed user_id that throws 404 on /users endpoint</title>
+          <dc:creator><![CDATA[Joel]]></dc:creator>
+          <category>API and Webhooks</category>
+          <description><![CDATA[
+            <p>Hello,</p>
+<p>I am building an integration using Server-to-Server OAuth to sync users to Video Management channels. I’ve run into an “Identity Gap” issue when trying to verify existing channel owners and members.</p>
+<p>It is worth noting that this integration was working perfectly up until recently. It seems the API behavior may have suddenly changed, causing this new error</p>
+<p><strong>The Issue:</strong> When I call <code>GET /v2/video_management/channels/{channelId}/permissions</code>, the API returns an internal, hashed string for the <code>user_id</code> instead of a standard Zoom User ID .  Furthermore, the <code>email</code> field is frequently missing for the channel owner.</p>
+<p><strong>Example Response:</strong></p>
+<p>JSON</p>
+<pre><code class="lang-auto">{
+    "permissions": [
+        {
+            "user_id": "47377d0ae07741aabcda498b1059c561",
+            "display_name": "John Doe",
+            "role": "OWNER"
+        }
+    ]
+}
+
+</code></pre>
+<p>Because the email is missing, I need to look up this user to map them to my local database. However, if I pass this hash into the standard users endpoint (<code>GET /v2/users/47377d0ae07741aabcda498b1059c561</code>), Zoom returns a 404:</p>
+<p>JSON</p>
+<pre><code class="lang-auto">{"code":1001,"message":"User does not exist: 47377d0ae07741aabcda498b1059c561."}
+
+</code></pre>
+<p><strong>Current Workaround:</strong> Right now, I am forced to fall back to matching users by <code>display_name</code>, which is fragile and prone to breaking if users change their names or duplicate usernames.</p>
+<p><strong>My Questions:</strong></p>
+<ol>
+<li>
+<p>Is there an API endpoint or method to translate this Video Management hashed <code>user_id</code> back into a standard Zoom User ID or retrieve the associated email address or something similar?</p>
+</li>
+<li>
+<p>If not, is there a roadmap to include the <code>email</code> field consistently for all roles (including OWNER) in the permissions response?</p>
+</li>
+</ol>
+<p>Thank you for your time!</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/title-video-management-api-channel-permissions-return-internal-hashed-user-id-that-throws-404-on-users-endpoint/144423">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/title-video-management-api-channel-permissions-return-internal-hashed-user-id-that-throws-404-on-users-endpoint/144423</link>
+          <pubDate>Wed, 24 Jun 2026 20:27:09 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144423</guid>
+          <source url="https://devforum.zoom.us/t/title-video-management-api-channel-permissions-return-internal-hashed-user-id-that-throws-404-on-users-endpoint/144423.rss">Title: Video Management API: Channel permissions return internal hashed user_id that throws 404 on /users endpoint</source>
+        </item>
+        <item>
+          <title>All participants&#39; connections went Closed (no reason) simultaneously mid-session</title>
+          <dc:creator><![CDATA[Webteam]]></dc:creator>
+          <category>Video SDK</category>
+          <description><![CDATA[
+            <p>SDK: Zoom Video SDK for Web, <a class="mention" href="https://devforum.zoom.us/u/zoom">@zoom</a>/videosdk 2.4.2<br>
+Date/time: 2026-06-24 (UTC)<br>
+Session topic (tpc): 302baf7c-83e0-4d82-8119-7a81289c8973</p>
+<hr>
+<p>It ran as TWO back-to-back session instances:<br>
+0jpu+6uvS76sd9W04TF1jQ==</p>
+<p>MzCfDfhTWGm5EAmBDv0Fg==</p>
+<p>In the first session, 4 of the 6 participants’ connections transitioned to ConnectionState.Closed within an 8-second window with no reason (the payload.reason was undefined — NOT ‘ended by host’, NOT ‘kicked by host’). Is it possible to see what caused this on your side?</p>
+<p>The remaining clients then re-joined the same topic ~<code>01:11Z</code>, creating session B.</p>
+<p>QoS was good right up to the drop (from the Reports /users/qos endpoint, per-minute, all 6 users): zero audio_socket_break / video_socket_break, 0.0% packet loss on every audio/video leg, latency 0–90ms, all on data center United States (SJC) over UDP, no CPU pressure. No degradation preceded the simultaneous close.</p>
+<p>Our client behavior: init uses leaveOnPageUnload: true; the app only ever calls client.leave() (we never call client.leave(true)), so we never explicitly end the session. Every participant’s JWT is minted with role_type: 1.</p>
+<p>Questions:</p>
+<ol>
+<li>What is the per-participant leave_reason (from the session.user_left webhook) for session ID 0jpu+6uvS76sd9W04TF1jQ== at 01:06:5xZ?</li>
+<li>With zero socket breaks / 0% loss, what would cause all clients to receive Closed (reason undefined) simultaneously and the session to terminate, when no client called leave(true)?</li>
+<li>Could leaveOnPageUnload: true + multiple role_type: 1 (host) participants closing/refreshing in the same window cause a server-side session reset? Is the “session ends when the original host leaves” behavior in play here?</li>
+</ol>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/all-participants-connections-went-closed-no-reason-simultaneously-mid-session/144422">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/all-participants-connections-went-closed-no-reason-simultaneously-mid-session/144422</link>
+          <pubDate>Wed, 24 Jun 2026 19:14:33 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144422</guid>
+          <source url="https://devforum.zoom.us/t/all-participants-connections-went-closed-no-reason-simultaneously-mid-session/144422.rss">All participants&#39; connections went Closed (no reason) simultaneously mid-session</source>
+        </item>
+        <item>
+          <title>App Submission - Internal Publishing Authorization URL Expiry</title>
+          <dc:creator><![CDATA[Kaleb]]></dc:creator>
+          <category>App Submission</category>
+          <description><![CDATA[
+            <p>Hello there,</p>
+<p>I’m looking for some insight into the private app publishing; I’ve been writing an internal-only app for our Zoom environment to integrate with intranet services, and have ran into some issues with the publishing flow.</p>
+<p>The “Authorization URL FAQ” guide suggests the “Beta”/“Unpublished” authorization URL expires with limited extensions, however, a “Published” app does not. I would like clarification on if we can trust the “Users within my account” published state as it stands for my app to not expire for our users.</p>
+<p>Under the marketplace when editing the app, it shows a green “Published” in the bottom left next to “Publish your app”, and under the “Visibility” section, it shows “Users within my account - Live”. However, it still has the “Beta” tag on the right side on both the unlisted marketplace entry when clicking “View My App Details” on the panel in the top right, and the “Beta” tag in the banner of the header inside the Zoom Workplace client when opening my app.</p>
+<p>I’ve read through all the publishing documentation, along with several articles on here to try and determine what the “Beta” tag means in relation to the authorization URL and its expiry; it seems like it may not be truly published internally for us. It’s also not cached, I have used several browsers and new Workplace clients to no avail. Any information would be appreciated, thank you!</p>
+            <p><small>4 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/app-submission-internal-publishing-authorization-url-expiry/144419">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/app-submission-internal-publishing-authorization-url-expiry/144419</link>
+          <pubDate>Wed, 24 Jun 2026 15:23:57 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144419</guid>
+          <source url="https://devforum.zoom.us/t/app-submission-internal-publishing-authorization-url-expiry/144419.rss">App Submission - Internal Publishing Authorization URL Expiry</source>
+        </item>
+        <item>
+          <title>User-managed app receiving no webhook events — endpoint appears disabled, no validation requests sent</title>
+          <dc:creator><![CDATA[Julian]]></dc:creator>
+          <category>API and Webhooks</category>
+          <description><![CDATA[
+            <p>Our General (user-managed) app has stopped receiving ALL webhook events, and I can’t restore delivery from the developer console.</p>
+<p><strong>App</strong></p>
+<ul>
+<li>Type: General app, User-managed (user-level OAuth)</li>
+<li>
+<ul>
+<li>Environment: Development</li>
+<li>
+<ul>
+<li>App ID: NBy2s_dfQIu0OH6P6UcAtw</li>
+<li>
+<ul>
+<li>Endpoint URL: <a href="https://nohra.ai/api/integrations/zoom/webhook" rel="noopener nofollow ugc">https://nohra.ai/api/integrations/zoom/webhook</a></li>
+<li>
+<ul>
+<li>Subscribed events: meeting.ended, recording.completed</li>
+</ul>
+</li>
+<li><strong>Problem</strong></li>
+<li>Deliveries worked before (we received meeting.ended POSTs). During that period our endpoint returned 401s due to a Secret Token mismatch on our side, which is now FIXED — the endpoint responds correctly to a manual endpoint.url_validation CRC (returns the correct encryptedToken).</li>
+</ul>
+</li>
+<li>Since then our endpoint receives ZERO traffic from Zoom — no meeting.ended, no recording.completed, and no endpoint.url_validation requests at all — even though meetings are cloud-recorded and fully processed (Zoom’s own “meeting assets are ready” emails arrive).</li>
+</ul>
+</li>
+<li><strong>Already tried (no effect)</strong></li>
+<li>
+<ul>
+<li>Re-saved the Event Subscription</li>
+<li>
+<ul>
+<li>Deleted and re-created the Event Subscription from scratch</li>
+<li>
+<ul>
+<li>Changed the endpoint URL to force re-validation</li>
+<li>
+<ul>
+<li>Confirmed the endpoint is publicly reachable and returns a valid CRC to a manual POST</li>
+</ul>
+</li>
+<li>In every case, no validation request is sent to our endpoint and no events are delivered.</li>
+</ul>
+</li>
+<li><strong>Ask</strong></li>
+<li>It appears our event notification endpoint was disabled/deactivated after the earlier failures, and the console isn’t re-triggering validation. How can we re-enable / force re-validation of the endpoint? Happy to share our Client ID and account email privately and run a live test at a scheduled time. Thanks!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/user-managed-app-receiving-no-webhook-events-endpoint-appears-disabled-no-validation-requests-sent/144414">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/user-managed-app-receiving-no-webhook-events-endpoint-appears-disabled-no-validation-requests-sent/144414</link>
+          <pubDate>Wed, 24 Jun 2026 08:31:51 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144414</guid>
+          <source url="https://devforum.zoom.us/t/user-managed-app-receiving-no-webhook-events-endpoint-appears-disabled-no-validation-requests-sent/144414.rss">User-managed app receiving no webhook events — endpoint appears disabled, no validation requests sent</source>
+        </item>
+        <item>
+          <title>Manual domain verification request — vercel.app and nango.dev (Conigma OAuth app)</title>
+          <dc:creator><![CDATA[Conigma]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>Hi Zoom Marketplace team,</p>
+<p>We’re submitting our user-managed OAuth app (Conigma) for review and need manual<br>
+domain verification for two domains we can’t self-verify, because both are<br>
+third-party-hosted and we don’t control their DNS.</p>
+<p>App name: Conigma<br>
+Client ID: IHantslQRj2BgiASbjPm6A</p>
+<ol>
+<li>vercel.app<br>
+Our Privacy Policy, Terms, Support, and Documentation pages are hosted on our<br>
+Vercel subdomain:</li>
+</ol>
+<ul>
+<li><a href="https://conigma.vercel.app/privacy" class="inline-onebox" rel="noopener nofollow ugc">Privacy Policy — Conigma</a></li>
+<li><a href="https://conigma.vercel.app/terms-conditions" class="inline-onebox" rel="noopener nofollow ugc">Terms and Conditions — Conigma</a></li>
+<li><a href="https://conigma.vercel.app/support" class="inline-onebox" rel="noopener nofollow ugc">Support — Conigma</a></li>
+<li><a href="https://conigma.vercel.app/docs/zoom" class="inline-onebox" rel="noopener nofollow ugc">Conigma — GTM &amp; CRM Automation</a><br>
+The submission flow reads the registrable domain as vercel.app, which is Vercel’s<br>
+shared platform domain. We control only our conigma.vercel.app subdomain, so we<br>
+cannot add a DNS TXT record or a root-level file to vercel.app. Could you manually<br>
+verify this domain for us?</li>
+</ul>
+<ol start="2">
+<li>nango.dev<br>
+Our OAuth Redirect URL runs through our integration provider, Nango (Nango Cloud):</li>
+</ol>
+<ul>
+<li><a href="https://api.nango.dev/oauth/callback" rel="noopener nofollow ugc">https://api.nango.dev/oauth/callback</a><br>
+api.nango.dev is Nango’s domain, not one we control, so we can’t do DNS or file<br>
+verification there either. Could you manually verify this domain for us?</li>
+</ul>
+<p>Happy to provide any additional detail over DM. Thank you.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-vercel-app-and-nango-dev-conigma-oauth-app/144412">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-vercel-app-and-nango-dev-conigma-oauth-app/144412</link>
+          <pubDate>Wed, 24 Jun 2026 08:31:22 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144412</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-vercel-app-and-nango-dev-conigma-oauth-app/144412.rss">Manual domain verification request — vercel.app and nango.dev (Conigma OAuth app)</source>
+        </item>
+        <item>
+          <title>Contact Center APIs do not provide modified_date / insert_date for incremental synchronization</title>
+          <dc:creator><![CDATA[Paulo]]></dc:creator>
+          <category>Contact Center</category>
+          <description><![CDATA[
+            <p><strong>Issue: Contact Center APIs do not provide modified_date / insert_date for incremental synchronization</strong></p>
+<p>Hello Zoom Developer Community,</p>
+<p>I am facing a data consistency issue when consuming Zoom Contact Center APIs and would like to understand the recommended approach for handling late-arriving or updated records.</p>
+<p>Currently, the endpoints I use do not expose fields such as <code>modified_date</code>, <code>updated_at</code>, <code>created_at</code>, or <code>insert_date</code>. Because of this limitation, my incremental load strategy is based on the <code>start_time</code> field.</p>
+<p>My current process is:</p>
+<ol>
+<li>
+<p>Retrieve the latest <code>start_time</code> stored in my database.</p>
+</li>
+<li>
+<p>Subtract 2 hours from that timestamp as a safety window.</p>
+</li>
+<li>
+<p>Use the adjusted timestamp as the API <code>from</code> parameter.</p>
+</li>
+<li>
+<p>Use the current timestamp as the API <code>to</code> parameter.</p>
+</li>
+<li>
+<p>All requests are made without specifying a timezone, so everything is handled in UTC.</p>
+</li>
+</ol>
+<p>However, I have noticed that when I reprocess historical periods, records that were previously loaded are returned with updated values, causing my database records to be updated. This suggests that the data available through the Zoom API can change after the original event occurred.</p>
+<p>The challenge is that, without a field indicating when a record was created or last modified, it is impossible to reliably identify which records have changed since the last synchronization. Using <code>start_time</code> alone does not capture updates made to older records.</p>
+<p>My questions are:</p>
+<ul>
+<li>
+<p>Is there any recommended strategy for incremental synchronization of Contact Center data?</p>
+</li>
+<li>
+<p>Are there plans to expose fields such as <code>modified_date</code>, <code>updated_at</code>, or similar metadata in Contact Center reporting endpoints?</p>
+</li>
+<li>
+<p>Is there another endpoint or mechanism that allows consumers to identify records that were updated after their original <code>start_time</code>?</p>
+</li>
+</ul>
+<p>Any guidance would be greatly appreciated, as this limitation makes it difficult to guarantee data consistency in downstream analytics and data warehouse environments.</p>
+<p>Thank you.</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/contact-center-apis-do-not-provide-modified-date-insert-date-for-incremental-synchronization/144410">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/contact-center-apis-do-not-provide-modified-date-insert-date-for-incremental-synchronization/144410</link>
+          <pubDate>Wed, 24 Jun 2026 08:26:13 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144410</guid>
+          <source url="https://devforum.zoom.us/t/contact-center-apis-do-not-provide-modified-date-insert-date-for-incremental-synchronization/144410.rss">Contact Center APIs do not provide modified_date / insert_date for incremental synchronization</source>
+        </item>
+        <item>
+          <title>Manual domain verification request for workers.dev subdomain</title>
+          <dc:creator><![CDATA[Hikaru]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>Hello Zoom Marketplace Team,</p>
+<p>I would like to request manual domain verification for my Zoom Marketplace app.</p>
+<p>App name:<br>
+Nougyou Jieitai Zoom Bot</p>
+<p>App type:<br>
+User-managed app</p>
+<p>Submission type:<br>
+Unlisted app</p>
+<p>Domain shown in the Zoom Marketplace domain verification screen:<br>
+workers.dev</p>
+<p>Actual app review domain / subdomain used by the app:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/" rel="noopener nofollow ugc">https://zoom-review-proxy.h-sato-yh.workers.dev</a></p>
+<p>Reason manual approval is needed:<br>
+The Zoom Marketplace domain verification flow is requesting verification for the parent domain workers.dev. However, workers.dev is a Cloudflare-managed parent domain. We do not control the parent workers.dev DNS zone or the web root at <a href="https://workers.dev/" rel="noopener nofollow ugc">https://workers.dev/</a>.</p>
+<p>We control the exact Cloudflare Workers subdomain used by this app:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/" rel="noopener nofollow ugc">https://zoom-review-proxy.h-sato-yh.workers.dev</a></p>
+<p>This subdomain serves the app’s required public pages and OAuth callback endpoint over HTTPS, including:</p>
+<ul>
+<li>
+<p>Privacy Policy:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/privacy" class="inline-onebox" rel="noopener nofollow ugc">Privacy Policy - Nougyou Jieitai Zoom Bot</a></p>
+</li>
+<li>
+<p>Terms of Use:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/terms" class="inline-onebox" rel="noopener nofollow ugc">Terms of Use - Nougyou Jieitai Zoom Bot</a></p>
+</li>
+<li>
+<p>Support:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/support" class="inline-onebox" rel="noopener nofollow ugc">Support - Nougyou Jieitai Zoom Bot</a></p>
+</li>
+<li>
+<p>Documentation:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/docs" class="inline-onebox" rel="noopener nofollow ugc">Documentation - Nougyou Jieitai Zoom Bot</a></p>
+</li>
+<li>
+<p>Onboarding / Direct Landing URL:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/zoom/onboarding" class="inline-onebox" rel="noopener nofollow ugc">Nougyou Jieitai Zoom Bot - Onboarding</a></p>
+</li>
+<li>
+<p>OAuth Redirect / Callback URL:<br>
+<a href="https://zoom-review-proxy.h-sato-yh.workers.dev/zoom/callback" rel="noopener nofollow ugc">https://zoom-review-proxy.h-sato-yh.workers.dev/zoom/callback</a></p>
+</li>
+</ul>
+<p>Because we cannot add a TXT record or upload an HTML verification file to the parent domain workers.dev, please manually verify the app’s exact Cloudflare Workers subdomain.</p>
+<p>Additional context:<br>
+This app is submitted as an Unlisted app and is not intended for public Marketplace discovery. It is used only by authorized members of the Yamato Group Discord server. The app HTML verification file to the parent domain workers.dev, please manually verify the app’s exact Cloudflare Workers subdomain.</p>
+<p>Additional context:<br>
+This app is submitted as an Unlisted app and is not intended for uses a visible Zoom Meeting SDK bot, and recording starts only after Zoom in-meeting recording permission is granted.</p>
+<p>A security evidence PDF has been uploaded in the Technical Design &gt; Additional Documents section of the app submission.</p>
+<p>Thank you.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-for-workers-dev-subdomain/144408">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-for-workers-dev-subdomain/144408</link>
+          <pubDate>Wed, 24 Jun 2026 08:26:08 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144408</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-for-workers-dev-subdomain/144408.rss">Manual domain verification request for workers.dev subdomain</source>
+        </item>
+        <item>
+          <title>Manual domain verification request for vercel.app</title>
+          <dc:creator><![CDATA[Thiago]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>Hello Zoom Developer Support Team,</p>
+<p>We are requesting manual domain verification approval for the domain ‘vercel.app’ associated with our Zoom App (Client ID: Oz3rduHLTOOrpOmmOZD0xw).</p>
+<p>Our application is hosted on Vercel under the subdomain ‘timer-justica.vercel.app’. Since ‘vercel.app’ is a public shared hosting domain, we do not own the root domain and cannot add DNS records or HTML files to the root of vercel.app.</p>
+<p>However, we have successfully uploaded the verification HTML file to our subdomain, and it is publicly accessible and responding with the correct verification token at:</p>
+<p><a href="https://timer-justica.vercel.app/ZOOM_verify_1e2df27a1d7b4fb69a2e5636dbf9cf04.html" class="onebox" target="_blank" rel="noopener nofollow ugc">https://timer-justica.vercel.app/ZOOM_verify_1e2df27a1d7b4fb69a2e5636dbf9cf04.html</a></p>
+<p>Could you please approve the domain verification manually for us?</p>
+<p>Thank you!</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-for-vercel-app/144406">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-for-vercel-app/144406</link>
+          <pubDate>Wed, 24 Jun 2026 08:26:04 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144406</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-for-vercel-app/144406.rss">Manual domain verification request for vercel.app</source>
+        </item>
+        <item>
+          <title>Manual domain verification request — app hosted on Render.com and GitHub Pages</title>
+          <dc:creator><![CDATA[Siddharth]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>Hi Zoom Marketplace team,</p>
+<p>I’m submitting a Zoom App called “Meeting Proxy” and need manual domain<br>
+verification for two managed hosting platforms:</p>
+<ol>
+<li>
+<p><a href="http://onrender.com" rel="noopener nofollow ugc">onrender.com</a> — my app backend is hosted at<br>
+<a href="http://meeting-proxy-agent.onrender.com" rel="noopener nofollow ugc">meeting-proxy-agent.onrender.com</a> (<a href="http://Render.com" rel="noopener nofollow ugc">Render.com</a> managed cloud hosting)</p>
+</li>
+<li>
+<p><a href="http://github.com" rel="noopener nofollow ugc">github.com</a> — my documentation is hosted at<br>
+<a href="http://sidrt16.github.io/ai-autonomous-agents" class="inline-onebox" rel="noopener nofollow ugc">Meeting Proxy | ai-autonomous-agents</a> via GitHub Pages</p>
+</li>
+</ol>
+<p>I don’t have DNS control over the root domains as these are third-party<br>
+managed platforms. I can verify ownership of my specific subdomains via<br>
+meta tag or file upload if subdomain-level verification is supported.</p>
+<p>App name: Meeting Proxy<br>
+App ID: 2txYwjTuQCS0FwLizKa3fQ<br>
+Developer email: <a href="mailto:sidrt16@gmail.com">sidrt16@gmail.com</a></p>
+<p>Please advise on the best path forward.</p>
+<p>Thank you</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-render-com-and-github-pages/144404">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-render-com-and-github-pages/144404</link>
+          <pubDate>Wed, 24 Jun 2026 08:26:01 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144404</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-render-com-and-github-pages/144404.rss">Manual domain verification request — app hosted on Render.com and GitHub Pages</source>
+        </item>
+        <item>
+          <title>Custom RTMP Livestream (layout=follow_host) Does Not Reflect Meeting SDK Component View Layout Changes</title>
+          <dc:creator><![CDATA[Staging]]></dc:creator>
+          <category>Web</category>
+          <description><![CDATA[
+            <p>Hello Zoom Team,</p>
+<p>We are experiencing an issue with Custom Livestreaming and would appreciate clarification on the expected behavior.</p>
+<h3><a name="p-329941-environment-1" class="anchor" href="https://devforum.zoom.us#p-329941-environment-1" aria-label="Heading link"></a>Environment</h3>
+<ul>
+<li>
+<p>Zoom Meeting SDK (Web) - Component View</p>
+</li>
+<li>
+<p>Custom RTMP Livestream to Amazon IVS</p>
+</li>
+<li>
+<p>Livestream started programmatically via Zoom API</p>
+</li>
+<li>
+<p>Livestream layout configured as <code>follow_host</code></p>
+</li>
+</ul>
+<h3><a name="p-329941-issue-description-2" class="anchor" href="https://devforum.zoom.us#p-329941-issue-description-2" aria-label="Heading link"></a>Issue Description</h3>
+<p>We expect the livestream output to reflect the layout selected by the host. However, regardless of the layout selected by the host, the RTMP stream sent to IVS always appears to remain in Active Speaker View.</p>
+<h3><a name="p-329941-what-we-have-observed-3" class="anchor" href="https://devforum.zoom.us#p-329941-what-we-have-observed-3" aria-label="Heading link"></a>What We Have Observed</h3>
+<ol>
+<li>
+<p>The host joins the meeting and changes layouts (e.g., Gallery View, Speaker View).</p>
+</li>
+<li>
+<p>The layout changes are reflected correctly within the meeting experience.</p>
+</li>
+<li>
+<p>The livestream is configured with <code>layout=follow_host</code>.</p>
+</li>
+<li>
+<p>Despite this, the RTMP output received by IVS remains in Active Speaker View and does not appear to follow the host’s selected layout.</p>
+</li>
+</ol>
+<h3><a name="p-329941-troubleshooting-performed-4" class="anchor" href="https://devforum.zoom.us#p-329941-troubleshooting-performed-4" aria-label="Heading link"></a>Troubleshooting Performed</h3>
+<ul>
+<li>
+<p>Verified that the livestream is configured with <code>layout=follow_host</code>.</p>
+</li>
+<li>
+<p>Attempted programmatic layout changes.</p>
+</li>
+<li>
+<p>Confirmed that the meeting UI reflects the requested layout changes.</p>
+</li>
+<li>
+<p>Observed that the RTMP output remains unchanged and continues to behave like Active Speaker View.</p>
+</li>
+</ul>
+<h3><a name="p-329941-questions-5" class="anchor" href="https://devforum.zoom.us#p-329941-questions-5" aria-label="Heading link"></a>Questions</h3>
+<ol>
+<li>
+<p>Is <code>layout=follow_host</code> expected to work when the meeting is being hosted/joined through Meeting SDK Component View?</p>
+</li>
+<li>
+<p>Does the RTMP livestream compositor follow layouts from Component View, or only from native Zoom clients (Desktop/Web/Mobile)?</p>
+</li>
+<li>
+<p>Are there any known limitations or requirements when starting a custom livestream via API that would cause the stream to remain in Active Speaker View?</p>
+</li>
+<li>
+<p>Is there a supported way to force Gallery View in the RTMP livestream output when using Meeting SDK Component View?</p>
+</li>
+</ol>
+<p>Any clarification on the expected behavior would be greatly appreciated.</p>
+<p>Thank you.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/custom-rtmp-livestream-layout-follow-host-does-not-reflect-meeting-sdk-component-view-layout-changes/144402">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/custom-rtmp-livestream-layout-follow-host-does-not-reflect-meeting-sdk-component-view-layout-changes/144402</link>
+          <pubDate>Wed, 24 Jun 2026 08:11:48 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144402</guid>
+          <source url="https://devforum.zoom.us/t/custom-rtmp-livestream-layout-follow-host-does-not-reflect-meeting-sdk-component-view-layout-changes/144402.rss">Custom RTMP Livestream (layout=follow_host) Does Not Reflect Meeting SDK Component View Layout Changes</source>
+        </item>
+        <item>
+          <title>Manual Domain Verification Request — App hosted on ais-ticket.vercel.app</title>
+          <dc:creator><![CDATA[Hallen]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>Hi Marketplace team,</p>
+<p>I’m requesting manual domain verification for my app AIS Ticket.</p>
+<p>The situation: My app is deployed on Vercel at <a href="https://ais-ticket.vercel.app" rel="noopener nofollow ugc">https://ais-ticket.vercel.app</a>. The domain verification flow detected vercel.app as the base domain, which I cannot verify since it belongs to Vercel, not to me. I am unable to add a custom domain due to company policy restrictions.</p>
+<p>What I’ve already done:</p>
+<ul>
+<li>Added the Zoom domain verification meta tag to the app’s :</li>
+<li>The tag is live and visible at <a href="https://ais-ticket.vercel.app" rel="noopener nofollow ugc">https://ais-ticket.vercel.app</a></li>
+</ul>
+<p>App details:</p>
+<ul>
+<li>App name: AIS Ticket</li>
+<li>Redirect URI: <a href="https://ais-ticket.vercel.app/api/zoom/callback" class="inline-onebox" rel="noopener nofollow ugc">AIS Ticket - Angia</a></li>
+<li>Scopes: meeting:write, user:read</li>
+<li>Use case: Internal tool for a small development team to create Zoom meetings from calendar events</li>
+</ul>
+<p>Could you please guide me through the manual verification steps?</p>
+<p>Thank you.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-ais-ticket-vercel-app/144400">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-ais-ticket-vercel-app/144400</link>
+          <pubDate>Wed, 24 Jun 2026 08:11:39 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144400</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-app-hosted-on-ais-ticket-vercel-app/144400.rss">Manual Domain Verification Request — App hosted on ais-ticket.vercel.app</source>
+        </item>
+        <item>
+          <title>Is it expected that Zoom MCP Server only returns meetings attended by the authenticated user?</title>
+          <dc:creator><![CDATA[joycal]]></dc:creator>
+          <category>Zoom Apps</category>
+          <description><![CDATA[
+            <h3><a name="p-329937-we-are-currently-using-claude-to-test-the-zoom-mcp-server-1" class="anchor" href="https://devforum.zoom.us#p-329937-we-are-currently-using-claude-to-test-the-zoom-mcp-server-1" aria-label="Heading link"></a>We are currently using Claude to test the Zoom MCP server.</h3>
+<p>While Zoom allows access to recordings other than my own, Claude only returns meetings attended by authenticated users.</p>
+<p>Is this the intended behavior of the Zoom MCP server?</p>
+<p>Since the MCP server does not require administrator scope, is it only exposing meetings attended by authenticated users?</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/is-it-expected-that-zoom-mcp-server-only-returns-meetings-attended-by-the-authenticated-user/144398">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/is-it-expected-that-zoom-mcp-server-only-returns-meetings-attended-by-the-authenticated-user/144398</link>
+          <pubDate>Wed, 24 Jun 2026 08:11:33 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144398</guid>
+          <source url="https://devforum.zoom.us/t/is-it-expected-that-zoom-mcp-server-only-returns-meetings-attended-by-the-authenticated-user/144398.rss">Is it expected that Zoom MCP Server only returns meetings attended by the authenticated user?</source>
+        </item>
+        <item>
+          <title>Redirect URL for OAuth, App already launched</title>
+          <dc:creator><![CDATA[Jay]]></dc:creator>
+          <category>Zoom Apps</category>
+          <description><![CDATA[
+            <p>Hi Guys,</p>
+<p>I have a Zoom app that is working in our staging environment at the moment.</p>
+<p>I need to  change the Redirect URL for OAuth within App Settings, but I cant see where I set it? I’ve searched the forum and others seem to have the field in ‘App Credentials’ but I dont?</p>
+<p>I tried deactivating the app and refreshing, but no field appeared to enter the redirect url.. not sure what I’m doing wrong?</p>
+<p>Any ideas?</p>
+<p>Appreciate any advise.</p>
+<p>Thanks!</p>
+            <p><small>3 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/redirect-url-for-oauth-app-already-launched/144396">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/redirect-url-for-oauth-app-already-launched/144396</link>
+          <pubDate>Wed, 24 Jun 2026 08:00:47 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144396</guid>
+          <source url="https://devforum.zoom.us/t/redirect-url-for-oauth-app-already-launched/144396.rss">Redirect URL for OAuth, App already launched</source>
+        </item>
+        <item>
+          <title>RTMS returning 400 inspite being enable from zoom side to my acct</title>
+          <dc:creator><![CDATA[akash9]]></dc:creator>
+          <category>Video SDK</category>
+          <description><![CDATA[
+            <p>We are testing Zoom RTMS for live meeting audio streaming.</p>
+<p>We verified the following:</p>
+<p>S2S token works successfully.<br>
+GET /v2/meetings/97099264422 returns 200.<br>
+Meeting host is <a href="mailto:academy@ajantapharma.com">academy@ajantapharma.com</a>.<br>
+Meeting host_id, academy user_id, and participant_user_id all match:<br>
+Y3rXWt4hRsGF-70xawvrUg</p>
+<p>We also tested our webhook by sending a fake meeting.rtms_started event, and it correctly saved the RTMS payload.</p>
+<p>But when we call the official RTMS start API:</p>
+<p>PATCH /v2/live_meetings/97099264422/rtms_app/status</p>
+<p>Payload:<br>
+{<br>
+“action”: “start”,<br>
+“settings”: {<br>
+“client_id”: “aZH6ibw6TpWVmGqphtvOpw”<br>
+}<br>
+}</p>
+<p>We get:</p>
+<p>400<br>
+{“code”:2310,“message”:“Failed to perform RTMS app operation.”}</p>
+<p>We also tested:<br>
+client_id + protocol=webhook<br>
+client_id + participant_user_id<br>
+client_id + participant_user_id + protocol=webhook</p>
+<p>All return the same 2310 error.</p>
+<p>No real meeting.rtms_started webhook is received.</p>
+<p>Can you please confirm why RTMS start is being rejected for this app/account/meeting, and whether RTMS is fully enabled/provisioned for this Zoom account and app?</p>
+            <p><small>4 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/rtms-returning-400-inspite-being-enable-from-zoom-side-to-my-acct/144394">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/rtms-returning-400-inspite-being-enable-from-zoom-side-to-my-acct/144394</link>
+          <pubDate>Wed, 24 Jun 2026 05:03:13 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144394</guid>
+          <source url="https://devforum.zoom.us/t/rtms-returning-400-inspite-being-enable-from-zoom-side-to-my-acct/144394.rss">RTMS returning 400 inspite being enable from zoom side to my acct</source>
+        </item>
+        <item>
+          <title>Request domain validation of cloudflare.com</title>
+          <dc:creator><![CDATA[CASB]]></dc:creator>
+          <category>App Marketplace</category>
+          <description><![CDATA[
+            <h3><a name="p-329927-h-1" class="anchor" href="https://devforum.zoom.us#p-329927-h-1" aria-label="Heading link"></a></h3>
+<p><strong>Description</strong><br>
+Hello, we are requesting domain verification of  cloudflare .com to publish to the app marketplace following the marketplace post  guidelines for app 1hA-qAvkRHq9jYg97t2h3A</p>
+<p>Thank you!</p>
+<hr>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/request-domain-validation-of-cloudflare-com/144393">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/request-domain-validation-of-cloudflare-com/144393</link>
+          <pubDate>Wed, 24 Jun 2026 04:59:08 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144393</guid>
+          <source url="https://devforum.zoom.us/t/request-domain-validation-of-cloudflare-com/144393.rss">Request domain validation of cloudflare.com</source>
+        </item>
+        <item>
+          <title>Zoom marketplace に登録するアプリの「OAuth リダイレクト URL 」へ「localhost」が設定できない</title>
+          <dc:creator><![CDATA[藤澤]]></dc:creator>
+          <category>App Marketplace</category>
+          <description><![CDATA[
+            <p>開発しているアプリケーションと、Zoomのアカウントを連携させる機能を開発したい。</p>
+<p>zoom marketplaceにてアプリの構築をしているのですが、</p>
+<p>「基本情報」画面にて、「OAuth リダイレクト URL」 の項目に「localhost:7000」の様な値を入れると</p>
+<p>無効なリダイレクト：localhost:7000/zoom/callback (4,700) というエラーになります。</p>
+<p>本番ではなく、開発として構築しているのですが、localhost は登録不可なのでしょうか？</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/zoom-marketplace-oauth-url-localhost/144392">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/zoom-marketplace-oauth-url-localhost/144392</link>
+          <pubDate>Wed, 24 Jun 2026 02:18:16 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144392</guid>
+          <source url="https://devforum.zoom.us/t/zoom-marketplace-oauth-url-localhost/144392.rss">Zoom marketplace に登録するアプリの「OAuth リダイレクト URL 」へ「localhost」が設定できない</source>
+        </item>
+        <item>
+          <title>QSS API Dashboard event category missing from all app types despite active Developer Pack subscription</title>
+          <dc:creator><![CDATA[amgregory]]></dc:creator>
+          <category>API and Webhooks</category>
+          <description><![CDATA[
+            <p><strong>API Endpoint(s) and/or Zoom API Event(s)</strong></p>
+<p><code>GET /metrics/meetings/{meetingId}/participants/qos_summary</code><br>
+Zoom API Event: <code>meeting.participant_qos_summary</code></p>
+<hr>
+<p><strong>Description</strong></p>
+<p>The QSS API Dashboard event category does not appear in the Event Types menu in our Zoom Marketplace apps, despite having an active Developer Pack subscription that explicitly includes QSS. We have tested this across three app configurations — Server-to-Server OAuth (Account-level), User-managed General App, and Admin-managed General App — and the QSS category is absent in all three. Standard event categories (Meeting, Webinar, Zoom Rooms, User, Account, Zoom Phone, etc.) are present. Searching “q” in the Event Types dialog returns only Workspace, Quality Management, and Video Management — no QSS or QoS options.</p>
+<p>Both the Admin-managed General App and the S2S OAuth app have the following scopes fully configured:</p>
+<p><em>Accounts:</em></p>
+<ul>
+<li><code>dashboard:read:meeting_participant_qos:admin</code></li>
+<li><code>dashboard:read:webinar_participant_qos:admin</code></li>
+<li><code>dashboard:read:list_meeting_participants_qos:admin</code></li>
+<li><code>dashboard:read:list_webinar_participants_qos:admin</code></li>
+</ul>
+<p><em>Dashboard:</em></p>
+<ul>
+<li><code>qss:read:meeting_participant_data:admin</code></li>
+<li><code>qss:read:meeting_participant_qos:admin</code></li>
+<li><code>qss:read:webinar_participant_data:admin</code></li>
+<li><code>qss:read:webinar_participant_qos:admin</code></li>
+</ul>
+<p>Despite all QSS and dashboard scopes being present, the QSS API Dashboard event category still does not appear in the Event Types menu. The scopes exist; the event subscription cannot be created because the category is not visible.</p>
+<p>We have an active Zoom Workplace Business plan, active Developer Pack subscription, a validated webhook endpoint URL, and Event Subscriptions enabled. We have opened support ticket TS2366454 and contacted our SB Account Manager. Sales suggested a Premier Developer Support plan, but this is not a development support issue — it appears to be a backend provisioning issue preventing the QSS event category from appearing in our developer environment.</p>
+<hr>
+<p><strong>Error</strong><br>
+HTTP 400 | Error Code 200: “Event subscription not found. Subscribe to the Meeting Participant QoS Summary event in your Marketplace app to get access to this API.”</p>
+<hr>
+<p><strong>How To Reproduce</strong></p>
+<ol>
+<li>Request URL: <code>GET https://api.zoom.us/v2/metrics/meetings/{meetingId}/participants/qos_summary</code><br>
+Headers: Authorization via Server-to-Server OAuth (no credentials or sensitive info included)<br>
+Scopes on app: <code>dashboard:read:meeting_participant_qos:admin</code>, <code>qss:read:meeting_participant_qos:admin</code></li>
+<li>Authentication method / App type: tested on S2S OAuth (Account-level), User-managed General App, and Admin-managed General App — all with QSS and dashboard scopes added</li>
+<li>Error: HTTP 400, Error Code 200 — “Event subscription not found” — because <code>meeting.participant_qos_summary</code> cannot be subscribed to; the QSS API Dashboard category does not appear in the Event Types menu for any app type tested</li>
+</ol>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/qss-api-dashboard-event-category-missing-from-all-app-types-despite-active-developer-pack-subscription/144391">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/qss-api-dashboard-event-category-missing-from-all-app-types-despite-active-developer-pack-subscription/144391</link>
+          <pubDate>Tue, 23 Jun 2026 23:34:30 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144391</guid>
+          <source url="https://devforum.zoom.us/t/qss-api-dashboard-event-category-missing-from-all-app-types-despite-active-developer-pack-subscription/144391.rss">QSS API Dashboard event category missing from all app types despite active Developer Pack subscription</source>
+        </item>
+        <item>
+          <title>Manual domain verification request on webhook url on Zoom General App</title>
+          <dc:creator><![CDATA[Splash]]></dc:creator>
+          <category>App Marketplace</category>
+          <description><![CDATA[
+            <p>Hi Zoom Developer Support team,</p>
+<p>We need manual domain verification for the webhook endpoint used by our Zoom OAuth app, Splash Webinars.</p>
+<p>We recently updated the webhook URL as part of a corporate-mandated AWS migration, and this is now blocking our production migration. The endpoint is hosted on an AWS API Gateway hostname. While we control the webhook endpoint itself, we do not control the parent domain for that hostname, so we cannot complete verification through other methods.</p>
+<p>Please manually approve this webhook domain for use in our app so we can complete the migration.</p>
+<p>If helpful, I can provide the exact webhook URL, and other necessary details via dm.</p>
+<p>Thanks.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-verification-request-on-webhook-url-on-zoom-general-app/144386">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-verification-request-on-webhook-url-on-zoom-general-app/144386</link>
+          <pubDate>Tue, 23 Jun 2026 19:36:53 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144386</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-verification-request-on-webhook-url-on-zoom-general-app/144386.rss">Manual domain verification request on webhook url on Zoom General App</source>
+        </item>
+        <item>
+          <title>Sample code to update user&#39;s workpalce license?</title>
+          <dc:creator><![CDATA[wibbleman]]></dc:creator>
+          <category>API and Webhooks</category>
+          <description><![CDATA[
+            <p>We used to use Entra ID SCIM provisioning to manage user’s license based on group.</p>
+<p>Since Zoom is transitioning to ‘workplace license’, so the role-based license(Basic, licensed..) won’t work anymore. I need to implement some code to call Zoom API(/user/put/scim2/Users/{userId}) to update user’s license.</p>
+<p>Does anybody know Zoom has sample code how to update user’s license?</p>
+<p>For example, user licenses like:</p>
+<p><em>“Zoom One for Education Enterprise Student: 76460752303423488”</em></p>
+<p>Thank you!</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/sample-code-to-update-users-workpalce-license/144384">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/sample-code-to-update-users-workpalce-license/144384</link>
+          <pubDate>Tue, 23 Jun 2026 18:44:07 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144384</guid>
+          <source url="https://devforum.zoom.us/t/sample-code-to-update-users-workpalce-license/144384.rss">Sample code to update user&#39;s workpalce license?</source>
+        </item>
+        <item>
+          <title>Server-to-Server OAuth app webhooks stopped triggering and delivering events to our validated URL</title>
+          <dc:creator><![CDATA[Yariv]]></dc:creator>
+          <category>Webinars</category>
+          <description><![CDATA[
+            <h3><a name="p-329904-topic-title-summary-1" class="anchor" href="https://devforum.zoom.us#p-329904-topic-title-summary-1" aria-label="Heading link"></a><strong>Topic Title / Summary</strong></h3>
+<p>Server-to-Server OAuth app (“Webinar Manager”) stopped triggering and delivering webhook events to validated URL</p>
+<h3><a name="p-329904-api-endpoints-andor-zoom-api-events-2" class="anchor" href="https://devforum.zoom.us#p-329904-api-endpoints-andor-zoom-api-events-2" aria-label="Heading link"></a><strong>API Endpoint(s) and/or Zoom API Event(s)</strong></h3>
+<ul>
+<li>
+<p><code>webinar.created</code></p>
+</li>
+<li>
+<p><code>webinar.updated</code></p>
+</li>
+<li>
+<p>(Other previously active webhook events)</p>
+</li>
+</ul>
+<h3><a name="p-329904-description-3" class="anchor" href="https://devforum.zoom.us#p-329904-description-3" aria-label="Heading link"></a><strong>Description</strong></h3>
+<p>We have a live, account-level Server-to-Server OAuth app named <strong>Webinar Manager</strong>. This integration was working perfectly in the past, but it has suddenly stopped delivering webhook events.</p>
+<p>The webhook URL successfully passes validation, but we are receiving absolutely zero inbound HTTP requests on our server logs when an event occurs. We have checked the Zoom Web Portal under <em>Advanced &gt; App Marketplace &gt; Manage &gt; Apps on account &gt; Webinar Manager &gt; Call logs</em>, and there are no call logs or event triggers appearing there on our end.</p>
+<p>We have already attempted the following troubleshooting steps with no success:</p>
+<ul>
+<li>
+<p>Verified the app is fully <strong>Activated/Live</strong> and running on the correct testing account.</p>
+</li>
+<li>
+<p>Toggled event subscriptions off and on, added new test events (<code>webinar.created</code>, <code>webinar.updated</code>), and re-saved the configuration.</p>
+</li>
+<li>
+<p>Deactivated and reactivated the app entirely.</p>
+</li>
+</ul>
+<h3><a name="p-329904-error-4" class="anchor" href="https://devforum.zoom.us#p-329904-error-4" aria-label="Heading link"></a><strong>Error?</strong></h3>
+<p>There are no explicit error messages. The webhooks are completely silent—they are not generating dashboard logs and are not attempting delivery to our server.</p>
+<h3><a name="p-329904-how-to-reproduce-5" class="anchor" href="https://devforum.zoom.us#p-329904-how-to-reproduce-5" aria-label="Heading link"></a><strong>How To Reproduce</strong></h3>
+<ol>
+<li>
+<p><strong>Action/Trigger:</strong> Create or update a webinar within the Zoom account where the “Webinar Manager” app is authorized.</p>
+</li>
+<li>
+<p><strong>Authentication Method / App Type:</strong> Server-to-Server OAuth (Account-level).</p>
+</li>
+<li>
+<p><strong>Observed Behavior:</strong> * Navigate to the Zoom Web Portal → <em>Advanced &gt; App Marketplace &gt; Manage &gt; Apps on account &gt; Webinar Manager &gt; Call logs</em>. Notice that no logs are generated for the event.</p>
+<ul>
+<li>Check destination server logs. Notice that no inbound HTTP POST requests from Zoom are received.</li>
+</ul>
+</li>
+</ol>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/server-to-server-oauth-app-webhooks-stopped-triggering-and-delivering-events-to-our-validated-url/144383">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/server-to-server-oauth-app-webhooks-stopped-triggering-and-delivering-events-to-our-validated-url/144383</link>
+          <pubDate>Tue, 23 Jun 2026 17:09:20 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144383</guid>
+          <source url="https://devforum.zoom.us/t/server-to-server-oauth-app-webhooks-stopped-triggering-and-delivering-events-to-our-validated-url/144383.rss">Server-to-Server OAuth app webhooks stopped triggering and delivering events to our validated URL</source>
+        </item>
+        <item>
+          <title>Bad Request on domain verification</title>
+          <dc:creator><![CDATA[Gil]]></dc:creator>
+          <category>Zoom Apps</category>
+          <description><![CDATA[
+            <p>When trying to submit our new zoom application, every time we are clicking verify for the domain and then chose a method, we are getting “Bad Request” error dialog.</p>
+<p>Would love your assistant to solve this / manually verify our domain.</p>
+            <p><small>1 post - 1 participant</small></p>
+            <p><a href="https://devforum.zoom.us/t/bad-request-on-domain-verification/144380">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/bad-request-on-domain-verification/144380</link>
+          <pubDate>Tue, 23 Jun 2026 12:06:28 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144380</guid>
+          <source url="https://devforum.zoom.us/t/bad-request-on-domain-verification/144380.rss">Bad Request on domain verification</source>
+        </item>
+        <item>
+          <title>Enable RTMS for App ID 3p7OvtwHQhaAdMpc8LXaag</title>
+          <dc:creator><![CDATA[Jeff]]></dc:creator>
+          <category>Meetings</category>
+          <description><![CDATA[
+            <pre><code class="lang-auto">API Endpoint(s) and/or Zoom API Event(s)
+PATCH /v2/live_meetings/{meetingId}/rtms_app/status
+Events: meeting.rtms_started, meeting.rtms_stopped, meeting.started, meeting.ended
+
+Description
+Requesting RTMS enablement for our app.
+
+- Client ID: 3p7OvtwHQhaAdMpc8LXaag
+- App name: Arlo RTMS (General App, user-managed, Development mode)
+- Developer Pack: Active (20 credits, 0 used)
+- Scopes: meeting:read:meeting_audio, meeting:read:meeting_transcript, rtms:read:rtms_started, rtms:read:rtms_stopped, meeting:update:participant_rtms_app_status, zoomapp:inmeeting
+- Account settings: "Share realtime meeting content with apps" = ON, auto-start configured for this app
+
+Error?
+400 / code 2310: "Failed to perform RTMS app operation"
+App does not appear in the in-meeting "Apps that access meeting content" list despite auto-start being ON. Zero webhooks received. Otter.ai works fine in the same meetings.
+
+How To Reproduce
+1. PATCH https://api.zoom.us/v2/live_meetings/{meetingId}/rtms_app/status
+   Body: {"action": "start", "settings": {"client_id": "3p7OvtwHQhaAdMpc8LXaag"}}
+2. Authentication: OAuth client_credentials (General App)
+3. Response: 400 {"code": 2310, "message": "Failed to perform RTMS app operation."}
+</code></pre>
+            <p><small>5 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/enable-rtms-for-app-id-3p7ovtwhqhaadmpc8lxaag/144375">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/enable-rtms-for-app-id-3p7ovtwhqhaadmpc8lxaag/144375</link>
+          <pubDate>Tue, 23 Jun 2026 08:11:47 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144375</guid>
+          <source url="https://devforum.zoom.us/t/enable-rtms-for-app-id-3p7ovtwhqhaadmpc8lxaag/144375.rss">Enable RTMS for App ID 3p7OvtwHQhaAdMpc8LXaag</source>
+        </item>
+        <item>
+          <title>Manual Domain Validation Request - ngrok</title>
+          <dc:creator><![CDATA[Testpress]]></dc:creator>
+          <category>Domain Validation</category>
+          <description><![CDATA[
+            <p>I need manual domain validation. My app “Testpress Live Learning Suite” is already publish and to test out the production environment in local I need domain validation for ngrok-free.app. This will help our internal team to test production zoom app locally. My url <a href="https://egret-solid-gazelle.ngrok-free.app/" rel="noopener nofollow ugc">https://egret-solid-gazelle.ngrok-free.app/</a></p>
+<p>The domain registered in the Marketplace is ngrok-free.app, which is ngrok’s infrastructure domain. I do not control the root DNS of ngrok-free.app - Ngrok (the tunneling platform), so automated HTML file verification and TXT record methods both fail as ngrok has a verification page which is blocking both the HTML file verification and TXT record methods.</p>
+            <p><small>2 posts - 2 participants</small></p>
+            <p><a href="https://devforum.zoom.us/t/manual-domain-validation-request-ngrok/144372">Read full topic</a></p>
+          ]]></description>
+          <link>https://devforum.zoom.us/t/manual-domain-validation-request-ngrok/144372</link>
+          <pubDate>Tue, 23 Jun 2026 06:38:23 +0000</pubDate>
+          <discourse:topicPinned>No</discourse:topicPinned>
+          <discourse:topicClosed>No</discourse:topicClosed>
+          <discourse:topicArchived>No</discourse:topicArchived>
+          <guid isPermaLink="false">devforum.zoom.us-topic-144372</guid>
+          <source url="https://devforum.zoom.us/t/manual-domain-validation-request-ngrok/144372.rss">Manual Domain Validation Request - ngrok</source>
+        </item>
+  </channel>
+</rss>

@@ -120,8 +120,8 @@ const FEED_PATTERNS = {
 		// Matches Atom title opening tag
 		TITLE_TAG: /<title[^>]*>/i,
 
-		// Captures title content between title tags
-		TITLE_CONTENT: /<title>([\s\S]*?)<\/title>/i
+		// Captures title content between title tags (with optional attributes like type="text")
+		TITLE_CONTENT: /<title[^>]*>([\s\S]*?)<\/title>/i
 	}
 };
 

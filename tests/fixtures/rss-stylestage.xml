@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>Style Stage</title>
+	<subtitle>A modern CSS showcase styled by community contributions. Maintained by Stephanie Eckles (@5t3ph) of ModernCSS.dev.</subtitle>
+	
+	<link href="https://stylestage.dev/feed/" rel="self"/>
+	<link href="https://stylestage.dev"/>
+	<updated>2026-01-17T21:45:20Z</updated>
+	<id>https://stylestage.dev</id>
+	<author>
+		<name>Stephanie Eckles</name>
+	</author>
+	<entry>
+		<title>Yellowed by Sowmya Seshadri</title>
+		<link href="https://stylestage.dev/styles/yellowed/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/yellowed/</id>
+	</entry>
+	<entry>
+		<title>Ye Olde Book by Max Spuling</title>
+		<link href="https://stylestage.dev/styles/ye-olde-book/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/ye-olde-book/</id>
+	</entry>
+	<entry>
+		<title>We Love Teal by Olivia Johnson</title>
+		<link href="https://stylestage.dev/styles/we-love-teal/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/we-love-teal/</id>
+	</entry>
+	<entry>
+		<title>Vibrant by Lakshmikant.K</title>
+		<link href="https://stylestage.dev/styles/vibrant/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/vibrant/</id>
+	</entry>
+	<entry>
+		<title>Vaporwave by Shannon Crabill</title>
+		<link href="https://stylestage.dev/styles/vaporwave/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/vaporwave/</id>
+	</entry>
+	<entry>
+		<title>Transparency by Jens Oliver Meiert</title>
+		<link href="https://stylestage.dev/styles/transparency/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/transparency/</id>
+	</entry>
+	<entry>
+		<title>Trafalgar by Mike Andrewartha</title>
+		<link href="https://stylestage.dev/styles/trafalgar/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/trafalgar/</id>
+	</entry>
+	<entry>
+		<title>Sysfonts by Halvor William Sanden</title>
+		<link href="https://stylestage.dev/styles/sysfonts/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/sysfonts/</id>
+	</entry>
+	<entry>
+		<title>Sweet N Sp00ky by Aiden Schrock</title>
+		<link href="https://stylestage.dev/styles/sweet-n-sp00ky/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/sweet-n-sp00ky/</id>
+	</entry>
+	<entry>
+		<title>The Styles Must Go On! by Joe Lamyman</title>
+		<link href="https://stylestage.dev/styles/the-styles-must-go-on/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/the-styles-must-go-on/</id>
+	</entry>
+	<entry>
+		<title>Stageflix by Suckcoder</title>
+		<link href="https://stylestage.dev/styles/stageflix/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/stageflix/</id>
+	</entry>
+	<entry>
+		<title>StageOS by Håvard Brynjulfsen</title>
+		<link href="https://stylestage.dev/styles/stageos/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/stageos/</id>
+	</entry>
+	<entry>
+		<title>Spectrum by Robert Manders</title>
+		<link href="https://stylestage.dev/styles/spectrum/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/spectrum/</id>
+	</entry>
+	<entry>
+		<title>SolidState by Maheshkumar</title>
+		<link href="https://stylestage.dev/styles/solidstate/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/solidstate/</id>
+	</entry>
+	<entry>
+		<title>Soff by Beatrice Bock</title>
+		<link href="https://stylestage.dev/styles/soff/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/soff/</id>
+	</entry>
+	<entry>
+		<title>Slide Stage by Thomas Tuvignon</title>
+		<link href="https://stylestage.dev/styles/slide-stage/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/slide-stage/</id>
+	</entry>
+	<entry>
+		<title>Skewten by Donnie D&#39;Amato</title>
+		<link href="https://stylestage.dev/styles/skewten/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/skewten/</id>
+	</entry>
+	<entry>
+		<title>Simple Blue Roboto by JCarlosR</title>
+		<link href="https://stylestage.dev/styles/simple-blue-roboto/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/simple-blue-roboto/</id>
+	</entry>
+	<entry>
+		<title>Shimmering Stars by Paola Ayala Zelaya</title>
+		<link href="https://stylestage.dev/styles/shimmering-stars/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/shimmering-stars/</id>
+	</entry>
+	<entry>
+		<title>Shadows by Nadia Laasri</title>
+		<link href="https://stylestage.dev/styles/shadows/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/shadows/</id>
+	</entry>
+	<entry>
+		<title>Severe with Rainbow by Lizard Morrow</title>
+		<link href="https://stylestage.dev/styles/severe-with-rainbow/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/severe-with-rainbow/</id>
+	</entry>
+	<entry>
+		<title>Seifuku by Peter Ho</title>
+		<link href="https://stylestage.dev/styles/seifuku/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/seifuku/</id>
+	</entry>
+	<entry>
+		<title>Russian Inspiration by CandiceCz</title>
+		<link href="https://stylestage.dev/styles/russian-inspiration/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/russian-inspiration/</id>
+	</entry>
+	<entry>
+		<title>Retroish by Jean Louise Tiston</title>
+		<link href="https://stylestage.dev/styles/retroish/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/retroish/</id>
+	</entry>
+	<entry>
+		<title>Retro by Rachel B</title>
+		<link href="https://stylestage.dev/styles/retro/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/retro/</id>
+	</entry>
+	<entry>
+		<title>Retro Modern by Mike Aparicio</title>
+		<link href="https://stylestage.dev/styles/retro-modern/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/retro-modern/</id>
+	</entry>
+	<entry>
+		<title>Retro Cyberpunk by Inès K.</title>
+		<link href="https://stylestage.dev/styles/retro-cyberpunk/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/retro-cyberpunk/</id>
+	</entry>
+	<entry>
+		<title>Red Sand by UsrnGamesInc</title>
+		<link href="https://stylestage.dev/styles/red-sand/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/red-sand/</id>
+	</entry>
+	<entry>
+		<title>Rainbow by Nic Mayer</title>
+		<link href="https://stylestage.dev/styles/rainbow/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/rainbow/</id>
+	</entry>
+	<entry>
+		<title>Queer Modes by Miriam Suzanne</title>
+		<link href="https://stylestage.dev/styles/queer-modes/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/queer-modes/</id>
+	</entry>
+	<entry>
+		<title>Purplify &amp; Pastel by Dominic Duffin</title>
+		<link href="https://stylestage.dev/styles/purplify-and-pastel/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/purplify-and-pastel/</id>
+	</entry>
+	<entry>
+		<title>Purpleland by Dawntraoz</title>
+		<link href="https://stylestage.dev/styles/purpleland/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/purpleland/</id>
+	</entry>
+	<entry>
+		<title>Propaganda by Maryam Hanafiah</title>
+		<link href="https://stylestage.dev/styles/propaganda/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/propaganda/</id>
+	</entry>
+	<entry>
+		<title>Plants on Pink by Nicole Ortiz</title>
+		<link href="https://stylestage.dev/styles/plants-on-pink/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/plants-on-pink/</id>
+	</entry>
+	<entry>
+		<title>Plain&#39;n&#39;simple by Silvestar Bistrović</title>
+		<link href="https://stylestage.dev/styles/plainnsimple/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/plainnsimple/</id>
+	</entry>
+	<entry>
+		<title>Pipboy by Carter Lovelace</title>
+		<link href="https://stylestage.dev/styles/pipboy/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/pipboy/</id>
+	</entry>
+	<entry>
+		<title>Pink Outside The Box by GabbyKC</title>
+		<link href="https://stylestage.dev/styles/pink-outside-the-box/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/pink-outside-the-box/</id>
+	</entry>
+	<entry>
+		<title>Pink Lime by Michelle Barker</title>
+		<link href="https://stylestage.dev/styles/pink-lime/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/pink-lime/</id>
+	</entry>
+	<entry>
+		<title>Pilgrim by Gonçalo Morais</title>
+		<link href="https://stylestage.dev/styles/pilgrim/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/pilgrim/</id>
+	</entry>
+	<entry>
+		<title>Pastels &amp; Columns by Carol McKay</title>
+		<link href="https://stylestage.dev/styles/pastels-and-columns/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/pastels-and-columns/</id>
+	</entry>
+	<entry>
+		<title>Nightshade by Peter Byfield</title>
+		<link href="https://stylestage.dev/styles/nightshade/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/nightshade/</id>
+	</entry>
+	<entry>
+		<title>Neon by Pablo Jimenez</title>
+		<link href="https://stylestage.dev/styles/neon/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/neon/</id>
+	</entry>
+	<entry>
+		<title>Neon Beetles by Barbara Aliverti</title>
+		<link href="https://stylestage.dev/styles/neon-beetles/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/neon-beetles/</id>
+	</entry>
+	<entry>
+		<title>Neomorphism Design by Manoranjan D</title>
+		<link href="https://stylestage.dev/styles/neomorphism-design/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/neomorphism-design/</id>
+	</entry>
+	<entry>
+		<title>MonoMinimal by Amit Sheen</title>
+		<link href="https://stylestage.dev/styles/monominimal/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/monominimal/</id>
+	</entry>
+	<entry>
+		<title>Modern stars by Alba Maldonado</title>
+		<link href="https://stylestage.dev/styles/modern-stars/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/modern-stars/</id>
+	</entry>
+	<entry>
+		<title>Moccasin Stage by Gabriel Paixao</title>
+		<link href="https://stylestage.dev/styles/moccasin-stage/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/moccasin-stage/</id>
+	</entry>
+	<entry>
+		<title>Mburucuya by Lide O.</title>
+		<link href="https://stylestage.dev/styles/mburucuya/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/mburucuya/</id>
+	</entry>
+	<entry>
+		<title>Manual by Lynn Fisher</title>
+		<link href="https://stylestage.dev/styles/manual/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/manual/</id>
+	</entry>
+	<entry>
+		<title>Web 2.0 Lobster Party by Andy Bell</title>
+		<link href="https://stylestage.dev/styles/web-2.0-lobster-party/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/web-2.0-lobster-party/</id>
+	</entry>
+	<entry>
+		<title>Liquid Style by Toni Rome</title>
+		<link href="https://stylestage.dev/styles/liquid-style/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/liquid-style/</id>
+	</entry>
+	<entry>
+		<title>Jet Set by Cory Birdsong</title>
+		<link href="https://stylestage.dev/styles/jet-set/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/jet-set/</id>
+	</entry>
+	<entry>
+		<title>iStage by Bahe Yaich</title>
+		<link href="https://stylestage.dev/styles/istage/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/istage/</id>
+	</entry>
+	<entry>
+		<title>I Got The Blues by Jessica Nagar</title>
+		<link href="https://stylestage.dev/styles/i-got-the-blues/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/i-got-the-blues/</id>
+	</entry>
+	<entry>
+		<title>Headquarters by Stephanie Eckles</title>
+		<link href="https://stylestage.dev/styles/headquarters/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/headquarters/</id>
+	</entry>
+	<entry>
+		<title>Happy Halloween by Fredorixo</title>
+		<link href="https://stylestage.dev/styles/happy-halloween/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/happy-halloween/</id>
+	</entry>
+	<entry>
+		<title>Hackytoberfest by Jordana Harrison</title>
+		<link href="https://stylestage.dev/styles/hackytoberfest/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/hackytoberfest/</id>
+	</entry>
+	<entry>
+		<title>Geocities by whitep4nth3r</title>
+		<link href="https://stylestage.dev/styles/geocities/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/geocities/</id>
+	</entry>
+	<entry>
+		<title>Gallery by Olivia Ng</title>
+		<link href="https://stylestage.dev/styles/gallery/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/gallery/</id>
+	</entry>
+	<entry>
+		<title>Fresh by Thomas Champion</title>
+		<link href="https://stylestage.dev/styles/fresh/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/fresh/</id>
+	</entry>
+	<entry>
+		<title>Floral vibes by Neelam Chavan</title>
+		<link href="https://stylestage.dev/styles/floral-vibes/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/floral-vibes/</id>
+	</entry>
+	<entry>
+		<title>Final Frontier by Danielle Mayabb</title>
+		<link href="https://stylestage.dev/styles/final-frontier/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/final-frontier/</id>
+	</entry>
+	<entry>
+		<title>Emphasis by d-cs</title>
+		<link href="https://stylestage.dev/styles/emphasis/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/emphasis/</id>
+	</entry>
+	<entry>
+		<title>Eighties Synthwave by Kevin Powell</title>
+		<link href="https://stylestage.dev/styles/eighties-synthwave/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/eighties-synthwave/</id>
+	</entry>
+	<entry>
+		<title>Drawing Board by Emma Grey</title>
+		<link href="https://stylestage.dev/styles/drawing-board/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/drawing-board/</id>
+	</entry>
+	<entry>
+		<title>Drafter by Claudine Ong</title>
+		<link href="https://stylestage.dev/styles/drafter/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/drafter/</id>
+	</entry>
+	<entry>
+		<title>DeSoto by Joey Imlay</title>
+		<link href="https://stylestage.dev/styles/desoto/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/desoto/</id>
+	</entry>
+	<entry>
+		<title>Darkified  by Arul Murugavel</title>
+		<link href="https://stylestage.dev/styles/darkified/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/darkified/</id>
+	</entry>
+	<entry>
+		<title>Dark-Purple by Jayashakthi Vishnu P</title>
+		<link href="https://stylestage.dev/styles/dark-purple/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/dark-purple/</id>
+	</entry>
+	<entry>
+		<title>Dark- Navy &amp; Green by Vishal Sharma</title>
+		<link href="https://stylestage.dev/styles/dark-navy-and-green/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/dark-navy-and-green/</id>
+	</entry>
+	<entry>
+		<title>CSS CLI by Ryan Mulligan</title>
+		<link href="https://stylestage.dev/styles/css-cli/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/css-cli/</id>
+	</entry>
+	<entry>
+		<title>Crawling Chaos by Adrian Bece</title>
+		<link href="https://stylestage.dev/styles/crawling-chaos/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/crawling-chaos/</id>
+	</entry>
+	<entry>
+		<title>Comic by Katherine Kato</title>
+		<link href="https://stylestage.dev/styles/comic/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/comic/</id>
+	</entry>
+	<entry>
+		<title>Colorful Cards by Inklingboi</title>
+		<link href="https://stylestage.dev/styles/colorful-cards/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/colorful-cards/</id>
+	</entry>
+	<entry>
+		<title>Color Stages by Claire Lipskey</title>
+		<link href="https://stylestage.dev/styles/color-stages/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/color-stages/</id>
+	</entry>
+	<entry>
+		<title>Center Stage by Katie Langerman</title>
+		<link href="https://stylestage.dev/styles/center-stage/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/center-stage/</id>
+	</entry>
+	<entry>
+		<title>Calm by Tripti Nayak</title>
+		<link href="https://stylestage.dev/styles/calm/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/calm/</id>
+	</entry>
+	<entry>
+		<title>Bulletin by Paulo Nunes</title>
+		<link href="https://stylestage.dev/styles/bulletin/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/bulletin/</id>
+	</entry>
+	<entry>
+		<title>Boysenberry by Evan Thome</title>
+		<link href="https://stylestage.dev/styles/boysenberry/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/boysenberry/</id>
+	</entry>
+	<entry>
+		<title>Borlandish by Vishwa.R</title>
+		<link href="https://stylestage.dev/styles/borlandish/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/borlandish/</id>
+	</entry>
+	<entry>
+		<title>Blueprint by Todd Libby</title>
+		<link href="https://stylestage.dev/styles/blueprint/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/blueprint/</id>
+	</entry>
+	<entry>
+		<title>Blue-Beast by Kiran Shrinivaas S</title>
+		<link href="https://stylestage.dev/styles/blue-beast/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/blue-beast/</id>
+	</entry>
+	<entry>
+		<title>Barebones by Vinícius Philot</title>
+		<link href="https://stylestage.dev/styles/barebones/"/>
+		<updated>2026-01-17T21:45:20.673Z</updated>
+		<id>https://stylestage.dev/styles/barebones/</id>
+	</entry>
+	<entry>
+		<title>Atomic Clock by Eric Brown</title>
+		<link href="https://stylestage.dev/styles/atomic-clock/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/atomic-clock/</id>
+	</entry>
+	<entry>
+		<title>At The Desk by Tamás Tömördi</title>
+		<link href="https://stylestage.dev/styles/at-the-desk/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/at-the-desk/</id>
+	</entry>
+	<entry>
+		<title>Artsy Blue and Turquoise by Thea Kitzinger</title>
+		<link href="https://stylestage.dev/styles/artsy-blue-and-turquoise/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/artsy-blue-and-turquoise/</id>
+	</entry>
+	<entry>
+		<title>Animado by Elisangela Silva</title>
+		<link href="https://stylestage.dev/styles/animado/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/animado/</id>
+	</entry>
+	<entry>
+		<title>AeroJet-505 by Charles Henri</title>
+		<link href="https://stylestage.dev/styles/aerojet-505/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/aerojet-505/</id>
+	</entry>
+	<entry>
+		<title>Abandoned Stage by Andrey Kudryavtsev</title>
+		<link href="https://stylestage.dev/styles/abandoned-stage/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/abandoned-stage/</id>
+	</entry>
+	<entry>
+		<title>A Scottish Landscape by Alistair Shepherd</title>
+		<link href="https://stylestage.dev/styles/a-scottish-landscape/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/a-scottish-landscape/</id>
+	</entry>
+	<entry>
+		<title>1950s Newspaper by AbdulMatin Alayande-Nuhu</title>
+		<link href="https://stylestage.dev/styles/1950s-newspaper/"/>
+		<updated>2026-01-17T21:45:20.663Z</updated>
+		<id>https://stylestage.dev/styles/1950s-newspaper/</id>
+	</entry>
+	<entry>
+		<title>Guidelines</title>
+		<link href="https://stylestage.dev/guidelines/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/guidelines/</id>
+		<content type="html">&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://stylestage.dev/subscribe/&quot;&gt;Subscribe to updates&lt;/a&gt;&lt;/strong&gt; to recieve notice of new features, like dark mode!&lt;/p&gt;
+&lt;p&gt;The HTML for this page was created to be semantic, accessible, and free of nearly all
+other opinions. While typically extra divs are to be avoided, each sectioning element
+also includes a &lt;code&gt;.container&lt;/code&gt; div as the first child for use as a styling aid since you do
+not have access to alter the base HTML. IDs are included where needed for nav anchors or accessibility, and a small number of additional classes are provided for key elements without IDs.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;As a contributor, you agree to abide by the following guidelines and restrictions:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Branding is prohibited with the exception of &lt;a href=&quot;https://stylestage.dev/support/&quot;&gt;Monthly and Weekly sponsors&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;The HTML is not available to modify, except for attribution values that will be added from your submission metadata.&lt;/li&gt;
+&lt;li&gt;You may use any build setup you prefer to create your stylesheet, but the final submission should be the compiled, unminified CSS.&lt;/li&gt;
+&lt;li&gt;Stylesheets will become hosted locally to the project as well as be run through autoprefixer to ensure optimal performance.&lt;/li&gt;
+&lt;li&gt;Submissions will have licensing and attribution added upon the processing of the provided metadata.&lt;/li&gt;
+&lt;li&gt;Any changes made past initial submission will be revealed in the version history and reviewed to ensure guidelines are still met. Removal of the public stylesheet will result in removal from Style Stage.&lt;/li&gt;
+&lt;li&gt;You retain copyright over original graphics, and your stylesheet will receive the &lt;a href=&quot;https://creativecommons.org/licenses/by-nc-sa/3.0/&quot;&gt;CC BY-NC-SA license&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;All asset links, including fonts, must be absolute to external resources. Broken asset links will lead to removal.&lt;/li&gt;
+&lt;li&gt;Page load time should not exceed 3 seconds. &lt;em&gt;Note: This site is built with Eleventy and hosted on Netlify, so your local load time will likely be very close to production load time.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;There should be no contrast errors dedicated when validated against tools like WAVE or
+aXe. Include any notes about false errors in your pull request.&lt;/li&gt;
+&lt;li&gt;All graphic assets should respect copyright laws and be licensed appropriately.&lt;/li&gt;
+&lt;li&gt;Designs should be responsive and usable across the most widely supported browsers (check
+&lt;a href=&quot;https://caniuse.com/&quot;&gt;caniuse data&lt;/a&gt; as needed)&lt;/li&gt;
+&lt;li&gt;When cutting-edge properties are used, appropriate fallbacks should be provided if there
+is a significant impact on the user experience, particularly as it relates to
+accessibility.&lt;/li&gt;
+&lt;li&gt;Animations should be removed via &lt;code&gt;prefers-reduced-motion&lt;/code&gt;. The reset included with the source CSS demonstrates how to do this.&lt;/li&gt;
+&lt;li&gt;No content may be permanently hidden, and hidden items must come with an accessible viewing technique.&lt;/li&gt;
+&lt;li&gt;Submissions will be rejected for using obscene, excessively violent, or otherwise
+distasteful imagery, violating the above guidelines, or other reasons at the discretion
+of the maintainer. You may be asked to make revisions for minor violations.&lt;/li&gt;
+&lt;li&gt;Submissions may be removed if future changes are made that violate the guidelines, or if
+notice is received of copyright violations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;faqs&quot; tabindex=&quot;-1&quot;&gt;FAQs&lt;/h2&gt;
+&lt;h3 id=&quot;what-pages-will-be-restyled&quot; tabindex=&quot;-1&quot;&gt;What pages will be restyled?&lt;/h3&gt;
+&lt;p&gt;A dedicated page will be generated for your stylesheet that will restyle a copy of the home page only. Review the &lt;a href=&quot;https://stylestage.dev/#files&quot;&gt;files&lt;/a&gt; section to get the up-to-date source content.&lt;/p&gt;
+&lt;h3 id=&quot;how-do-i-create-a-public-stylesheet-url&quot; tabindex=&quot;-1&quot;&gt;How do I create a public stylesheet URL?&lt;/h3&gt;
+&lt;p&gt;You can host on your own domain, but if you don&#39;t have one, the following will also work:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Github&lt;/strong&gt;: You&#39;ll need to submit the link to the &amp;quot;raw&amp;quot; version instead of the Github page for it to work properly. This can be a gist or a file within a repo.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CodePen&lt;/strong&gt;: If you &lt;a href=&quot;https://codepen.io/5t3ph/pen/b493845ae41e836889dd84fdbb0f5291&quot;&gt;fork the Style Stage CodePen&lt;/a&gt; you can add &lt;code&gt;.css&lt;/code&gt; to your pen URL and use that. Don&#39;t worry about the 404 - Style Stage will be able to extract the styles anyway!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;how-do-i-create-a-pull-request-pr&quot; tabindex=&quot;-1&quot;&gt;How do I create a pull request (PR)?&lt;/h3&gt;
+&lt;p&gt;Currently, you must have a &lt;a href=&quot;https://github.com/&quot;&gt;GitHub&lt;/a&gt; account to participate.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Visit the &lt;a href=&quot;https://github.com/5t3ph/stylestage&quot;&gt;stylestage repo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Select &amp;quot;Fork&amp;quot; (top right on a desktop view)&lt;/li&gt;
+&lt;li&gt;Add your information as noted in &lt;a href=&quot;https://github.com/5t3ph/stylestage#contribute-a-stylesheet&quot;&gt;Contribute a Stylesheet&lt;/a&gt;. You can navigate to the file and edit it via the web interface or clone it to make changes locally.&lt;/li&gt;
+&lt;li&gt;Once edits are made and committed to your fork, visit the &lt;a href=&quot;https://github.com/5t3ph/stylestage/compare&quot;&gt;compare page&lt;/a&gt; and ensure it lists &amp;quot;base: main&amp;quot; and &amp;quot;compare: [your fork]&amp;quot; and then select &amp;quot;Create pull request&amp;quot;&lt;/li&gt;
+&lt;li&gt;We will receive notice of the PR and review. A preview link will be created on Netlify as part of the PR. We may ask you to make some changes to meet the guidelines, and then if all goes well it will be published!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;what-about-dark-mode&quot; tabindex=&quot;-1&quot;&gt;What about dark mode?&lt;/h3&gt;
+&lt;p&gt;A near-future update will allow you to optionally display a toggle to flip to dark mode. &lt;a href=&quot;https://stylestage.dev/subscribe/&quot;&gt;Subscribe to updates&lt;/a&gt; to make sure you get a notification and update your stylesheets!&lt;/p&gt;
+</content>
+	</entry>
+	<entry>
+		<title>Styles Directory</title>
+		<link href="https://stylestage.dev/styles/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/styles/</id>
+		<content type="html">&lt;h2 id=&quot;all-styles&quot; tabindex=&quot;-1&quot;&gt;All Styles&lt;/h2&gt;
+&lt;ul class=&quot;features features__flexible&quot;&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/1950s-newspaper&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/1950s-newspaper/&quot;&gt;1950s Newspaper&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by AbdulMatin Alayande-Nuhu&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/a-scottish-landscape&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/a-scottish-landscape/&quot;&gt;A Scottish Landscape&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Alistair Shepherd&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/abandoned-stage&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/abandoned-stage/&quot;&gt;Abandoned Stage&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Andrey Kudryavtsev&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/aerojet-505&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/aerojet-505/&quot;&gt;AeroJet-505&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Charles Henri&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/animado&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/animado/&quot;&gt;Animado&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Elisangela Silva&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/artsy-blue-and-turquoise&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/artsy-blue-and-turquoise/&quot;&gt;Artsy Blue and Turquoise&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Thea Kitzinger&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/at-the-desk&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/at-the-desk/&quot;&gt;At The Desk&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Tamás Tömördi&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/atomic-clock&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/atomic-clock/&quot;&gt;Atomic Clock&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Eric Brown&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/barebones&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/barebones/&quot;&gt;Barebones&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Vinícius Philot&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/blue-beast&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/blue-beast/&quot;&gt;Blue-Beast&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Kiran Shrinivaas S&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/blueprint&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/blueprint/&quot;&gt;Blueprint&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Todd Libby&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/borlandish&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/borlandish/&quot;&gt;Borlandish&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Vishwa.R&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/boysenberry&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/boysenberry/&quot;&gt;Boysenberry&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Evan Thome&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/bulletin&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/bulletin/&quot;&gt;Bulletin&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Paulo Nunes&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/calm&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/calm/&quot;&gt;Calm&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Tripti Nayak&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/center-stage&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/center-stage/&quot;&gt;Center Stage&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Katie Langerman&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/color-stages&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/color-stages/&quot;&gt;Color Stages&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Claire Lipskey&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/colorful-cards&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/colorful-cards/&quot;&gt;Colorful Cards&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Inklingboi&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/comic&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/comic/&quot;&gt;Comic&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Katherine Kato&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/crawling-chaos&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/crawling-chaos/&quot;&gt;Crawling Chaos&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Adrian Bece&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/css-cli&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/css-cli/&quot;&gt;CSS CLI&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Ryan Mulligan&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/dark-navy-and-green&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/dark-navy-and-green/&quot;&gt;Dark- Navy &amp; Green&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Vishal Sharma&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/dark-purple&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/dark-purple/&quot;&gt;Dark-Purple&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Jayashakthi Vishnu P&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/darkified&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/darkified/&quot;&gt;Darkified &lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Arul Murugavel&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/desoto&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/desoto/&quot;&gt;DeSoto&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Joey Imlay&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/drafter&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/drafter/&quot;&gt;Drafter&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Claudine Ong&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/drawing-board&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/drawing-board/&quot;&gt;Drawing Board&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Emma Grey&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/eighties-synthwave&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/eighties-synthwave/&quot;&gt;Eighties Synthwave&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Kevin Powell&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/emphasis&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/emphasis/&quot;&gt;Emphasis&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by d-cs&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/final-frontier&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/final-frontier/&quot;&gt;Final Frontier&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Danielle Mayabb&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/floral-vibes&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/floral-vibes/&quot;&gt;Floral vibes&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Neelam Chavan&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/fresh&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/fresh/&quot;&gt;Fresh&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Thomas Champion&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/gallery&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/gallery/&quot;&gt;Gallery&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Olivia Ng&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/geocities&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/geocities/&quot;&gt;Geocities&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by whitep4nth3r&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/hackytoberfest&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/hackytoberfest/&quot;&gt;Hackytoberfest&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Jordana Harrison&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/happy-halloween&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/happy-halloween/&quot;&gt;Happy Halloween&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Fredorixo&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/headquarters&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/headquarters/&quot;&gt;Headquarters&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Stephanie Eckles&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/i-got-the-blues&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/i-got-the-blues/&quot;&gt;I Got The Blues&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Jessica Nagar&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/istage&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/istage/&quot;&gt;iStage&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Bahe Yaich&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/jet-set&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/jet-set/&quot;&gt;Jet Set&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Cory Birdsong&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/liquid-style&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/liquid-style/&quot;&gt;Liquid Style&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Toni Rome&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/web-2.0-lobster-party&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/web-2.0-lobster-party/&quot;&gt;Web 2.0 Lobster Party&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Andy Bell&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/manual&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/manual/&quot;&gt;Manual&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Lynn Fisher&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/mburucuya&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/mburucuya/&quot;&gt;Mburucuya&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Lide O.&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/moccasin-stage&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/moccasin-stage/&quot;&gt;Moccasin Stage&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Gabriel Paixao&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/modern-stars&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/modern-stars/&quot;&gt;Modern stars&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Alba Maldonado&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/monominimal&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/monominimal/&quot;&gt;MonoMinimal&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Amit Sheen&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/neomorphism-design&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/neomorphism-design/&quot;&gt;Neomorphism Design&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Manoranjan D&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/neon-beetles&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/neon-beetles/&quot;&gt;Neon Beetles&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Barbara Aliverti&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/neon&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/neon/&quot;&gt;Neon&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Pablo Jimenez&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/nightshade&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/nightshade/&quot;&gt;Nightshade&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Peter Byfield&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/pastels-and-columns&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/pastels-and-columns/&quot;&gt;Pastels &amp; Columns&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Carol McKay&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/pilgrim&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/pilgrim/&quot;&gt;Pilgrim&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Gonçalo Morais&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/pink-lime&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/pink-lime/&quot;&gt;Pink Lime&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Michelle Barker&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/pink-outside-the-box&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/pink-outside-the-box/&quot;&gt;Pink Outside The Box&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by GabbyKC&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/pipboy&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/pipboy/&quot;&gt;Pipboy&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Carter Lovelace&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/plainnsimple&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/plainnsimple/&quot;&gt;Plain&#39;n&#39;simple&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Silvestar Bistrović&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/plants-on-pink&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/plants-on-pink/&quot;&gt;Plants on Pink&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Nicole Ortiz&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/propaganda&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/propaganda/&quot;&gt;Propaganda&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Maryam Hanafiah&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/purpleland&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/purpleland/&quot;&gt;Purpleland&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Dawntraoz&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/purplify-and-pastel&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/purplify-and-pastel/&quot;&gt;Purplify &amp; Pastel&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Dominic Duffin&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/queer-modes&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/queer-modes/&quot;&gt;Queer Modes&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Miriam Suzanne&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/rainbow&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/rainbow/&quot;&gt;Rainbow&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Nic Mayer&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/red-sand&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/red-sand/&quot;&gt;Red Sand&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by UsrnGamesInc&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/retro-cyberpunk&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/retro-cyberpunk/&quot;&gt;Retro Cyberpunk&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Inès K.&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/retro-modern&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/retro-modern/&quot;&gt;Retro Modern&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Mike Aparicio&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/retro&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/retro/&quot;&gt;Retro&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Rachel B&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/retroish&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/retroish/&quot;&gt;Retroish&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Jean Louise Tiston&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/russian-inspiration&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/russian-inspiration/&quot;&gt;Russian Inspiration&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by CandiceCz&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/seifuku&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/seifuku/&quot;&gt;Seifuku&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Peter Ho&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/severe-with-rainbow&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/severe-with-rainbow/&quot;&gt;Severe with Rainbow&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Lizard Morrow&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/shadows&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/shadows/&quot;&gt;Shadows&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Nadia Laasri&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/shimmering-stars&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/shimmering-stars/&quot;&gt;Shimmering Stars&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Paola Ayala Zelaya&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/simple-blue-roboto&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/simple-blue-roboto/&quot;&gt;Simple Blue Roboto&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by JCarlosR&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/skewten&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/skewten/&quot;&gt;Skewten&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Donnie D&#39;Amato&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/slide-stage&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/slide-stage/&quot;&gt;Slide Stage&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Thomas Tuvignon&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/soff&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/soff/&quot;&gt;Soff&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Beatrice Bock&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/solidstate&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/solidstate/&quot;&gt;SolidState&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Maheshkumar&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/spectrum&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/spectrum/&quot;&gt;Spectrum&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Robert Manders&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/stageos&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/stageos/&quot;&gt;StageOS&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Håvard Brynjulfsen&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/stageflix&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/stageflix/&quot;&gt;Stageflix&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Suckcoder&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/the-styles-must-go-on&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/the-styles-must-go-on/&quot;&gt;The Styles Must Go On!&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Joe Lamyman&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/sweet-n-sp00ky&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/sweet-n-sp00ky/&quot;&gt;Sweet N Sp00ky&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Aiden Schrock&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/sysfonts&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/sysfonts/&quot;&gt;Sysfonts&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Halvor William Sanden&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/trafalgar&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/trafalgar/&quot;&gt;Trafalgar&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Mike Andrewartha&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/transparency&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/transparency/&quot;&gt;Transparency&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Jens Oliver Meiert&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/vaporwave&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/vaporwave/&quot;&gt;Vaporwave&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Shannon Crabill&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/vibrant&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/vibrant/&quot;&gt;Vibrant&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Lakshmikant.K&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/we-love-teal&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/we-love-teal/&quot;&gt;We Love Teal&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Olivia Johnson&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/ye-olde-book&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/ye-olde-book/&quot;&gt;Ye Olde Book&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Max Spuling&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;li style=&quot;background-image: url(&#39;/style-img/yellowed&#39;);&quot;&gt;
+		&lt;span&gt;
+			&lt;a href=&quot;https://stylestage.dev/styles/yellowed/&quot;&gt;Yellowed&lt;span aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/a&gt;
+			&lt;span&gt;by Sowmya Seshadri&lt;/span&gt;
+		&lt;/span&gt;
+	&lt;/li&gt;&lt;/ul&gt;
+</content>
+	</entry>
+	<entry>
+		<title>Resources</title>
+		<link href="https://stylestage.dev/resources/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/resources/</id>
+		<content type="html">&lt;p&gt;Creating your Style Stage stylesheet will challenge you to explore techniques like flexbox and grid to arrange the page, and pseudo elements to add extra content and flair. Take the opportunity to design something a little unusual! So far, gradients and transform: skew() are popular with contributors ✨&lt;/p&gt;
+&lt;p&gt;Play is a powerful teacher! How far can you push the boundaries while staying accessible and performant? These are skills worth practicing that will equip you to choose the right tool for the job in future projects. Even if the right tool is a framework, you will have a deeper understanding of how styles you apply are working and improve your ability to customize them.&lt;/p&gt;
+&lt;p&gt;Trust me - it feels good to say: &amp;quot;I can do that in CSS!&amp;quot;&lt;/p&gt;
+&lt;h2 id=&quot;stylesheet-creation-tips&quot; tabindex=&quot;-1&quot;&gt;Stylesheet Creation Tips&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Enjoy using Sass?&lt;/strong&gt; - Me too! You can start from the &lt;a href=&quot;https://github.com/5t3ph/stylestage-sass&quot;&gt;Sass template&lt;/a&gt; that includes the original Sass from the Main Stage theme. The template also features BrowserSync to hot-reload updates as you build your submission.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Create inclusive, accessible styles&lt;/strong&gt; - At minimum, Style Stage guidelines require meeting accessible contrast as well as removing animations via &lt;code&gt;prefers-reduced-motion&lt;/code&gt; (demonstrated in the source CSS). Both of these things help create a more inclusive web by ensuring users can enjoy interactive experiences with less barriers. Additionally, ensure you retain accessible &lt;code&gt;:focus&lt;/code&gt; states for interactive elements. To test, tab over your layout and if you loose track of where you&#39;ve tabbed, fix the &lt;code&gt;:focus&lt;/code&gt;! If you&#39;re newer to web accessibility, &lt;a href=&quot;https://dev.to/5t3ph/introduction-to-web-accessibility-5cmp&quot;&gt;my intro article&lt;/a&gt; covers contrast, keyboard interaction, and more including additional resource links.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Accessible contrast required across states&lt;/strong&gt; - A common mistake for links styled as buttons is to lose contrast for &lt;code&gt;:focus&lt;/code&gt; or &lt;code&gt;:hover&lt;/code&gt; states, or not have enough contrast between the &amp;quot;button&amp;quot; background and the surface behind the button. Good news! I&#39;ve created a web app to help you with this contrast, check it out at &lt;a href=&quot;https://buttonbuddy.dev/&quot;&gt;ButtonBuddy.dev&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Don&#39;t forget the skip link!&lt;/strong&gt; - The &lt;code&gt;.skip-link&lt;/code&gt; is the first item in the HTML source&#39;s body. On the Main Stage, it appears when in &lt;code&gt;:focus&lt;/code&gt;, which is expected to be the first &amp;quot;tab&amp;quot; event into the browser window. This is useful for users of assitive technology &amp;quot;skip&amp;quot; the navigation and header fluff to get to the main content. Be sure to give it a style! You can certainly choose to have it always visible.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use a style reset&lt;/strong&gt; - The source styles include a modified version of Andy Bell&#39;s &lt;a href=&quot;https://github.com/hankchizljaw/modern-css-reset&quot;&gt;Modern CSS Reset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inspect!&lt;/strong&gt; - All modern browsers have an &amp;quot;Inspector&amp;quot; built in which allows you to choose an element on the page and quickly learn more about its HTML structure and related styles. Spend a bit of time learning tricks about the Inspector included in your favorite browser!&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Become one with the cascade&lt;/strong&gt; - The &amp;quot;C&amp;quot; in CSS is going to be your greatest enabler on this project. With limited availability of classes and IDs, you will have much greater success by working &lt;em&gt;with&lt;/em&gt; inheritance. Need a refresher? &lt;a href=&quot;https://dev.to/5t3ph/intro-to-the-css-cascade-the-c-in-css-1kh0&quot;&gt;Check out my episode about the cascade&lt;/a&gt; from my web development course for beginners.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Learn about CSS selectors&lt;/strong&gt; - Because the Style Stage HTML offers very minimal classes and IDs, you&#39;ll want to get familiar with the wide range of ways you can select elements in CSS. I really love this interactive game that covers &lt;em&gt;32&lt;/em&gt; selector combinations: &lt;a href=&quot;https://flukeout.github.io/&quot;&gt;CSS Diner&lt;/a&gt;. I&#39;ve also written &lt;a href=&quot;https://moderncss.dev/guide-to-advanced-css-selectors-part-one/&quot;&gt;an in-depth guide to advanced CSS selectors&lt;/a&gt; including examples.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cozy up to pseudo elements&lt;/strong&gt; - You may not be allowed to alter the HTML, but that doesn&#39;t mean you can&#39;t add extra elements! &lt;a href=&quot;https://css-tricks.com/pseudo-element-roundup/&quot;&gt;Pseudo elements&lt;/a&gt; allow you to prepend and append extra content, greatly expanding the styling opportunities. In theory you could add two extra elements to every element in the page and... well I&#39;m not going to do the math, but it&#39;s a lot of extra elements! These can hold things like extra backgrounds, SVGs, and even text (it&#39;s how the &amp;quot;coach marks&amp;quot; are applied on the Main Stage). Check out my guide to &lt;a href=&quot;https://moderncss.dev/guide-to-advanced-css-selectors-part-two/&quot;&gt;learn more about using pseudo elements&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Try out CSS custom properties&lt;/strong&gt; - The source CSS makes use of &lt;a href=&quot;https://12daysofweb.dev/2021/css-custom-properties/&quot;&gt;CSS custom properties&lt;/a&gt; (aka &amp;quot;variables&amp;quot;). Learn from experts like &lt;a href=&quot;https://www.smashingmagazine.com/2019/07/css-custom-properties-cascade/&quot;&gt;Miriam Suzanne&lt;/a&gt; (who is a Style Stage contributor!) and &lt;a href=&quot;https://www.sarasoueidan.com/blog/style-settings-with-css-variables/&quot;&gt;Sara Soueidan&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Test the most modern CSS&lt;/strong&gt; - What interesting techniques can you create with &lt;code&gt;:focus-within&lt;/code&gt;? Have you tried out grid yet? What about creating an enhanced experience with cutting-edge features by testing for them with &lt;code&gt;@supports&lt;/code&gt;?&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Review all stylesheets&lt;/strong&gt; - Don&#39;t just look - scroll! Hover! Resize! Most importantly - inspect!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;level-up-your-skills-on-moderncssdev&quot; tabindex=&quot;-1&quot;&gt;Level-Up Your Skills on ModernCSS.dev&lt;/h2&gt;
+&lt;p&gt;Review my in-depth tutorials to upgrade your CSS toolbox!&lt;/p&gt;
+&lt;p&gt;&lt;a class=&quot;link&quot; href=&quot;https://moderncss.dev/&quot;&gt;Visit ModernCSS.dev&lt;/a&gt;&lt;/p&gt;
+</content>
+	</entry>
+	<entry>
+		<title>Subscribe to Updates</title>
+		<link href="https://stylestage.dev/subscribe/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/subscribe/</id>
+		<content type="html">&lt;p&gt;A weekly(ish) newsletter with Style Stage updates and CSS tips.&lt;/p&gt;
+&lt;h2 id=&quot;why-subscribe&quot; tabindex=&quot;-1&quot;&gt;Why Subscribe?&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Fans&lt;/strong&gt;:
+Should subscribe to be alerted of newly added styles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Contributors&lt;/strong&gt;:
+Should subscribe to be alerted to any changes or new features so they can update their styles or metadata.&lt;/p&gt;
+</content>
+	</entry>
+	<entry>
+		<title>Support Style Stage</title>
+		<link href="https://stylestage.dev/support/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/support/</id>
+		<content type="html">&lt;p&gt;Hi! I&#39;m Stephanie Eckles, the creator of &lt;strong&gt;Style Stage&lt;/strong&gt; and author of the related site, &lt;a href=&quot;https://moderncss.dev/&quot;&gt;ModernCSS.dev&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To show your support to me as an individual creator, please consider &lt;a href=&quot;https://www.buymeacoffee.com/moderncss&quot;&gt;buying me a coffee&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;sponsor-options&quot; tabindex=&quot;-1&quot;&gt;Sponsor Options&lt;/h2&gt;
+&lt;p&gt;The current concept involves two options. Reach out &lt;a href=&quot;https://twitter.com/5t3ph&quot;&gt;in a Twitter message&lt;/a&gt; to discuss further. Style Stage reserves the right to reject offers to sponsor.&lt;/p&gt;
+&lt;p&gt;For both options, you may create a branded Style Stage stylesheet theme that will be linked from a &amp;quot;tweet length&amp;quot; banner. The branded Style Stage page will use a different schema for the &amp;quot;profile&amp;quot; section with your ad copy, optional logo, and link of your choice. Sponsors will also be listed with logos on the &lt;a href=&quot;https://stylestage.dev/styles/&quot;&gt;Styles Directory&lt;/a&gt;. The branded Style Stage page will be removed at the end of the paid period.&lt;/p&gt;
+&lt;p&gt;Sponsorship periods start on Mondays at 12 AM US Central.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Monthly Sponsor: $400&lt;/strong&gt; - Banner placement at the top of all pages.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Weekly Sponsor: $100&lt;/strong&gt; - Banner placement below the footer on the home page.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Style Stage is not using event tracking analytics, but can provide site and sponsored page total views for the paid period. Current unique visitors average about 15K/month.&lt;/p&gt;
+&lt;h3 id=&quot;how-will-sponsorship-money-be-used&quot; tabindex=&quot;-1&quot;&gt;How Will Sponsorship Money Be Used?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;50% operating costs&lt;/li&gt;
+&lt;li&gt;50% donated back to various community projects&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+	</entry>
+	<entry>
+		<title>Style Stage</title>
+		<link href="https://stylestage.dev/"/>
+		<updated>2026-01-17T21:45:20Z</updated>
+		<id>https://stylestage.dev/</id>
+		<content type="html"></content>
+	</entry></feed>

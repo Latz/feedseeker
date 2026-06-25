@@ -1,0 +1,211 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`checkFeed snapshot tests > Atom > atom-cursor.xml 1`] = `
+{
+  "title": "Cursor Blog | RSS Feed",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-daringfireball.xml 1`] = `
+{
+  "title": "Daring Fireball",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-geminiprotocol.xml 1`] = `
+{
+  "title": "Official Project Gemini news feed",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-github-powertoys.xml 1`] = `
+{
+  "title": "Release notes from PowerToys",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-github-tagify.xml 1`] = `
+{
+  "title": "Release notes from tagify",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-pagedout.xml 1`] = `
+{
+  "title": "Paged Out! Magazine",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-rachelbythebay.xml 1`] = `
+{
+  "title": "bueltge.de [by:ltge.de]",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-shkspr.xml 1`] = `
+{
+  "title": "Terence Eden’s Blog",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-xkcd.xml 1`] = `
+{
+  "title": "xkcd.com",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > Atom > atom-zoom-dev.xml 1`] = `
+{
+  "title": "Zoom Developers Blog",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-adactio.json 1`] = `
+{
+  "title": "Adactio: Journal",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-hypercritical.json 1`] = `
+{
+  "title": "Hypercritical",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-inessential.json 1`] = `
+{
+  "title": "inessential",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-jimnielson.json 1`] = `
+{
+  "title": "Jim Nielsen’s Blog",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-macstories.json 1`] = `
+{
+  "title": "MacStories",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-microblog-manton.json 1`] = `
+{
+  "title": "Micro.blog - manton timeline",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-microblog-vincent.json 1`] = `
+{
+  "title": "Micro.blog - vincent timeline",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-netnewswire.json 1`] = `
+{
+  "title": "NetNewsWire",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-podnews.json 1`] = `
+{
+  "title": "Podnews podcasting news",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > JSON Feed > json-sixcolors.json 1`] = `
+{
+  "title": "Six Colors",
+  "type": "json",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-betanews.xml 1`] = `
+{
+  "title": "BetaNews",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-elektroelch.xml 1`] = `
+{
+  "title": "elektro:elch",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-euobserver.xml 1`] = `
+{
+  "title": "EUobserver",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-guardian.xml 1`] = `
+{
+  "title": "Gallery | The Guardian",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-hessenschau.xml 1`] = `
+{
+  "title": "News aus Nordhessen: Aktuelle Nachrichten von heute",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-hn-frontpage.xml 1`] = `
+{
+  "title": "Hacker News: Front Page",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-nasa-image.xml 1`] = `
+{
+  "title": "NASA Image of the Day",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-stylestage.xml 1`] = `
+{
+  "title": "Style Stage",
+  "type": "atom",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-tt-rss.xml 1`] = `
+{
+  "title": "Zoom Developer Forum - Latest topics",
+  "type": "rss",
+}
+`;
+
+exports[`checkFeed snapshot tests > RSS > rss-visualcapitalist.xml 1`] = `
+{
+  "title": "Visual Capitalist",
+  "type": "rss",
+}
+`;

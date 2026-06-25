@@ -1,0 +1,195 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Adactio: Journal",
+    "description": "The online journal of Jeremy Keith, an author and web developer living and working in Brighton, England.",
+    "icon": "https://adactio.com/images/photo-600.jpg",
+    "favicon": "https://adactio.com/favicon-96x96.png",
+    "home_page_url": "https://adactio.com/journal/",
+    "feed_url": "https://adactio.com/journal/feed.json",
+    "author": {
+        "name": "Jeremy Keith"
+    },
+    "items": [
+        {
+            "id": "22619",
+            "url": "https://adactio.com/journal/22619",
+            "title": "Stories Of Ireland by Brian Friel",
+            "summary": "A short collection of short stories that are like mini-plays.",
+            "date_published": "2026-06-17 19:18:29",
+            "tags": [
+                "book",
+                "review",
+                "short",
+                "stories",
+                "ireland"
+            ],
+            "content_html": "<p>This is a collection of short stories by one of Ireland’s best playwrights.</p><p>I think you can tell that these stories were written by someone who’s at home with the stage. The dialogue really shines. And some of the stories feel like scenes in a play.</p><p>But that’s no bad thing. If most short stories are like mini-novels, why not have short stories that are like mini-plays?</p><p>Some of the stories are very short indeed, just long enough to convey the mood of the piece. That mood is often wistful, melancholy, or nostalgiac.</p><p>This collection comes with an equally brief introduction by the brilliant Louise Kennedy.</p><p>This slim volume makes for a great travel read. Slip it into your pocket and you’ll have an instant portal to a bygone time and place in the west of Ireland.</p><p><a href=\"https://uk.bookshop.org/a/980/9781405972239\"><img src=\"https://images-eu.bookshop.org/images/9781405972239.jpg\" width=\"326\" height=\"500\" loading=\"lazy\" alt=\"Buy this book\"></a></p>"
+        }
+,        {
+            "id": "22613",
+            "url": "https://adactio.com/journal/22613",
+            "title": "Enhancing with CSS Grid Lanes",
+            "summary": "Going from a carousel on small screens to a masonry layout on larger screens.",
+            "date_published": "2026-06-16 10:03:52",
+            "tags": [
+                "gridlanes",
+                "layouts",
+                "css",
+                "frontend",
+                "development",
+                "carousel",
+                "masonry",
+                "thesession",
+                "progressive",
+                "enhancement",
+                "responsive",
+                "design",
+                "browsers",
+                "standards"
+            ],
+            "content_html": "<p><a href=\"https://caniuse.com/css-grid-lanes\">CSS Grid Lanes</a> has started to ship in browsers. It’s in Safari and behind a flag in Chrome and Edge.</p><p>It enables masonry layouts, where items get packed together in the most efficient way possible.</p><p>Unsurprisingly, I’m a fan of a layout tool where the browser does all the hard work. It very much aligns with the idea of <a href=\"https://adactio.com/articles/21110\">declarative design</a>; you specify the boundary conditions, and then browser does the maths and heavy lifting.</p><p>There’s a handy website called <a href=\"https://gridlanes.webkit.org/\">The Field Guide to Grid Lanes</a> where you can play around with possibilities.</p><p>At the most recent <a href=\"https://cssday.nl/\">CSS Day</a>, Patrick Brosset gave <a href=\"https://patrickbrosset.com/slides/CSSDay-2026/\">a great talk</a> showing what you could do with Grid Lanes. I immediately started playing around with it, and I spotted what I think could be a useful pattern…</p><p>Over on <a href=\"https://thesession.org/\">The Session</a>, I added a little enhancement to the <a href=\"https://thesession.org/events\">events</a> and <a href=\"https://thesession.org/sessions\">sessions</a> listings recently. I make a call to the Google Places API to see if I can find a match for the venue, and if I do, pull in some photos.</p><p>Sidenote: right now there’s a major issue with this. None of the photos come with text descriptions. This is something I need to fix, and I’ve got some ideas on how to do that.</p><p>Anyway, these photos are just nice-to-haves so I’ve tucked them away into a <code>details</code> element with a simple <code>summary</code> like “Ten photos” or “Twenty photos”. If you open up that <code>details</code> element you get the photos in a horizontal swipable row. A carousel, if you will.</p><p>This works fine, but on larger screens I think it would be okay to show all the photos at once. That’s where Grid Lanes comes in.</p><p>Take a look at <a href=\"https://thesession.org/events/11446\">an event</a> or <a href=\"https://thesession.org/sessions/9200\">a session</a> in Safari to see what I mean.</p><p>Here’s the CSS that creates a carousel:</p><p><code><pre>.gallery {    display: flex;    align-items: center;    inline-size: fit-content;    max-inline-size: 100%;    overflow-inline: auto;    scroll-snap-type: inline mandatory;    overscroll-behavior-inline: contain;    scroll-behavior: smooth;    scrollbar-gutter: stable;}.gallery > * {    flex-shrink: 0;    scroll-snap-align: center;}</pre></code></p><p>And here’s the media query that turns it into a masonry layout:</p><p><code><pre>@supports (display: grid-lanes) {    @media all and (min-width: 56em) {        .gallery {            all: initial;            display: grid-lanes;            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));            gap: 0.5em;        }        .gallery > * {            inline-size: 100%;        }    }}</pre></code></p><p>I’m using <code>all: initial</code> to unset the previous styles, which is a bit of a sledgehammer but it works.</p><p>I think this could be a useful responsive design pattern. Masonry layouts are great for large screens but kind of rubbish for small screens where you end up with just a single column. Carousels aren’t much cop on large screens but maybe have their place on small screens where real estate is at a premium.</p><p>Oh, and needless to say, this is a progressive enhancement. If a browser doesn’t yet understand <code>display: grid-lanes</code> it continues to get the carousel layout.</p>"
+        }
+,        {
+            "id": "22611",
+            "url": "https://adactio.com/journal/22611",
+            "title": "Speaking in Dublin",
+            "summary": "I&#8217;m giving a talk on Thursday at Na Píobairí Uilleann all about The Session.",
+            "date_published": "2026-06-15 09:24:16",
+            "tags": [
+                "thesession",
+                "speaking",
+                "talks",
+                "presentation",
+                "dublin",
+                "pipers",
+                "events"
+            ],
+            "content_html": "<p>I’m giving a talk this week.</p><p>Usually this wouldn’t be a big deal. I’ve been <a href=\"https://adactio.com/about/speaking/\">giving talks</a> for over twenty years now. But this one is different.</p><p>I’m going to speaking at <a href=\"https://pipers.ie/\"><cite lang=\"ga\">Na Píobairí Uilleann</cite></a>, the Society of Uilleann Pipers, in Dublin. They have a monthly series of lectures called Notes and Narratives all about Irish music, and <a href=\"https://pipers.ie/event/notes-narratives-jeremy-keith/\">they’ve asked me to deliver this month’s talk</a>.</p><p>So this will not be my usual audience. I will be talking about a website, <a href=\"https://thesession.org/\">The Session</a>, but I won’t be talking about the technology. There won’t be any mention of HTML, CSS, or JavaScript. Instead I’ll be talking about the origins of the site and how it—and its community—has evolved over time.</p><p>Oh, and at these Notes and Narratives talks, they also want some music interspersed to illustrate the points. So that’s something a bit different to my usual tech talks.</p><p>I’m not going to lie, I’m kind of nervous about this one. But I’m also excited. I’m genuinely honoured to be able to give a talk at such a fine institution.</p><p>I’m speaking on Thursday, June 18th at 8:30pm at the headquarters of Na Píobairí Uilleann, which is 15 Henrietta Street in Dublin. Doors open at 8pm. If you want to come along, <a href=\"https://ie.powertik.com/en/events/notes-narratives-the-making-of-thesession-org\">tickets are €10/€5</a>. The talk will also be <a href=\"https://pipers.ie/npu-tv/\">streamed live online</a>.</p><p>Wish me luck!</p>"
+        }
+,        {
+            "id": "22609",
+            "url": "https://adactio.com/journal/22609",
+            "title": "A tale of two browsers",
+            "summary": "Safari 27 and Chrome 148.",
+            "date_published": "2026-06-13 14:13:26",
+            "tags": [
+                "browsers",
+                "standards",
+                "apple",
+                "google",
+                "safari",
+                "chrome",
+                "frontend",
+                "development",
+                "features",
+                "backlog",
+                "maintenance",
+                "bugfixes",
+                "devrel",
+                "prompt"
+            ],
+            "content_html": "<p>I give Apple a hard time. That’s mostly due to how they treat the web on their own mobile devices.</p><p>Though iOS ostensibly supports the ability for websites to be added to the homescreen, they make it so difficult for users to do, the functionality is practically worthless. It’s dispiriting to see the web so hamstrung by that decision.</p><p>The Webkit team has come in for other criticism too. For a while there, Safari was lagging so far behind in features that people were calling it the new Internet Explorer. Ouch!</p><p>But credit where credit is due. The upcoming <a href=\"https://webkit.org/blog/17967/news-from-wwdc26-webkit-in-safari-27-beta/\">version 27 of Safari</a> is looking very good.</p><p>That’s not because it’s at the cutting edge of the latest web standards. Quite the opposite. Most of the changes listed for this release are bug fixes. That’s what I want to acknowledge and applaud.</p><p>Far too often a browser will rush out an implementation of an exciting new web standard that gets plenty of attention. But that initial implementation is rarely 100% correct. Then the next release rolls around and the focus has moved on to a different new web standard. The result is an ever-growing backlog of almost-but-not-quite-supported features.</p><p>Clearly the focus for Safari 27 was on that backlog. I bet that wasn’t an easy decision. Like I said, the kudos and recognition tends to go to the browser that ships new stuff, not the browser that goes back to fix long-standing issues.</p><p>Don’t get me wrong, there’s some exciting new stuff in Safari 27 too, like styleable <code>select</code>, but it’s great to see the focus on maintenance and repair:</p><blockquote>  <p>If you look through the lists of features and fixes in Safari 27, you’ll notice that, although there are 58 brand-new features and 525 fixes — the largest pile of fixes in any Safari release in recent memory — most of what is released is not about new things.</p>    <p>Most of this work has been about existing features behaving more correctly, handling more edge cases, and fitting together with other features the way you’d expect.</p></blockquote><p>This in sharp contrast to <a href=\"https://wil.to/posts/googles-prompt-api/\">the most recent release of Chrome that shipped support for the prompt API</a> despite opposition from other browsers and no positive signals from developers. I hope some Googler got a nice promotion for shoving a proprietary technology into a web browser, but they should be aware of the damage they’ve done.</p><p>At this year’s <a href=\"https://cssday.nl/\">CSS Day</a>, the represenatatives from Google Chrome were once again there to talk to developers and ask what we wanted them to prioritise. Those requests rang very hollow. Why should we waste our time and energy telling a browser team what we need if they’re just going to ship whatever crap they want?</p><p>The truth is that the folks from Google who were canvassing opinions from the attendees at CSS Day are <em>not</em> the same people who torpedoed the browser with unwanted proprietary tech. This team has spent years doing excellent outreach, documenting web standards, and meeting with developers. They built up an impressive amount of trust, respect, and goodwill.</p><p>That stock has now plummeted.</p><p>So well done to the Webkit team for Safari 27. And shame on the Chrome team for Chrome 148.</p>"
+        }
+,        {
+            "id": "22608",
+            "url": "https://adactio.com/journal/22608",
+            "title": "Sarah Canary by Karen Joy Fowler",
+            "summary": "A genre-bending historical adventure in the Pacific northwest.",
+            "date_published": "2026-06-13 07:32:34",
+            "tags": [
+                "book",
+                "review",
+                "historical",
+                "fiction",
+                "genres"
+            ],
+            "content_html": "<p><a href=\"https://www.karenjoyfowler.com/sarah-canary\"><cite>Sarah Canary</cite></a> is an odd book, in the best possible way.</p><p>On the one hand, it’s a relatively straightforward narrative. An adventure story set in the Pacific northwest in the late 19th century. The viewpoint shifts from character to character, with one exception. The inscrutable title character is a living macguffin that everyone and everything else revolves around.</p><p>That all seems straightforward enough, but if you squint at the story just right maybe it’s a story from a very different genre altogether.</p><p>So you can enjoy it on both levels; a well-told series of historical adventures, and a clever subversion of genre expectations. Whichever way you take it, there’s a running thread throughout the book exploring racism, sexism, and colonialism.</p><p>Quite the debut novel!</p><p><a href=\"https://uk.bookshop.org/a/980/9781399617185\"><img src=\"https://images-eu.bookshop.org/product-images/images/9781399617185.jpg\" width=\"326\" height=\"500\" loading=\"lazy\" alt=\"Buy this book\"></a></p>"
+        }
+,        {
+            "id": "22595",
+            "url": "https://adactio.com/journal/22595",
+            "title": "Amsterdamming",
+            "summary": "The Web You Want + CSS Day",
+            "date_published": "2026-06-08 15:53:53",
+            "tags": [
+                "amsterdam",
+                "events",
+                "cssday",
+                "speaking",
+                "talks"
+            ],
+            "content_html": "<p>I’m heading to Amsterdam for <a href=\"https://cssday.nl/\">CSS Day</a>. It’s one of those events I try my best to get to every single year. I have no doubt that this year will be brilliant as usual.</p><p>There’s another event the day before CSS Day: <a href=\"https://the-web-you-want.org/\">The Web You Want</a>:</p><blockquote>  <p>What would the web be like if it was up to you?</p></blockquote><p>There’ll be workshops and talks, all absolutely free.</p><p>I’ll be giving a talk. It’s supposed to be about the web I want, but I’m going to do my usual shtick of looking back at the history of the web to see what kind of things we wanted in the past. It’s called <cite>The Web You Wanted</cite>.</p><p><a href=\"https://gath.io/2rLRGJ4g91uetPsV_yhkS\">Register your attendance</a> and I’ll see you there. Or maybe I’ll see you at CSS Day. Or at <a href=\"https://thesession.org/sessions/374\">the session in Mulligan’s</a> on Wednesday night.</p>"
+        }
+,        {
+            "id": "22592",
+            "url": "https://adactio.com/journal/22592",
+            "title": "25 years of The Session",
+            "summary": "The first quarter of a century so far.",
+            "date_published": "2026-06-03 00:04:00",
+            "tags": [
+                "thesession",
+                "anniversary",
+                "longevity",
+                "digital",
+                "preservation",
+                "25"
+            ],
+            "content_html": "<p><a href=\"https://thesession.org/\">The Session</a> existed in a very basic form since the late 1990s. It was just me posting a different tune every week.</p><p>But <a href=\"https://thesession.org/\">The Session</a> as it is today—a community website where everyone can add tunes—first went online on <a href=\"https://thesession.org/discussions/1\">June 3rd, 2001</a>. That’s 25 years ago today.</p><p>Considering the typical lifespan of a web page, I’m proud of having a website still online and thriving a quarter of a century after launching it.</p><p>At this point it’s fair to say that thesession.org is my life’s work. Though, really, I’m just the curator; the site would literally be nothing without all the contributions that people have made to it.</p><p>It’s been a great 25 years so far, and I’m looking forward to the next 25.</p>"
+        }
+,        {
+            "id": "22587",
+            "url": "https://adactio.com/journal/22587",
+            "title": "Picture at an exhibition",
+            "summary": "A screenshot of The Session is on display at the Royal College of Music Museum in London.",
+            "date_published": "2026-05-28 17:32:00",
+            "tags": [
+                "thesession",
+                "museum",
+                "exhibition",
+                "screenshot",
+                "london",
+                "folk",
+                "music",
+                "traditional"
+            ],
+            "content_html": "<p>I few weeks back, I got an email with the subject line, Screenshot in an Exhibition:</p><blockquote>  <p>I am currently developing an exhibition celebrating the thriving folk musics of these islands for the <a href=\"https://www.rcm.ac.uk/museum/\">Royal College of Music Museum</a> and one of the showcases looks at the Sharing of folk music and collections.  As an incredible and heavily used repository of tune collections, I would like to print a graphic screenshot of a page from <a href=\"https://thesession.org/\">The Session</a> to demonstrate digital dissemination, sharing and preservation of tune collections.  Are you happy for me to do so?</p></blockquote><p>I replied that I’d be honoured!</p><p><a href=\"https://www.rcm.ac.uk/about/news/all/2026-05-06sharedairs.aspx\">The exhibition</a> opened on May 19th. I just happened to be in London a few days after that for the <a href=\"https://adactio.com/journal/22582\">Gaeltacht cois Tamaise</a>. So I arranged to have a little tour of the exhibition from its curator, <a href=\"https://uk.linkedin.com/in/jennifer-brian-2b4001288\">Jennifer Brian</a>.</p><p>It’s a really nice collection, and it was kind of surreal to see my website in amongst esteemed artifacts of folk music history.</p><p><a href=\"https://adactio.com/notes/22578#photo1\"><img style=\"width: 100%; aspect-ratio: 1.339\" loading=\"lazy\" src=\"https://adactio.com/images/uploaded/22578-1/small.jpg\" srcset=\"https://adactio.com/images/uploaded/22578-1/small.jpg 320w,https://adactio.com/images/uploaded/22578-1/medium.jpg 480w,https://adactio.com/images/uploaded/22578-1/large.jpg 800w\" sizes=\"auto\" alt=\"Me dressed in a summery shirt posing next to a screenshot of The Session behind glass.\"></a></p><p>I’m not used to The Session getting recognition from a museum, but I am used to getting kudos when I tell fellow trad musicians that I made the website. I joke that it’s my passport to free pints anywhere there’s a session happening, but it’s true.</p><p>The next night when I was playing in the session in the pub, <cite>Brendan The Navigator</cite>, I outed myself about halfway through the evening when I handed out some stickers for the website. Sure enough, someone immediately asked if they could buy me a pint.</p><p>I must admit it’s very gratifying when people appreciate the work that’s gone into building and maintaining <a href=\"https://thesession.org/\">The Session</a>.</p><p>The exhibition at The Royal College of Music Museum is free and runs until October. If you’re in the neighbourhood, you should drop in and check it out.</p>"
+        }
+,        {
+            "id": "22582",
+            "url": "https://adactio.com/journal/22582",
+            "title": "Gaeltacht cois Tamaise 2026",
+            "summary": "Chaith mé deireadh seachtaine ag caint as Gaeilge i gcroílár London.",
+            "date_published": "2026-05-25 16:02:26",
+            "tags": [
+                "gaeilge",
+                "irish",
+                "language",
+                "learning",
+                "classes",
+                "london",
+                "event",
+                "travel"
+            ],
+            "content_html": "<p lang=\"ga\">Bhí me i Londain an deireadh seachtaine seo caite mar gheall ar <a href=\"https://www.irishinbritain.org/whats-on/gaeltacht-chois-tamaise-2026\">an Gaeltacht cois Tamaise</a>. Cúpla lá iontach ba ea iad!</p><p lang=\"ga\">Bhí na ranganna ar siúl Dé Sathairn agus Dé Domhnaigh, ceithre huaire an chloig gach lá, i <a href=\"https://www.kcl.ac.uk/\">gColáiste na Rí</a>. Bhí ceithre leibhéal ann—tosathóiri, meanleibhéal-iseal, meanleibhéal-ard, agus an ardleibhéal. Bhí gach rang lán le foghlaimeoirí. </p><p lang=\"ga\">Roghnaigh mé an rang meanleibhéal-ard agus bhí an leibhéal foirfe. D’fhreastail <a href=\"https://wordridden.com/\">Jessica</a> ar an rang tosathóirí agus dúirt sí go raibh a mhúinteor iontach deas freisin.</p><p lang=\"ga\">Bhraith sé aisteach a bheith ag labhairt Gaeilge i lár na phriomhcathair Shasana, ach bhain mé go leor sult as!</p><p lang=\"ga\">Roimh na ranganna, bhí imeachta ar siúl ar an Embasáid na hÉireann ar an tráthnóna Dé hAoine; taifeadadh beo ar an bpodchraoladh <a href=\"https://www.howtogael.com/\"><cite lang=\"en\">How To Gael</cite></a> le Louis Cantillon agus Doireann ní Ghlacáin. Éistim leis an podchraoladh, mar sin thapaigh mé an deis iad a fheiceáll beo. Mná cliste agus greanmhar is ea iad!</p><p lang=\"ga\">Bhí imeachta eile ar siúl ar an tráthnóna De Sathairn ach ní raibh mé ann. Chuaigh mé go dtí an teach tabhairne <i lang=\"en\">Brendan The Navigator</i> i Highgate—i bhfad ó croílár na caithreach!—mar gheall go raibh seisiún ceoil ann. <a href=\"https://thesession.org/sessions/7246#comment1031699\">Seisiún iontach iontach deas a bhí ann</a> le daoine fáiltiúil agus go leor poirt áille.</p><p lang=\"ga\">Beidh mé ar ais!</p>"
+        }
+,        {
+            "id": "22574",
+            "url": "https://adactio.com/journal/22574",
+            "title": "Brigid by Kim Curran",
+            "summary": "Pagan goddess or Christian saint?",
+            "date_published": "2026-05-21 14:33:36",
+            "tags": [
+                "book",
+                "review",
+                "irish",
+                "myths",
+                "lengends",
+                "history",
+                "christian",
+                "ireland",
+                "brigid"
+            ],
+            "content_html": "<p><a href=\"https://adactio.com/journal/22394\">I enjoyed Kim Curran’s debut novel, <cite>The Morrigan</cite></a>, so when I saw a copy of her brand new book in the local library, I snapped it up.</p><p>Like <cite>The Morrigan</cite>, <cite>Brigid</cite> is modern retelling of Irish mythology, but in a very different time period. Whereas <cite>The Morrigan</cite> was set in a mythical time of the <a href=\"https://en.wikipedia.org/wiki/Fomorians\">Fomorians</a> and the <a href=\"https://en.wikipedia.org/wiki/Tuatha_D%C3%A9_Danann\">Tuatha Dé Danann</a>, <cite>Brigid</cite> is set in the relatively recent past of early Christian Ireland.</p><p>I was curious to see which Brigid this book would be about: <a href=\"https://en.wikipedia.org/wiki/Brigid\">the pagan goddess</a> or <a href=\"https://en.wikipedia.org/wiki/Brigid_of_Kildare\">the Christian saint</a>?</p><p>Both, it turns out. The protagonist is the saint, but the narrator is the goddess. And they interact. It’s a clever framing device and for the most part, it works.</p><p>There are cameos a-plenty from the Christian pantheon like <a href=\"https://en.wikipedia.org/wiki/Saint_Patrick\">Patrick</a> and <a href=\"https://en.wikipedia.org/wiki/Brendan_the_Navigator\">Brendan the navigator</a> but this is not the hagiography we learned in school. All the usual miracles are present and accounted for, but any supernatural powers aren’t ascribed to a Christian deity. </p><p>The world of <cite>Brigid</cite> isn’t so far removed from the world of <cite>The Morrigan</cite> after all.</p><p><cite>Brigid</cite> isn’t a ground-breaking book, and it didn’t grab me as much as <cite>The Morrigan</cite> but it’s an enjoyable read nonetheless.</p><p><a href=\"https://uk.bookshop.org/a/980/9780241713051\"><img src=\"https://images-eu.bookshop.org/product-images/images/9780241713051.jpg\" width=\"326\" height=\"500\" loading=\"lazy\" alt=\"Buy this book\"></a></p>"
+        }
+    ]
+}
