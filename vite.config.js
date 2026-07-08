@@ -34,6 +34,7 @@ export default defineConfig({
 				'node:events',
 				'node:path',
 				'node:fs',
+				'node:fs/promises',
 				'node:process',
 				'node:child_process',
 				'node:util',
@@ -44,6 +45,7 @@ export default defineConfig({
 				'url'
 			],
 			output: {
+				exports: 'named',
 				globals: {
 					linkedom: 'linkedom',
 					async: 'async',
