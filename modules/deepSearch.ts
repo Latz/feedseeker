@@ -395,7 +395,14 @@ class Crawler extends EventEmitter {
 	 * Uses a single fetch per URL — no secondary feed-check fetch per link.
 	 */
 	private async fetchHtml(url: string, depth: number): Promise<string | null> {
-		if (this.instance?.site === url && this.instance.content !== undefined) {
+		// Compare normalized forms: FeedSeeker strips the trailing slash from root URLs
+		// (site === origin) while the Crawler stores new URL(startUrl).href, which re-adds it.
+		// Comparing raw strings would never match and would re-fetch the already-loaded homepage.
+		if (
+			this.instance?.site !== undefined &&
+			this.instance.content !== undefined &&
+			this.normalizeUrl(this.instance.site) === this.normalizeUrl(url)
+		) {
 			return this.instance.content;
 		}
 		const response = await fetchWithTimeout(url, { timeout: this.timeout, insecure: this.insecure });

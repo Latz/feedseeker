@@ -499,3 +499,40 @@ describe('checkFeed — JSON non-feed', () => {
 		expect(result).toBeNull();
 	});
 });
+
+describe('checkFeed — Atom root-element gating', () => {
+	// checkAtom gates on the cheap <feed> root check before running the three
+	// whole-document namespace scans. These cases pin the classification behaviour
+	// so the ordering stays an optimization and never a semantic change.
+
+	it('rejects content mentioning the Atom namespace but lacking a <feed> root', async () => {
+		const notAFeed =
+			'<html><body>We use xmlns="http://www.w3.org/2005/Atom" and atom: prefixes here.' +
+			'<entry><title>x</title></entry></body></html>';
+		const result = await checkFeed('https://example.com/page', notAFeed);
+		expect(result).toBeNull();
+	});
+
+	it('rejects a <feed> root that carries no Atom namespace', async () => {
+		const noNamespace = '<feed><title>No NS</title><entry><title>e</title></entry></feed>';
+		const result = await checkFeed('https://example.com/f', noNamespace);
+		expect(result).toBeNull();
+	});
+
+	it('still detects Atom via the xmlns:atom prefix form', async () => {
+		const prefixed =
+			'<feed xmlns:atom="http://www.w3.org/2005/Atom"><title>Prefixed</title>' +
+			'<entry><title>e</title></entry></feed>';
+		const result = await checkFeed('https://example.com/f', prefixed);
+		expect(result).not.toBeNull();
+		expect(result.type).toBe('atom');
+		expect(result.title).toBe('Prefixed');
+	});
+
+	it('rejects a <feed> root with a namespace but no entries', async () => {
+		const noEntries =
+			'<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
+		const result = await checkFeed('https://example.com/f', noEntries);
+		expect(result).toBeNull();
+	});
+});

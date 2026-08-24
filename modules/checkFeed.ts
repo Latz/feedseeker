@@ -357,13 +357,18 @@ function checkRss(content: string): FeedResult | null {
  * @returns Object with type 'atom' and title if Atom feed, null otherwise
  */
 function checkAtom(content: string): FeedResult | null {
+	// Gate on the cheap <feed> root-element check before running the three namespace
+	// scans. The namespace patterns scan the whole document, so evaluating them first
+	// cost ~4x on large non-Atom pages (the common case while crawling).
+	if (!FEED_PATTERNS.ATOM.FEED_START.test(content)) return null;
+
 	// Check for Atom feed root element with appropriate namespace
 	const hasAtomNamespace =
 		FEED_PATTERNS.ATOM.NAMESPACE_XMLNS.test(content) ||
 		FEED_PATTERNS.ATOM.NAMESPACE_XMLNS_ATOM.test(content) ||
 		FEED_PATTERNS.ATOM.NAMESPACE_ATOM_PREFIX.test(content);
 
-	if (FEED_PATTERNS.ATOM.FEED_START.test(content) && hasAtomNamespace) {
+	if (hasAtomNamespace) {
 		// For Atom feeds, having <entry> elements is required to be a valid feed
 		const hasEntry = FEED_PATTERNS.ATOM.ENTRY.test(content);
 

@@ -406,3 +406,43 @@ describe('deepSearch — checkFeed throws during crawl', () => {
 		expect(logEvents.some((e) => e.data?.error?.includes('parse failure'))).toBe(true);
 	});
 });
+
+describe('deepSearch — homepage content cache', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('reuses prefetched instance content for the start URL instead of refetching', async () => {
+		// FeedSeeker normalizes root URLs to the origin (no trailing slash), while the
+		// Crawler stores new URL(startUrl).href (which re-adds it). The cache must compare
+		// normalized forms, or the already-fetched homepage gets downloaded a second time.
+		const home = '<html><body><a href="/post1">p1</a></body></html>';
+		fetchWithTimeout.mockResolvedValue(mockResponse('', false, 404));
+		checkFeed.mockResolvedValue(null);
+
+		const instance = makeInstance();
+		instance.site = 'https://example.com'; // no trailing slash, as FeedSeeker produces
+		instance.content = home;
+
+		await deepSearch('https://example.com', { depth: 0, maxLinks: 5 }, instance);
+
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).not.toContain('https://example.com/');
+		expect(fetchedUrls).not.toContain('https://example.com');
+		// The cached body is what gets handed to checkFeed
+		expect(checkFeed).toHaveBeenCalledWith('https://example.com/', home);
+	});
+
+	it('still fetches normally when the instance has no prefetched content', async () => {
+		fetchWithTimeout.mockResolvedValue(mockResponse('<html><body></body></html>'));
+		checkFeed.mockResolvedValue(null);
+
+		const instance = makeInstance();
+		instance.site = 'https://example.com';
+
+		await deepSearch('https://example.com', { depth: 0, maxLinks: 5 }, instance);
+
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).toContain('https://example.com/');
+	});
+});
