@@ -124,7 +124,11 @@
       "Bash(TOKEN=\"f10672d7230ba96f4f46c359dcb5617378c10c7e\"\ncurl -s -u \"${TOKEN}:\" \"https://sonarcloud.io/api/settings/values?component=Latz_feedseeker&keys=sonar.leak.period,sonar.leak.period.type\" | jq '.')",
       "Bash(gh repo *)",
       "Bash(bin/check)",
-      "Bash(PNPM_HOME=\"\" pnpm install --ignore-workspace)"
+      "Bash(PNPM_HOME=\"\" pnpm install --ignore-workspace)",
+      "Bash(gh *)",
+      "Bash(apt list *)",
+      "Bash(brew upgrade *)",
+      "WebFetch(domain:devblogs.microsoft.com)"
     ],
     "deny": [],
     "ask": []
