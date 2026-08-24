@@ -80,3 +80,6 @@ sonar-scanner.sh
 # test-opml.mjs generated output
 /fehler.md
 /test-opml-progress.json
+
+# Per-developer Claude Code permissions (contains local secrets)
+/.claude/settings.local.json
