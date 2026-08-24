@@ -77,3 +77,6 @@ sonarqube_analyze.sh
 /examples
 /memory
 sonar-scanner.sh
+# test-opml.mjs generated output
+/fehler.md
+/test-opml-progress.json
