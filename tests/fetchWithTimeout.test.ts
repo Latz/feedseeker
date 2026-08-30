@@ -190,4 +190,50 @@ describe('fetchWithTimeout Module', () => {
 			await promise.catch(() => {});
 		});
 	});
+
+	describe('403 retry behavior', () => {
+		const makeResponse = (status: number) => new Response('', { status });
+
+		it('retries and returns the successful response after an initial 403', async () => {
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValueOnce(makeResponse(403))
+				.mockResolvedValueOnce(makeResponse(200));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(200);
+				expect(fetchMock).toHaveBeenCalledTimes(2);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('returns the final 403 response (not a thrown error) after exhausting retries', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(403);
+				expect(fetchMock).toHaveBeenCalledTimes(3);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('does not retry when the first response is not a 403', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(200));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(200);
+				expect(fetchMock).toHaveBeenCalledTimes(1);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+	});
 });

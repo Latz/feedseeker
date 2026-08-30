@@ -15,6 +15,11 @@ import { Agent } from 'undici';
 
 let insecureAgent: Agent | undefined;
 
+// Total attempts (including the first) made when a response is HTTP 403,
+// to ride out probabilistic bot-scoring (e.g. Cloudflare) on the same URL.
+const FORBIDDEN_RETRY_ATTEMPTS = 3;
+const FORBIDDEN_RETRY_DELAY_MS = 300;
+
 /**
  * Extended RequestInit with timeout option
  */
@@ -145,7 +150,16 @@ export default async function fetchWithTimeout(
 			headers,
 			...(dispatcher ? { dispatcher } : {})
 		};
-		const response = await fetch(url, fetchInit);
+
+		// Retry on 403: some sites (e.g. behind Cloudflare) apply probabilistic
+		// bot-scoring where the identical request can pass or fail from one
+		// attempt to the next, independent of headers or protocol.
+		let response = await fetch(url, fetchInit);
+		for (let attempt = 1; attempt < FORBIDDEN_RETRY_ATTEMPTS && response.status === 403; attempt++) {
+			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
+			response = await fetch(url, fetchInit);
+		}
+
 		clearTimeout(timeoutId);
 		return response;
 	} catch (error: unknown) {
