@@ -22,6 +22,80 @@ const RETRYABLE_STATUS_CODES = new Set([403, 429]);
 const FORBIDDEN_RETRY_ATTEMPTS = 3;
 const FORBIDDEN_RETRY_DELAY_MS = 300;
 
+// Per-hostname concurrency cap: feed-seeker's own search strategies (anchors,
+// blindsearch, etc.) run concurrently and independently, and can each open
+// several simultaneous connections to the same host at once. Some sites rate
+// limit based on concurrent connections rather than overall request rate —
+// confirmed empirically (see fetchWithTimeout.test.ts comments) that a site
+// can tolerate many sequential or even lightly-concurrent (2 at a time)
+// requests indefinitely, but trips a 429 once ~3+ requests to it are in
+// flight simultaneously, and that once tripped, the block can persist for
+// tens of seconds even after load drops — far longer than the existing
+// per-request retry (300ms apart) can ride out.
+//
+// This cap is enforced proactively (a small semaphore per hostname), not
+// reactively after a 429, since by the time a 429 arrives the limit has
+// already been exceeded by requests already in flight from other strategies.
+// On top of the cap, a 429 still triggers an additional cooldown window
+// during which the per-host concurrency is reduced further (to 1), since a
+// tripped limiter needs time to recover, not just fewer simultaneous requests.
+const HOST_MAX_CONCURRENCY = 2;
+const HOST_THROTTLED_CONCURRENCY = 1;
+const HOST_COOLDOWN_MS = 10_000;
+
+interface HostState {
+	active: number;
+	queue: Array<() => void>;
+	cooldownUntil: number;
+}
+const hostState = new Map<string, HostState>();
+
+function getHostname(url: string): string {
+	try {
+		return new URL(url).hostname;
+	} catch {
+		return url;
+	}
+}
+
+function getOrCreateHostState(hostname: string): HostState {
+	let state = hostState.get(hostname);
+	if (!state) {
+		state = { active: 0, queue: [], cooldownUntil: 0 };
+		hostState.set(hostname, state);
+	}
+	return state;
+}
+
+function currentLimit(state: HostState): number {
+	return Date.now() < state.cooldownUntil ? HOST_THROTTLED_CONCURRENCY : HOST_MAX_CONCURRENCY;
+}
+
+/**
+ * Waits for a free concurrency slot on this host (capped at
+ * HOST_MAX_CONCURRENCY, or HOST_THROTTLED_CONCURRENCY during an active
+ * cooldown), then reserves it. Returns a function to call with the response
+ * status once the request completes, which releases the slot and, on 429,
+ * starts/extends the cooldown window.
+ */
+async function acquireHostSlot(hostname: string): Promise<(status: number) => void> {
+	const state = getOrCreateHostState(hostname);
+
+	while (state.active >= currentLimit(state)) {
+		await new Promise<void>((resolve) => state.queue.push(resolve));
+	}
+	state.active++;
+
+	return (status: number) => {
+		state.active--;
+		if (status === 429) {
+			state.cooldownUntil = Date.now() + HOST_COOLDOWN_MS;
+		}
+		const next = state.queue.shift();
+		next?.();
+	};
+}
+
 /**
  * Extended RequestInit with timeout option
  */
@@ -157,6 +231,8 @@ export default async function fetchWithTimeout(
 		// bot-scoring where the identical request can pass or fail from one
 		// attempt to the next, independent of headers or protocol; others apply
 		// transient rate limiting (429) that clears on its own shortly after.
+		const hostname = getHostname(url);
+		const releaseHostSlot = await acquireHostSlot(hostname);
 		let response = await fetch(url, fetchInit);
 		for (
 			let attempt = 1;
@@ -166,6 +242,7 @@ export default async function fetchWithTimeout(
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
 			response = await fetch(url, fetchInit);
 		}
+		releaseHostSlot(response.status);
 
 		clearTimeout(timeoutId);
 		return response;

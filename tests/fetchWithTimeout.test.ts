@@ -269,4 +269,117 @@ describe('fetchWithTimeout Module', () => {
 			}
 		});
 	});
+
+	describe('per-host concurrency cap', () => {
+		const makeResponse = (status: number) => new Response('', { status });
+
+		it('never allows more than the concurrency cap in flight to the same host', async () => {
+			vi.useFakeTimers();
+			const inFlight = { current: 0, max: 0 };
+			const fetchMock = vi.fn().mockImplementation(() => {
+				inFlight.current++;
+				inFlight.max = Math.max(inFlight.max, inFlight.current);
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						inFlight.current--;
+						resolve(makeResponse(200));
+					}, 50);
+				});
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://concurrency-cap-test.example.com';
+
+				// Fire many concurrent requests at once (mirrors anchors + blindsearch
+				// each launching their own batch to the same host simultaneously).
+				const requests = Array.from({ length: 8 }, () => fetchWithTimeout(host, 5000));
+				await vi.runAllTimersAsync();
+				await Promise.all(requests);
+
+				expect(inFlight.max).toBeLessThanOrEqual(2);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('does not cap concurrency for requests to a different host', async () => {
+			vi.useFakeTimers();
+			const inFlight = { current: 0, max: 0 };
+			const fetchMock = vi.fn().mockImplementation(() => {
+				inFlight.current++;
+				inFlight.max = Math.max(inFlight.max, inFlight.current);
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						inFlight.current--;
+						resolve(makeResponse(200));
+					}, 50);
+				});
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				// Two requests each to two different hosts, all fired at once: each
+				// host's own cap is 2, so both pairs should run fully concurrently
+				// (max 4 in flight total), not be forced through a single shared cap.
+				const requests = [
+					fetchWithTimeout('https://host-a.example.com', 5000),
+					fetchWithTimeout('https://host-a.example.com', 5000),
+					fetchWithTimeout('https://host-b.example.com', 5000),
+					fetchWithTimeout('https://host-b.example.com', 5000)
+				];
+				await vi.runAllTimersAsync();
+				await Promise.all(requests);
+
+				expect(inFlight.max).toBe(4);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('reduces concurrency further and adds a cooldown after a 429', async () => {
+			vi.useFakeTimers();
+			const inFlight = { current: 0, max: 0 };
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				inFlight.current++;
+				inFlight.max = Math.max(inFlight.max, inFlight.current);
+				// Every attempt belonging to the first logical request 429s
+				// (including its internal retries); everything after succeeds.
+				const status = firstRequestDone ? 200 : 429;
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						inFlight.current--;
+						resolve(makeResponse(status));
+					}, 10);
+				});
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://cooldown-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				await first;
+				firstRequestDone = true;
+
+				// After the 429 (and its own per-request retries also 429ing until
+				// the mock flips to 200), a fresh burst should be held to 1 in flight
+				// at a time for the cooldown window, not the normal cap of 2.
+				inFlight.max = 0;
+				const burst = Array.from({ length: 5 }, () => fetchWithTimeout(host, 5000));
+				await vi.advanceTimersByTimeAsync(50);
+				expect(inFlight.max).toBeLessThanOrEqual(1);
+
+				await vi.runAllTimersAsync();
+				await Promise.all(burst);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+	});
 });
