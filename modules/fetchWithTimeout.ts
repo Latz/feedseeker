@@ -15,8 +15,10 @@ import { Agent } from 'undici';
 
 let insecureAgent: Agent | undefined;
 
-// Total attempts (including the first) made when a response is HTTP 403,
-// to ride out probabilistic bot-scoring (e.g. Cloudflare) on the same URL.
+// Total attempts (including the first) made when a response is HTTP 403 or 429,
+// to ride out probabilistic bot-scoring (e.g. Cloudflare) or transient rate
+// limiting on the same URL.
+const RETRYABLE_STATUS_CODES = new Set([403, 429]);
 const FORBIDDEN_RETRY_ATTEMPTS = 3;
 const FORBIDDEN_RETRY_DELAY_MS = 300;
 
@@ -151,11 +153,16 @@ export default async function fetchWithTimeout(
 			...(dispatcher ? { dispatcher } : {})
 		};
 
-		// Retry on 403: some sites (e.g. behind Cloudflare) apply probabilistic
+		// Retry on 403/429: some sites (e.g. behind Cloudflare) apply probabilistic
 		// bot-scoring where the identical request can pass or fail from one
-		// attempt to the next, independent of headers or protocol.
+		// attempt to the next, independent of headers or protocol; others apply
+		// transient rate limiting (429) that clears on its own shortly after.
 		let response = await fetch(url, fetchInit);
-		for (let attempt = 1; attempt < FORBIDDEN_RETRY_ATTEMPTS && response.status === 403; attempt++) {
+		for (
+			let attempt = 1;
+			attempt < FORBIDDEN_RETRY_ATTEMPTS && RETRYABLE_STATUS_CODES.has(response.status);
+			attempt++
+		) {
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
 			response = await fetch(url, fetchInit);
 		}

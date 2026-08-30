@@ -236,4 +236,37 @@ describe('fetchWithTimeout Module', () => {
 			}
 		});
 	});
+
+	describe('429 retry behavior', () => {
+		const makeResponse = (status: number) => new Response('', { status });
+
+		it('retries and returns the successful response after an initial 429', async () => {
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValueOnce(makeResponse(429))
+				.mockResolvedValueOnce(makeResponse(200));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(200);
+				expect(fetchMock).toHaveBeenCalledTimes(2);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('returns the final 429 response (not a thrown error) after exhausting retries', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(429));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(429);
+				expect(fetchMock).toHaveBeenCalledTimes(3);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+	});
 });
