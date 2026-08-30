@@ -122,6 +122,13 @@ function initializeFeedFinder(
 	options: CLIOptions,
 	ctx: CLIRunContext
 ): FeedFinderWithError {
+	// FeedSeekerOptions' error-visibility flag is `showErrors`, not the CLI's
+	// own `--display-errors`/displayErrors — keep them in sync so per-module
+	// fetch errors (blindsearch, anchors, metaLinks) actually surface.
+	if (options.displayErrors) {
+		options.showErrors = true;
+	}
+
 	const FeedFinder = new FeedSeeker(site, options) as FeedFinderWithError;
 	FeedFinder.site = site;
 	FeedFinder.initializationError = false;

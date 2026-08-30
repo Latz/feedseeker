@@ -483,4 +483,30 @@ describe('FeedSeeker CLI', () => {
 			expect(processExitSpy).toHaveBeenCalledWith(0);
 		});
 	});
+
+	describe('--display-errors / --verbose wiring', () => {
+		it('passes showErrors through to FeedSeeker options when --display-errors is set', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([]);
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--display-errors'];
+			await run(argv);
+
+			const instance = (blindsearchMod as Mock).mock.calls[0][0];
+			expect(instance.options.showErrors).toBe(true);
+		});
+
+		it('passes showErrors through to FeedSeeker options when --verbose is set', async () => {
+			(metaLinksMod as Mock).mockResolvedValue([]);
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--verbose'];
+			await run(argv);
+
+			const instance = (blindsearchMod as Mock).mock.calls[0][0];
+			expect(instance.options.showErrors).toBe(true);
+		});
+	});
 });
