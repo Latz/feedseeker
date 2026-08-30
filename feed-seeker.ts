@@ -125,7 +125,10 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 			const urlObj = new URL(normalizedSite);
 			// Normalize site link but remove trailing slash for root paths to prevent duplicate checks in path traversal
 			// For example: https://example.com/ should become https://example.com to avoid checking endpoints twice
-			this.site = urlObj.pathname === '/' ? urlObj.origin : urlObj.href;
+			this.site =
+				urlObj.pathname === '/' && !urlObj.search && !urlObj.hash
+					? urlObj.origin
+					: urlObj.href;
 		} catch {
 			// If URL is invalid, store the normalized attempt
 			// The actual error will be emitted during initialize()

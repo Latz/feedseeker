@@ -66,6 +66,18 @@ describe('FeedSeeker constructor', () => {
 		expect(new FeedSeeker('https://example.com/blog').site).toBe('https://example.com/blog');
 	});
 
+	it('preserves query string on root URL', () => {
+		expect(new FeedSeeker('https://example.com/?foo=bar').site).toBe(
+			'https://example.com/?foo=bar'
+		);
+	});
+
+	it('preserves hash on root URL', () => {
+		expect(new FeedSeeker('https://example.com/#section').site).toBe(
+			'https://example.com/#section'
+		);
+	});
+
 	it('stores provided options', () => {
 		const opts: FeedSeekerOptions = { timeout: 10, maxFeeds: 5 };
 		expect(new FeedSeeker('https://example.com', opts).options).toMatchObject(opts);
