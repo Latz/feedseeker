@@ -66,6 +66,8 @@ export interface BlindSearchLogData {
 	totalEndpoints?: number;
 	feedsFound?: number;
 	message?: string;
+	url?: string;
+	reason?: string;
 }
 
 /**

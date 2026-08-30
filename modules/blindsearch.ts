@@ -443,7 +443,12 @@ async function processSingleFeedUrl(
 	foundUrls.add(url);
 
 	try {
-		const feedResult = await checkFeed(url, '', instance);
+		const onReject = instance.options?.verbose
+			? (reason: string) => {
+					instance.emit('log', { module: 'blindsearch', url, reason });
+				}
+			: undefined;
+		const feedResult = await checkFeed(url, '', instance, onReject);
 
 		// Add feed if it was successfully validated
 		if (feedResult) {

@@ -414,6 +414,37 @@ describe('blindSearch() module', () => {
 		controller.abort();
 		await expect(blindSearch(instance, controller.signal)).rejects.toThrow('aborted');
 	});
+
+	it('emits a log event per rejected candidate when verbose is true', async () => {
+		checkFeed.mockImplementation(async (url, content, inst, onReject) => {
+			onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
+			return null;
+		});
+		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const instance = new MockInstance('https://example.com', { searchMode: 'fast', verbose: true });
+		await blindSearch(instance);
+		const verboseLogs = instance._events.filter(
+			(e) => e.event === 'log' && e.data?.module === 'blindsearch' && e.data?.url
+		);
+		expect(verboseLogs.length).toBeGreaterThan(0);
+		expect(verboseLogs[0].data.reason).toBe(
+			'content is not a recognized RSS, Atom, or JSON feed format'
+		);
+	});
+
+	it('does not emit per-candidate rejection logs when verbose is false', async () => {
+		checkFeed.mockImplementation(async (url, content, inst, onReject) => {
+			onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
+			return null;
+		});
+		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const instance = new MockInstance('https://example.com', { searchMode: 'fast', verbose: false });
+		await blindSearch(instance);
+		const verboseLogs = instance._events.filter(
+			(e) => e.event === 'log' && e.data?.module === 'blindsearch' && e.data?.url
+		);
+		expect(verboseLogs).toHaveLength(0);
+	});
 });
 
 // ─── Lazy-load endpoint getter tests (via actual module import) ───────────────

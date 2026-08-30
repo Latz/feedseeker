@@ -25,6 +25,7 @@ let counterLength = 0; // needed for fancy blindsearch log display
 interface CLIRunContext {
 	isAllMode: boolean;
 	quiet: boolean;
+	verbose: boolean;
 }
 
 function makeStartHandler(ctx: CLIRunContext) {
@@ -68,6 +69,10 @@ function makeLogHandler(ctx: CLIRunContext) {
 		process.stdout.write('.');
 	}
 	if (data.module === 'blindsearch' || data.module === 'anchors') {
+		if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
+			process.stdout.write(`\n  ${data.url} — ${data.reason}`);
+			return;
+		}
 		if ('totalCount' in data && 'totalEndpoints' in data) {
 			if (counterLength > 0) {
 				process.stdout.write(`\x1b[${counterLength}D`);
@@ -351,16 +356,24 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 			'Search mode for blind search: fast (~25), standard (~100), or full (~350+)',
 			'standard'
 		)
+		.option(
+			'--verbose',
+			'Show every candidate URL checked and why non-feeds were rejected'
+		)
 		.description('Find feeds for site\n')
 		.action(async (site: string, options: CLIOptions & { all?: boolean }) => {
 			if (!site && !options.file) {
 				program.help();
 				process.exit(0);
 			}
+			if (options.verbose) {
+				options.displayErrors = true;
+			}
 			try {
 				const ctx: CLIRunContext = {
 					isAllMode: !!options.all,
 					quiet: !!options.quiet,
+					verbose: !!options.verbose,
 				};
 				program.ctx = ctx;
 

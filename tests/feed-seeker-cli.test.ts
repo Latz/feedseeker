@@ -405,6 +405,43 @@ describe('FeedSeeker CLI', () => {
 		});
 	});
 
+	describe('--verbose flag', () => {
+		it('prints a line for each rejected blind-search candidate', async () => {
+			(blindsearchMod as Mock).mockImplementation(async (instance) => {
+				instance.emit('log', {
+					module: 'blindsearch',
+					url: 'https://example.com/?feed=rss2',
+					reason: 'content is not a recognized RSS, Atom, or JSON feed format'
+				});
+				return [];
+			});
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--blindsearch', '--verbose'];
+			await run(argv);
+
+			const allOutput = stdoutWriteSpy.mock.calls.flat().join('');
+			expect(allOutput).toContain('https://example.com/?feed=rss2');
+			expect(allOutput).toContain('not a recognized RSS, Atom, or JSON feed format');
+		});
+
+		it('does not print per-candidate rejection reasons without --verbose', async () => {
+			(blindsearchMod as Mock).mockImplementation(async (instance) => {
+				instance.emit('log', {
+					module: 'blindsearch',
+					url: 'https://example.com/?feed=rss2',
+					reason: 'content is not a recognized RSS, Atom, or JSON feed format'
+				});
+				return [];
+			});
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--blindsearch'];
+			await run(argv);
+
+			const allOutput = stdoutWriteSpy.mock.calls.flat().join('');
+			expect(allOutput).not.toContain('not a recognized RSS, Atom, or JSON feed format');
+		});
+	});
+
 	describe('--file flag', () => {
 		const fileFeed1: Feed = { url: 'https://site1.com/feed.xml', type: 'rss', title: null, feedTitle: null };
 		const fileFeed2: Feed = { url: 'https://site2.com/atom.xml', type: 'atom', title: null, feedTitle: null };

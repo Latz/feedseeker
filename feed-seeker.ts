@@ -18,6 +18,7 @@ import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLink
 import checkAllAnchors from './modules/anchors.ts';
 import blindSearch, { type BlindSearchFeed } from './modules/blindsearch.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
+import checkFeed from './modules/checkFeed.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
 import type {
@@ -48,6 +49,7 @@ export interface FeedSeekerOptions extends DeepSearchOptions {
 	all?: boolean;
 	keepQueryParams?: boolean;
 	showErrors?: boolean;
+	verbose?: boolean;
 	followMetaRefresh?: boolean;
 	deepsearchOnly?: boolean;
 	metasearch?: boolean;
@@ -86,6 +88,8 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	initPromise: Promise<void> | null;
 	content?: string;
 	document!: Document;
+	/** Set when the site URL itself is a feed (not an HTML page linking to one) */
+	private selfFeed: Feed | null = null;
 	private readonly rawSite: string; // Store the raw input for validation during initialization
 	private initStatus: InitStatus = 'pending';
 
@@ -254,6 +258,19 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 				}
 
 				this.content = await response.text();
+
+				// If the site URL itself is already a feed, skip HTML parsing
+				// and record it so metaLinks() can return it directly.
+				const feedResult = await checkFeed(this.site, this.content);
+				if (feedResult) {
+					this.selfFeed = {
+						url: this.site,
+						title: null,
+						type: feedResult.type,
+						feedTitle: feedResult.title
+					};
+				}
+
 				const { document } = parseHTML(this.content);
 				this.document = document;
 
@@ -303,6 +320,9 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 */
 	async metaLinks(): Promise<Feed[]> {
 		await this.initialize();
+		if (this.selfFeed) {
+			return [this.selfFeed];
+		}
 		return metaLinks(this);
 	}
 

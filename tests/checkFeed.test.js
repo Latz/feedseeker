@@ -536,3 +536,23 @@ describe('checkFeed — Atom root-element gating', () => {
 		expect(result).toBeNull();
 	});
 });
+
+describe('checkFeed — onReject diagnostic callback', () => {
+	it('calls onReject with a reason when content is not a recognized feed', async () => {
+		const html = '<!DOCTYPE html><html><head><title>Homepage</title></head><body>Hi</body></html>';
+		const onReject = vi.fn();
+		const result = await checkFeed('https://example.com/?feed=rss2', html, undefined, onReject);
+		expect(result).toBeNull();
+		expect(onReject).toHaveBeenCalledTimes(1);
+		expect(onReject).toHaveBeenCalledWith(expect.any(String));
+	});
+
+	it('does not call onReject when content is a valid feed', async () => {
+		const rss =
+			'<rss version="2.0"><channel><title>T</title><description>D</description><item><title>I</title></item></channel></rss>';
+		const onReject = vi.fn();
+		const result = await checkFeed('https://example.com/feed.xml', rss, undefined, onReject);
+		expect(result).not.toBeNull();
+		expect(onReject).not.toHaveBeenCalled();
+	});
+});

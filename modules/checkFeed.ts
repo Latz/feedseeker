@@ -43,6 +43,7 @@ interface FeedSeekerOptions {
 	timeout?: number;
 	maxFeeds?: number;
 	showErrors?: boolean;
+	verbose?: boolean;
 	all?: boolean;
 	keepQueryParams?: boolean;
 	followMetaRefresh?: boolean;
@@ -269,7 +270,8 @@ function cleanTitle(title: string | null | undefined): string | null {
 export default async function checkFeed(
 	url: string,
 	content: string = '',
-	instance?: FeedSeekerInstance
+	instance?: FeedSeekerInstance,
+	onReject?: (reason: string) => void
 ): Promise<FeedResult | null> {
 	// Security: Validate URL format and protocol
 	validateUrl(url);
@@ -277,6 +279,7 @@ export default async function checkFeed(
 	// Check if URL pattern indicates this is likely an oEmbed endpoint
 	if (isOEmbedEndpoint(url)) {
 		// WordPress oEmbed endpoints are not feeds
+		onReject?.('URL matches a WordPress oEmbed endpoint pattern, not a feed');
 		return null;
 	}
 
@@ -302,6 +305,9 @@ export default async function checkFeed(
 
 	// Check for RSS, Atom, or JSON feeds
 	const result = checkRss(content) || checkAtom(content) || checkJson(content) || null;
+	if (!result) {
+		onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
+	}
 	return result;
 }
 
