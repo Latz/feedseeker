@@ -140,6 +140,13 @@ exports[`checkFeed snapshot tests > JSON Feed > json-sixcolors.json 1`] = `
 }
 `;
 
+exports[`checkFeed snapshot tests > RSS > rdf-mainichi.xml 1`] = `
+{
+  "title": "The Mainichi",
+  "type": "rss",
+}
+`;
+
 exports[`checkFeed snapshot tests > RSS > rss-betanews.xml 1`] = `
 {
   "title": "BetaNews",

@@ -21,6 +21,7 @@ describe('checkFeed snapshot tests', () => {
 			'rss-stylestage.xml',
 			'rss-tt-rss.xml',
 			'rss-visualcapitalist.xml',
+			'rdf-mainichi.xml',
 		])('%s', async (file) => {
 			expect(await checkFeed(URL, load(file))).toMatchSnapshot();
 		});

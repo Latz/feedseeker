@@ -83,6 +83,10 @@ const FEED_PATTERNS = {
 		// [^>]* matches any attributes before version, \s+ ensures whitespace before version
 		VERSION: /<rss\s[^>]*version\s*=\s*["'][\d.]+["']/i,
 
+		// Matches RSS 1.0's RDF root element: <rdf:RDF ...>. RSS 1.0 feeds have no
+		// <rss version="..."> tag at all, so they need a separate root-element check.
+		RDF_ROOT: /<rdf:RDF[^>]*>/i,
+
 		// Matches RSS channel opening tag (required container for RSS content)
 		CHANNEL: /<channel[^>]*>/i,
 
@@ -97,7 +101,8 @@ const FEED_PATTERNS = {
 
 		// Captures entire channel content between opening and closing tags
 		// [\s\S]*? uses non-greedy matching to capture everything including newlines
-		CHANNEL_CONTENT: /<channel>([\s\S]*?)<\/channel>/i,
+		// [^>]* tolerates attributes on <channel>, e.g. RSS 1.0's <channel rdf:about="...">
+		CHANNEL_CONTENT: /<channel[^>]*>([\s\S]*?)<\/channel>/i,
 
 		// Captures title content between title tags (feed or item title)
 		TITLE: /<title>([\s\S]*?)<\/title>/i
@@ -337,9 +342,9 @@ function extractRssTitle(content: string): string | null {
  * @returns Object with type 'rss' and title if RSS feed, null otherwise
  */
 function checkRss(content: string): FeedResult | null {
-	// Step 1: Check for RSS root element with version attribute
-	// RSS feeds must start with an <rss> tag with a version attribute (RSS 0.91, 1.0, 2.0, etc.)
-	if (FEED_PATTERNS.RSS.VERSION.test(content)) {
+	// Step 1: Check for an RSS root element: either <rss version="..."> (RSS 0.91/2.0/etc.)
+	// or <rdf:RDF> (RSS 1.0, which has no <rss> tag at all).
+	if (FEED_PATTERNS.RSS.VERSION.test(content) || FEED_PATTERNS.RSS.RDF_ROOT.test(content)) {
 		// Step 2: Validate required RSS structure elements
 		const hasChannel = FEED_PATTERNS.RSS.CHANNEL.test(content); // Container for feed metadata
 		const hasItem = FEED_PATTERNS.RSS.ITEM.test(content); // Individual feed entries

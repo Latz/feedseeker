@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><rdf:RDF
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+    xmlns:image="http://purl.org/rss/1.0/modules/image/"
+>
+<channel rdf:about="https://mainichi.jp/english/">
+	<title>The Mainichi</title>
+	<link>https://mainichi.jp/english/</link>
+	<description>Japan's trusted source of news in English since 1922</description>
+	<dc:language>en</dc:language>
+	<dc:rights>The copyright of the materials belongs to The Mainichi Newspapers Co. unless stated otherwise.</dc:rights>
+	<dc:date>2026-08-31T06:19:33+09:00</dc:date>
+	<dc:publisher>The Mainichi Newspapers</dc:publisher>
+	<dc:creator>The Mainichi Newspapers</dc:creator>
+	<image rdf:resource="https://cdn.mainichi.jp/vol1/images/pc/logo-theMainichi.png"/>
+	<items>
+		<rdf:Seq>
+			<rdf:li rdf:resource="https://mainichi.jp/english/articles/20260830/p2g/00m/0dm/000000c"/>
+		</rdf:Seq>
+	</items>
+</channel>
+<item rdf:about="https://mainichi.jp/english/articles/20260830/p2g/00m/0dm/000000c">
+	<title>Sample headline from The Mainichi</title>
+	<link>https://mainichi.jp/english/articles/20260830/p2g/00m/0dm/000000c</link>
+	<description>Sample article description.</description>
+	<dc:date>2026-08-30T21:00:00+09:00</dc:date>
+</item>
+</rdf:RDF>

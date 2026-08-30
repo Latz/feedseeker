@@ -58,6 +58,34 @@ describe('checkFeed Module', () => {
 		});
 	});
 
+	describe('RDF/RSS 1.0 Feed Detection', () => {
+		it('should detect an RDF/RSS 1.0 feed by its <rdf:RDF> root element', async () => {
+			const rdfContent = `<?xml version="1.0" encoding="utf-8"?><rdf:RDF
+	xmlns="http://purl.org/rss/1.0/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+<channel rdf:about="https://example.com/">
+	<title>Example RDF Feed</title>
+	<link>https://example.com/</link>
+	<description>An example RSS 1.0 feed</description>
+</channel>
+<item rdf:about="https://example.com/item1">
+	<title>Item One</title>
+	<link>https://example.com/item1</link>
+	<description>First item</description>
+	<dc:date>2026-08-30T00:00:00+09:00</dc:date>
+</item>
+</rdf:RDF>`;
+
+			const result = await checkFeed('https://example.com/feed.rdf', rdfContent);
+
+			expect(result).toBeTruthy();
+			expect(result.type).toBe('rss');
+			expect(result.title).toBe('Example RDF Feed');
+		});
+	});
+
 	describe('Atom Feed Detection', () => {
 		it('should detect Atom feed by <entry> elements', async () => {
 			const atomContent = `<?xml version="1.0" encoding="utf-8"?>
