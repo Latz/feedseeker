@@ -39,6 +39,14 @@ const FORBIDDEN_RETRY_DELAY_MS = 300;
 // On top of the cap, a 429 still triggers an additional cooldown window
 // during which the per-host concurrency is reduced further (to 1), since a
 // tripped limiter needs time to recover, not just fewer simultaneous requests.
+//
+// Some hosts (e.g. Reddit) rate-limit by request *rate* within a time window,
+// not by concurrency — even a single request issued too soon after a 429 will
+// still be rejected, no matter how low concurrency is dropped. When such a
+// host reports its rate-limit state via the (widely-used) x-ratelimit-remaining
+// / x-ratelimit-reset headers, that reset time is used to make the *next*
+// request to that host actually wait, on top of (not instead of) the
+// concurrency-cap-to-1 behavior above.
 const HOST_MAX_CONCURRENCY = 2;
 const HOST_THROTTLED_CONCURRENCY = 1;
 const HOST_COOLDOWN_MS = 10_000;
@@ -47,6 +55,7 @@ interface HostState {
 	active: number;
 	queue: Array<() => void>;
 	cooldownUntil: number;
+	waitUntil: number;
 }
 const hostState = new Map<string, HostState>();
 
@@ -61,7 +70,7 @@ function getHostname(url: string): string {
 function getOrCreateHostState(hostname: string): HostState {
 	let state = hostState.get(hostname);
 	if (!state) {
-		state = { active: 0, queue: [], cooldownUntil: 0 };
+		state = { active: 0, queue: [], cooldownUntil: 0, waitUntil: 0 };
 		hostState.set(hostname, state);
 	}
 	return state;
@@ -72,24 +81,54 @@ function currentLimit(state: HostState): number {
 }
 
 /**
+ * Parses standard rate-limit response headers (x-ratelimit-remaining /
+ * x-ratelimit-reset, as used by Reddit, GitHub, and others) and returns the
+ * number of milliseconds to wait before the next request to this host, or
+ * null if the headers are absent, malformed, or don't indicate exhaustion.
+ */
+function getRateLimitWaitMs(response: Response): number | null {
+	const remaining = Number(response.headers?.get('x-ratelimit-remaining'));
+	const resetSeconds = Number(response.headers?.get('x-ratelimit-reset'));
+
+	if (!Number.isFinite(remaining) || !Number.isFinite(resetSeconds)) return null;
+	if (remaining > 0 || resetSeconds <= 0) return null;
+
+	return resetSeconds * 1000;
+}
+
+/**
  * Waits for a free concurrency slot on this host (capped at
  * HOST_MAX_CONCURRENCY, or HOST_THROTTLED_CONCURRENCY during an active
- * cooldown), then reserves it. Returns a function to call with the response
- * status once the request completes, which releases the slot and, on 429,
- * starts/extends the cooldown window.
+ * cooldown), then waits out any active rate-limit `waitUntil` deadline before
+ * reserving the slot. Returns a function to call with the completed response,
+ * which releases the slot and, based on the response, starts/extends the
+ * cooldown window and/or the rate-limit wait deadline.
  */
-async function acquireHostSlot(hostname: string): Promise<(status: number) => void> {
+async function acquireHostSlot(hostname: string): Promise<(response: Response | null) => void> {
 	const state = getOrCreateHostState(hostname);
 
 	while (state.active >= currentLimit(state)) {
 		await new Promise<void>((resolve) => state.queue.push(resolve));
 	}
+
+	const wait = state.waitUntil - Date.now();
+	if (wait > 0) {
+		await new Promise((resolve) => setTimeout(resolve, wait));
+	}
+
 	state.active++;
 
-	return (status: number) => {
+	// response is null when the request errored/timed out before producing a
+	// response (e.g. AbortError) — the slot must still be released, just with
+	// nothing to inspect for cooldown/rate-limit signals.
+	return (response: Response | null) => {
 		state.active--;
-		if (status === 429) {
+		if (response?.status === 429) {
 			state.cooldownUntil = Date.now() + HOST_COOLDOWN_MS;
+		}
+		const rateLimitWaitMs = response ? getRateLimitWaitMs(response) : null;
+		if (rateLimitWaitMs !== null) {
+			state.waitUntil = Math.max(state.waitUntil, Date.now() + rateLimitWaitMs);
 		}
 		const next = state.queue.shift();
 		next?.();
@@ -188,10 +227,6 @@ export default async function fetchWithTimeout(
 		throw new TypeError(`Invalid timeout: ${timeout}. Timeout must be a finite number.`);
 	}
 
-	// Set up abort controller for timeout
-	const controller = new AbortController();
-	const timeoutId = setTimeout(() => controller.abort(), timeout);
-
 	// Default browser-like headers to avoid being blocked by Cloudflare
 	const defaultHeaders: HeadersInit = {
 		'User-Agent':
@@ -219,6 +254,16 @@ export default async function fetchWithTimeout(
 	if (insecure) insecureAgent ??= new Agent({ connect: { rejectUnauthorized: false } });
 	const dispatcher = insecure ? insecureAgent : undefined;
 
+	// Wait for this host's concurrency slot / rate-limit gate BEFORE starting the
+	// request timeout — a host under heavy rate-limiting (e.g. Reddit) can require
+	// a wait longer than a single request's own timeout budget; that wait must not
+	// itself count against (and falsely trip) the request timeout.
+	const hostname = getHostname(url);
+	const releaseHostSlot = await acquireHostSlot(hostname);
+
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeout);
+
 	try {
 		const fetchInit: RequestInit = {
 			...fetchOptions,
@@ -231,8 +276,6 @@ export default async function fetchWithTimeout(
 		// bot-scoring where the identical request can pass or fail from one
 		// attempt to the next, independent of headers or protocol; others apply
 		// transient rate limiting (429) that clears on its own shortly after.
-		const hostname = getHostname(url);
-		const releaseHostSlot = await acquireHostSlot(hostname);
 		let response = await fetch(url, fetchInit);
 		for (
 			let attempt = 1;
@@ -242,12 +285,13 @@ export default async function fetchWithTimeout(
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
 			response = await fetch(url, fetchInit);
 		}
-		releaseHostSlot(response.status);
+		releaseHostSlot(response);
 
 		clearTimeout(timeoutId);
 		return response;
 	} catch (error: unknown) {
 		clearTimeout(timeoutId);
+		releaseHostSlot(null);
 
 		// Provide clear error message for timeout
 		if (error instanceof Error && error.name === 'AbortError') {

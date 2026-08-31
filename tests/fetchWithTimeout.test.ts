@@ -382,4 +382,245 @@ describe('fetchWithTimeout Module', () => {
 			}
 		});
 	});
+
+	describe('gate-wait vs request timeout ordering', () => {
+		const makeResponse = (status: number, headers?: Record<string, string>) =>
+			new Response('', { status, headers });
+
+		it('a long rate-limit gate wait does not itself trigger the request timeout', async () => {
+			vi.useFakeTimers();
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				const status = firstRequestDone ? 200 : 429;
+				const headers = firstRequestDone
+					? undefined
+					: { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '20' }; // 20s wait
+				return Promise.resolve(makeResponse(status, headers));
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://gate-wait-timeout-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				await first;
+				firstRequestDone = true;
+
+				// The next request must wait ~20s for the gate before its fetch
+				// even starts. Its own per-request timeout is much shorter (2s),
+				// but that timeout must only start counting once the request
+				// actually begins — not while it's still queued behind the gate.
+				const shortTimeoutMs = 2000;
+				const next = fetchWithTimeout(host, shortTimeoutMs);
+				await vi.runAllTimersAsync();
+				const response = await next;
+				expect(response.status).toBe(200);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('releases the host concurrency slot even when the request throws (e.g. times out)', async () => {
+			vi.useFakeTimers();
+			let callCount = 0;
+			const fetchMock = vi.fn().mockImplementation((_url, init: { signal: AbortSignal }) => {
+				callCount++;
+				// First two calls hang until aborted; the third succeeds immediately.
+				if (callCount <= 2) {
+					return new Promise((_resolve, reject) => {
+						init.signal.addEventListener('abort', () => {
+							const err = new Error('The operation was aborted');
+							err.name = 'AbortError';
+							reject(err);
+						});
+					});
+				}
+				return Promise.resolve(makeResponse(200));
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://slot-leak-on-error-test.example.com';
+
+				// Two requests that will time out and throw, at the host's normal
+				// concurrency cap (2) — if their slots aren't released on error,
+				// the host is permanently stuck at 0 free slots.
+				const timingOut = [
+					fetchWithTimeout(host, 100).catch((error: unknown) => error),
+					fetchWithTimeout(host, 100).catch((error: unknown) => error)
+				];
+				await vi.runAllTimersAsync();
+				await Promise.all(timingOut);
+
+				// A subsequent request must still be able to acquire a slot.
+				const after = fetchWithTimeout(host, 5000);
+				await vi.advanceTimersByTimeAsync(1);
+				expect(fetchMock.mock.calls.length).toBe(3); // fired immediately, not stuck queued
+
+				await vi.runAllTimersAsync();
+				const response = await after;
+				expect(response.status).toBe(200);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+	});
+
+	describe('rate-limit header cooldown', () => {
+		const makeResponse = (status: number, headers?: Record<string, string>) =>
+			new Response('', { status, headers });
+
+		it('honors x-ratelimit-reset when it is longer than the fixed cooldown', async () => {
+			vi.useFakeTimers();
+			const inFlight = { current: 0, max: 0 };
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				inFlight.current++;
+				inFlight.max = Math.max(inFlight.max, inFlight.current);
+				const status = firstRequestDone ? 200 : 429;
+				const headers = firstRequestDone
+					? undefined
+					: { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '20' }; // 20s > fixed 10s cooldown
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						inFlight.current--;
+						resolve(makeResponse(status, headers));
+					}, 10);
+				});
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://ratelimit-header-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				await first;
+				firstRequestDone = true;
+
+				// Just past the fixed 10s cooldown (which would normally have
+				// expired by now), the host-specific 20s reset should still be
+				// in effect, so a new request must still be gated to 1 in flight.
+				const callsBefore = fetchMock.mock.calls.length;
+				const afterFixedCooldown = fetchWithTimeout(host, 5000);
+				await vi.advanceTimersByTimeAsync(11_000);
+				expect(fetchMock.mock.calls.length).toBe(callsBefore); // still gated
+
+				await vi.runAllTimersAsync();
+				await afterFixedCooldown;
+				expect(fetchMock.mock.calls.length).toBeGreaterThan(callsBefore);
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('does not add an extra wait when x-ratelimit-reset is shorter than the fixed cooldown', async () => {
+			vi.useFakeTimers();
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				const status = firstRequestDone ? 200 : 429;
+				const headers = firstRequestDone
+					? undefined
+					: { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '2' }; // 2s < fixed 10s cooldown
+				return Promise.resolve(makeResponse(status, headers));
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://ratelimit-header-short-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				await first;
+				firstRequestDone = true;
+
+				// Past the short 2s header-driven wait, a single next request
+				// should fire immediately (the wait is capped by the header's own
+				// duration, not stretched out to match the longer fixed cooldown).
+				const callsBefore = fetchMock.mock.calls.length;
+				const afterHeaderWait = fetchWithTimeout(host, 5000);
+				await vi.advanceTimersByTimeAsync(2_001);
+				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+
+				await vi.runAllTimersAsync();
+				await afterHeaderWait;
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('does not delay a single next request when rate-limit headers are absent', async () => {
+			vi.useFakeTimers();
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				const status = firstRequestDone ? 200 : 429;
+				return Promise.resolve(makeResponse(status));
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://no-ratelimit-headers-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				await first;
+				firstRequestDone = true;
+
+				// No rate-limit headers means no explicit wait deadline — only the
+				// existing concurrency-cap-to-1 applies (covered by the separate
+				// "reduces concurrency further" test), so a single next request is
+				// not artificially delayed.
+				const callsBefore = fetchMock.mock.calls.length;
+				const next = fetchWithTimeout(host, 5000);
+				await vi.advanceTimersByTimeAsync(1);
+				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+
+				await vi.runAllTimersAsync();
+				await next;
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+
+		it('ignores malformed rate-limit header values without crashing or waiting', async () => {
+			vi.useFakeTimers();
+			let firstRequestDone = false;
+			const fetchMock = vi.fn().mockImplementation(() => {
+				const status = firstRequestDone ? 200 : 429;
+				const headers = firstRequestDone
+					? undefined
+					: { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': 'not-a-number' };
+				return Promise.resolve(makeResponse(status, headers));
+			});
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const host = 'https://malformed-ratelimit-header-test.example.com';
+
+				const first = fetchWithTimeout(host, 5000);
+				await vi.runAllTimersAsync();
+				const response = await first;
+				expect(response.status).toBe(429);
+				firstRequestDone = true;
+
+				// Should not throw, and malformed headers should not produce a wait.
+				const callsBefore = fetchMock.mock.calls.length;
+				const next = fetchWithTimeout(host, 5000);
+				await vi.advanceTimersByTimeAsync(1);
+				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+
+				await vi.runAllTimersAsync();
+				await next;
+			} finally {
+				vi.unstubAllGlobals();
+				vi.useRealTimers();
+			}
+		});
+	});
 });
