@@ -196,6 +196,60 @@ describe('initialize()', () => {
 		expect(fs.content).toBe('');
 	});
 
+	it('defaults challengeDetected to false', () => {
+		expect(new FeedSeeker('https://example.com').challengeDetected).toBe(false);
+	});
+
+	it('sets challengeDetected on a Cloudflare "Just a moment..." challenge page', async () => {
+		const cfChallengeHtml =
+			'<!DOCTYPE html><html><head><title>Just a moment...</title></head>' +
+			'<body><noscript><div class="h2"><span id="challenge-error-text">Enable JavaScript and cookies to continue</span></div></noscript></body></html>';
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 403,
+			statusText: 'Forbidden',
+			text: async () => cfChallengeHtml
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(true);
+		expect(fs.getInitStatus()).toBe('success');
+		expect(fs.content).toBe('');
+	});
+
+	it('sets challengeDetected on a Vercel Security Checkpoint page', async () => {
+		const vercelChallengeHtml =
+			'<!DOCTYPE html><html><head><title>Vercel Security Checkpoint</title></head><body></body></html>';
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 403,
+			statusText: 'Forbidden',
+			text: async () => vercelChallengeHtml
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(true);
+	});
+
+	it('does not set challengeDetected for an ordinary non-OK response', async () => {
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 404,
+			statusText: 'Not Found',
+			text: async () => '<html><body>Page not found</body></html>'
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(false);
+	});
+
+	it('does not set challengeDetected on a successful response', async () => {
+		(fetchWithTimeout as Mock).mockResolvedValue(mockOkResponse());
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(false);
+	});
+
 	it('emits error for invalid URL during initialize', async () => {
 		// URL that fails URL() constructor — constructor stores it, initialize validates it
 		const fs = new FeedSeeker('not a url at all :::');

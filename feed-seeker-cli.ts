@@ -21,6 +21,7 @@ interface CLIOptions extends FeedSeekerOptions {
 }
 
 let counterLength = 0; // needed for fancy blindsearch log display
+let anySiteHitChallenge = false; // set when any target site returned a bot-mitigation challenge page
 
 interface CLIRunContext {
 	isAllMode: boolean;
@@ -183,6 +184,10 @@ async function getFeeds(
 
 	// Initialize the site first to check for errors
 	await FeedFinder.initialize();
+
+	if (FeedFinder.challengeDetected) {
+		anySiteHitChallenge = true;
+	}
 
 	// If initialization failed, return empty array and don't continue searching
 	if (FeedFinder.initializationError) {
@@ -477,6 +482,8 @@ function printFeeds(feeds: Feed[]): void {
  * @returns Promise that resolves when CLI execution completes
  */
 export async function run(argv: string[] = process.argv): Promise<void> {
+	anySiteHitChallenge = false; // reset per invocation — module state must not leak across runs
+
 	const suppressBanner =
 		argv.includes('--json') ||
 		argv.includes('--quiet') || argv.includes('-q') ||
@@ -527,6 +534,16 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 				printFeeds(program.feeds);
 			}
 			// If no feeds found, the 'end' handler already printed the message.
+			if (program.feeds.length === 0 && anySiteHitChallenge) {
+				console.log(
+					styleText(
+						'yellow',
+						'\nNote: the site returned a bot-protection challenge page (e.g. Cloudflare or Vercel) ' +
+							'instead of real content, so feedseeker could not see the page to search it. ' +
+							'This does not mean the site has no feed — try again later, or check the site in a browser.'
+					)
+				);
+			}
 		}
 
 		// Exit code 2 = search succeeded but no feeds were found.

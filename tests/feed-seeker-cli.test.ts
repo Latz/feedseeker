@@ -509,4 +509,75 @@ describe('FeedSeeker CLI', () => {
 			expect(instance.options.showErrors).toBe(true);
 		});
 	});
+
+	describe('bot-mitigation challenge hint', () => {
+		const cfChallengeHtml =
+			'<!DOCTYPE html><html><head><title>Just a moment...</title></head>' +
+			'<body><noscript><div class="h2"><span id="challenge-error-text">Enable JavaScript and cookies to continue</span></div></noscript></body></html>';
+
+		it('prints a hint when the site returned a challenge page and no feeds were found', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValue({
+				ok: false,
+				status: 403,
+				text: async () => cfChallengeHtml
+			});
+			(metaLinksMod as Mock).mockResolvedValue([]);
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com'];
+			await run(argv);
+
+			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+			expect(loggedText).toMatch(/bot-protection challenge/i);
+		});
+
+		it('does not print the hint when feeds are found even if a challenge page was seen earlier', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValue({
+				ok: false,
+				status: 403,
+				text: async () => cfChallengeHtml
+			});
+			(metaLinksMod as Mock).mockResolvedValue(mockFeeds);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch'];
+			await run(argv);
+
+			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+			expect(loggedText).not.toMatch(/bot-protection challenge/i);
+		});
+
+		it('does not print the hint when no feeds are found for an ordinary reason (no challenge)', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValue({
+				ok: true,
+				text: async () => '<html></html>'
+			});
+			(metaLinksMod as Mock).mockResolvedValue([]);
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com'];
+			await run(argv);
+
+			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+			expect(loggedText).not.toMatch(/bot-protection challenge/i);
+		});
+
+		it('does not print the hint in --json mode even if a challenge page was seen', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValue({
+				ok: false,
+				status: 403,
+				text: async () => cfChallengeHtml
+			});
+			(metaLinksMod as Mock).mockResolvedValue([]);
+			(anchorsMod as Mock).mockResolvedValue([]);
+			(blindsearchMod as Mock).mockResolvedValue([]);
+
+			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--json'];
+			await run(argv);
+
+			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+			expect(loggedText).not.toMatch(/bot-protection challenge/i);
+		});
+	});
 });

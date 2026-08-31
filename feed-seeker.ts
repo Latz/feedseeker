@@ -40,6 +40,19 @@ export type {
 	EventEmitterInterface,
 };
 
+// Known bot-mitigation challenge pages return a non-OK response with a real
+// HTML body (not a plain error page) that a browser would solve via JS, but
+// that no HTTP client we use can pass. Detecting these lets the CLI tell the
+// user *why* nothing was found instead of implying the site has no feed.
+const CHALLENGE_SIGNATURES = [
+	/id=["']challenge-error-text["']/i, // Cloudflare "Just a moment..." managed challenge
+	/Vercel Security Checkpoint/i,
+];
+
+function isChallengePage(content: string): boolean {
+	return CHALLENGE_SIGNATURES.some((pattern) => pattern.test(content));
+}
+
 /**
  * FeedSeeker options interface
  */
@@ -88,6 +101,13 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	initPromise: Promise<void> | null;
 	content?: string;
 	document!: Document;
+	/**
+	 * Set when the initial site fetch returned a bot-mitigation challenge page
+	 * (e.g. Cloudflare's "Just a moment..." or Vercel's Security Checkpoint)
+	 * instead of real content — the site likely has a feed, but it can't be
+	 * discovered because no HTML/links were ever actually received.
+	 */
+	challengeDetected = false;
 	/** Set when the site URL itself is a feed (not an HTML page linking to one) */
 	private selfFeed: Feed | null = null;
 	private readonly rawSite: string; // Store the raw input for validation during initialization
@@ -262,7 +282,13 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 						response = httpsRetry;
 					} else {
 						// For 403/401/other non-OK responses, continue with empty content
-						// so blind search can still find feeds at common paths
+						// so blind search can still find feeds at common paths — but first
+						// check whether this is a bot-mitigation challenge page, since that
+						// changes what "no feeds found" should tell the user.
+						const body = await response.text().catch(() => '');
+						if (isChallengePage(body)) {
+							this.challengeDetected = true;
+						}
 						this.content = '';
 						this.document = this.createEmptyDocument();
 						this.initStatus = 'success';
