@@ -267,7 +267,7 @@
 		"magento/feed",
 		"opencart/feed",
 		"prestashop/feed",
-		"shopify/feed",
+		"blogs/news.atom",
 		"typo3/feed",
 		"woocommerce/feed",
 		"discourse/feed",
