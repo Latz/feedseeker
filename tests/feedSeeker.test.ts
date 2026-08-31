@@ -242,6 +242,98 @@ describe('initialize()', () => {
 		await fs.initialize();
 		expect(errData.error).toContain('ECONNRESET');
 	});
+
+	it('detects when the site URL itself is a feed, without running the metaLinks module', async () => {
+		const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>Newsletter</title><description></description><item><title>Post</title></item></channel></rss>`;
+		(fetchWithTimeout as Mock).mockResolvedValue(mockOkResponse(rss));
+		const fs = new FeedSeeker('https://example.com/feed');
+		const result = await fs.metaLinks();
+		expect(metaLinksMod).not.toHaveBeenCalled();
+		expect(result).toEqual([
+			{ url: 'https://example.com/feed', title: null, type: 'rss', feedTitle: 'Newsletter' }
+		]);
+	});
+
+	describe('http:// to https:// fallback', () => {
+		it('retries https:// when an explicit http:// site returns a non-OK response, and switches site to it on success', async () => {
+			(fetchWithTimeout as Mock)
+				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' })
+				.mockResolvedValueOnce(
+					mockOkResponse('<html><head><title>Real site</title></head><body></body></html>')
+				);
+
+			const fs = new FeedSeeker('http://example.com');
+			await fs.initialize();
+
+			expect(fetchWithTimeout).toHaveBeenCalledTimes(2);
+			expect(fetchWithTimeout).toHaveBeenNthCalledWith(1, 'http://example.com', expect.anything());
+			expect(fetchWithTimeout).toHaveBeenNthCalledWith(
+				2,
+				'https://example.com',
+				expect.anything()
+			);
+			expect(fs.site).toBe('https://example.com');
+			expect(fs.content).toContain('<title>Real site</title>');
+			expect(fs.getInitStatus()).toBe('success');
+		});
+
+		it('retries https:// when an explicit http:// site throws, and switches site to it on success', async () => {
+			(fetchWithTimeout as Mock)
+				.mockRejectedValueOnce(new Error('connection refused'))
+				.mockResolvedValueOnce(
+					mockOkResponse('<html><head><title>Recovered</title></head><body></body></html>')
+				);
+
+			const fs = new FeedSeeker('http://example.com');
+			await fs.initialize();
+
+			expect(fetchWithTimeout).toHaveBeenCalledTimes(2);
+			expect(fs.site).toBe('https://example.com');
+			expect(fs.content).toContain('<title>Recovered</title>');
+			expect(fs.getInitStatus()).toBe('success');
+		});
+
+		it('preserves existing non-OK behavior when the https:// retry also fails', async () => {
+			(fetchWithTimeout as Mock)
+				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' })
+				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' });
+
+			const fs = new FeedSeeker('http://example.com');
+			await fs.initialize();
+
+			expect(fs.site).toBe('http://example.com');
+			expect(fs.content).toBe('');
+			expect(fs.getInitStatus()).toBe('success');
+		});
+
+		it('preserves existing thrown-error behavior when the https:// retry also fails', async () => {
+			(fetchWithTimeout as Mock)
+				.mockRejectedValueOnce(new Error('connection refused'))
+				.mockRejectedValueOnce(new Error('still refused'));
+
+			const fs = new FeedSeeker('http://example.com');
+			fs.on('error', () => {}); // prevent unhandled error event throw
+			await fs.initialize();
+
+			expect(fs.site).toBe('http://example.com');
+			expect(fs.getInitStatus()).toBe('error');
+		});
+
+		it('does not attempt a fallback retry for an https:// site', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValueOnce({
+				ok: false,
+				status: 404,
+				statusText: 'Not Found',
+				text: async () => ''
+			});
+
+			const fs = new FeedSeeker('https://example.com');
+			await fs.initialize();
+
+			expect(fetchWithTimeout).toHaveBeenCalledTimes(1);
+			expect(fs.site).toBe('https://example.com');
+		});
+	});
 });
 
 // ─── search methods delegate to modules ──────────────────────────────────────

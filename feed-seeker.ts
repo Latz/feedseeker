@@ -242,19 +242,33 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 				}
 
 				const timeout = (this.options.timeout ?? 15) * 1000;
-				const response = await fetchWithTimeout(this.site, {
-					timeout,
-					insecure: this.options.insecure
-				});
+				const fetchOptions = { timeout, insecure: this.options.insecure };
+
+				let response: Response;
+				try {
+					response = await fetchWithTimeout(this.site, fetchOptions);
+				} catch (error: unknown) {
+					// An explicit http:// site that fails outright (e.g. a broken/default
+					// vhost) may still work over https:// on the same host — many sites
+					// serve a real site on https but leave plain HTTP misconfigured.
+					const httpsRetry = await this.tryHttpsFallback(fetchOptions);
+					if (!httpsRetry) throw error;
+					response = httpsRetry;
+				}
 
 				if (!response.ok) {
-					// For 403/401/other non-OK responses, continue with empty content
-					// so blind search can still find feeds at common paths
-					this.content = '';
-					this.document = this.createEmptyDocument();
-					this.initStatus = 'success';
-					this.emit('initialized');
-					return;
+					const httpsRetry = await this.tryHttpsFallback(fetchOptions);
+					if (httpsRetry) {
+						response = httpsRetry;
+					} else {
+						// For 403/401/other non-OK responses, continue with empty content
+						// so blind search can still find feeds at common paths
+						this.content = '';
+						this.document = this.createEmptyDocument();
+						this.initStatus = 'success';
+						this.emit('initialized');
+						return;
+					}
 				}
 
 				this.content = await response.text();
@@ -285,6 +299,31 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		})();
 
 		return this.initPromise;
+	}
+
+	/**
+	 * When `this.site` is an explicit http:// URL, attempts one retry against the
+	 * https:// equivalent of the same host/path/query. On success, updates
+	 * `this.site` so every downstream strategy (metaLinks, anchors, blindSearch,
+	 * deepSearch) operates against the working scheme. Returns the successful
+	 * response, or null if not applicable (site isn't http://) or the retry
+	 * itself failed/threw.
+	 * @private
+	 */
+	private async tryHttpsFallback(
+		fetchOptions: { timeout: number; insecure?: boolean }
+	): Promise<Response | null> {
+		if (!this.site.startsWith('http://')) return null;
+
+		const httpsSite = `https://${this.site.slice('http://'.length)}`;
+		try {
+			const response = await fetchWithTimeout(httpsSite, fetchOptions);
+			if (!response.ok) return null;
+			this.site = httpsSite;
+			return response;
+		} catch {
+			return null;
+		}
 	}
 
 	/**
