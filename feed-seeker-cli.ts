@@ -538,7 +538,7 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 				console.log(
 					styleText(
 						'yellow',
-						'\nNote: the site returned a bot-protection challenge page (e.g. Cloudflare or Vercel) ' +
+						'\nNote: the site returned a bot-protection challenge page (e.g. Cloudflare, Vercel, or AWS WAF) ' +
 							'instead of real content, so feedseeker could not see the page to search it. ' +
 							'This does not mean the site has no feed — try again later, or check the site in a browser.'
 					)

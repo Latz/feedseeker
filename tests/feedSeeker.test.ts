@@ -231,6 +231,19 @@ describe('initialize()', () => {
 		expect(fs.challengeDetected).toBe(true);
 	});
 
+	it('sets challengeDetected on an AWS WAF captcha challenge (x-amzn-waf-action header)', async () => {
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 405,
+			statusText: 'Method Not Allowed',
+			headers: new Headers({ 'x-amzn-waf-action': 'captcha' }),
+			text: async () => '<html><body>Human verification required</body></html>'
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(true);
+	});
+
 	it('does not set challengeDetected for an ordinary non-OK response', async () => {
 		(fetchWithTimeout as Mock).mockResolvedValue({
 			ok: false,
@@ -240,6 +253,33 @@ describe('initialize()', () => {
 		});
 		const fs = new FeedSeeker('https://example.com');
 		await fs.initialize();
+		expect(fs.challengeDetected).toBe(false);
+	});
+
+	it('does not set challengeDetected when x-amzn-waf-action has a non-captcha value', async () => {
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 403,
+			statusText: 'Forbidden',
+			headers: new Headers({ 'x-amzn-waf-action': 'block' }),
+			text: async () => '<html><body>Forbidden</body></html>'
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await fs.initialize();
+		expect(fs.challengeDetected).toBe(false);
+	});
+
+	it('does not set challengeDetected for a non-OK response without a headers object at all', async () => {
+		// Mocks in other tests (and some real error paths) may not provide a
+		// Headers-like object — must not throw and must not falsely trigger.
+		(fetchWithTimeout as Mock).mockResolvedValue({
+			ok: false,
+			status: 500,
+			statusText: 'Internal Server Error',
+			text: async () => '<html><body>Server error</body></html>'
+		});
+		const fs = new FeedSeeker('https://example.com');
+		await expect(fs.initialize()).resolves.not.toThrow();
 		expect(fs.challengeDetected).toBe(false);
 	});
 
@@ -386,6 +426,64 @@ describe('initialize()', () => {
 
 			expect(fetchWithTimeout).toHaveBeenCalledTimes(1);
 			expect(fs.site).toBe('https://example.com');
+		});
+	});
+
+	describe('syncing site to the final URL after a redirect', () => {
+		it('updates site to response.url when the initial fetch was redirected to a different origin', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				statusText: 'OK',
+				url: 'https://go.dev/',
+				text: async () => '<html><head></head><body></body></html>'
+			});
+
+			const fs = new FeedSeeker('https://blog.golang.org');
+			await fs.initialize();
+
+			// Root-path trailing slash normalization applies to the redirect
+			// target too, same as the constructor's own normalization.
+			expect(fs.site).toBe('https://go.dev');
+		});
+
+		it('leaves site unchanged when response.url matches the requested site', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				statusText: 'OK',
+				url: 'https://example.com/',
+				text: async () => '<html><head></head><body></body></html>'
+			});
+
+			const fs = new FeedSeeker('https://example.com');
+			await fs.initialize();
+
+			expect(fs.site).toBe('https://example.com');
+		});
+
+		it('leaves site unchanged when response.url is absent (e.g. a minimal test mock)', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValueOnce(mockOkResponse());
+
+			const fs = new FeedSeeker('https://example.com');
+			await fs.initialize();
+
+			expect(fs.site).toBe('https://example.com');
+		});
+
+		it('normalizes a non-root redirect target by keeping its path', async () => {
+			(fetchWithTimeout as Mock).mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				statusText: 'OK',
+				url: 'https://go.dev/blog/some-post',
+				text: async () => '<html><head></head><body></body></html>'
+			});
+
+			const fs = new FeedSeeker('https://blog.golang.org/some-post');
+			await fs.initialize();
+
+			expect(fs.site).toBe('https://go.dev/blog/some-post');
 		});
 	});
 });

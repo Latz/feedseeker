@@ -44,13 +44,29 @@ export type {
 // HTML body (not a plain error page) that a browser would solve via JS, but
 // that no HTTP client we use can pass. Detecting these lets the CLI tell the
 // user *why* nothing was found instead of implying the site has no feed.
-const CHALLENGE_SIGNATURES = [
+const CHALLENGE_BODY_SIGNATURES = [
 	/id=["']challenge-error-text["']/i, // Cloudflare "Just a moment..." managed challenge
 	/Vercel Security Checkpoint/i,
 ];
 
-function isChallengePage(content: string): boolean {
-	return CHALLENGE_SIGNATURES.some((pattern) => pattern.test(content));
+function isChallengeResponse(response: Response, body: string): boolean {
+	// AWS WAF's Human Verification (CAPTCHA) challenge is signaled by a
+	// response header, not distinctive body text.
+	if (response.headers?.get('x-amzn-waf-action') === 'captcha') return true;
+
+	return CHALLENGE_BODY_SIGNATURES.some((pattern) => pattern.test(body));
+}
+
+/**
+ * Normalizes a site URL: strips the trailing slash on a bare root URL (no
+ * path, query, or hash) to avoid duplicate-checking the same endpoint twice
+ * during path traversal, e.g. `https://example.com/` -> `https://example.com`.
+ * Non-root URLs are returned as-is (via `href`). Throws if `url` is invalid —
+ * callers that need to tolerate invalid input should catch around this.
+ */
+function normalizeSiteUrl(url: string): string {
+	const urlObj = new URL(url);
+	return urlObj.pathname === '/' && !urlObj.search && !urlObj.hash ? urlObj.origin : urlObj.href;
 }
 
 /**
@@ -146,13 +162,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 
 		// Try to parse URL to normalize it, but don't throw errors here
 		try {
-			const urlObj = new URL(normalizedSite);
-			// Normalize site link but remove trailing slash for root paths to prevent duplicate checks in path traversal
-			// For example: https://example.com/ should become https://example.com to avoid checking endpoints twice
-			this.site =
-				urlObj.pathname === '/' && !urlObj.search && !urlObj.hash
-					? urlObj.origin
-					: urlObj.href;
+			this.site = normalizeSiteUrl(normalizedSite);
 		} catch {
 			// If URL is invalid, store the normalized attempt
 			// The actual error will be emitted during initialize()
@@ -286,7 +296,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 						// check whether this is a bot-mitigation challenge page, since that
 						// changes what "no feeds found" should tell the user.
 						const body = await response.text().catch(() => '');
-						if (isChallengePage(body)) {
+						if (isChallengeResponse(response, body)) {
 							this.challengeDetected = true;
 						}
 						this.content = '';
@@ -294,6 +304,24 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 						this.initStatus = 'success';
 						this.emit('initialized');
 						return;
+					}
+				}
+
+				// Sync site to wherever the request actually landed — fetch follows
+				// redirects transparently, and a site can redirect to a different
+				// scheme, subdomain, or even an entirely different domain (e.g. a
+				// project's blog moving hosts). Without this, every relative URL
+				// resolved against `this.site` downstream (metaLinks, anchors,
+				// blindSearch's candidate generation) would target the original,
+				// possibly-redirecting URL instead of the real, direct one.
+				if (response.url) {
+					try {
+						const finalSite = normalizeSiteUrl(response.url);
+						if (finalSite !== this.site) {
+							this.site = finalSite;
+						}
+					} catch {
+						// Leave this.site as-is if response.url is somehow invalid.
 					}
 				}
 

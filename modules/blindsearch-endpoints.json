@@ -17,6 +17,7 @@
 		"feed/atom/",
 		"blog/feed",
 		"blog/rss",
+		"blog/rss.xml",
 		"feed.json",
 		"rss.php",
 		"feed.php",
