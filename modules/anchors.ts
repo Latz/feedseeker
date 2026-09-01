@@ -11,7 +11,9 @@
  * @since 1.0.0
  */
 
+import { parseHTML } from 'linkedom';
 import checkFeed from './checkFeed.ts';
+import fetchWithTimeout from './fetchWithTimeout.ts';
 import { type Feed, type MetaLinksInstance } from './metaLinks.ts';
 
 // Pre-converted array for subdomain suffix checks — avoids re-allocating on every isAllowedDomain() call
@@ -101,6 +103,21 @@ function isAllowedDomain(url: string, baseUrl: URL): boolean {
 }
 
 /**
+ * Fetches and parses the meta-refresh target URL, then recursively checks it for feeds.
+ * Returns an empty array (rather than throwing) if the target page can't be fetched.
+ */
+async function followRedirectTarget(instance: MetaLinksInstance, redirectUrl: string): Promise<Feed[]> {
+	const response = await fetchWithTimeout(redirectUrl, {
+		timeout: instance.options?.timeout,
+		insecure: instance.options?.insecure
+	});
+	if (!response?.ok) return [];
+	const html = await response.text();
+	const { document } = parseHTML(html);
+	return checkAnchors({ ...instance, site: redirectUrl, document });
+}
+
+/**
  * Handles meta refresh redirects if present in the document.
  * It will fetch the content of the new URL and update the instance's document.
  * @param {MetaLinksInstance} instance - The FeedSeeker instance containing document and site info.
@@ -119,8 +136,7 @@ function handleMetaRefreshRedirect(instance: MetaLinksInstance): Promise<Feed[]>
 						module: 'anchors',
 						message: `Following meta refresh redirect to ${redirectUrl}`
 					});
-					// Recursively call checkAnchors on the new URL
-					return checkAnchors({ ...instance, site: redirectUrl });
+					return followRedirectTarget(instance, redirectUrl);
 				}
 			}
 		}

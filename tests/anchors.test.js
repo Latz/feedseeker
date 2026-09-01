@@ -8,6 +8,12 @@ vi.mock('../modules/checkFeed.ts', () => ({
 }));
 import checkFeed from '../modules/checkFeed.ts';
 
+// Mock fetchWithTimeout to avoid real network requests
+vi.mock('../modules/fetchWithTimeout.ts', () => ({
+	default: vi.fn()
+}));
+import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
+
 // Build a minimal mock instance that mirrors MetaLinksInstance
 function makeInstance(html, options = {}) {
 	const { document } = parseHTML(html);
@@ -165,6 +171,18 @@ describe('checkAllAnchors()', () => {
 		expect(errorEvent.data.module).toBe('anchors');
 	});
 
+	it('includes the failing URL and error message when a plain-text URL check throws with showErrors true', async () => {
+		checkFeed.mockRejectedValue(new Error('boom'));
+		const html = '<html><body>Subscribe at https://example.com/rss.xml for updates</body></html>';
+		const instance = makeInstance(html, { showErrors: true });
+		const result = await checkAllAnchors(instance);
+		expect(result).toEqual([]);
+		const errorEvent = instance._events.find((e) => e.event === 'error');
+		expect(errorEvent).toBeDefined();
+		expect(errorEvent.data.module).toBe('anchors');
+		expect(errorEvent.data.error).toContain('boom');
+	});
+
 	it('respects maxFeeds: stops after finding N feeds (with concurrency=1)', async () => {
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
 		const html = `<html><body>
@@ -270,6 +288,42 @@ describe('meta refresh redirect', () => {
 			<meta http-equiv="refresh" content="0; url=https://example.com/new-page">
 		</head><body></body></html>`;
 		const instance = makeInstance(html, {});
+		const result = await checkAllAnchors(instance);
+		expect(result).toEqual([]);
+	});
+
+	it('follows meta refresh redirect by fetching the target page and returns feeds found there', async () => {
+		checkFeed.mockImplementation(async (url) => {
+			if (url === 'https://example.com/feed.xml') return { type: 'rss', title: 'Redirected Feed' };
+			return null;
+		});
+		fetchWithTimeout.mockResolvedValue({
+			ok: true,
+			text: async () => '<html><body><a href="feed.xml">Feed</a></body></html>'
+		});
+		const html = `<html><head>
+			<meta http-equiv="refresh" content="0; url=/new-page">
+		</head><body><a href="/original-page-link">Ignored</a></body></html>`;
+		const instance = makeInstance(html, { followMetaRefresh: true });
+		const result = await checkAllAnchors(instance);
+		expect(fetchWithTimeout).toHaveBeenCalledWith(
+			'https://example.com/new-page',
+			expect.anything()
+		);
+		expect(result).toHaveLength(1);
+		expect(result[0].url).toBe('https://example.com/feed.xml');
+		const redirectLog = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.includes('Following meta refresh redirect')
+		);
+		expect(redirectLog).toBeDefined();
+	});
+
+	it('does not recurse when the target page fetch fails', async () => {
+		fetchWithTimeout.mockResolvedValue({ ok: false, status: 404 });
+		const html = `<html><head>
+			<meta http-equiv="refresh" content="0; url=/missing-page">
+		</head><body></body></html>`;
+		const instance = makeInstance(html, { followMetaRefresh: true });
 		const result = await checkAllAnchors(instance);
 		expect(result).toEqual([]);
 	});

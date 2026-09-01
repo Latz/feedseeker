@@ -4,6 +4,10 @@ import deepSearch, { EXCLUDED_EXTENSIONS } from '../modules/deepSearch.ts';
 // Track getDomain call arguments to verify caching behaviour in isValidUrl
 let tldtsGetDomainCalls = [];
 
+// Set to a URL for which getDomain() should throw, simulating a tldts internal failure
+// on a pathological input (isValidUrl's catch block exists to guard against exactly this).
+let tldtsThrowForUrl = null;
+
 vi.mock('tldts', async (importOriginal) => {
 	const real = await importOriginal();
 	return {
@@ -11,6 +15,7 @@ vi.mock('tldts', async (importOriginal) => {
 			...real.default,
 			getDomain: (...args) => {
 				tldtsGetDomainCalls.push(args[0]);
+				if (args[0] === tldtsThrowForUrl) throw new Error('tldts internal failure');
 				return real.default.getDomain(...args);
 			}
 		}
@@ -51,6 +56,7 @@ describe('deepSearch()', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		tldtsGetDomainCalls.length = 0;
+		tldtsThrowForUrl = null;
 	});
 
 	it('throws for a completely invalid start URL', async () => {
@@ -339,6 +345,23 @@ describe('deepSearch()', () => {
 	});
 });
 
+describe('deepSearch — maxErrors circuit breaker', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('kills the queue and emits a stop log once errorCount reaches maxErrors', async () => {
+		fetchWithTimeout.mockRejectedValue(new Error('ECONNREFUSED'));
+		const instance = makeInstance();
+		const result = await deepSearch('https://example.com', { depth: 1, maxErrors: 1 }, instance);
+		expect(result).toEqual([]);
+		const stopLog = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.includes('Stopped due to') && e.data?.message?.includes('errors')
+		);
+		expect(stopLog).toBeDefined();
+	});
+});
+
 describe('deepSearch — maxFeeds limit', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -404,6 +427,186 @@ describe('deepSearch — checkFeed throws during crawl', () => {
 		// crawlPage catch → handleFetchError → emits 'log' with an error field
 		const logEvents = instance._events.filter((e) => e.event === 'log');
 		expect(logEvents.some((e) => e.data?.error?.includes('parse failure'))).toBe(true);
+	});
+});
+
+describe('deepSearch — normalizeUrl trailing slash', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('strips a trailing slash from a non-root path when normalizing an enqueued link', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/') {
+				return mockResponse('<html><body><a href="/foo/">foo</a></body></html>');
+			}
+			return mockResponse('<html><body></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		await deepSearch('https://example.com', { depth: 2 });
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).toContain('https://example.com/foo');
+		expect(fetchedUrls).not.toContain('https://example.com/foo/');
+	});
+});
+
+describe('deepSearch — sitemap seeding', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('seeds URLs from a sitemap.xml referenced by robots.txt and logs the count', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/robots.txt') {
+				return mockResponse('User-agent: *\nSitemap: https://example.com/custom-sitemap.xml');
+			}
+			if (url === 'https://example.com/custom-sitemap.xml') {
+				return mockResponse(
+					'<urlset><url><loc>https://example.com/sitemap-page1</loc></url><url><loc>https://example.com/sitemap-page2</loc></url></urlset>'
+				);
+			}
+			return mockResponse('<html><body></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance();
+		// depth must be >= 1 for the queue to actually crawl sitemap-seeded URLs (pushed at depth: 1)
+		await deepSearch('https://example.com', { depth: 1, maxLinks: 10 }, instance);
+
+		const seededLog = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.includes('Seeded') && e.data?.message?.includes('sitemap')
+		);
+		expect(seededLog).toBeDefined();
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).toContain('https://example.com/sitemap-page1');
+		expect(fetchedUrls).toContain('https://example.com/sitemap-page2');
+	});
+
+	it('ignores a malformed <loc> entry in the sitemap instead of throwing', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/robots.txt') return mockResponse('', false, 404);
+			if (url === 'https://example.com/sitemap.xml') {
+				// "not a url" is not parseable by `new URL()`, hitting normalizeUrl's catch fallback.
+				// isValidUrl then rejects it (different/no domain), so it's filtered out silently.
+				return mockResponse(
+					'<urlset><url><loc>not a url</loc></url><url><loc>https://example.com/good-page</loc></url></urlset>'
+				);
+			}
+			return mockResponse('<html><body></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		await expect(
+			deepSearch('https://example.com', { depth: 1, maxLinks: 10 }, {})
+		).resolves.toEqual([]);
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).toContain('https://example.com/good-page');
+	});
+
+	it('skips a sitemap URL that duplicates the already-enqueued start URL', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/robots.txt') return mockResponse('', false, 404);
+			if (url === 'https://example.com/sitemap.xml') {
+				return mockResponse('<urlset><url><loc>https://example.com/</loc></url></urlset>');
+			}
+			return mockResponse('<html><body></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance();
+		await deepSearch('https://example.com', { depth: 0, maxLinks: 10 }, instance);
+		// The duplicate (start URL itself) must not be logged as newly seeded.
+		const seededLog = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.includes('Seeded')
+		);
+		expect(seededLog).toBeUndefined();
+	});
+
+	it('stops seeding from the sitemap once maxLinks is reached', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/robots.txt') return mockResponse('', false, 404);
+			if (url === 'https://example.com/sitemap.xml') {
+				return mockResponse(
+					'<urlset><url><loc>https://example.com/p1</loc></url><url><loc>https://example.com/p2</loc></url><url><loc>https://example.com/p3</loc></url></urlset>'
+				);
+			}
+			return mockResponse('<html><body></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		// maxLinks=1: only the start URL itself fits; sitemap seeding loop should break immediately.
+		await deepSearch('https://example.com', { depth: 0, maxLinks: 1 }, {});
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).not.toContain('https://example.com/p1');
+	});
+});
+
+describe('deepSearch — isValidUrl error handling', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		tldtsThrowForUrl = null;
+	});
+
+	it('emits an error event and continues crawling when tldts.getDomain throws while validating a link', async () => {
+		fetchWithTimeout.mockResolvedValue(
+			mockResponse('<html><body><a href="/bad">bad</a><a href="/ok">ok</a></body></html>')
+		);
+		checkFeed.mockResolvedValue(null);
+		tldtsThrowForUrl = 'https://example.com/bad';
+		const instance = makeInstance();
+		const result = await deepSearch('https://example.com', { depth: 1, maxErrors: 5 }, instance);
+		expect(result).toEqual([]);
+		const errorEvent = instance._events.find(
+			(e) => e.event === 'error' && e.data?.error?.includes('Invalid URL')
+		);
+		expect(errorEvent).toBeDefined();
+		// Crawl continues past the failing link and still processes the other one.
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls.some((u) => u.endsWith('/ok'))).toBe(true);
+	});
+});
+
+describe('deepSearch — crawl gating (depth, dedup, foreign-domain)', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('does not crawl links beyond maxDepth', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/') {
+				return mockResponse('<html><body><a href="/page1">p1</a></body></html>');
+			}
+			return mockResponse('<html><body><a href="/page2">p2</a></body></html>');
+		});
+		checkFeed.mockResolvedValue(null);
+		await deepSearch('https://example.com', { depth: 1 });
+		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
+		expect(fetchedUrls).toContain('https://example.com/page1');
+		expect(fetchedUrls).not.toContain('https://example.com/page2');
+	});
+
+	it('emits max-links-reached log exactly once even when the cap is hit repeatedly', async () => {
+		fetchWithTimeout.mockResolvedValue(
+			mockResponse('<html><body><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></body></html>')
+		);
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance();
+		await deepSearch('https://example.com', { depth: 2, maxLinks: 1 }, instance);
+		const maxLinksLogs = instance._events.filter(
+			(e) => e.event === 'log' && e.data?.message?.includes('Max links limit')
+		);
+		expect(maxLinksLogs.length).toBeLessThanOrEqual(1);
+	});
+
+	it('checks a foreign-domain link for feeds when foreignOnly and checkForeignFeeds are both true', async () => {
+		fetchWithTimeout.mockImplementation(async (url) => {
+			if (url === 'https://example.com/') {
+				return mockResponse('<html><body><a href="https://foreign.com/maybe-feed">f</a></body></html>');
+			}
+			return mockResponse('not a feed');
+		});
+		checkFeed.mockImplementation(async (url) => {
+			if (url.includes('foreign.com')) return { type: 'rss', title: 'Foreign' };
+			return null;
+		});
+		const result = await deepSearch('https://example.com', { depth: 1, checkForeignFeeds: true });
+		expect(result.some((f) => f.url.includes('foreign.com'))).toBe(true);
 	});
 });
 

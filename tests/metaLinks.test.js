@@ -271,6 +271,61 @@ describe('metaLinks()', () => {
 		expect(logEvent).toBeDefined();
 	});
 
+	it('stops at the start of a later batch when maxFeeds was already reached in an earlier batch', async () => {
+		// 6 links with batchSize=5: batch 1 processes links 1-5, batch 2 (link 6) should
+		// short-circuit at the top of the loop instead of running any more checkFeed calls.
+		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
+		const links = Array.from({ length: 6 }, (_, i) => `<link type="application/rss+xml" href="/feed${i + 1}.xml">`).join('\n');
+		const instance = makeInstance(`<html><head>${links}</head></html>`, { maxFeeds: 1 });
+		await metaLinks(instance);
+		const callsForBatch2 = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed6.xml');
+		expect(callsForBatch2).toHaveLength(0);
+	});
+
+	it('emits error and returns null href when a link href fails URL resolution, only when showErrors is true', async () => {
+		const html = `<html><head><link type="application/rss+xml" href="http://[invalid"></head></html>`;
+		const instanceShowErrors = makeInstance(html, { showErrors: true });
+		const resultShow = await metaLinks(instanceShowErrors);
+		expect(resultShow).toEqual([]);
+		expect(checkFeed).not.toHaveBeenCalled();
+		const errorEvent = instanceShowErrors._events.find((e) => e.event === 'error');
+		expect(errorEvent).toBeDefined();
+		expect(errorEvent.data.module).toBe('metalinks');
+
+		checkFeed.mockClear();
+		const instanceQuiet = makeInstance(html, { showErrors: false });
+		const resultQuiet = await metaLinks(instanceQuiet);
+		expect(resultQuiet).toEqual([]);
+		expect(instanceQuiet._events.filter((e) => e.event === 'error')).toHaveLength(0);
+	});
+
+	it('stops after step 2 (rel=alternate type links) when maxFeeds is reached there, without evaluating step 3', async () => {
+		// type="text/xml" doesn't match step 1's exact application/<type> selectors, but does
+		// match step 2's `type*="xml"` substring selector — so this link is only found in step 2.
+		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
+		const html = `<html><head>
+			<link rel="alternate" type="text/xml" href="/step2-feed.xml">
+			<link rel="alternate" href="/feed/step3-pattern.xml">
+		</head></html>`;
+		const instance = makeInstance(html, { maxFeeds: 1 });
+		const result = await metaLinks(instance);
+		expect(result).toHaveLength(1);
+		expect(result[0].url).toBe('https://example.com/step2-feed.xml');
+		const callsForStep3 = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed/step3-pattern.xml');
+		expect(callsForStep3).toHaveLength(0);
+	});
+
+	it('finds feeds via step 3 (href-pattern matched rel=alternate links) when steps 1 and 2 find nothing', async () => {
+		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
+		const html = `<html><head>
+			<link rel="alternate" href="/feed/pattern-match.xml">
+		</head></html>`;
+		const instance = makeInstance(html, { maxFeeds: 1 });
+		const result = await metaLinks(instance);
+		expect(result).toHaveLength(1);
+		expect(result[0].url).toBe('https://example.com/feed/pattern-match.xml');
+	});
+
 	it('skips a link when checkFeed throws and continues processing remaining links', async () => {
 		checkFeed
 			.mockRejectedValueOnce(new Error('Network error'))

@@ -318,25 +318,6 @@ class Crawler extends EventEmitter {
 	}
 
 	/**
-	 * Handles pre-crawl checks and validations for a given URL.
-	 * @param {string} url - The URL to check.
-	 * @param {number} depth - The current crawl depth.
-	 * @returns {boolean} True if the crawl should continue, false otherwise.
-	 * @private
-	 */
-	shouldCrawl(url: string, depth: number, foreignOnly = false): boolean {
-		if (depth > this.maxDepth) return false;
-		if (this.enqueuedUrls.has(url)) return false;
-
-		if (this.enqueuedUrls.size >= this.maxLinks) {
-			this.emitMaxLinksReached();
-			return false;
-		}
-
-		return this.isValidUrl(url) || (foreignOnly && this.checkForeignFeeds);
-	}
-
-	/**
 	 * Handles fetch errors and increments the error counter.
 	 * @param {string} url - The URL that failed to fetch.
 	 * @param {number} depth - The crawl depth at which the error occurred.

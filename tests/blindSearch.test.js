@@ -381,6 +381,26 @@ describe('blindSearch() module', () => {
 		expect(new Set(urls).size).toBe(urls.length);
 	});
 
+	it('skips a duplicate generated URL without re-checking it (site URL with trailing slash produces duplicate basePaths)', async () => {
+		// A trailing-slash site URL (e.g. "https://example.com/blog/") makes generateEndpointUrls
+		// produce the same basePath twice across two path-traversal iterations, yielding duplicate
+		// endpoint URLs. processSingleFeedUrl's foundUrls dedup guard must skip the repeat, so the
+		// number of distinct URLs actually checked must be strictly less than the raw generated count.
+		const checkedUrls = [];
+		checkFeed.mockImplementation(async (url) => {
+			checkedUrls.push(url);
+			return null;
+		});
+		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const instance = new MockInstance('https://example.com/blog/', { searchMode: 'fast', all: true });
+		await blindSearch(instance);
+
+		expect(new Set(checkedUrls).size).toBe(checkedUrls.length); // no URL checked twice
+		const startEvent = instance._events.find((e) => e.event === 'start');
+		// endpointUrls count includes the (skipped) duplicates; actual checkFeed calls must be fewer.
+		expect(checkedUrls.length).toBeLessThan(startEvent.data.endpointUrls);
+	});
+
 	it('handles checkFeed errors gracefully (no emit when showErrors is false)', async () => {
 		checkFeed.mockRejectedValue(new Error('Network error'));
 		const { default: blindSearch } = await import('../modules/blindsearch.ts');
@@ -517,5 +537,32 @@ describe('blindsearch module — endpoint getters', () => {
 		).length;
 		warnSpy.mockRestore();
 		expect(delayWarnCount).toBe(1);
+	});
+
+	it('waits requestDelay ms between batches when requestDelay > 0', async () => {
+		vi.useFakeTimers();
+		try {
+			checkFeed.mockResolvedValue(null);
+			const { default: blindSearch } = await import('../modules/blindsearch.ts');
+			// fast mode + concurrency 1 gives multiple batches, so the inter-batch delay fires.
+			const instance = new MockInstance('https://example.com', {
+				searchMode: 'fast',
+				concurrency: 1,
+				requestDelay: 500
+			});
+			const resultPromise = blindSearch(instance);
+			// Flush all pending timers/microtasks repeatedly until the search completes.
+			let settled = false;
+			resultPromise.then(() => {
+				settled = true;
+			});
+			for (let i = 0; i < 50 && !settled; i++) {
+				await vi.advanceTimersByTimeAsync(500);
+			}
+			await resultPromise;
+			expect(settled).toBe(true);
+		} finally {
+			vi.useRealTimers();
+		}
 	});
 });
