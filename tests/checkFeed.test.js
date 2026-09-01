@@ -2,7 +2,7 @@ import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 // Since the module doesn't export helper functions, we need to test checkFeed
 // which internally uses these helpers

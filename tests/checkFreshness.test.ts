@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { checkFeedFreshness } from '../modules/checkFreshness.ts';
 import type { Feed } from '../modules/metaLinks.ts';
-import type { FeedSeekerInstance } from '../modules/checkFeed.ts';
+import type { FeedSeekerInstance } from '../modules/checkFeed/index.ts';
 
 vi.mock('../modules/fetchWithTimeout.ts', () => ({ default: vi.fn() }));
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 // fast-check property-based tests for checkFeed feed content parsing.
 // All tests pass content directly as the second argument — no network calls.

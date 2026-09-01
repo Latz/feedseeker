@@ -118,7 +118,7 @@ function isValidUrlLength(url: string): boolean {
 	return url.length <= MAX_URL_LENGTH;
 }
 
-import checkFeed from './checkFeed.ts';
+import checkFeed from './checkFeed/index.ts';
 import { type MetaLinksInstance, type Feed } from './metaLinks.ts';
 
 /**

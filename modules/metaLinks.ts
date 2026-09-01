@@ -11,7 +11,7 @@
  * @since 1.0.0
  */
 
-import checkFeed, { type FeedSeekerInstance } from './checkFeed.ts';
+import checkFeed, { type FeedSeekerInstance } from './checkFeed/index.ts';
 
 /**
  * Feed type MIME types to search for in link elements

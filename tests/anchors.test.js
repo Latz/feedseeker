@@ -3,10 +3,10 @@ import checkAllAnchors, { ALLOWED_DOMAINS } from '../modules/anchors.ts';
 import { parseHTML } from 'linkedom';
 
 // Mock checkFeed to avoid real network requests
-vi.mock('../modules/checkFeed.ts', () => ({
+vi.mock('../modules/checkFeed/index.ts', () => ({
 	default: vi.fn()
 }));
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 // Mock fetchWithTimeout to avoid real network requests
 vi.mock('../modules/fetchWithTimeout.ts', () => ({

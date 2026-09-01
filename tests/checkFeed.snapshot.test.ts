@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 const load = (name: string) => readFileSync(join(dir, name), 'utf-8');

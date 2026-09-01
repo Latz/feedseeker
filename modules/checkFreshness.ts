@@ -1,6 +1,6 @@
 import fetchWithTimeout from './fetchWithTimeout.ts';
 import type { Feed } from './metaLinks.ts';
-import type { FeedSeekerInstance } from './checkFeed.ts';
+import type { FeedSeekerInstance } from './checkFeed/index.ts';
 
 const FRESHNESS_PATTERNS = {
 	RSS_FIRST_ITEM: /<item[^>]*>([\s\S]*?)<\/item>/i,

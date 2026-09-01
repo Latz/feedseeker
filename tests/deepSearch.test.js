@@ -29,10 +29,10 @@ vi.mock('../modules/fetchWithTimeout.ts', () => ({
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 
 // Mock checkFeed to avoid real network requests
-vi.mock('../modules/checkFeed.ts', () => ({
+vi.mock('../modules/checkFeed/index.ts', () => ({
 	default: vi.fn()
 }));
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 function mockResponse(html, ok = true, status = 200) {
 	return {

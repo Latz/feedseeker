@@ -18,7 +18,7 @@ import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLink
 import checkAllAnchors from './modules/anchors.ts';
 import blindSearch from './modules/blindsearch.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
-import checkFeed from './modules/checkFeed.ts';
+import checkFeed from './modules/checkFeed/index.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
 import { isChallengeResponse } from './modules/challengeDetection.ts';

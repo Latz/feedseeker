@@ -3,10 +3,10 @@ import { parseHTML } from 'linkedom';
 import metaLinks from '../modules/metaLinks.ts';
 
 // Mock checkFeed to avoid network calls
-vi.mock('../modules/checkFeed.ts', () => ({
+vi.mock('../modules/checkFeed/index.ts', () => ({
 	default: vi.fn()
 }));
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 // Mock fetchWithTimeout (transitively imported by checkFeed in the real module)
 vi.mock('../modules/fetchWithTimeout.ts', () => ({

@@ -12,7 +12,7 @@
  */
 
 import { parseHTML } from 'linkedom';
-import checkFeed from './checkFeed.ts';
+import checkFeed from './checkFeed/index.ts';
 import fetchWithTimeout from './fetchWithTimeout.ts';
 import { type Feed, type MetaLinksInstance } from './metaLinks.ts';
 

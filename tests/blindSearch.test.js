@@ -252,10 +252,10 @@ describe('blindsearch internal functions', () => {
 // ─── blindSearch module integration tests ────────────────────────────────────
 
 // Mock checkFeed to avoid real network requests
-vi.mock('../modules/checkFeed.ts', () => ({
+vi.mock('../modules/checkFeed/index.ts', () => ({
 	default: vi.fn()
 }));
-import checkFeed from '../modules/checkFeed.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 
 class MockInstance {
 	constructor(site, options = {}) {

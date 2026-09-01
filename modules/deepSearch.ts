@@ -1,6 +1,6 @@
 // Deep Search - Website crawling for feed discovery
 
-import checkFeed from './checkFeed.ts';
+import checkFeed from './checkFeed/index.ts';
 import { parseHTML } from 'linkedom';
 import tldts from 'tldts';
 import EventEmitter from './eventEmitter.ts';
@@ -8,7 +8,7 @@ import async from 'async';
 import type { QueueObject } from 'async';
 const { queue } = async;
 import fetchWithTimeout from './fetchWithTimeout.ts';
-import { type FeedSeekerInstance } from './checkFeed.ts';
+import { type FeedSeekerInstance } from './checkFeed/index.ts';
 import { type Feed } from './metaLinks.ts';
 
 export const EXCLUDED_EXTENSIONS = new Set([
