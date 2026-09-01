@@ -160,7 +160,12 @@ async function processLink(
 	instance.emit('log', { module: 'metalinks', message: `Checking feed: ${fullHref}` });
 
 	try {
-		const feedResult = await checkFeed(fullHref, '', instance);
+		const onReject = instance.options?.verbose
+			? (reason: string) => {
+					instance.emit('log', { module: 'metalinks', url: fullHref, reason });
+				}
+			: undefined;
+		const feedResult = await checkFeed(fullHref, '', instance, onReject);
 		if (feedResult) {
 			recordFeed(fullHref, link, feedResult, feeds, foundUrls, instance);
 		}

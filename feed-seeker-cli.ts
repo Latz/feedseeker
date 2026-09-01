@@ -67,6 +67,10 @@ function makeLogHandler(ctx: CLIRunContext) {
 		if (ctx.quiet) return;
 		const data = args[0] as LogEventData;
 	if (data.module === 'metalinks') {
+		if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
+			process.stdout.write(`\n  ${data.url} — ${data.reason}`);
+			return;
+		}
 		process.stdout.write('.');
 	}
 	if (data.module === 'blindsearch' || data.module === 'anchors') {

@@ -56,6 +56,20 @@ describe('checkFeed Module', () => {
 
 			expect(result).toBe(null);
 		});
+
+		it('should return null for a well-formed channel with no <item> elements', async () => {
+			const emptyRssContent = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<title>Empty RSS Feed</title>
+<description>No items yet</description>
+</channel>
+</rss>`;
+
+			const result = await checkFeed('https://example.com/feed.xml', emptyRssContent);
+
+			expect(result).toBe(null);
+		});
 	});
 
 	describe('RDF/RSS 1.0 Feed Detection', () => {
@@ -176,6 +190,42 @@ describe('checkFeed Module', () => {
 			const result = await checkFeed('https://example.com/feed.json', invalidJsonContent);
 
 			expect(result).toBe(null);
+		});
+
+		it('should return null for a JSON feed with an empty items array and no other feed signal', async () => {
+			const jsonContent = JSON.stringify({
+				title: 'Empty JSON Feed',
+				items: []
+			});
+
+			const result = await checkFeed('https://example.com/feed.json', jsonContent);
+
+			expect(result).toBe(null);
+		});
+
+		it('should still detect a JSON feed via version property even with an empty items array', async () => {
+			const jsonContent = JSON.stringify({
+				version: 'https://jsonfeed.org/version/1',
+				title: 'Versioned Empty Feed',
+				items: []
+			});
+
+			const result = await checkFeed('https://example.com/feed.json', jsonContent);
+
+			expect(result).toBeTruthy();
+			expect(result.type).toBe('json');
+		});
+
+		it('should still detect a JSON feed via feed_url property with no items key', async () => {
+			const jsonContent = JSON.stringify({
+				title: 'Feed with URL, no items key',
+				feed_url: 'https://example.com/feed.json'
+			});
+
+			const result = await checkFeed('https://example.com/feed.json', jsonContent);
+
+			expect(result).toBeTruthy();
+			expect(result.type).toBe('json');
 		});
 	});
 
@@ -582,5 +632,34 @@ describe('checkFeed — onReject diagnostic callback', () => {
 		const result = await checkFeed('https://example.com/feed.xml', rss, undefined, onReject);
 		expect(result).not.toBeNull();
 		expect(onReject).not.toHaveBeenCalled();
+	});
+
+	it('calls onReject with a specific reason for a valid Atom feed with no entries', async () => {
+		const noEntries =
+			'<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
+		const onReject = vi.fn();
+		const result = await checkFeed('https://example.com/feed.xml', noEntries, undefined, onReject);
+		expect(result).toBeNull();
+		expect(onReject).toHaveBeenCalledTimes(1);
+		expect(onReject).toHaveBeenCalledWith('content is a valid Atom feed but has no entries yet');
+	});
+
+	it('calls onReject with a specific reason for a valid RSS channel with no items', async () => {
+		const noItems =
+			'<rss version="2.0"><channel><title>T</title><description>D</description></channel></rss>';
+		const onReject = vi.fn();
+		const result = await checkFeed('https://example.com/feed.xml', noItems, undefined, onReject);
+		expect(result).toBeNull();
+		expect(onReject).toHaveBeenCalledTimes(1);
+		expect(onReject).toHaveBeenCalledWith('content is a valid RSS feed but has no items yet');
+	});
+
+	it('calls onReject with a specific reason for a valid JSON feed with no items', async () => {
+		const noItems = JSON.stringify({ title: 'T', items: [] });
+		const onReject = vi.fn();
+		const result = await checkFeed('https://example.com/feed.json', noItems, undefined, onReject);
+		expect(result).toBeNull();
+		expect(onReject).toHaveBeenCalledTimes(1);
+		expect(onReject).toHaveBeenCalledWith('content is a valid JSON feed but has no items yet');
 	});
 });

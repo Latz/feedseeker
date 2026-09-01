@@ -309,9 +309,17 @@ export default async function checkFeed(
 	validateContentSize(content);
 
 	// Check for RSS, Atom, or JSON feeds
-	const result = checkRss(content) || checkAtom(content) || checkJson(content) || null;
+	let specificRejectReason: string | undefined;
+	const captureReject = (reason: string): void => {
+		specificRejectReason = reason;
+	};
+	const result =
+		checkRss(content, captureReject) ||
+		checkAtom(content, captureReject) ||
+		checkJson(content, captureReject) ||
+		null;
 	if (!result) {
-		onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
+		onReject?.(specificRejectReason ?? 'content is not a recognized RSS, Atom, or JSON feed format');
 	}
 	return result;
 }
@@ -341,7 +349,7 @@ function extractRssTitle(content: string): string | null {
  * @param content - The content to check for RSS feed elements
  * @returns Object with type 'rss' and title if RSS feed, null otherwise
  */
-function checkRss(content: string): FeedResult | null {
+function checkRss(content: string, onReject?: (reason: string) => void): FeedResult | null {
 	// Step 1: Check for an RSS root element: either <rss version="..."> (RSS 0.91/2.0/etc.)
 	// or <rdf:RDF> (RSS 1.0, which has no <rss> tag at all).
 	if (FEED_PATTERNS.RSS.VERSION.test(content) || FEED_PATTERNS.RSS.RDF_ROOT.test(content)) {
@@ -350,13 +358,17 @@ function checkRss(content: string): FeedResult | null {
 		const hasItem = FEED_PATTERNS.RSS.ITEM.test(content); // Individual feed entries
 		const hasDescription = FEED_PATTERNS.RSS.DESCRIPTION.test(content); // Content description
 
-		// Step 3: Validate RSS structure - must have channel + description + (items OR proper channel closure)
-		// The (hasItem || FEED_PATTERNS.RSS.CHANNEL_END.test(content)) check handles edge cases:
-		// - Normal feeds: have <item> elements
-		// - Empty feeds: have proper </channel> closure but no items yet
-		if (hasChannel && hasDescription && (hasItem || FEED_PATTERNS.RSS.CHANNEL_END.test(content))) {
+		// Step 3: Validate RSS structure - must have channel + description + items
+		if (hasChannel && hasDescription && hasItem) {
 			const title = extractRssTitle(content);
 			return { type: 'rss', title };
+		}
+
+		// A well-formed channel (proper </channel> closure, has a description) that
+		// simply has no <item> elements yet is not "not a feed" — surface that
+		// distinction instead of the generic rejection message below.
+		if (hasChannel && hasDescription && !hasItem && FEED_PATTERNS.RSS.CHANNEL_END.test(content)) {
+			onReject?.('content is a valid RSS feed but has no items yet');
 		}
 	}
 	return null;
@@ -367,7 +379,7 @@ function checkRss(content: string): FeedResult | null {
  * @param content - The content to check for Atom feed elements
  * @returns Object with type 'atom' and title if Atom feed, null otherwise
  */
-function checkAtom(content: string): FeedResult | null {
+function checkAtom(content: string, onReject?: (reason: string) => void): FeedResult | null {
 	// Gate on the cheap <feed> root-element check before running the three namespace
 	// scans. The namespace patterns scan the whole document, so evaluating them first
 	// cost ~4x on large non-Atom pages (the common case while crawling).
@@ -392,6 +404,13 @@ function checkAtom(content: string): FeedResult | null {
 			const title = match ? cleanTitle(removeCDATA(match[1])) : null;
 			return { type: 'atom', title };
 		}
+
+		// A well-formed Atom feed (correct namespace, has a title) that simply
+		// has no entries yet (e.g. a brand-new blog) is not "not a feed" — surface
+		// that distinction instead of the generic rejection message below.
+		if (!hasEntry && hasTitle) {
+			onReject?.('content is a valid Atom feed but has no entries yet');
+		}
 	}
 	return null;
 }
@@ -401,7 +420,7 @@ function checkAtom(content: string): FeedResult | null {
  * @param content - The content to check for JSON feed properties
  * @returns Object with type 'json' and title if JSON feed, null otherwise
  */
-function checkJson(content: string): FeedResult | null {
+function checkJson(content: string, onReject?: (reason: string) => void): FeedResult | null {
 	try {
 		const json = JSON.parse(content);
 
@@ -410,19 +429,26 @@ function checkJson(content: string): FeedResult | null {
 			return null;
 		}
 
+		const isJsonFeedVersion =
+			json.version && typeof json.version === 'string' && json.version.includes('jsonfeed');
+		const hasNonEmptyItems = Array.isArray(json.items) && json.items.length > 0;
+
 		// Check if it's a JSON feed by looking for common properties
-		// JSON feeds should have the version property with 'jsonfeed' in the value
-		// or both 'items' array and other feed properties
-		if (
-			(json.version && typeof json.version === 'string' && json.version.includes('jsonfeed')) ||
-			(json.items && Array.isArray(json.items)) ||
-			json.feed_url
-		) {
+		// JSON feeds should have the version property with 'jsonfeed' in the value,
+		// a non-empty 'items' array, or a feed_url pointing back at itself
+		if (isJsonFeedVersion || hasNonEmptyItems || json.feed_url) {
 			// Extract title from JSON feed
 			// Security: Validate that title is a string before processing
 			const rawTitle = json.title || json.name || null;
 			const title = typeof rawTitle === 'string' ? cleanTitle(rawTitle) : null;
 			return { type: 'json', title };
+		}
+
+		// A well-formed JSON feed (has an items array) that simply has no items
+		// yet is not "not a feed" — surface that distinction instead of the
+		// generic rejection message below.
+		if (Array.isArray(json.items) && json.items.length === 0) {
+			onReject?.('content is a valid JSON feed but has no items yet');
 		}
 		return null;
 	} catch {

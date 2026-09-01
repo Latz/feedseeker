@@ -78,7 +78,12 @@ describe('metaLinks()', () => {
       <link type="application/rss+xml" href="/feed.xml">
     </head></html>`);
 		const result = await metaLinks(instance);
-		expect(checkFeed).toHaveBeenCalledWith('https://example.com/feed.xml', '', instance);
+		expect(checkFeed).toHaveBeenCalledWith(
+			'https://example.com/feed.xml',
+			'',
+			instance,
+			undefined
+		);
 		expect(result).toHaveLength(1);
 		expect(result[0]).toMatchObject({
 			url: 'https://example.com/feed.xml',
@@ -349,5 +354,39 @@ describe('metaLinks()', () => {
 			(e) => e.event === 'log' && e.data?.message?.startsWith('Checking feed')
 		);
 		expect(logEvents).toHaveLength(2);
+	});
+
+	it('emits a log event with the rejection reason when verbose and checkFeed rejects', async () => {
+		checkFeed.mockImplementation(async (url, _content, _instance, onReject) => {
+			onReject?.('content is a valid Atom feed but has no entries yet');
+			return null;
+		});
+		const instance = makeInstance(
+			`<html><head><link type="application/atom+xml" href="/feed.xml"></head></html>`,
+			{ verbose: true }
+		);
+		await metaLinks(instance);
+		const reasonEvent = instance._events.find(
+			(e) => e.event === 'log' && e.data?.reason && e.data?.url
+		);
+		expect(reasonEvent).toBeDefined();
+		expect(reasonEvent.data).toMatchObject({
+			module: 'metalinks',
+			url: 'https://example.com/feed.xml',
+			reason: 'content is a valid Atom feed but has no entries yet'
+		});
+	});
+
+	it('does not emit a reason log event when not verbose', async () => {
+		checkFeed.mockImplementation(async (url, _content, _instance, onReject) => {
+			onReject?.('content is a valid Atom feed but has no entries yet');
+			return null;
+		});
+		const instance = makeInstance(
+			`<html><head><link type="application/atom+xml" href="/feed.xml"></head></html>`
+		);
+		await metaLinks(instance);
+		const reasonEvent = instance._events.find((e) => e.event === 'log' && e.data?.reason);
+		expect(reasonEvent).toBeUndefined();
 	});
 });

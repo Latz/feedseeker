@@ -16,7 +16,10 @@ function rssArbitrary() {
 		hasTitle: fc.boolean(),
 		titleText: fc.string({ minLength: 0, maxLength: 200 }),
 		hasCdata: fc.boolean(),
-		itemCount: fc.integer({ min: 0, max: 5 }),
+		// min: 1 — a channel with zero <item> elements is now rejected as
+		// "valid feed, no items yet" rather than accepted; these tests are
+		// about title extraction/formatting for feeds that ARE accepted.
+		itemCount: fc.integer({ min: 1, max: 5 }),
 		version: fc.constantFrom('2.0', '1.0', '0.91', '2.0'),
 	}).map(({ hasTitle, titleText, hasCdata, itemCount, version }) => {
 		const escapedTitle = titleText.replace(/&/g, '&amp;').replace(/]]>/g, ']]&gt;');
@@ -78,7 +81,7 @@ function jsonFeedArbitrary() {
 		const obj: Record<string, unknown> = {};
 
 		if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
-		if (detectionMethod === 1) obj.items = [];
+		if (detectionMethod === 1) obj.items = [{ id: '1' }];
 		if (detectionMethod === 2) obj.feed_url = 'https://example.com/feed.json';
 
 		if (titleValue !== undefined) obj.title = titleValue;
@@ -132,9 +135,10 @@ describe('checkFeed property-based tests', () => {
 		});
 
 		it('RSS without title element returns null title', async () => {
-			// Generate RSS that never has a title element
+			// Generate RSS that never has a title element (min: 1 item — an
+			// empty channel is now rejected rather than accepted with a null title)
 			const noTitleRss = fc.record({
-				itemCount: fc.integer({ min: 0, max: 5 }),
+				itemCount: fc.integer({ min: 1, max: 5 }),
 			}).map(({ itemCount }) => {
 				const items = Array.from({ length: itemCount }, (_, i) =>
 					`<item><description>desc ${i}</description></item>`
@@ -165,6 +169,7 @@ ${items}
 <channel>
 <title><![CDATA[${safe}]]></title>
 <description>desc</description>
+<item><title>Item</title></item>
 </channel>
 </rss>`;
 			});
@@ -233,14 +238,16 @@ ${items}
 		});
 
 		it('non-string title field always yields null title', async () => {
-			// Only generate JSON feeds where title is a non-string primitive
+			// Only generate JSON feeds where title is a non-string primitive.
+			// items must be non-empty here: an empty items array with no version/feed_url
+			// signal is now rejected as "valid feed, no items yet" rather than accepted.
 			const nonStringTitleFeed = fc.record({
 				detectionMethod: fc.integer({ min: 0, max: 1 }),
 				title: fc.oneof(fc.integer(), fc.boolean(), fc.constant(null), fc.constant([])),
 			}).map(({ detectionMethod, title }) => {
 				const obj: Record<string, unknown> = { title };
 				if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
-				else obj.items = [];
+				else obj.items = [{ id: '1' }];
 				return JSON.stringify(obj);
 			});
 

@@ -45,6 +45,8 @@ export interface ErrorEventData {
 export interface MetaLinksLogData {
 	module: 'metalinks';
 	message?: string;
+	url?: string;
+	reason?: string;
 }
 
 /**
