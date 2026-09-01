@@ -56,7 +56,7 @@ describe('FeedSeeker CLI', () => {
 		it('should output only JSON when --json flag is used', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(mockFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(consoleLogSpy).toHaveBeenCalledTimes(1);
@@ -69,7 +69,7 @@ describe('FeedSeeker CLI', () => {
 		it('should output interactive logs and banner when --json is not used', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(mockFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch'];
 			await run(argv);
 
 			// Banner should be logged first.
@@ -83,7 +83,7 @@ describe('FeedSeeker CLI', () => {
 		it('should output an empty JSON array and exit 2 if no feeds are found with --json', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([], null, 2));
@@ -93,7 +93,7 @@ describe('FeedSeeker CLI', () => {
 		it('should not print a banner or progress on error when in --json mode', async () => {
 			(fetchWithTimeout as Mock).mockRejectedValue(new Error('Network Failure'));
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			// Banner suppressed; only the empty array is printed.
@@ -123,7 +123,7 @@ describe('FeedSeeker CLI', () => {
 		it('prints per-strategy results using printFeeds format (not raw JSON)', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([feedA]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--all'];
 			await run(argv);
 
 			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
@@ -135,7 +135,7 @@ describe('FeedSeeker CLI', () => {
 			(metaLinksMod as Mock).mockResolvedValue([feedA]);
 			(blindsearchMod as Mock).mockResolvedValue([feedB]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--all'];
 			await run(argv);
 
 			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
@@ -147,7 +147,7 @@ describe('FeedSeeker CLI', () => {
 			(metaLinksMod as Mock).mockResolvedValue([feedA]);
 			(blindsearchMod as Mock).mockResolvedValue([feedA]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--all'];
 			await run(argv);
 
 			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
@@ -155,7 +155,7 @@ describe('FeedSeeker CLI', () => {
 		});
 
 		it('exits with code 2 when no feeds found across all strategies', async () => {
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--all'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--all'];
 			await run(argv);
 
 			expect(processExitSpy).toHaveBeenCalledWith(2);
@@ -166,7 +166,7 @@ describe('FeedSeeker CLI', () => {
 		it('should exit 0 (implicit) when feeds are found', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(mockFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(processExitSpy).not.toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe('FeedSeeker CLI', () => {
 		it('should exit 2 when no feeds are found', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(processExitSpy).toHaveBeenCalledWith(2);
@@ -193,7 +193,7 @@ describe('FeedSeeker CLI', () => {
 		it('applies freshness filter with default 30 days when --check is passed alone', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check'];
 			await run(argv);
 
 			expect(checkFeedFreshness).toHaveBeenCalledWith(
@@ -206,7 +206,7 @@ describe('FeedSeeker CLI', () => {
 		it('uses custom days threshold from --check 60', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '60'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check', '60'];
 			await run(argv);
 
 			expect(checkFeedFreshness).toHaveBeenCalledWith(
@@ -220,7 +220,7 @@ describe('FeedSeeker CLI', () => {
 			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
 			(checkFeedFreshness as Mock).mockResolvedValue(true);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
 			await run(argv);
 
 			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([freshFeed], null, 2));
@@ -230,7 +230,7 @@ describe('FeedSeeker CLI', () => {
 			(metaLinksMod as Mock).mockResolvedValue([staleFeed]);
 			(checkFeedFreshness as Mock).mockResolvedValue(false);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
 			await run(argv);
 
 			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([], null, 2));
@@ -242,7 +242,7 @@ describe('FeedSeeker CLI', () => {
 				.mockResolvedValueOnce(true)
 				.mockResolvedValueOnce(false);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
 			await run(argv);
 
 			expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify([freshFeed], null, 2));
@@ -252,7 +252,7 @@ describe('FeedSeeker CLI', () => {
 			(metaLinksMod as Mock).mockResolvedValue([staleFeed]);
 			(checkFeedFreshness as Mock).mockResolvedValue(false);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--check', '--json'];
 			await run(argv);
 
 			expect(processExitSpy).toHaveBeenCalledWith(2);
@@ -261,7 +261,7 @@ describe('FeedSeeker CLI', () => {
 		it('does not call checkFeedFreshness when --check is not passed', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([freshFeed]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(checkFeedFreshness).not.toHaveBeenCalled();
@@ -277,7 +277,7 @@ describe('FeedSeeker CLI', () => {
 		it('outputs a valid OPML document', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('\n');
@@ -291,7 +291,7 @@ describe('FeedSeeker CLI', () => {
 		it('includes an outline element for each feed', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('\n');
@@ -304,7 +304,7 @@ describe('FeedSeeker CLI', () => {
 		it('uses feed title in outline text/title attributes', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('\n');
@@ -315,7 +315,7 @@ describe('FeedSeeker CLI', () => {
 		it('falls back to URL when feed has no title', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([opmlFeeds[1]]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('\n');
@@ -326,7 +326,7 @@ describe('FeedSeeker CLI', () => {
 			const feed: Feed = { url: 'https://example.com/feed.xml', type: 'rss', title: 'Foo & "Bar"', feedTitle: 'Foo & "Bar"' };
 			(metaLinksMod as Mock).mockResolvedValue([feed]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('\n');
@@ -336,7 +336,7 @@ describe('FeedSeeker CLI', () => {
 		it('suppresses the banner', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', 'opml'];
 			await run(argv);
 
 			// Only one console.log call: the OPML output itself (no banner)
@@ -348,7 +348,7 @@ describe('FeedSeeker CLI', () => {
 		it('--json flag still works as an alias for json format', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(opmlFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--json'];
 			await run(argv);
 
 			const output = consoleLogSpy.mock.calls.flat().join('');
@@ -366,7 +366,7 @@ describe('FeedSeeker CLI', () => {
 		it('prints only URLs, one per line', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
 			await run(argv);
 
 			const calls = consoleLogSpy.mock.calls;
@@ -378,7 +378,7 @@ describe('FeedSeeker CLI', () => {
 		it('suppresses the banner', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
 			await run(argv);
 
 			const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
@@ -389,7 +389,7 @@ describe('FeedSeeker CLI', () => {
 		it('suppresses progress output (no stdout.write calls)', async () => {
 			(metaLinksMod as Mock).mockResolvedValue(quietFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
 			await run(argv);
 
 			expect(stdoutWriteSpy).not.toHaveBeenCalled();
@@ -398,7 +398,7 @@ describe('FeedSeeker CLI', () => {
 		it('exits with code 2 when no feeds found', async () => {
 			(metaLinksMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--quiet'];
 			await run(argv);
 
 			expect(processExitSpy).toHaveBeenCalledWith(2);
@@ -417,7 +417,7 @@ describe('FeedSeeker CLI', () => {
 				return [];
 			});
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--blindsearch', '--verbose'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--blindsearch', '--verbose'];
 			await run(argv);
 
 			const allOutput = stdoutWriteSpy.mock.calls.flat().join('');
@@ -435,7 +435,7 @@ describe('FeedSeeker CLI', () => {
 				return [];
 			});
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--blindsearch'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--blindsearch'];
 			await run(argv);
 
 			const allOutput = stdoutWriteSpy.mock.calls.flat().join('');
@@ -454,7 +454,7 @@ describe('FeedSeeker CLI', () => {
 				.mockResolvedValueOnce([fileFeed1])
 				.mockResolvedValueOnce([fileFeed2]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
 			await run(argv);
 
 			const jsonCall = consoleLogSpy.mock.calls.find((c) => {
@@ -472,14 +472,14 @@ describe('FeedSeeker CLI', () => {
 
 			(metaLinksMod as Mock).mockResolvedValue([fileFeed1]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
 			await run(argv);
 
 			expect(metaLinksMod).toHaveBeenCalledTimes(1);
 		});
 
 		it('shows help and exits 0 when neither site nor --file is provided', async () => {
-			const argv = ['node', 'feed-seeker-cli.ts'];
+			const argv = ['node', 'feedseeker-cli.ts'];
 			await run(argv);
 			expect(processExitSpy).toHaveBeenCalledWith(0);
 		});
@@ -491,7 +491,7 @@ describe('FeedSeeker CLI', () => {
 			(anchorsMod as Mock).mockResolvedValue([]);
 			(blindsearchMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--display-errors'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--display-errors'];
 			await run(argv);
 
 			const instance = (blindsearchMod as Mock).mock.calls[0][0];
@@ -503,7 +503,7 @@ describe('FeedSeeker CLI', () => {
 			(anchorsMod as Mock).mockResolvedValue([]);
 			(blindsearchMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--verbose'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--verbose'];
 			await run(argv);
 
 			const instance = (blindsearchMod as Mock).mock.calls[0][0];
@@ -526,7 +526,7 @@ describe('FeedSeeker CLI', () => {
 			(anchorsMod as Mock).mockResolvedValue([]);
 			(blindsearchMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com'];
 			await run(argv);
 
 			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
@@ -541,7 +541,7 @@ describe('FeedSeeker CLI', () => {
 			});
 			(metaLinksMod as Mock).mockResolvedValue(mockFeeds);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--metasearch'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--metasearch'];
 			await run(argv);
 
 			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
@@ -557,7 +557,7 @@ describe('FeedSeeker CLI', () => {
 			(anchorsMod as Mock).mockResolvedValue([]);
 			(blindsearchMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com'];
 			await run(argv);
 
 			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
@@ -574,7 +574,7 @@ describe('FeedSeeker CLI', () => {
 			(anchorsMod as Mock).mockResolvedValue([]);
 			(blindsearchMod as Mock).mockResolvedValue([]);
 
-			const argv = ['node', 'feed-seeker-cli.ts', 'example.com', '--json'];
+			const argv = ['node', 'feedseeker-cli.ts', 'example.com', '--json'];
 			await run(argv);
 
 			const loggedText = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
