@@ -36,11 +36,11 @@ Feed Seeker is a powerful, intelligent Node.js library that automatically discov
 ## 📦 Quick Start
 
 ```bash
-npm install feed-seeker
+npm install feedseeker
 ```
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 const feedScout = new FeedSeeker('https://techcrunch.com');
 const feeds = await feedScout.metaLinks();
@@ -204,16 +204,16 @@ const feeds = await feedScout.blindSearch();
 
 ```bash
 # Quick discovery
-feed-seeker https://example.com
+feedseeker https://example.com
 
 # Meta search only (fastest)
-feed-seeker -m https://blog.example.com
+feedseeker -m https://blog.example.com
 
 # Deep search with custom depth
-feed-seeker -d --depth 4 --max-feeds 10 https://news-site.com
+feedseeker -d --depth 4 --max-feeds 10 https://news-site.com
 
 # Comprehensive search with all strategies
-feed-seeker --all --timeout 15 https://complex-site.com
+feedseeker --all --timeout 15 https://complex-site.com
 ```
 
 ## 🏆 Why Feed Seeker Stands Out
@@ -252,6 +252,6 @@ MIT License - Use Feed Seeker in your commercial and open-source projects.
 
 **⭐ Star us on GitHub if Feed Seeker helps your project!**
 
-**🐛 Found a bug or have a feature request? [Open an issue](https://github.com/user/feed-seeker/issues)**
+**🐛 Found a bug or have a feature request? [Open an issue](https://github.com/user/feedseeker/issues)**
 
 **💬 Questions? Check our [documentation](./API_REFERENCE.md) or start a discussion**

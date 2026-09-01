@@ -5,11 +5,11 @@ A simple, powerful library for discovering RSS, Atom, and JSON feeds on any webs
 ## Quick Start
 
 ```bash
-npm install feed-seeker
+npm install feedseeker
 ```
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 const feedScout = new FeedSeeker('https://example.com');
 const feeds = await feedScout.metaLinks();
@@ -170,7 +170,7 @@ Each discovered feed returns an object with:
 ### Basic Feed Discovery
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 async function findFeeds(url) {
 	const feedScout = new FeedSeeker(url);
@@ -380,7 +380,7 @@ All errors include helpful explanations and suggestions for resolution.
 Feed Seeker includes TypeScript definitions:
 
 ```typescript
-import FeedSeeker, { FeedObject, FeedSeekerOptions } from 'feed-seeker';
+import FeedSeeker, { FeedObject, FeedSeekerOptions } from 'feedseeker';
 
 interface FeedObject {
 	url: string;
@@ -403,7 +403,7 @@ const feeds: FeedObject[] = await feedScout.metaLinks();
 ### News Aggregator
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 class NewsAggregator {
 	constructor() {
@@ -601,7 +601,7 @@ async function validateFeedUrls(urls) {
 			const content = await response.text();
 
 			// Import checkFeed utility
-			const { default: checkFeed } = await import('feed-seeker/checkFeed');
+			const { default: checkFeed } = await import('feedseeker/checkFeed');
 			const feedInfo = await checkFeed(url, content);
 
 			results.push({
@@ -637,7 +637,7 @@ console.log('Validation results:', validation);
 
 ```javascript
 import express from 'express';
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 const app = express();
 app.use(express.json());
@@ -724,22 +724,22 @@ Feed Seeker also provides a command-line interface:
 
 ```bash
 # Basic usage
-feed-seeker https://example.com
+feedseeker https://example.com
 
 # Meta search only (fastest)
-feed-seeker -m https://blog.example.com
+feedseeker -m https://blog.example.com
 
 # Comprehensive search with deep crawling
-feed-seeker -d --depth 4 https://news-site.com
+feedseeker -d --depth 4 https://news-site.com
 
 # Limit results and set timeout
-feed-seeker --max-feeds 3 --timeout 10 https://slow-site.com
+feedseeker --max-feeds 3 --timeout 10 https://slow-site.com
 
 # Keep query parameters
-feed-seeker --keep-query-params https://site.com?category=tech
+feedseeker --keep-query-params https://site.com?category=tech
 
 # Verbose output
-feed-seeker -v 2 https://example.com
+feedseeker -v 2 https://example.com
 ```
 
 ## Troubleshooting

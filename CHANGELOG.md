@@ -12,7 +12,7 @@ All notable changes to feedseeker are documented here.
 
 - **CLI `-q` / `-f` short flags** (`940edd6`): Added `-q` as a short alias for `--quiet` and `-c` as a short alias for `--check`, consistent with common Unix CLI conventions.
 
-- **CLI `--quiet` / `-q` — pipe-friendly output** (`25f408a`): Suppresses the banner, progress indicators, and decorative output; prints only feed URLs, one per line. Designed for use in shell pipelines (`feed-seeker example.com -q | xargs ...`).
+- **CLI `--quiet` / `-q` — pipe-friendly output** (`25f408a`): Suppresses the banner, progress indicators, and decorative output; prints only feed URLs, one per line. Designed for use in shell pipelines (`feedseeker example.com -q | xargs ...`).
 
 - **CLI `--format opml` — OPML export** (`c7582ba`): Outputs discovered feeds as a valid OPML 2.0 document, directly importable into any feed reader. Feed type (`rss`, `atom`, `json`) is preserved in the `type` attribute of each `<outline>` element.
 

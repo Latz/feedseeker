@@ -11,12 +11,12 @@ describe.skipIf(!existsSync(cjsPath) || !existsSync(esmPath))(
 	() => {
 		it('runs and prints help when invoked directly as CJS', () => {
 			const output = execFileSync('node', [cjsPath, '--help'], { encoding: 'utf-8' });
-			expect(output).toContain('Usage: feed-seeker');
+			expect(output).toContain('Usage: feedseeker');
 		});
 
 		it('runs and prints help when invoked directly as ESM', () => {
 			const output = execFileSync('node', [esmPath, '--help'], { encoding: 'utf-8' });
-			expect(output).toContain('Usage: feed-seeker');
+			expect(output).toContain('Usage: feedseeker');
 		});
 	}
 );

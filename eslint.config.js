@@ -17,7 +17,7 @@ export default [
 			'test-*.js',
 			'_*.mjs',
 			'_*.js',
-			'feed-seeker.js'
+			'feedseeker.js'
 		]
 	},
 	js.configs.recommended,

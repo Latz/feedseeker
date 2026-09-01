@@ -43,7 +43,7 @@ FeedSeeker (Main Class)
 │   ├── fetchWithTimeout.js - HTTP client
 │   └── eventEmitter.js   - Event system
 └── CLI Interface
-    └── feed-seeker-cli.js - Command-line tool
+    └── feedseeker-cli.js - Command-line tool
 ```
 
 ### Data Flow
@@ -652,7 +652,7 @@ setTimeout(() => controller.abort(), timeout);
 ### Basic Usage
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 const feedScout = new FeedSeeker('https://example.com');
 
@@ -768,8 +768,8 @@ try {
 
 ```javascript
 // Import individual modules
-import metaLinks from 'feed-seeker/metaLinks';
-import checkFeed from 'feed-seeker/checkFeed';
+import metaLinks from 'feedseeker/metaLinks';
+import checkFeed from 'feedseeker/checkFeed';
 
 // Create minimal instance
 const instance = {
@@ -805,7 +805,7 @@ async function fetchWithTimeout(url, timeout = 5000) {
 
 	// Custom headers for better compatibility
 	const headers = {
-		'User-Agent': 'Feed-Scout/1.0 (+https://github.com/user/feed-seeker)',
+		'User-Agent': 'Feed-Scout/1.0 (+https://github.com/user/feedseeker)',
 		Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 		'Accept-Language': 'en-US,en;q=0.5',
 		'Accept-Encoding': 'gzip, deflate',

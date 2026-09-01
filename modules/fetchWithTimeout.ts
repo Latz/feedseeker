@@ -34,7 +34,7 @@ const RETRYABLE_STATUS_CODES = new Set([403, 429]);
 const FORBIDDEN_RETRY_ATTEMPTS = 3;
 const FORBIDDEN_RETRY_DELAY_MS = 300;
 
-// Per-hostname concurrency cap: feed-seeker's own search strategies (anchors,
+// Per-hostname concurrency cap: feedseeker's own search strategies (anchors,
 // blindsearch, etc.) run concurrently and independently, and can each open
 // several simultaneous connections to the same host at once. Some sites rate
 // limit based on concurrent connections rather than overall request rate —

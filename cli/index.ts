@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command, Option } from 'commander';
-import FeedSeeker, { type FeedSeekerOptions } from '../feed-seeker.ts';
+import FeedSeeker, { type FeedSeekerOptions } from '../feedseeker.ts';
 import { styleText } from 'node:util';
 import { type Feed } from '../modules/metaLinks.ts';
 import type { StartEventData, EndEventData, LogEventData } from '../types/events.ts';
@@ -274,7 +274,7 @@ interface ExtendedCommand extends Command {
 function createProgram(_argv?: string[]): ExtendedCommand {
 	const program: ExtendedCommand = new Command();
 	program
-		.name(`feed-seeker`)
+		.name(`feedseeker`)
 		.description('Find RSS, Atom, and JSON feeds on any website with FeedSeeker.');
 	program
 		.command('version')

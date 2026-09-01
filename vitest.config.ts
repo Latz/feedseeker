@@ -7,7 +7,7 @@ export default defineConfig({
 			provider: 'v8',
 			reporter: ['lcov', 'text'],
 			reportsDirectory: 'coverage',
-			include: ['feed-seeker.ts', 'modules/**/*.ts'],
+			include: ['feedseeker.ts', 'modules/**/*.ts'],
 			exclude: ['modules/banner.ts']
 		}
 	}

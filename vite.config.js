@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, chmodSync, readdirSync, unlinkSync } from 
 
 // Check if we're building CLI or library based on environment variable
 const isCLI = process.env.BUILD_TARGET === 'cli';
-const entryFile = isCLI ? 'cli/index.ts' : 'feed-seeker.ts';
+const entryFile = isCLI ? 'cli/index.ts' : 'feedseeker.ts';
 const entryName = isCLI ? 'cli' : 'index';
 
 export default defineConfig({

@@ -4,11 +4,11 @@
 	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website.",
 	"type": "module",
 	"bin": {
-		"feed-seeker": "dist/feedseeker-cli.js"
+		"feedseeker": "dist/feedseeker-cli.js"
 	},
 	"exports": {
 		".": {
-			"types": "./dist/types/feed-seeker.d.ts",
+			"types": "./dist/types/feedseeker.d.ts",
 			"import": "./dist/feedseeker.js",
 			"require": "./dist/feedseeker.cjs"
 		},

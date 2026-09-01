@@ -33,42 +33,42 @@ npm install -g feedseeker
 
 ```bash
 # Find feeds on a website
-feed-seeker https://example.com
+feedseeker https://example.com
 
 # Search without protocol (defaults to https://)
-feed-seeker example.com
+feedseeker example.com
 
 # Limit number of feeds
-feed-seeker example.com --max-feeds 5
+feedseeker example.com --max-feeds 5
 ```
 
 ### Output Formats
 
 ```bash
 # JSON output
-feed-seeker example.com --format json
+feedseeker example.com --format json
 
 # OPML export (importable into any feed reader)
-feed-seeker example.com --format opml > feeds.opml
+feedseeker example.com --format opml > feeds.opml
 
 # Quiet mode — one URL per line, no banner or progress (pipe-friendly)
-feed-seeker example.com --quiet
-feed-seeker example.com -q
+feedseeker example.com --quiet
+feedseeker example.com -q
 
 # Pipe URLs directly into another tool
-feed-seeker example.com -q | xargs -I{} curl -s {}
+feedseeker example.com -q | xargs -I{} curl -s {}
 ```
 
 ### Batch Mode
 
 ```bash
 # Read URLs from a file (one per line, # comments and blank lines ignored)
-feed-seeker --file sites.txt
-feed-seeker -f sites.txt
+feedseeker --file sites.txt
+feedseeker -f sites.txt
 
 # Combine with output formats
-feed-seeker --file sites.txt --format opml > all-feeds.opml
-feed-seeker --file sites.txt -q
+feedseeker --file sites.txt --format opml > all-feeds.opml
+feedseeker --file sites.txt -q
 ```
 
 sites.txt format:
@@ -83,50 +83,50 @@ https://blog.example.org
 
 ```bash
 # Only show feeds with a post in the last 30 days (default)
-feed-seeker example.com --check
-feed-seeker example.com -c
+feedseeker example.com --check
+feedseeker example.com -c
 
 # Custom window
-feed-seeker example.com --check 7
-feed-seeker example.com -c 90
+feedseeker example.com --check 7
+feedseeker example.com -c 90
 ```
 
 ### Search Strategies
 
 ```bash
 # Meta links only (fastest)
-feed-seeker example.com --metasearch
+feedseeker example.com --metasearch
 
 # Blind search only
-feed-seeker example.com --blindsearch
+feedseeker example.com --blindsearch
 
 # Anchors only
-feed-seeker example.com --anchorsonly
+feedseeker example.com --anchorsonly
 
 # Enable deep search (crawls the site)
-feed-seeker example.com --deepsearch
+feedseeker example.com --deepsearch
 
 # Deep search only
-feed-seeker example.com --deepsearch-only
+feedseeker example.com --deepsearch-only
 
 # Run all strategies and show results from each
-feed-seeker example.com --all
+feedseeker example.com --all
 ```
 
 ### Advanced Options
 
 ```bash
 # Set timeout (seconds)
-feed-seeker example.com --timeout 30
+feedseeker example.com --timeout 30
 
 # Keep query parameters in feed URLs
-feed-seeker example.com --keep-query-params
+feedseeker example.com --keep-query-params
 
 # Show error messages
-feed-seeker example.com --display-errors
+feedseeker example.com --display-errors
 
 # Disable TLS certificate verification (like curl -k)
-feed-seeker example.com --insecure
+feedseeker example.com --insecure
 ```
 
 ## Library API

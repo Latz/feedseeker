@@ -86,7 +86,7 @@ export function deriveOutputPath(inputPath: string): string;
 - `readOutputFile`: if the file exists but cannot be parsed, log a warning to stderr and return `[]` (start fresh rather than crash).
 - `writeOutputFile`: propagate errors — a failed write is fatal (the caller should surface it).
 
-## Changes to `feed-seeker-cli.ts`
+## Changes to `feedseeker-cli.ts`
 
 The `--file` branch in the action handler is updated:
 
@@ -122,7 +122,7 @@ When not in `--quiet` mode, print to stdout before processing begins:
 
 ## Tests
 
-New tests in `feed-seeker-cli.test.ts` (and unit tests in a new `fileOutput.test.ts`):
+New tests in `feedseeker-cli.test.ts` (and unit tests in a new `fileOutput.test.ts`):
 
 | Test | What it verifies |
 |------|-----------------|

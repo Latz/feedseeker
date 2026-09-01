@@ -49,7 +49,7 @@ Feed Seeker isn't just powerful; it's designed with a great Developer Experience
 - **Simple, Programmatic API:** Get started in seconds.
 
   ```javascript
-  import FeedSeeker from 'feed-seeker';
+  import FeedSeeker from 'feedseeker';
 
   // Find feeds using all strategies
   const feeds = await new FeedSeeker('https://example.com').discover();
@@ -60,7 +60,7 @@ Feed Seeker isn't just powerful; it's designed with a great Developer Experience
 
   ```bash
   # Run a full deep search from the command line
-  npx feed-seeker https://example.com --deepsearch
+  npx feedseeker https://example.com --deepsearch
   ```
 
 - **Event-Driven Progress:** Building a UI? Feed Seeker emits events for `start`, `log`, `end`, and `error` for each search strategy, so you can give your users real-time feedback.
@@ -81,12 +81,12 @@ Ready to stop hunting and start finding? Install Feed Seeker today and see what 
 **Installation:**
 
 ```bash
-npm install feed-seeker
+npm install feedseeker
 ```
 
 We're open-source and would love your feedback, contributions, or a star on GitHub!
 
-- **NPM:** https://www.npmjs.com/package/feed-seeker
-- **GitHub:** https://github.com/your-username/feed-seeker
+- **NPM:** https://www.npmjs.com/package/feedseeker
+- **GitHub:** https://github.com/your-username/feedseeker
 
 Let me know what you build with it!

@@ -24,8 +24,8 @@
 |------|--------|----------------|
 | `modules/fileOutput.ts` | **Create** | `deriveOutputPath`, `readOutputFile`, `writeOutputFile`, `UrlResult` interface |
 | `tests/fileOutput.test.ts` | **Create** | Unit tests for all three exports |
-| `feed-seeker-cli.ts` | **Modify** | Import `fileOutput`, update `--file` branch, add progress messages |
-| `tests/feed-seeker-cli.test.ts` | **Modify** | Add tests for incremental write, resume, corrupt file, zero-feed recording |
+| `feedseeker-cli.ts` | **Modify** | Import `fileOutput`, update `--file` branch, add progress messages |
+| `tests/feedseeker-cli.test.ts` | **Modify** | Add tests for incremental write, resume, corrupt file, zero-feed recording |
 
 ---
 
@@ -257,8 +257,8 @@ git commit -m "feat: add fileOutput module for crash-resumable --file processing
 ## Task 2: Update CLI `--file` branch with incremental writes and resume
 
 **Files:**
-- Modify: `feed-seeker-cli.ts` (lines 367–379 — the `if (options.file)` block)
-- Modify: `tests/feed-seeker-cli.test.ts` (add to `--file flag` describe block)
+- Modify: `feedseeker-cli.ts` (lines 367–379 — the `if (options.file)` block)
+- Modify: `tests/feedseeker-cli.test.ts` (add to `--file flag` describe block)
 
 **Interfaces:**
 - Consumes from Task 1:
@@ -269,7 +269,7 @@ git commit -m "feat: add fileOutput module for crash-resumable --file processing
 
 - [ ] **Step 1: Write failing CLI tests for incremental output**
 
-In `tests/feed-seeker-cli.test.ts`, add a mock for `fileOutput` at the top (alongside the other `vi.mock` calls):
+In `tests/feedseeker-cli.test.ts`, add a mock for `fileOutput` at the top (alongside the other `vi.mock` calls):
 
 ```ts
 vi.mock('../modules/fileOutput.ts', () => ({
@@ -297,7 +297,7 @@ it('writes results to derived output file after each URL', async () => {
   (readOutputFile as unknown as Mock).mockResolvedValue([]);
   (writeOutputFile as unknown as Mock).mockResolvedValue(undefined);
 
-  const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+  const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
   await run(argv);
 
   expect(writeOutputFile).toHaveBeenCalledWith(
@@ -318,7 +318,7 @@ it('skips URLs already present in the output file on resume', async () => {
   (writeOutputFile as unknown as Mock).mockResolvedValue(undefined);
   (metaLinksMod as Mock).mockResolvedValue([fileFeed2]);
 
-  const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+  const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
   await run(argv);
 
   // metaLinks should only be called once (for site2, not site1)
@@ -341,7 +341,7 @@ it('records zero-feed URLs so they are not reprocessed on resume', async () => {
   (readOutputFile as unknown as Mock).mockResolvedValue([]);
   (writeOutputFile as unknown as Mock).mockResolvedValue(undefined);
 
-  const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
+  const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json'];
   await run(argv);
 
   expect(writeOutputFile).toHaveBeenCalledWith(
@@ -361,7 +361,7 @@ it('prints resume message when existing output file has entries', async () => {
   (writeOutputFile as unknown as Mock).mockResolvedValue(undefined);
   (metaLinksMod as Mock).mockResolvedValue([fileFeed2]);
 
-  const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch'];
+  const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch'];
   await run(argv);
 
   const allOutput = stdoutWriteSpy.mock.calls.flat().join('') +
@@ -376,7 +376,7 @@ it('prints "Writing results" message on fresh run', async () => {
   (writeOutputFile as unknown as Mock).mockResolvedValue(undefined);
   (metaLinksMod as Mock).mockResolvedValue([]);
 
-  const argv = ['node', 'feed-seeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch'];
+  const argv = ['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch'];
   await run(argv);
 
   const allOutput = stdoutWriteSpy.mock.calls.flat().join('') +
@@ -388,20 +388,20 @@ it('prints "Writing results" message on fresh run', async () => {
 - [ ] **Step 2: Run to verify new tests fail**
 
 ```bash
-pnpm run test tests/feed-seeker-cli.test.ts
+pnpm run test tests/feedseeker-cli.test.ts
 ```
 
 Expected: 5 new failures. Existing tests still pass.
 
-- [ ] **Step 3: Update `feed-seeker-cli.ts` — add import**
+- [ ] **Step 3: Update `feedseeker-cli.ts` — add import**
 
-At the top of `feed-seeker-cli.ts`, after the existing imports, add:
+At the top of `feedseeker-cli.ts`, after the existing imports, add:
 
 ```ts
 import { deriveOutputPath, readOutputFile, writeOutputFile, type UrlResult } from './modules/fileOutput.ts';
 ```
 
-- [ ] **Step 4: Update the `--file` branch in `feed-seeker-cli.ts`**
+- [ ] **Step 4: Update the `--file` branch in `feedseeker-cli.ts`**
 
 Replace the existing `if (options.file)` block (lines 367–379):
 
@@ -455,7 +455,7 @@ if (options.file) {
 - [ ] **Step 5: Run CLI tests to verify new tests pass**
 
 ```bash
-pnpm run test tests/feed-seeker-cli.test.ts
+pnpm run test tests/feedseeker-cli.test.ts
 ```
 
 Expected: All tests pass, including the 5 new ones and all existing tests.
@@ -479,7 +479,7 @@ Expected: no errors.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add feed-seeker-cli.ts tests/feed-seeker-cli.test.ts
+git add feedseeker-cli.ts tests/feedseeker-cli.test.ts
 git commit -m "feat: write --file results incrementally with crash-resume support"
 ```
 

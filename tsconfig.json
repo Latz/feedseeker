@@ -22,6 +22,6 @@
 		"allowImportingTsExtensions": true,
 		"types": ["node"]
 	},
-	"include": ["feed-seeker.ts", "cli/**/*.ts", "modules/**/*.ts", "types/**/*.ts"],
+	"include": ["feedseeker.ts", "cli/**/*.ts", "modules/**/*.ts", "types/**/*.ts"],
 	"exclude": ["node_modules", "dist", "tests", "**/*.old.js", "**/*.test.js"]
 }

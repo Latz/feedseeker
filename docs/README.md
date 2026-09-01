@@ -1,6 +1,6 @@
 # Feed Seeker
 
-[![npm version](https://badge.fury.io/js/feed-seeker.svg)](https://badge.fury.io/js/feed-seeker)
+[![npm version](https://badge.fury.io/js/feedseeker.svg)](https://badge.fury.io/js/feedseeker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Feed Seeker** is a powerful tool to discover RSS, Atom, and JSON feeds on any website. It uses multiple search strategies to find feeds that other tools might miss.
@@ -18,13 +18,13 @@
 Install Feed Seeker globally to use it as a command-line tool:
 
 ```bash
-npm install -g feed-seeker
+npm install -g feedseeker
 ```
 
 Or install it locally in your project:
 
 ```bash
-npm install feed-seeker
+npm install feedseeker
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ npm install feed-seeker
 Find feeds for a website:
 
 ```bash
-feed-seeker https://example.com
+feedseeker https://example.com
 ```
 
 #### Options
@@ -52,25 +52,25 @@ feed-seeker https://example.com
 
 ```bash
 # Basic usage
-feed-seeker https://news.ycombinator.com
+feedseeker https://news.ycombinator.com
 
 # Meta search only (fast)
-feed-seeker -m https://github.com
+feedseeker -m https://github.com
 
 # Enable deep search (thorough but slower)
-feed-seeker -d https://nytimes.com
+feedseeker -d https://nytimes.com
 
 # Set deep search depth
-feed-seeker -d --depth 5 https://blog.example.com
+feedseeker -d --depth 5 https://blog.example.com
 
 # Limit deep search to 500 links
-feed-seeker -d --max-links 500 https://large-website.com
+feedseeker -d --max-links 500 https://large-website.com
 
 # Set timeout for requests
-feed-seeker --timeout 10 https://slow-website.com
+feedseeker --timeout 10 https://slow-website.com
 
 # Keep query parameters when searching
-feed-seeker --keep-query-params https://example.com?category=tech
+feedseeker --keep-query-params https://example.com?category=tech
 ```
 
 ### Programmatic Usage
@@ -78,7 +78,7 @@ feed-seeker --keep-query-params https://example.com?category=tech
 You can also use Feed Seeker programmatically in your Node.js applications:
 
 ```javascript
-import FeedSeeker from 'feed-seeker';
+import FeedSeeker from 'feedseeker';
 
 const feedFinder = new FeedSeeker('https://example.com');
 
@@ -148,4 +148,4 @@ Your Name <your.email@example.com>
 
 ## Support
 
-If you encounter any issues or have questions, please [file an issue](https://github.com/yourusername/feed-seeker/issues) on GitHub.
+If you encounter any issues or have questions, please [file an issue](https://github.com/yourusername/feedseeker/issues) on GitHub.

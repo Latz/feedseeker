@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
-import FeedSeeker from '../feed-seeker.ts';
+import FeedSeeker from '../feedseeker.ts';
 import { type Feed } from '../modules/metaLinks.ts';
 
 // Mock fetchWithTimeout so initialize() never makes real network requests
