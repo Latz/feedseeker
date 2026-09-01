@@ -242,6 +242,15 @@ describe('checkAllAnchors()', () => {
 		const calls = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed');
 		expect(calls.length).toBeLessThanOrEqual(1);
 	});
+
+	it('returns empty array instead of throwing when content is not real HTML (no documentElement)', async () => {
+		// Some servers respond 200 with a plain-text body (e.g. "ldapbind failed").
+		// linkedom's parseHTML then produces a document with documentElement === null,
+		// and its .body/.head getters throw rather than returning null/undefined.
+		const instance = makeInstance('ldapbind failed');
+		expect(instance.document.documentElement).toBeNull();
+		await expect(checkAllAnchors(instance)).resolves.toEqual([]);
+	});
 });
 
 describe('meta refresh redirect', () => {

@@ -300,7 +300,11 @@ async function processPlainTextPhase(
 	concurrency: number,
 	maxFeeds: number
 ): Promise<void> {
-	const bodyText = context.instance.document.body?.textContent || '';
+	// linkedom's .body/.head getters throw (rather than returning null) when the
+	// parsed content has no documentElement, e.g. a non-HTML response body.
+	const bodyText = context.instance.document.documentElement
+		? context.instance.document.body?.textContent || ''
+		: '';
 	const plainTextUrls = extractUrlsFromText(bodyText);
 
 	const checkedUrls = new Set(context.feedUrls.map((feed) => feed.url));
