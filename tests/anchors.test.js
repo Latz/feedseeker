@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import checkAllAnchors, { ALLOWED_DOMAINS } from '../modules/anchors.ts';
+import checkAllAnchors, { ALLOWED_DOMAINS } from '../modules/anchors/index.ts';
 import { parseHTML } from 'linkedom';
 
 // Mock checkFeed to avoid real network requests

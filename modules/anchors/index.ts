@@ -12,95 +12,16 @@
  */
 
 import { parseHTML } from 'linkedom';
-import checkFeed from './checkFeed/index.ts';
-import fetchWithTimeout from './fetchWithTimeout.ts';
-import { type Feed, type MetaLinksInstance } from './metaLinks.ts';
+import checkFeed from '../checkFeed/index.ts';
+import fetchWithTimeout from '../fetchWithTimeout.ts';
+import { type Feed, type MetaLinksInstance } from '../metaLinks.ts';
+import { isValidHttpUrl, isRelativePath, parseUrlSafely } from './urlUtils.ts';
+import { isAllowedDomain } from './domainFilter.ts';
 
-// Pre-converted array for subdomain suffix checks — avoids re-allocating on every isAllowedDomain() call
-const ALLOWED_DOMAINS_ARRAY: string[] = [];
+export { ALLOWED_DOMAINS } from './domainFilter.ts';
 
 // Regex hoisted to module level — String.prototype.match with /g resets lastIndex implicitly, so reuse is safe
 const URL_REGEX = /https?:\/\/[^\s"'<>)]+/gi;
-
-/**
- * Safely parses a URL and returns the parsed URL object or null if invalid
- * @param {string} url - The URL to parse
- * @param {string|URL} [base] - The base URL for resolving relative URLs (optional)
- * @returns {URL|null} The parsed URL object or null if parsing fails
- */
-function parseUrlSafely(url: string, base?: string | URL): URL | null {
-	try {
-		return new URL(url, base);
-	} catch {
-		return null;
-	}
-}
-
-/**
- * Checks if a URL is a valid HTTP or HTTPS URL
- * @param {string} url - The URL to validate
- * @returns {boolean} True if the URL is valid and has HTTP or HTTPS protocol, false otherwise
- */
-function isValidHttpUrl(url: string): boolean {
-	const parsed = parseUrlSafely(url);
-	if (!parsed) {
-		// If it fails to parse, it might be a relative URL
-		return false;
-	}
-	return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-}
-
-/**
- * Checks if a URL is a relative path (not an absolute URL)
- * @param {string} url - The URL to check
- * @returns {boolean} True if the URL is a relative path, false otherwise
- */
-function isRelativePath(url: string): boolean {
-	// Check if it's not an absolute URL and doesn't contain a scheme
-	const parsed = parseUrlSafely(url);
-	if (parsed) {
-		// If it parses successfully, it's an absolute URL
-		return false;
-	}
-	// If it fails to parse, check if it contains a scheme
-	return !url.includes('://');
-}
-
-// Module-level Set of allowed external feed hosting domains (FeedBurner services).
-// Hoisted here so it is allocated once, not on every isAllowedDomain() call.
-export const ALLOWED_DOMAINS = new Set([
-	'feedburner.com',
-	'feeds.feedburner.com',
-	'feedproxy.google.com',
-	'feeds2.feedburner.com'
-]);
-ALLOWED_DOMAINS_ARRAY.push(...ALLOWED_DOMAINS);
-
-/**
- * Checks if a URL is on the same domain as the base URL or is an allowed external domain (like feed hosting services)
- * @param {string} url - The URL to check
- * @param {URL} baseUrl - The base URL for comparison
- * @returns {boolean} True if the URL is on the same domain or is an allowed external domain, false otherwise
- */
-function isAllowedDomain(url: string, baseUrl: URL): boolean {
-	const parsedUrl = parseUrlSafely(url);
-	if (!parsedUrl) {
-		// If URL parsing fails, it's likely a relative URL which should be same-domain by definition
-		return true;
-	}
-
-	// Check if it's the same domain
-	if (parsedUrl.hostname === baseUrl.hostname) {
-		return true;
-	}
-
-	// Allow common feed hosting services as exceptions
-	// These services host feeds for other websites and should be considered valid external sources
-	return (
-		ALLOWED_DOMAINS.has(parsedUrl.hostname) ||
-		ALLOWED_DOMAINS_ARRAY.some((domain) => parsedUrl.hostname.endsWith('.' + domain))
-	);
-}
 
 /**
  * Fetches and parses the meta-refresh target URL, then recursively checks it for feeds.

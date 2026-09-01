@@ -15,7 +15,7 @@
 
 import { parseHTML } from 'linkedom';
 import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLinks.ts';
-import checkAllAnchors from './modules/anchors.ts';
+import checkAllAnchors from './modules/anchors/index.ts';
 import blindSearch from './modules/blindsearch/index.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import checkFeed from './modules/checkFeed/index.ts';
