@@ -14,7 +14,7 @@ function parseDate(str: string): Date | null {
 	const trimmed = str.trim();
 	if (!trimmed) return null;
 	const d = new Date(trimmed);
-	return isNaN(d.getTime()) ? null : d;
+	return Number.isNaN(d.getTime()) ? null : d;
 }
 
 function extractRssDate(content: string): Date | null {

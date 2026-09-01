@@ -16,13 +16,15 @@
 import { parseHTML } from 'linkedom';
 import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLinks.ts';
 import checkAllAnchors from './modules/anchors.ts';
-import blindSearch, { type BlindSearchFeed } from './modules/blindsearch.ts';
+import blindSearch from './modules/blindsearch.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import checkFeed from './modules/checkFeed.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
 import { isChallengeResponse } from './modules/challengeDetection.ts';
-import type {
+
+export type { BlindSearchFeed } from './modules/blindsearch.ts';
+export type {
 	ErrorEventData,
 	MetaLinksLogData,
 	AnchorsLogData,
@@ -30,16 +32,6 @@ import type {
 	DeepSearchLogData,
 	EventEmitter as EventEmitterInterface,
 } from './types/events.ts';
-
-export type {
-	BlindSearchFeed,
-	ErrorEventData,
-	MetaLinksLogData,
-	AnchorsLogData,
-	BlindSearchLogData,
-	DeepSearchLogData,
-	EventEmitterInterface,
-};
 
 /**
  * Normalizes a site URL: strips the trailing slash on a bare root URL (no
@@ -258,56 +250,15 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 				const timeout = (this.options.timeout ?? 15) * 1000;
 				const fetchOptions = { timeout, insecure: this.options.insecure };
 
-				let response: Response;
-				try {
-					response = await fetchWithTimeout(this.site, fetchOptions);
-				} catch (error: unknown) {
-					// An explicit http:// site that fails outright (e.g. a broken/default
-					// vhost) may still work over https:// on the same host — many sites
-					// serve a real site on https but leave plain HTTP misconfigured.
-					const httpsRetry = await this.tryHttpsFallback(fetchOptions);
-					if (!httpsRetry) throw error;
-					response = httpsRetry;
-				}
+				let response = await this.fetchSiteOrHttpsFallback(fetchOptions);
 
 				if (!response.ok) {
-					const httpsRetry = await this.tryHttpsFallback(fetchOptions);
-					if (httpsRetry) {
-						response = httpsRetry;
-					} else {
-						// For 403/401/other non-OK responses, continue with empty content
-						// so blind search can still find feeds at common paths — but first
-						// check whether this is a bot-mitigation challenge page, since that
-						// changes what "no feeds found" should tell the user.
-						const body = await response.text().catch(() => '');
-						if (isChallengeResponse(response, body)) {
-							this.challengeDetected = true;
-						}
-						this.content = '';
-						this.document = this.createEmptyDocument();
-						this.initStatus = 'success';
-						this.emit('initialized');
-						return;
-					}
+					const resolved = await this.handleNonOkResponse(response, fetchOptions);
+					if (!resolved) return; // already emitted 'initialized' with empty content
+					response = resolved;
 				}
 
-				// Sync site to wherever the request actually landed — fetch follows
-				// redirects transparently, and a site can redirect to a different
-				// scheme, subdomain, or even an entirely different domain (e.g. a
-				// project's blog moving hosts). Without this, every relative URL
-				// resolved against `this.site` downstream (metaLinks, anchors,
-				// blindSearch's candidate generation) would target the original,
-				// possibly-redirecting URL instead of the real, direct one.
-				if (response.url) {
-					try {
-						const finalSite = normalizeSiteUrl(response.url);
-						if (finalSite !== this.site) {
-							this.site = finalSite;
-						}
-					} catch {
-						// Leave this.site as-is if response.url is somehow invalid.
-					}
-				}
+				this.syncSiteToFinalUrl(response);
 
 				this.content = await response.text();
 
@@ -337,6 +288,75 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		})();
 
 		return this.initPromise;
+	}
+
+	/**
+	 * Performs the initial site fetch. If it throws (e.g. a broken/default
+	 * vhost on an explicit http:// site), tries the https:// equivalent on
+	 * the same host before giving up — many sites serve a real site on
+	 * https but leave plain HTTP misconfigured.
+	 * @private
+	 */
+	private async fetchSiteOrHttpsFallback(
+		fetchOptions: { timeout: number; insecure?: boolean }
+	): Promise<Response> {
+		try {
+			return await fetchWithTimeout(this.site, fetchOptions);
+		} catch (error: unknown) {
+			const httpsRetry = await this.tryHttpsFallback(fetchOptions);
+			if (!httpsRetry) throw error;
+			return httpsRetry;
+		}
+	}
+
+	/**
+	 * Handles a non-OK response from the initial fetch: tries the https://
+	 * fallback first, and if that also fails, checks whether this is a
+	 * bot-mitigation challenge page (changes what "no feeds found" should
+	 * tell the user) before continuing with empty content so blind search
+	 * can still find feeds at common paths.
+	 * @returns The response to continue initializing with, or `null` if
+	 * `initialize()` should return early (empty-content case already emitted).
+	 * @private
+	 */
+	private async handleNonOkResponse(
+		response: Response,
+		fetchOptions: { timeout: number; insecure?: boolean }
+	): Promise<Response | null> {
+		const httpsRetry = await this.tryHttpsFallback(fetchOptions);
+		if (httpsRetry) return httpsRetry;
+
+		const body = await response.text().catch(() => '');
+		if (isChallengeResponse(response, body)) {
+			this.challengeDetected = true;
+		}
+		this.content = '';
+		this.document = this.createEmptyDocument();
+		this.initStatus = 'success';
+		this.emit('initialized');
+		return null;
+	}
+
+	/**
+	 * Syncs `this.site` to wherever the request actually landed — fetch
+	 * follows redirects transparently, and a site can redirect to a
+	 * different scheme, subdomain, or even an entirely different domain
+	 * (e.g. a project's blog moving hosts). Without this, every relative
+	 * URL resolved against `this.site` downstream (metaLinks, anchors,
+	 * blindSearch's candidate generation) would target the original,
+	 * possibly-redirecting URL instead of the real, direct one.
+	 * @private
+	 */
+	private syncSiteToFinalUrl(response: Response): void {
+		if (!response.url) return;
+		try {
+			const finalSite = normalizeSiteUrl(response.url);
+			if (finalSite !== this.site) {
+				this.site = finalSite;
+			}
+		} catch {
+			// Leave this.site as-is if response.url is somehow invalid.
+		}
 	}
 
 	/**

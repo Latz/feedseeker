@@ -14,7 +14,7 @@ describe('fetchWithTimeout Module', () => {
 
 		it('should have expected function signature', () => {
 			// The function should accept URL and optional timeout parameters
-			expect(fetchWithTimeout.length >= 1).toBe(true);
+			expect(fetchWithTimeout.length).toBeGreaterThanOrEqual(1);
 		});
 	});
 
@@ -541,7 +541,7 @@ describe('fetchWithTimeout Module', () => {
 				// A subsequent request must still be able to acquire a slot.
 				const after = fetchWithTimeout(host, 5000);
 				await vi.advanceTimersByTimeAsync(1);
-				expect(fetchMock.mock.calls.length).toBe(3); // fired immediately, not stuck queued
+				expect(fetchMock.mock.calls).toHaveLength(3); // fired immediately, not stuck queued
 
 				await vi.runAllTimersAsync();
 				const response = await after;
@@ -591,7 +591,7 @@ describe('fetchWithTimeout Module', () => {
 				const callsBefore = fetchMock.mock.calls.length;
 				const afterFixedCooldown = fetchWithTimeout(host, 5000);
 				await vi.advanceTimersByTimeAsync(11_000);
-				expect(fetchMock.mock.calls.length).toBe(callsBefore); // still gated
+				expect(fetchMock.mock.calls).toHaveLength(callsBefore); // still gated
 
 				await vi.runAllTimersAsync();
 				await afterFixedCooldown;
@@ -628,7 +628,7 @@ describe('fetchWithTimeout Module', () => {
 				const callsBefore = fetchMock.mock.calls.length;
 				const afterHeaderWait = fetchWithTimeout(host, 5000);
 				await vi.advanceTimersByTimeAsync(2_001);
-				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+				expect(fetchMock.mock.calls).toHaveLength(callsBefore + 1);
 
 				await vi.runAllTimersAsync();
 				await afterHeaderWait;
@@ -662,7 +662,7 @@ describe('fetchWithTimeout Module', () => {
 				const callsBefore = fetchMock.mock.calls.length;
 				const next = fetchWithTimeout(host, 5000);
 				await vi.advanceTimersByTimeAsync(1);
-				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+				expect(fetchMock.mock.calls).toHaveLength(callsBefore + 1);
 
 				await vi.runAllTimersAsync();
 				await next;
@@ -697,7 +697,7 @@ describe('fetchWithTimeout Module', () => {
 				const callsBefore = fetchMock.mock.calls.length;
 				const next = fetchWithTimeout(host, 5000);
 				await vi.advanceTimersByTimeAsync(1);
-				expect(fetchMock.mock.calls.length).toBe(callsBefore + 1);
+				expect(fetchMock.mock.calls).toHaveLength(callsBefore + 1);
 
 				await vi.runAllTimersAsync();
 				await next;

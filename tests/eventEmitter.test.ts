@@ -273,10 +273,10 @@ describe('EventEmitter Module', () => {
 		it('should remove all listeners for all events when called without arguments', () => {
 			emitter.on('test1', () => {});
 			emitter.on('test2', () => {});
-			expect(emitter.eventNames().length).toBe(2);
+			expect(emitter.eventNames()).toHaveLength(2);
 
 			emitter.removeAllListeners();
-			expect(emitter.eventNames().length).toBe(0);
+			expect(emitter.eventNames()).toHaveLength(0);
 		});
 
 		it('should support method chaining', () => {
@@ -382,7 +382,7 @@ describe('EventEmitter Module', () => {
 			emitter.emit('test');
 
 			// In strict mode, 'this' should be undefined
-			expect(receivedThis).toBe(undefined);
+			expect(receivedThis).toBeUndefined();
 		});
 
 		it('should preserve arrow function context', () => {
@@ -431,7 +431,7 @@ describe('EventEmitter Module', () => {
 			const eventNames = emitter.eventNames();
 			expect(eventNames.includes('event1')).toBeTruthy();
 			expect(eventNames.includes('event2')).toBeTruthy();
-			expect(eventNames.length).toBe(2);
+			expect(eventNames).toHaveLength(2);
 		});
 
 		it('listeners() should return array of listeners without wrappers', () => {
@@ -442,7 +442,7 @@ describe('EventEmitter Module', () => {
 			emitter.once('test', listener2);
 
 			const listeners = emitter.listeners('test');
-			expect(listeners.length).toBe(2);
+			expect(listeners).toHaveLength(2);
 			expect(listeners.includes(listener1)).toBeTruthy();
 			expect(listeners.includes(listener2)).toBeTruthy();
 		});
@@ -460,7 +460,7 @@ describe('EventEmitter Module', () => {
 			emitter.once('test', listener2);
 
 			const rawListeners = emitter.rawListeners('test');
-			expect(rawListeners.length).toBe(2);
+			expect(rawListeners).toHaveLength(2);
 
 			// First listener should be the direct listener
 			expect(rawListeners[0]).toBe(listener1);

@@ -430,36 +430,40 @@ describe('initialize()', () => {
 	});
 
 	describe('syncing site to the final URL after a redirect', () => {
-		it('updates site to response.url when the initial fetch was redirected to a different origin', async () => {
+		it.each([
+			{
+				description: 'updates site to response.url when the initial fetch was redirected to a different origin',
+				inputSite: 'https://blog.golang.org',
+				responseUrl: 'https://go.dev/',
+				// Root-path trailing slash normalization applies to the redirect
+				// target too, same as the constructor's own normalization.
+				expectedSite: 'https://go.dev'
+			},
+			{
+				description: 'leaves site unchanged when response.url matches the requested site',
+				inputSite: 'https://example.com',
+				responseUrl: 'https://example.com/',
+				expectedSite: 'https://example.com'
+			},
+			{
+				description: 'normalizes a non-root redirect target by keeping its path',
+				inputSite: 'https://blog.golang.org/some-post',
+				responseUrl: 'https://go.dev/blog/some-post',
+				expectedSite: 'https://go.dev/blog/some-post'
+			}
+		])('$description', async ({ inputSite, responseUrl, expectedSite }) => {
 			(fetchWithTimeout as Mock).mockResolvedValueOnce({
 				ok: true,
 				status: 200,
 				statusText: 'OK',
-				url: 'https://go.dev/',
+				url: responseUrl,
 				text: async () => '<html><head></head><body></body></html>'
 			});
 
-			const fs = new FeedSeeker('https://blog.golang.org');
+			const fs = new FeedSeeker(inputSite);
 			await fs.initialize();
 
-			// Root-path trailing slash normalization applies to the redirect
-			// target too, same as the constructor's own normalization.
-			expect(fs.site).toBe('https://go.dev');
-		});
-
-		it('leaves site unchanged when response.url matches the requested site', async () => {
-			(fetchWithTimeout as Mock).mockResolvedValueOnce({
-				ok: true,
-				status: 200,
-				statusText: 'OK',
-				url: 'https://example.com/',
-				text: async () => '<html><head></head><body></body></html>'
-			});
-
-			const fs = new FeedSeeker('https://example.com');
-			await fs.initialize();
-
-			expect(fs.site).toBe('https://example.com');
+			expect(fs.site).toBe(expectedSite);
 		});
 
 		it('leaves site unchanged when response.url is absent (e.g. a minimal test mock)', async () => {
@@ -469,21 +473,6 @@ describe('initialize()', () => {
 			await fs.initialize();
 
 			expect(fs.site).toBe('https://example.com');
-		});
-
-		it('normalizes a non-root redirect target by keeping its path', async () => {
-			(fetchWithTimeout as Mock).mockResolvedValueOnce({
-				ok: true,
-				status: 200,
-				statusText: 'OK',
-				url: 'https://go.dev/blog/some-post',
-				text: async () => '<html><head></head><body></body></html>'
-			});
-
-			const fs = new FeedSeeker('https://blog.golang.org/some-post');
-			await fs.initialize();
-
-			expect(fs.site).toBe('https://go.dev/blog/some-post');
 		});
 	});
 });

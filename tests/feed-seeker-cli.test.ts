@@ -341,7 +341,7 @@ describe('FeedSeeker CLI', () => {
 
 			// Only one console.log call: the OPML output itself (no banner)
 			const calls = consoleLogSpy.mock.calls;
-			expect(calls.length).toBe(1);
+			expect(calls).toHaveLength(1);
 			expect(calls[0][0]).toContain('<?xml');
 		});
 

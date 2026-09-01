@@ -156,6 +156,55 @@ export interface FetchWithTimeoutOptions extends RequestInit {
 }
 
 /**
+ * Normalizes the legacy `fetchWithTimeout(url, timeoutMs)` and current
+ * `fetchWithTimeout(url, options)` call shapes into a single resolved form.
+ */
+function resolveFetchOptions(
+	optionsOrTimeout: number | FetchWithTimeoutOptions
+): { timeout: number; insecure: boolean; fetchOptions: RequestInit } {
+	if (typeof optionsOrTimeout === 'number') {
+		return { timeout: optionsOrTimeout, insecure: false, fetchOptions: {} };
+	}
+
+	const {
+		timeout: optTimeout = 5000,
+		insecure: optInsecure = false,
+		...restOptions
+	} = optionsOrTimeout;
+	return { timeout: optTimeout, insecure: optInsecure, fetchOptions: restOptions };
+}
+
+/**
+ * Validates the URL protocol and timeout value, throwing the same errors
+ * fetchWithTimeout has always thrown for invalid input.
+ */
+function validateFetchInputs(url: string, timeout: number): void {
+	try {
+		const urlObj = new URL(url);
+		if (!['http:', 'https:'].includes(urlObj.protocol)) {
+			throw new Error(
+				`Invalid URL protocol: ${urlObj.protocol}. Only http: and https: are allowed.`
+			);
+		}
+	} catch (error: unknown) {
+		if (error instanceof TypeError) {
+			const err = new Error(`Invalid URL: ${url}`);
+			err.cause = error;
+			throw err;
+		}
+		throw error;
+	}
+
+	if (timeout <= 0) {
+		throw new TypeError(`Invalid timeout: ${timeout}. Timeout must be a positive number.`);
+	}
+
+	if (!Number.isFinite(timeout)) {
+		throw new TypeError(`Invalid timeout: ${timeout}. Timeout must be a finite number.`);
+	}
+}
+
+/**
  * Fetches a URL with a configurable timeout and custom options
  * Uses AbortController to cleanly cancel requests that exceed the timeout
  * @param {string} url - The URL to fetch (must be a valid HTTP/HTTPS URL)
@@ -192,52 +241,8 @@ export default async function fetchWithTimeout(
 	url: string,
 	optionsOrTimeout: number | FetchWithTimeoutOptions = {}
 ): Promise<Response> {
-	// Handle backward compatibility: if second param is a number, treat it as timeout
-	let timeout: number;
-	let fetchOptions: RequestInit;
-
-	let insecure = false;
-	if (typeof optionsOrTimeout === 'number') {
-		// Old signature: fetchWithTimeout(url, timeout)
-		timeout = optionsOrTimeout;
-		fetchOptions = {};
-	} else {
-		// New signature: fetchWithTimeout(url, options)
-		const {
-			timeout: optTimeout = 5000,
-			insecure: optInsecure = false,
-			...restOptions
-		} = optionsOrTimeout;
-		timeout = optTimeout;
-		insecure = optInsecure;
-		fetchOptions = restOptions;
-	}
-
-	// Validate URL
-	try {
-		const urlObj = new URL(url);
-		if (!['http:', 'https:'].includes(urlObj.protocol)) {
-			throw new Error(
-				`Invalid URL protocol: ${urlObj.protocol}. Only http: and https: are allowed.`
-			);
-		}
-	} catch (error: unknown) {
-		if (error instanceof TypeError) {
-			const err = new Error(`Invalid URL: ${url}`);
-			err.cause = error;
-			throw err;
-		}
-		throw error;
-	}
-
-	// Validate timeout
-	if (timeout <= 0) {
-		throw new TypeError(`Invalid timeout: ${timeout}. Timeout must be a positive number.`);
-	}
-
-	if (!Number.isFinite(timeout)) {
-		throw new TypeError(`Invalid timeout: ${timeout}. Timeout must be a finite number.`);
-	}
+	const { timeout, insecure, fetchOptions } = resolveFetchOptions(optionsOrTimeout);
+	validateFetchInputs(url, timeout);
 
 	// Default browser-like headers to avoid being blocked by Cloudflare
 	const defaultHeaders: HeadersInit = {

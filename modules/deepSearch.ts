@@ -225,7 +225,7 @@ class Crawler extends EventEmitter {
 			const robots = await fetchWithTimeout(`${origin}/robots.txt`, { timeout: this.timeout, insecure: this.insecure });
 			if (robots?.ok) {
 				const text = await robots.text();
-				const match = text.match(/^Sitemap:\s*(\S+)/im);
+				const match = /^Sitemap:\s*(\S+)/im.exec(text);
 				if (match) sitemapUrl = match[1];
 			}
 		} catch { /* ignore, fall back to default sitemap URL */ }
