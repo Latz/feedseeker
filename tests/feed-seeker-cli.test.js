@@ -7,7 +7,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 describe('FeedSeeker CLI', () => {
 	describe('module structure', () => {
 		it('exports a run() function', async () => {
-			const mod = await import('../feed-seeker-cli.ts');
+			const mod = await import('../cli/index.ts');
 			expect(typeof mod.run).toBe('function');
 		});
 	});
@@ -26,7 +26,7 @@ describe('FeedSeeker CLI', () => {
 		});
 
 		it('calling run() with no URL exits with an error indication', async () => {
-			const { run } = await import('../feed-seeker-cli.ts');
+			const { run } = await import('../cli/index.ts');
 			exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
 				throw new Error('exit');
 			});

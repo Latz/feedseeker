@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 import { Command, Option } from 'commander';
-import FeedSeeker, { type FeedSeekerOptions } from './feed-seeker.ts';
+import FeedSeeker, { type FeedSeekerOptions } from '../feed-seeker.ts';
 import { styleText } from 'node:util';
-import { readFile } from 'node:fs/promises';
-import { type Feed } from './modules/metaLinks.ts';
-import type { StartEventData, EndEventData, LogEventData } from './types/events.ts';
-import bannerText from './modules/banner.ts';
-import { checkFeedFreshness } from './modules/checkFreshness.ts';
-import { setTlsSpoofEnabled } from './modules/fetchWithTimeout.ts';
+import { type Feed } from '../modules/metaLinks.ts';
+import type { StartEventData, EndEventData, LogEventData } from '../types/events.ts';
+import bannerText from '../modules/banner.ts';
+import { checkFeedFreshness } from '../modules/checkFreshness.ts';
+import { setTlsSpoofEnabled } from '../modules/fetchWithTimeout.ts';
+import { formatOpml, printFeeds } from './output.ts';
+import { readUrlsFromFile } from './readUrlsFromFile.ts';
 
 // CLI-specific options that extend FeedSeekerOptions
 interface CLIOptions extends FeedSeekerOptions {
@@ -256,14 +257,6 @@ async function getFeeds(
 	return feeds;
 }
 
-async function readUrlsFromFile(filePath: string): Promise<string[]> {
-	const content = await readFile(filePath, 'utf-8');
-	return content
-		.split('\n')
-		.map((line) => line.trim())
-		.filter((line) => line.length > 0 && !line.startsWith('#'));
-}
-
 // Extended program type to store feeds and run context
 interface ExtendedCommand extends Command {
 	feeds?: Feed[];
@@ -287,7 +280,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 		.command('version')
 		.description('Get version')
 		.action(async () => {
-			const packageModule = await import('./package.json', { with: { type: 'json' } });
+			const packageModule = await import('../package.json', { with: { type: 'json' } });
 			const packageConfig = packageModule.default;
 			process.stdout.write(`${packageConfig.version}\n`);
 		});
@@ -445,46 +438,6 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 	);
 
 	return program;
-}
-
-function escapeXml(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function formatOpml(feeds: Feed[], siteUrl: string): string {
-	const title = escapeXml(`Feeds from ${siteUrl}`);
-	const outlines = feeds
-		.map((f) => {
-			const label = escapeXml(f.feedTitle ?? f.title ?? f.url);
-			const type = f.type === 'atom' ? 'atom' : f.type === 'json' ? 'json' : 'rss';
-			return `  <outline type="${type}" text="${label}" title="${label}" xmlUrl="${f.url}"/>`;
-		})
-		.join('\n');
-	return [
-		'<?xml version="1.0" encoding="UTF-8"?>',
-		'<opml version="2.0">',
-		'<head>',
-		`  <title>${title}</title>`,
-		'</head>',
-		'<body>',
-		outlines,
-		'</body>',
-		'</opml>',
-	].join('\n');
-}
-
-/**
- * Prints feeds in a human-readable format, showing title (if available) above the URL.
- */
-function printFeeds(feeds: Feed[]): void {
-	feeds.forEach((feed, i) => {
-		const title = feed.feedTitle ?? feed.title;
-		if (title) {
-			console.log(styleText('cyan', title));
-		}
-		console.log(feed.url);
-		if (i < feeds.length - 1) console.log('');
-	});
 }
 
 /**

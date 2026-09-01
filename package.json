@@ -13,7 +13,7 @@
 			"require": "./dist/feedseeker.cjs"
 		},
 		"./cli": {
-			"types": "./dist/types/feed-seeker-cli.d.ts",
+			"types": "./dist/types/cli/index.d.ts",
 			"import": "./dist/feedseeker-cli.js",
 			"require": "./dist/feedseeker-cli.cjs"
 		}

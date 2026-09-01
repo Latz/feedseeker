@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
-import { run } from '../feed-seeker-cli.ts';
+import { run } from '../cli/index.ts';
 import { type Feed } from '../modules/metaLinks.ts';
 
 // Mock the search modules to control their output and prevent network calls.
