@@ -11,12 +11,12 @@ import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 // Mock the four search modules so search methods don't make network calls
 vi.mock('../modules/metaLinks.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/anchors.ts', () => ({ default: vi.fn() }));
-vi.mock('../modules/blindsearch.ts', () => ({ default: vi.fn() }));
+vi.mock('../modules/blindsearch/index.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/deepSearch.ts', () => ({ default: vi.fn() }));
 
 import metaLinksMod from '../modules/metaLinks.ts';
 import anchorsMod from '../modules/anchors.ts';
-import blindSearchMod from '../modules/blindsearch.ts';
+import blindSearchMod from '../modules/blindsearch/index.ts';
 import deepSearchMod from '../modules/deepSearch.ts';
 
 function mockOkResponse(html = '<html><head></head><body></body></html>') {

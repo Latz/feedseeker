@@ -275,7 +275,7 @@ describe('blindSearch() module', () => {
 
 	it('returns [] when no feeds found', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
 		expect(result).toEqual([]);
@@ -283,7 +283,7 @@ describe('blindSearch() module', () => {
 
 	it('emits start event with endpointUrls count', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		await blindSearch(instance);
 		const startEvent = instance._events.find((e) => e.event === 'start');
@@ -294,7 +294,7 @@ describe('blindSearch() module', () => {
 
 	it('emits end event with feeds array', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
 		const endEvent = instance._events.find((e) => e.event === 'end');
@@ -305,7 +305,7 @@ describe('blindSearch() module', () => {
 
 	it('emits log events during search', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		await blindSearch(instance);
 		const logEvents = instance._events.filter((e) => e.event === 'log');
@@ -317,7 +317,7 @@ describe('blindSearch() module', () => {
 			if (url === 'https://example.com/feed') return { type: 'rss', title: 'My Blog' };
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
 		expect(result.some((f) => f.url === 'https://example.com/feed')).toBe(true);
@@ -330,7 +330,7 @@ describe('blindSearch() module', () => {
 			if (url === 'https://example.com/rss') return { type: 'rss', title: 'Feed Title' };
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const result = await blindSearch(instance);
 		const found = result.find((f) => f.url === 'https://example.com/rss');
@@ -346,7 +346,7 @@ describe('blindSearch() module', () => {
 			if (url.endsWith('/atom')) return { type: 'atom', title: 'Atom' };
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: false });
 		const result = await blindSearch(instance);
 		// Should have found at least RSS + Atom and stopped early
@@ -357,7 +357,7 @@ describe('blindSearch() module', () => {
 	it('emits log when maxFeeds limit is reached', async () => {
 		// Return a feed for every URL so maxFeeds is quickly hit
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'RSS' });
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		// maxFeeds=1, concurrency=1 to ensure the limit check fires between batches
 		const instance = new MockInstance('https://example.com', {
 			searchMode: 'fast',
@@ -374,7 +374,7 @@ describe('blindSearch() module', () => {
 
 	it('does not add the same feed URL twice (dedup via foundUrls)', async () => {
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: true });
 		const result = await blindSearch(instance);
 		const urls = result.map((f) => f.url);
@@ -391,7 +391,7 @@ describe('blindSearch() module', () => {
 			checkedUrls.push(url);
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com/blog/', { searchMode: 'fast', all: true });
 		await blindSearch(instance);
 
@@ -403,7 +403,7 @@ describe('blindSearch() module', () => {
 
 	it('handles checkFeed errors gracefully (no emit when showErrors is false)', async () => {
 		checkFeed.mockRejectedValue(new Error('Network error'));
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', {
 			searchMode: 'fast',
 			showErrors: false
@@ -415,7 +415,7 @@ describe('blindSearch() module', () => {
 
 	it('emits error events when checkFeed throws and showErrors is true', async () => {
 		checkFeed.mockRejectedValue(new Error('Connection refused'));
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', {
 			searchMode: 'fast',
 			showErrors: true
@@ -428,7 +428,7 @@ describe('blindSearch() module', () => {
 
 	it('throws when aborted via AbortSignal', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const controller = new AbortController();
 		controller.abort();
@@ -440,7 +440,7 @@ describe('blindSearch() module', () => {
 			onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', verbose: true });
 		await blindSearch(instance);
 		const verboseLogs = instance._events.filter(
@@ -457,7 +457,7 @@ describe('blindSearch() module', () => {
 			onReject?.('content is not a recognized RSS, Atom, or JSON feed format');
 			return null;
 		});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', { searchMode: 'fast', verbose: false });
 		await blindSearch(instance);
 		const verboseLogs = instance._events.filter(
@@ -475,7 +475,7 @@ describe('blindsearch module — endpoint getters', () => {
 
 	it('fast mode generates fewer endpoint URLs than standard mode', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 
 		const fastInstance = new MockInstance('https://example.com', { searchMode: 'fast' });
 		const a1 = new AbortController();
@@ -498,7 +498,7 @@ describe('blindsearch module — endpoint getters', () => {
 
 	it('exhaustive mode generates more endpoint URLs than standard mode', async () => {
 		checkFeed.mockResolvedValue(null);
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 
 		const standardInstance = new MockInstance('https://example.com', { searchMode: 'standard' });
 		const a1 = new AbortController();
@@ -526,7 +526,7 @@ describe('blindsearch module — endpoint getters', () => {
 		// With fast mode (24 endpoints) and concurrency 3, there are 8 batches.
 		checkFeed.mockResolvedValue(null);
 		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-		const { default: blindSearch } = await import('../modules/blindsearch.ts');
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 		const instance = new MockInstance('https://example.com', {
 			searchMode: 'fast',
 			requestDelay: -1 // invalid → triggers console.warn in validateRequestDelay
@@ -543,7 +543,7 @@ describe('blindsearch module — endpoint getters', () => {
 		vi.useFakeTimers();
 		try {
 			checkFeed.mockResolvedValue(null);
-			const { default: blindSearch } = await import('../modules/blindsearch.ts');
+			const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
 			// fast mode + concurrency 1 gives multiple batches, so the inter-batch delay fires.
 			const instance = new MockInstance('https://example.com', {
 				searchMode: 'fast',

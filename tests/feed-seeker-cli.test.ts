@@ -5,7 +5,7 @@ import { type Feed } from '../modules/metaLinks.ts';
 // Mock the search modules to control their output and prevent network calls.
 vi.mock('../modules/metaLinks.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/anchors.ts', () => ({ default: vi.fn() }));
-vi.mock('../modules/blindsearch.ts', () => ({ default: vi.fn() }));
+vi.mock('../modules/blindsearch/index.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/deepSearch.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/checkFreshness.ts', () => ({ checkFeedFreshness: vi.fn() }));
 vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
@@ -18,7 +18,7 @@ vi.mock('../modules/fetchWithTimeout.ts', () => ({
 
 import metaLinksMod from '../modules/metaLinks.ts';
 import anchorsMod from '../modules/anchors.ts';
-import blindsearchMod from '../modules/blindsearch.ts';
+import blindsearchMod from '../modules/blindsearch/index.ts';
 import deepSearchMod from '../modules/deepSearch.ts';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 import { checkFeedFreshness } from '../modules/checkFreshness.ts';

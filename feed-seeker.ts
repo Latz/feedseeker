@@ -16,14 +16,14 @@
 import { parseHTML } from 'linkedom';
 import metaLinks, { type Feed, type MetaLinksInstance } from './modules/metaLinks.ts';
 import checkAllAnchors from './modules/anchors.ts';
-import blindSearch from './modules/blindsearch.ts';
+import blindSearch from './modules/blindsearch/index.ts';
 import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import checkFeed from './modules/checkFeed/index.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
 import { isChallengeResponse } from './modules/challengeDetection.ts';
 
-export type { BlindSearchFeed } from './modules/blindsearch.ts';
+export type { BlindSearchFeed } from './modules/blindsearch/index.ts';
 export type {
 	ErrorEventData,
 	MetaLinksLogData,
