@@ -12,8 +12,20 @@
  */
 
 import { Agent } from 'undici';
+import { tryTlsSpoofFallback } from './tlsSpoofFallback.ts';
 
 let insecureAgent: Agent | undefined;
+
+// Module-wide switch for the TLS-fingerprint-spoofing fallback (see
+// tlsSpoofFallback.ts), on by default. Exposed as a setter rather than a
+// per-call option threaded through every fetchWithTimeout() call site (of
+// which there are several across the codebase) — this is a global escape
+// hatch, not a per-request choice, so the CLI sets it once at startup from
+// the hidden `--no-tls-spoof` flag.
+let tlsSpoofEnabled = true;
+export function setTlsSpoofEnabled(enabled: boolean): void {
+	tlsSpoofEnabled = enabled;
+}
 
 // Total attempts (including the first) made when a response is HTTP 403 or 429,
 // to ride out probabilistic bot-scoring (e.g. Cloudflare) or transient rate
@@ -285,6 +297,22 @@ export default async function fetchWithTimeout(
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
 			response = await fetch(url, fetchInit);
 		}
+
+		// Last resort: a 403 that survived every retry is worth one attempt
+		// through a TLS-fingerprint-spoofing client (see tlsSpoofFallback.ts).
+		// Deliberately not gated on isChallengeResponse()'s body/header
+		// signatures — empirically, plenty of TLS-fingerprint-only blocks
+		// (confirmed against electrive.net) return a plain 403 error page with
+		// none of those markers, not a "Just a moment..."-style challenge page,
+		// so requiring that signature here would miss the exact case this
+		// fallback exists for. 429 is excluded: it's a rate-limit signal, not a
+		// fingerprinting gate, and retrying it with a different client wastes
+		// the already-paid cooldown.
+		if (tlsSpoofEnabled && response.status === 403) {
+			const spoofed = await tryTlsSpoofFallback(url, { timeout, headers });
+			if (spoofed) response = spoofed;
+		}
+
 		releaseHostSlot(response);
 
 		clearTimeout(timeoutId);

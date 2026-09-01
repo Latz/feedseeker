@@ -12,7 +12,8 @@ vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
 
 // Mock fetchWithTimeout as well, since initialize() is called.
 vi.mock('../modules/fetchWithTimeout.ts', () => ({
-	default: vi.fn()
+	default: vi.fn(),
+	setTlsSpoofEnabled: vi.fn()
 }));
 
 import metaLinksMod from '../modules/metaLinks.ts';

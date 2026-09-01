@@ -21,6 +21,7 @@ import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import checkFeed from './modules/checkFeed.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
+import { isChallengeResponse } from './modules/challengeDetection.ts';
 import type {
 	ErrorEventData,
 	MetaLinksLogData,
@@ -39,23 +40,6 @@ export type {
 	DeepSearchLogData,
 	EventEmitterInterface,
 };
-
-// Known bot-mitigation challenge pages return a non-OK response with a real
-// HTML body (not a plain error page) that a browser would solve via JS, but
-// that no HTTP client we use can pass. Detecting these lets the CLI tell the
-// user *why* nothing was found instead of implying the site has no feed.
-const CHALLENGE_BODY_SIGNATURES = [
-	/id=["']challenge-error-text["']/i, // Cloudflare "Just a moment..." managed challenge
-	/Vercel Security Checkpoint/i,
-];
-
-function isChallengeResponse(response: Response, body: string): boolean {
-	// AWS WAF's Human Verification (CAPTCHA) challenge is signaled by a
-	// response header, not distinctive body text.
-	if (response.headers?.get('x-amzn-waf-action') === 'captcha') return true;
-
-	return CHALLENGE_BODY_SIGNATURES.some((pattern) => pattern.test(body));
-}
 
 /**
  * Normalizes a site URL: strips the trailing slash on a bare root URL (no

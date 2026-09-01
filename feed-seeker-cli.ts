@@ -8,6 +8,7 @@ import { type Feed } from './modules/metaLinks.ts';
 import type { StartEventData, EndEventData, LogEventData } from './types/events.ts';
 import bannerText from './modules/banner.ts';
 import { checkFeedFreshness } from './modules/checkFreshness.ts';
+import { setTlsSpoofEnabled } from './modules/fetchWithTimeout.ts';
 
 // CLI-specific options that extend FeedSeekerOptions
 interface CLIOptions extends FeedSeekerOptions {
@@ -436,6 +437,12 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 	program.addOption(
 		new Option('--insecure', 'Disable TLS certificate verification (like curl -k)').hideHelp()
 	);
+	program.addOption(
+		new Option(
+			'--no-tls-spoof',
+			'Disable the TLS-fingerprint-spoofing fallback for confirmed bot-challenge pages'
+		).hideHelp()
+	);
 
 	return program;
 }
@@ -487,6 +494,10 @@ function printFeeds(feeds: Feed[]): void {
  */
 export async function run(argv: string[] = process.argv): Promise<void> {
 	anySiteHitChallenge = false; // reset per invocation — module state must not leak across runs
+
+	// Must be set before program.parseAsync() below, since fetches happen
+	// during action-handler execution, not after parsing completes.
+	setTlsSpoofEnabled(!argv.includes('--no-tls-spoof'));
 
 	const suppressBanner =
 		argv.includes('--json') ||

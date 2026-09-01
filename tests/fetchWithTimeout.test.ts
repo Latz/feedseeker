@@ -1,5 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
+
+const tryTlsSpoofFallbackMock = vi.fn();
+vi.mock('../modules/tlsSpoofFallback.ts', () => ({
+	tryTlsSpoofFallback: (...args: unknown[]) => tryTlsSpoofFallbackMock(...args)
+}));
 
 describe('fetchWithTimeout Module', () => {
 	describe('Function Structure', () => {
@@ -266,6 +271,85 @@ describe('fetchWithTimeout Module', () => {
 				expect(fetchMock).toHaveBeenCalledTimes(3);
 			} finally {
 				vi.unstubAllGlobals();
+			}
+		});
+	});
+
+	describe('TLS-spoof fallback', () => {
+		const makeResponse = (status: number, body = '') => new Response(body, { status });
+
+		beforeEach(() => {
+			tryTlsSpoofFallbackMock.mockReset();
+		});
+
+		it('attempts the TLS-spoof fallback and returns its response after a 403 survives all retries', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403, 'plain forbidden page'));
+			vi.stubGlobal('fetch', fetchMock);
+			tryTlsSpoofFallbackMock.mockResolvedValue(makeResponse(200, 'real content'));
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(200);
+				expect(await response.text()).toBe('real content');
+				expect(tryTlsSpoofFallbackMock).toHaveBeenCalledTimes(1);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('does not attempt the fallback for a 200 response', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(200, 'ok'));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(200);
+				expect(tryTlsSpoofFallbackMock).not.toHaveBeenCalled();
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('does not attempt the fallback for a 429', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(429, ''));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(429);
+				expect(tryTlsSpoofFallbackMock).not.toHaveBeenCalled();
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('keeps the original 403 response when the fallback returns null', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403, 'plain forbidden page'));
+			vi.stubGlobal('fetch', fetchMock);
+			tryTlsSpoofFallbackMock.mockResolvedValue(null);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(403);
+				expect(tryTlsSpoofFallbackMock).toHaveBeenCalledTimes(1);
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('does not attempt the fallback when disabled via setTlsSpoofEnabled(false)', async () => {
+			const { setTlsSpoofEnabled } = await import('../modules/fetchWithTimeout.ts');
+			setTlsSpoofEnabled(false);
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403, 'plain forbidden page'));
+			vi.stubGlobal('fetch', fetchMock);
+
+			try {
+				const response = await fetchWithTimeout('https://example.com', 5000);
+				expect(response.status).toBe(403);
+				expect(tryTlsSpoofFallbackMock).not.toHaveBeenCalled();
+			} finally {
+				vi.unstubAllGlobals();
+				setTlsSpoofEnabled(true);
 			}
 		});
 	});

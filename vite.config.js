@@ -31,6 +31,7 @@ export default defineConfig({
 				'commander',
 				'chalk',
 				'undici',
+				'node-wreq',
 				'node:events',
 				'node:path',
 				'node:fs',
