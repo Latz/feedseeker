@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SONAR_TOKEN="e612e8833ba0cfee91cff4abbb65826bc6c010a6"
+SONAR_TOKEN="${SONAR_TOKEN:?SONAR_TOKEN environment variable must be set}"
 PROJECT_KEY="Latz_feedseeker"
 ORGANIZATION="latz-1"
 OUTPUT_FILE="sonar-report.json"
