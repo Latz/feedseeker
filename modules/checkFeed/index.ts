@@ -60,6 +60,7 @@ export default async function checkFeed(
 	}
 
 	// Only fetch content if it's not provided by the caller
+	let resolvedUrl: string | undefined;
 	if (!content) {
 		if (!instance) {
 			throw new Error('Instance parameter is required when content is not provided');
@@ -74,6 +75,9 @@ export default async function checkFeed(
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 		content = await response.text();
+		// response.url reflects where the request actually landed after following
+		// redirects, which may differ from the requested url.
+		resolvedUrl = response.url || undefined;
 	}
 
 	// Security: Validate content size to prevent memory exhaustion
@@ -91,6 +95,7 @@ export default async function checkFeed(
 		null;
 	if (!result) {
 		onReject?.(specificRejectReason ?? 'content is not a recognized RSS, Atom, or JSON feed format');
+		return null;
 	}
-	return result;
+	return resolvedUrl ? { ...result, resolvedUrl } : result;
 }

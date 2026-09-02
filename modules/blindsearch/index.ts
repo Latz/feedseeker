@@ -23,7 +23,7 @@ export type BlindSearchFeed = Feed;
  * @returns {{rssFound: boolean, atomFound: boolean}} Updated flags
  */
 function addFeed(
-	feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null },
+	feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null; resolvedUrl?: string },
 	url: string,
 	feeds: Feed[],
 	rssFound: boolean,
@@ -150,6 +150,11 @@ async function processFeeds(
 ): Promise<{ feeds: Feed[]; rssFound: boolean; atomFound: boolean }> {
 	const feeds: Feed[] = [];
 	const foundUrls = new Set<string>();
+	// Tracks the resolved (post-redirect) URL of every feed already added, so two
+	// different candidate paths that redirect to the same underlying feed (e.g.
+	// "/rss" and "/rss/" both landing on "/rss/") are recognized as one feed
+	// instead of being appended twice.
+	const foundResolvedUrls = new Set<string>();
 	let rssFound = false;
 	let atomFound = false;
 	let i = 0;
@@ -169,7 +174,9 @@ async function processFeeds(
 		const batch = endpointUrls.slice(i, i + batchSize);
 
 		const batchResults = await Promise.allSettled(
-			batch.map((url) => processSingleFeedUrl(url, instance, foundUrls, feeds, rssFound, atomFound))
+			batch.map((url) =>
+				processSingleFeedUrl(url, instance, foundUrls, foundResolvedUrls, feeds, rssFound, atomFound)
+			)
 		);
 
 		({ rssFound, atomFound, i } = await applyBatchResults(
@@ -230,6 +237,7 @@ async function applyBatchResults(
  * @param {string} url - The URL to process
  * @param {MetaLinksInstance} instance - The FeedSeeker instance
  * @param {Set<string>} foundUrls - Set of already checked URLs to prevent duplicate requests
+ * @param {Set<string>} foundResolvedUrls - Set of resolved (post-redirect) URLs already added as feeds
  * @param {Feed[]} feeds - Array of found feeds
  * @param {boolean} rssFound - Whether an RSS feed has been found
  * @param {boolean} atomFound - Whether an Atom feed has been found
@@ -239,6 +247,7 @@ async function processSingleFeedUrl(
 	url: string,
 	instance: MetaLinksInstance,
 	foundUrls: Set<string>,
+	foundResolvedUrls: Set<string>,
 	feeds: Feed[],
 	rssFound: boolean,
 	atomFound: boolean
@@ -261,6 +270,15 @@ async function processSingleFeedUrl(
 
 		// Add feed if it was successfully validated
 		if (feedResult) {
+			// A candidate URL may redirect to the same resource another candidate
+			// already found (e.g. "/rss" and "/rss/" both landing on "/rss/") —
+			// skip re-adding it as a distinct feed.
+			const identityUrl = feedResult.resolvedUrl ?? url;
+			if (foundResolvedUrls.has(identityUrl)) {
+				return { found: false, rssFound, atomFound };
+			}
+			foundResolvedUrls.add(identityUrl);
+
 			// Add feed and update tracking flags
 			const updatedFlags = addFeed(feedResult, url, feeds, rssFound, atomFound);
 			rssFound = updatedFlags.rssFound;

@@ -497,6 +497,27 @@ describe('checkFeed — fetch path', () => {
 		);
 	});
 
+	it('surfaces the redirected response URL as resolvedUrl when fetching itself', async () => {
+		// e.g. requesting "/rss" but the server redirects to "/rss/" — fetch follows
+		// the redirect transparently, so response.url reflects the final landing URL.
+		const rssContent = `<rss version="2.0"><channel><title>Fetched Feed</title><description>Desc</description><item><title>Item</title></item></channel></rss>`;
+		fetchWithTimeout.mockResolvedValue({
+			ok: true,
+			status: 200,
+			url: 'https://example.com/rss/',
+			text: async () => rssContent
+		});
+		const instance = { options: { timeout: 15 } };
+		const result = await checkFeed('https://example.com/rss', '', instance);
+		expect(result.resolvedUrl).toBe('https://example.com/rss/');
+	});
+
+	it('does not set resolvedUrl when content is pre-supplied (no fetch performed)', async () => {
+		const rssContent = `<rss version="2.0"><channel><title>Fetched Feed</title><description>Desc</description><item><title>Item</title></item></channel></rss>`;
+		const result = await checkFeed('https://example.com/feed.xml', rssContent);
+		expect(result.resolvedUrl).toBeUndefined();
+	});
+
 	it('uses default timeout when timeout is 0', async () => {
 		fetchWithTimeout.mockResolvedValue({ ok: true, status: 200, text: async () => 'null' });
 		const instance = { options: { timeout: 0 } };

@@ -381,6 +381,38 @@ describe('blindSearch() module', () => {
 		expect(new Set(urls).size).toBe(urls.length);
 	});
 
+	it('collapses two candidates that redirect to the same feed into a single result (resolvedUrl dedup)', async () => {
+		// Reproduces the blog.google case: "/rss" and "/rss/" are two different
+		// generated candidates, both redirect to the same underlying feed, and
+		// checkFeed surfaces that via resolvedUrl. Without resolvedUrl-based
+		// dedup, both would be pushed onto the feeds array as distinct entries.
+		checkFeed.mockImplementation(async (url) => {
+			if (url === 'https://example.com/rss' || url === 'https://example.com/rss/') {
+				return { type: 'rss', title: 'News from Google', resolvedUrl: 'https://example.com/rss/' };
+			}
+			return null;
+		});
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
+		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: true });
+		const result = await blindSearch(instance);
+		const rssFeeds = result.filter((f) => f.type === 'rss');
+		expect(rssFeeds).toHaveLength(1);
+	});
+
+	it('treats candidates without resolvedUrl as distinct by their own URL (unchanged behavior)', async () => {
+		// When checkFeed doesn't surface resolvedUrl (e.g. content was pre-fetched,
+		// or the mock simply omits it), dedup falls back to the candidate URL
+		// itself — identical to the pre-fix behavior for callers that never hit
+		// a redirect.
+		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
+		const instance = new MockInstance('https://example.com', { searchMode: 'fast', all: true });
+		const result = await blindSearch(instance);
+		const urls = result.map((f) => f.url);
+		expect(new Set(urls).size).toBe(urls.length);
+		expect(result.length).toBeGreaterThan(1);
+	});
+
 	it('skips a duplicate generated URL without re-checking it (site URL with trailing slash produces duplicate basePaths)', async () => {
 		// A trailing-slash site URL (e.g. "https://example.com/blog/") makes generateEndpointUrls
 		// produce the same basePath twice across two path-traversal iterations, yielding duplicate

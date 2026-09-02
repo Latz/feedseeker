@@ -4,6 +4,14 @@
 export interface FeedResult {
 	type: 'rss' | 'atom' | 'json';
 	title: string | null;
+	/**
+	 * The URL the response actually resolved to after following redirects.
+	 * Only set when checkFeed performed the fetch itself (content wasn't
+	 * pre-supplied by the caller) — lets callers that probe many candidate
+	 * URLs (e.g. blind search) recognize that two different candidates
+	 * redirected to, and found, the same underlying feed.
+	 */
+	resolvedUrl?: string;
 }
 
 interface FeedSeekerOptions {
