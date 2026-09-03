@@ -14,6 +14,7 @@
 import { Agent } from 'undici';
 import { tryTlsSpoofFallback } from './tlsSpoofFallback.ts';
 import { acquireHostSlot, getHostname } from './hostRateLimiter.ts';
+import { isChallengeResponse } from './challengeDetection.ts';
 
 let insecureAgent: Agent | undefined;
 
@@ -181,14 +182,25 @@ export default async function fetchWithTimeout(
 		// bot-scoring where the identical request can pass or fail from one
 		// attempt to the next, independent of headers or protocol; others apply
 		// transient rate limiting (429) that clears on its own shortly after.
+		// A response carrying a bot-mitigation challenge signature (e.g.
+		// Cloudflare's `cf-mitigated: challenge` header) is neither — it's a
+		// JS challenge no HTTP client here can solve, so every retry would
+		// just get the same result. Stop immediately in that case: retrying
+		// wastes time, and (via hostRateLimiter's 429 cooldown) can otherwise
+		// serialize an entire blind search behind a challenge that will never
+		// clear on its own.
 		let response = await fetch(url, fetchInit);
+		let isChallenge = isChallengeResponse(response, '');
 		for (
 			let attempt = 1;
-			attempt < FORBIDDEN_RETRY_ATTEMPTS && RETRYABLE_STATUS_CODES.has(response.status);
+			attempt < FORBIDDEN_RETRY_ATTEMPTS &&
+			RETRYABLE_STATUS_CODES.has(response.status) &&
+			!isChallenge;
 			attempt++
 		) {
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
 			response = await fetch(url, fetchInit);
+			isChallenge = isChallengeResponse(response, '');
 		}
 
 		// Last resort: a 403 that survived every retry is worth one attempt

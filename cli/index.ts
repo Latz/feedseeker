@@ -80,6 +80,10 @@ function makeLogHandler(ctx: CLIRunContext) {
 			process.stdout.write(`\n  ${data.url} — ${data.reason}`);
 			return;
 		}
+		if ('message' in data && data.message) {
+			process.stdout.write(`\n  ${data.message}\n`);
+			return;
+		}
 		if ('totalCount' in data && 'totalEndpoints' in data) {
 			if (counterLength > 0) {
 				process.stdout.write(`\x1b[${counterLength}D`);

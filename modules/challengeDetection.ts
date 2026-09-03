@@ -21,5 +21,11 @@ export function isChallengeResponse(response: Response, body: string): boolean {
 	// response header, not distinctive body text.
 	if (response.headers?.get('x-amzn-waf-action') === 'captcha') return true;
 
+	// Cloudflare marks its own bot-mitigation responses with this header —
+	// including ones returned as HTTP 429, which would otherwise look like an
+	// ordinary (retryable, temporary) rate limit rather than a challenge that
+	// no amount of retrying will pass.
+	if (response.headers?.get('cf-mitigated') === 'challenge') return true;
+
 	return CHALLENGE_BODY_SIGNATURES.some((pattern) => pattern.test(body));
 }

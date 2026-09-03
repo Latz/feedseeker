@@ -112,7 +112,14 @@ export async function acquireHostSlot(
 	// nothing to inspect for cooldown/rate-limit signals.
 	return (response: Response | null) => {
 		state.active--;
-		if (response?.status === 429) {
+		// A 429 carrying Cloudflare's `cf-mitigated: challenge` header is a bot
+		// challenge, not a real rate limit — it will not clear within
+		// HOST_COOLDOWN_MS (or ever, for this client), so starting the normal
+		// cooldown here would just keep re-arming it on every subsequent
+		// challenge response and serialize the rest of the search behind a
+		// wait that never pays off.
+		const isChallenge = response?.headers?.get('cf-mitigated') === 'challenge';
+		if (response?.status === 429 && !isChallenge) {
 			state.cooldownUntil = Date.now() + HOST_COOLDOWN_MS;
 		}
 		const rateLimitWaitMs = response ? getRateLimitWaitMs(response) : null;

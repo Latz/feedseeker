@@ -17,7 +17,21 @@ import { validateUrl, validateContentSize, validateTimeout } from './validation.
 import { checkRss } from './checkRss.ts';
 import { checkAtom } from './checkAtom.ts';
 import { checkJson } from './checkJson.ts';
+import { isChallengeResponse } from '../challengeDetection.ts';
 import { type FeedResult, type FeedSeekerInstance } from './types.ts';
+
+/**
+ * Error thrown when a candidate feed URL returned a bot-mitigation challenge
+ * page (e.g. Cloudflare) instead of real content. Distinguished from a plain
+ * fetch failure so callers (blindSearch) can stop probing a host instead of
+ * treating it as an ordinary miss worth retrying at the next candidate URL.
+ */
+export class ChallengeResponseError extends Error {
+	constructor(url: string) {
+		super(`Fetch of ${url} was blocked by a bot-mitigation challenge`);
+		this.name = 'ChallengeResponseError';
+	}
+}
 
 export { type FeedResult, type FeedSeekerInstance } from './types.ts';
 
@@ -72,6 +86,9 @@ export default async function checkFeed(
 
 		const response = await fetchWithTimeout(url, { timeout, insecure: instance.options.insecure });
 		if (!response.ok) {
+			if (isChallengeResponse(response, '')) {
+				throw new ChallengeResponseError(url);
+			}
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
 		}
 		content = await response.text();

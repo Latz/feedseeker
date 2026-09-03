@@ -253,7 +253,13 @@ describe('blindsearch internal functions', () => {
 
 // Mock checkFeed to avoid real network requests
 vi.mock('../modules/checkFeed/index.ts', () => ({
-	default: vi.fn()
+	default: vi.fn(),
+	ChallengeResponseError: class ChallengeResponseError extends Error {
+		constructor(url) {
+			super(`Fetch of ${url} was blocked by a bot-mitigation challenge`);
+			this.name = 'ChallengeResponseError';
+		}
+	}
 }));
 import checkFeed from '../modules/checkFeed/index.ts';
 
@@ -456,6 +462,49 @@ describe('blindSearch() module', () => {
 		const errorEvents = instance._events.filter((e) => e.event === 'error');
 		expect(errorEvents.length).toBeGreaterThan(0);
 		expect(errorEvents[0].data.module).toBe('blindsearch');
+	});
+
+	it('stops early after consecutive challenge responses instead of probing every endpoint', async () => {
+		const { ChallengeResponseError } = await import('../modules/checkFeed/index.ts');
+		checkFeed.mockRejectedValue(new ChallengeResponseError('https://example.com/feed'));
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'exhaustive', // many endpoints, so an unabridged run would take far longer
+			concurrency: 1
+		});
+		const startEvent = () => instance._events.find((e) => e.event === 'start');
+
+		const result = await blindSearch(instance);
+
+		expect(result).toEqual([]);
+		// The abort must fire well before every candidate endpoint was probed.
+		expect(checkFeed.mock.calls.length).toBeLessThan(startEvent().data.endpointUrls);
+		const logMessages = instance._events
+			.filter((e) => e.event === 'log' && e.data.message)
+			.map((e) => e.data.message);
+		expect(logMessages.some((m) => m.includes('bot-protection challenge page'))).toBe(true);
+	});
+
+	it('does not abort on a single challenge response surrounded by ordinary misses', async () => {
+		const { ChallengeResponseError } = await import('../modules/checkFeed/index.ts');
+		let call = 0;
+		checkFeed.mockImplementation(async (url) => {
+			call++;
+			if (call === 2) throw new ChallengeResponseError(url);
+			return null; // ordinary miss
+		});
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			concurrency: 1
+		});
+		const startEvent = () => instance._events.find((e) => e.event === 'start');
+
+		const result = await blindSearch(instance);
+
+		expect(result).toEqual([]);
+		// A lone challenge hit resets the streak, so the full endpoint list is still probed.
+		expect(checkFeed.mock.calls.length).toBe(startEvent().data.endpointUrls);
 	});
 
 	it('throws when aborted via AbortSignal', async () => {
