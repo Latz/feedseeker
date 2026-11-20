@@ -126,7 +126,6 @@ function recordFeed(
 		type: feedResult.type,
 		feedTitle: feedResult.title
 	});
-	foundUrls.add(fullHref);
 	const maxFeeds = instance.options?.maxFeeds || 0;
 	if (maxFeeds > 0 && feeds.length >= maxFeeds) {
 		instance.emit('log', {
@@ -146,6 +145,9 @@ async function processLink(
 ): Promise<void> {
 	const fullHref = resolveHref(link, instance);
 	if (!fullHref || foundUrls.has(fullHref)) return;
+	// Mark before the fetch: the same URL shows up in several phases and as
+	// duplicate tags, and a rejected one must not be fetched again.
+	foundUrls.add(fullHref);
 
 	instance.emit('log', { module: 'metalinks', message: `Checking feed: ${fullHref}` });
 

@@ -445,3 +445,18 @@ describe('metaLinks()', () => {
 		expect(reasonEvent).toBeUndefined();
 	});
 });
+
+describe('metaLinks() — each URL checked once', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('does not re-check a rejected URL in later phases or for duplicate tags', async () => {
+		checkFeed.mockResolvedValue(null);
+		// Matches phase 1 (type), phase 2 (rel+type) and phase 3 (href pattern); listed twice.
+		const tag = '<link rel="alternate" type="application/rss+xml" href="/comments/feed/">';
+		const instance = makeInstance(`<!DOCTYPE html><html><head>${tag}${tag}</head><body></body></html>`);
+		await metaLinks(instance);
+		expect(checkFeed).toHaveBeenCalledTimes(1);
+	});
+});
