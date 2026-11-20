@@ -146,6 +146,16 @@ describe('initialize()', () => {
 		expect(fs.content).toContain('<title>Hi</title>');
 	});
 
+	it('succeeds when the homepage is an empty 200 response', async () => {
+		(fetchWithTimeout as Mock).mockResolvedValue(mockOkResponse(''));
+		const fs = new FeedSeeker('https://example.com');
+		const errors: unknown[] = [];
+		fs.on('error', (d) => errors.push(d));
+		await fs.initialize();
+		expect(errors).toEqual([]);
+		expect(fs.getInitStatus()).toBe('success');
+	});
+
 	it('caches the init promise — second call does not re-fetch', async () => {
 		const fs = new FeedSeeker('https://example.com');
 		await fs.initialize();

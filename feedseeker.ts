@@ -265,7 +265,8 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 
 				// If the site URL itself is already a feed, skip HTML parsing
 				// and record it so metaLinks() can return it directly.
-				const feedResult = await checkFeed(this.site, this.content);
+				// An empty body can't be a feed, and checkFeed treats '' as "fetch it yourself".
+				const feedResult = this.content ? await checkFeed(this.site, this.content) : null;
 				if (feedResult) {
 					this.selfFeed = {
 						url: this.site,
