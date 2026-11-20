@@ -3,6 +3,8 @@
 import { Command, Option } from 'commander';
 import FeedSeeker, { type FeedSeekerOptions } from '../feedseeker.ts';
 import { styleText } from 'node:util';
+import { realpathSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { type Feed } from '../modules/metaLinks.ts';
 import type { StartEventData, EndEventData, LogEventData } from '../types/events.ts';
 import bannerText from '../modules/banner.ts';
@@ -540,13 +542,21 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 // Only run if this is the main module (not imported for testing).
 // Uses require.main when available (Vite's CJS build output) since bundlers
 // cannot reliably rewrite import.meta.url for a CommonJS target; falls back
-// to import.meta.url for the ESM build, where it works natively.
+// to import.meta.url for the ESM build. argv[1] is resolved to its real path:
+// npm installs bins as symlinks, while import.meta.url is the real file.
 declare const require: { main?: unknown } | undefined;
 declare const module: unknown;
+function invokedPathUrl(): string | undefined {
+	try {
+		return process.argv[1] ? pathToFileURL(realpathSync(process.argv[1])).href : undefined;
+	} catch {
+		return undefined;
+	}
+}
 const isMainModule =
 	typeof require !== 'undefined' && typeof module !== 'undefined'
 		? require.main === module
-		: import.meta.url === `file://${process.argv[1]}`;
+		: import.meta.url === invokedPathUrl();
 
 if (isMainModule) {
 	run().catch((error) => {
