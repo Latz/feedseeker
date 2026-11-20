@@ -268,6 +268,23 @@ describe('FeedSeeker CLI', () => {
 		});
 	});
 
+	describe('machine-readable formats keep stdout clean', () => {
+		it.each(['json', 'opml'])('--format %s writes no progress output', async (format) => {
+			// Emit the same progress events the real metaLinks module does.
+			(metaLinksMod as Mock).mockImplementation(async (instance: { emit: (e: string, d: unknown) => void }) => {
+				instance.emit('start', { module: 'metalinks', niceName: 'Meta Links' });
+				instance.emit('end', { module: 'metalinks', feeds: mockFeeds });
+				return mockFeeds;
+			});
+
+			await run(['node', 'feedseeker-cli.ts', 'example.com', '--metasearch', '--format', format]);
+
+			const progress = stdoutWriteSpy.mock.calls.map((c) => String(c[0])).join('');
+			expect(progress).not.toContain('Starting');
+			expect(progress).not.toContain('Found');
+		});
+	});
+
 	describe('--format opml', () => {
 		const opmlFeeds: Feed[] = [
 			{ url: 'https://example.com/feed.xml', type: 'rss', title: 'Example Blog', feedTitle: 'Example Blog' },
@@ -476,6 +493,54 @@ describe('FeedSeeker CLI', () => {
 			await run(argv);
 
 			expect(metaLinksMod).toHaveBeenCalledTimes(1);
+		});
+
+		function trackConcurrency(): () => number {
+			let inFlight = 0;
+			let max = 0;
+			(metaLinksMod as Mock).mockImplementation(async () => {
+				max = Math.max(max, ++inFlight);
+				await new Promise((resolve) => setTimeout(resolve, 5));
+				inFlight--;
+				return [];
+			});
+			return () => max;
+		}
+		const eightSites = Array.from({ length: 8 }, (_, i) => `https://site${i}.com`).join('\n');
+
+		it('searches several sites in parallel for machine-readable output', async () => {
+			(readFile as unknown as Mock).mockResolvedValue(eightSites);
+			const maxInFlight = trackConcurrency();
+
+			await run(['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json']);
+
+			expect(maxInFlight()).toBe(5);
+		});
+
+		it('keeps file order in the combined output when running in parallel', async () => {
+			(readFile as unknown as Mock).mockResolvedValue('https://slow.com\nhttps://fast.com');
+			(metaLinksMod as Mock).mockImplementation(async (instance: { site: string }) => {
+				const slow = instance.site.includes('slow');
+				await new Promise((resolve) => setTimeout(resolve, slow ? 30 : 1));
+				return [{ url: `${instance.site}/feed`, type: 'rss', title: null, feedTitle: null }];
+			});
+
+			await run(['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch', '--json']);
+
+			const json = consoleLogSpy.mock.calls.map((c) => c[0]).find((c) => String(c).startsWith('['));
+			expect((JSON.parse(json) as Feed[]).map((f) => f.url)).toEqual([
+				'https://slow.com/feed',
+				'https://fast.com/feed'
+			]);
+		});
+
+		it('stays sequential in interactive text mode so progress output does not interleave', async () => {
+			(readFile as unknown as Mock).mockResolvedValue(eightSites);
+			const maxInFlight = trackConcurrency();
+
+			await run(['node', 'feedseeker-cli.ts', '--file', '/tmp/sites.txt', '--metasearch']);
+
+			expect(maxInFlight()).toBe(1);
 		});
 
 		it('shows help and exits 0 when neither site nor --file is provided', async () => {

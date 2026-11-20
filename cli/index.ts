@@ -22,6 +22,7 @@ interface CLIOptions extends FeedSeekerOptions {
 	file?: string;
 }
 
+const FILE_CONCURRENCY = 5; // sites searched at once for --file with JSON/OPML/quiet output
 let counterLength = 0; // needed for fancy blindsearch log display
 let anySiteHitChallenge = false; // set when any target site returned a bot-mitigation challenge page
 
@@ -384,21 +385,31 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 				options.displayErrors = true;
 			}
 			try {
+				// JSON/OPML go to stdout, so progress output there would corrupt them.
+				const machineOutput =
+					!!options.quiet || !!options.json || (options.format ?? 'text') !== 'text';
 				const ctx: CLIRunContext = {
 					isAllMode: !!options.all,
-					quiet: !!options.quiet,
+					quiet: machineOutput,
 					verbose: !!options.verbose,
 				};
 				program.ctx = ctx;
 
 				if (options.file) {
 					const urls = await readUrlsFromFile(options.file);
-					const allFeeds: Feed[] = [];
-					for (const url of urls) {
-						const feeds = await getFeeds(url, options, ctx);
-						allFeeds.push(...feeds);
-					}
-					program.feeds = allFeeds;
+					// Interactive progress is printed per site and would interleave, so only
+					// machine-readable output searches several sites at once.
+					const perSite: Feed[][] = new Array(urls.length);
+					let next = 0;
+					const worker = async (): Promise<void> => {
+						while (next < urls.length) {
+							const i = next++;
+							perSite[i] = await getFeeds(urls[i], options, ctx);
+						}
+					};
+					const workers = machineOutput ? Math.min(FILE_CONCURRENCY, urls.length) : 1;
+					await Promise.all(Array.from({ length: workers }, worker));
+					program.feeds = perSite.flat();
 					program.site = options.file;
 				} else {
 					program.feeds = await getFeeds(site, options, ctx);
