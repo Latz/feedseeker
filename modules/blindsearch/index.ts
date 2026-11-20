@@ -191,6 +191,20 @@ async function processFeeds(
 		return false;
 	};
 
+	// Checked before each fetch: abort throws, a reached feed limit stops the pool.
+	const checkBeforeFetch = (): boolean => {
+		if (signal?.aborted) {
+			stopped = true;
+			throw new Error('Blind search operation was aborted');
+		}
+		if (limitReached()) {
+			stopped = true;
+			handleMaxFeedsReached(instance, feeds, maxFeeds);
+			return true;
+		}
+		return false;
+	};
+
 	// A pool of workers each pulling the next URL, so one slow candidate only
 	// occupies its own slot instead of stalling a whole batch.
 	const worker = async (): Promise<void> => {
@@ -198,15 +212,7 @@ async function processFeeds(
 			!stopped &&
 			shouldContinueSearch(next, endpointUrls.length, rssFound, atomFound, shouldCheckAll)
 		) {
-			if (signal?.aborted) {
-				stopped = true;
-				throw new Error('Blind search operation was aborted');
-			}
-			if (limitReached()) {
-				stopped = true;
-				handleMaxFeedsReached(instance, feeds, maxFeeds);
-				return;
-			}
+			if (checkBeforeFetch()) return;
 
 			const url = endpointUrls[next++];
 			const result = await processSingleFeedUrl( // NOSONAR: bounded worker pool, await is the concurrency limit
@@ -238,7 +244,7 @@ async function processFeeds(
 
 			if (checkStop()) return;
 			if (requestDelay > 0 && next < endpointUrls.length) {
-				await new Promise((resolve) => setTimeout(resolve, requestDelay));
+				await new Promise((resolve) => setTimeout(resolve, requestDelay)); // NOSONAR: deliberate per-worker rate-limit delay
 			}
 		}
 	};
