@@ -620,6 +620,22 @@ describe('blindsearch module — endpoint getters', () => {
 		expect(delayWarnCount).toBe(1);
 	});
 
+	it('a slow candidate does not block the remaining candidates', async () => {
+		let release;
+		const slow = new Promise((resolve) => (release = resolve));
+		checkFeed.mockImplementation((url) => (url === 'https://example.com/feed' ? slow.then(() => null) : Promise.resolve(null)));
+		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
+		const instance = new MockInstance('https://example.com', { searchMode: 'fast', concurrency: 2 });
+		const done = blindSearch(instance);
+		const total = instance._events.find((e) => e.event === 'start').data.endpointUrls;
+		// Every other candidate gets processed while /feed is still pending.
+		const progress = () =>
+			Math.max(0, ...instance._events.filter((e) => e.data?.totalCount !== undefined).map((e) => e.data.totalCount));
+		await vi.waitFor(() => expect(progress()).toBe(total - 1), { timeout: 1000 });
+		release();
+		await done;
+	});
+
 	it('waits requestDelay ms between batches when requestDelay > 0', async () => {
 		vi.useFakeTimers();
 		try {

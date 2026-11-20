@@ -1,6 +1,11 @@
 import checkFeed, { ChallengeResponseError } from '../checkFeed/index.ts';
 import { type MetaLinksInstance, type Feed } from '../metaLinks.ts';
-import { validateSearchMode, validateConcurrency, validateRequestDelay, getEndpointsByMode } from './validation.ts';
+import {
+	validateSearchMode,
+	validateConcurrency,
+	validateRequestDelay,
+	getEndpointsByMode
+} from './validation.ts';
 import { generateEndpointUrls } from './urlGeneration.ts';
 
 const DEFAULT_MAX_FEEDS = 0; // 0 means no limit
@@ -165,117 +170,76 @@ async function processFeeds(
 	const foundResolvedUrls = new Set<string>();
 	let rssFound = false;
 	let atomFound = false;
-	let i = 0;
+	let next = 0; // index of the next URL to hand out
+	let checked = 0; // URLs finished, for progress
 	let consecutiveChallenges = 0;
-	const requestDelay = validateRequestDelay(instance.options?.requestDelay);
-
-	while (shouldContinueSearch(i, endpointUrls.length, rssFound, atomFound, shouldCheckAll)) {
-		if (signal?.aborted) {
-			throw new Error('Blind search operation was aborted');
-		}
-
-		if (maxFeeds > 0 && feeds.length >= maxFeeds) {
-			await handleMaxFeedsReached(instance, feeds, maxFeeds);
-			break;
-		}
-
-		const batchSize = Math.min(concurrency, endpointUrls.length - i);
-		const batch = endpointUrls.slice(i, i + batchSize);
-
-		const batchResults = await Promise.allSettled(
-			batch.map((url) =>
-				processSingleFeedUrl(url, instance, foundUrls, foundResolvedUrls, feeds, rssFound, atomFound)
-			)
-		);
-
-		let stopped: boolean;
-		({ rssFound, atomFound, i, consecutiveChallenges, stopped } = await applyBatchResults(
-			batchResults,
-			feeds,
-			rssFound,
-			atomFound,
-			{ maxFeeds, totalUrls: endpointUrls.length, i, consecutiveChallenges },
-			instance
-		));
-
-		// applyBatchResults may have already advanced i to totalUrls to force
-		// the loop to end (maxFeeds reached / challenge abort) — don't overshoot
-		// the displayed progress past the real endpoint count in that case.
-		i = stopped || (maxFeeds > 0 && feeds.length >= maxFeeds) ? i : i + batchSize;
-		instance.emit('log', {
-			module: 'blindsearch',
-			totalEndpoints: endpointUrls.length,
-			totalCount: i,
-			feedsFound: feeds.length
-		});
-
-		if (stopped) break;
-
-		if (requestDelay > 0 && i < endpointUrls.length) {
-			await new Promise((resolve) => setTimeout(resolve, requestDelay));
-		}
-	}
-
-	return { feeds, rssFound, atomFound };
-}
-
-/**
- * Applies results from a settled batch, updating feed-type flags and enforcing maxFeeds.
- * Returns updated state: rssFound, atomFound, i (may be advanced to end to stop loop),
- * the running count of consecutive bot-mitigation challenge responses, and whether the
- * search was stopped early because that count crossed CONSECUTIVE_CHALLENGE_ABORT_THRESHOLD.
- */
-async function applyBatchResults(
-	batchResults: PromiseSettledResult<{
-		found: boolean;
-		rssFound: boolean;
-		atomFound: boolean;
-		isChallenge: boolean;
-	}>[],
-	feeds: Feed[],
-	rssFound: boolean,
-	atomFound: boolean,
-	ctx: { maxFeeds: number; totalUrls: number; i: number; consecutiveChallenges: number },
-	instance: MetaLinksInstance
-): Promise<{
-	rssFound: boolean;
-	atomFound: boolean;
-	i: number;
-	consecutiveChallenges: number;
-	stopped: boolean;
-}> {
-	let { i, consecutiveChallenges } = ctx;
-	const { maxFeeds, totalUrls } = ctx;
 	let stopped = false;
-	for (const result of batchResults) {
-		if (result.status !== 'fulfilled') continue;
+	const requestDelay = validateRequestDelay(instance.options?.requestDelay);
+	const limitReached = () => maxFeeds > 0 && feeds.length >= maxFeeds;
 
-		if (result.value.isChallenge) {
-			consecutiveChallenges++;
-			continue;
-		}
-
-		if (result.value.found) {
-			consecutiveChallenges = 0;
-			rssFound = result.value.rssFound;
-			atomFound = result.value.atomFound;
-			if (maxFeeds > 0 && feeds.length >= maxFeeds) {
-				await handleMaxFeedsReached(instance, feeds, maxFeeds);
-				i = totalUrls; // force outer loop to end
-				break;
+	// A pool of workers each pulling the next URL, so one slow candidate only
+	// occupies its own slot instead of stalling a whole batch.
+	const worker = async (): Promise<void> => {
+		while (
+			!stopped &&
+			shouldContinueSearch(next, endpointUrls.length, rssFound, atomFound, shouldCheckAll)
+		) {
+			if (signal?.aborted) {
+				stopped = true;
+				throw new Error('Blind search operation was aborted');
 			}
-		} else {
-			consecutiveChallenges = 0;
+			if (limitReached()) {
+				stopped = true;
+				handleMaxFeedsReached(instance, feeds, maxFeeds);
+				return;
+			}
+
+			const url = endpointUrls[next++];
+			const result = await processSingleFeedUrl(
+				url,
+				instance,
+				foundUrls,
+				foundResolvedUrls,
+				feeds,
+				rssFound,
+				atomFound
+			);
+			if (stopped) return;
+
+			if (result.isChallenge) {
+				consecutiveChallenges++;
+			} else {
+				consecutiveChallenges = 0;
+				rssFound ||= result.rssFound;
+				atomFound ||= result.atomFound;
+			}
+
+			checked++;
+			instance.emit('log', {
+				module: 'blindsearch',
+				totalEndpoints: endpointUrls.length,
+				totalCount: checked,
+				feedsFound: feeds.length
+			});
+
+			if (consecutiveChallenges >= CONSECUTIVE_CHALLENGE_ABORT_THRESHOLD) {
+				stopped = true;
+				handleChallengeAbort(instance);
+				return;
+			}
+			if (limitReached()) {
+				stopped = true;
+				handleMaxFeedsReached(instance, feeds, maxFeeds);
+				return;
+			}
+			if (requestDelay > 0 && next < endpointUrls.length) {
+				await new Promise((resolve) => setTimeout(resolve, requestDelay));
+			}
 		}
-	}
+	};
 
-	if (consecutiveChallenges >= CONSECUTIVE_CHALLENGE_ABORT_THRESHOLD) {
-		await handleChallengeAbort(instance);
-		i = totalUrls; // force outer loop to end
-		stopped = true;
-	}
-
-	return { rssFound, atomFound, i, consecutiveChallenges, stopped };
+	await Promise.all(Array.from({ length: Math.min(concurrency, endpointUrls.length) }, worker));
+	return { feeds, rssFound, atomFound };
 }
 
 /**
@@ -348,13 +312,8 @@ async function processSingleFeedUrl(
  * @param {MetaLinksInstance} instance - The FeedSeeker instance
  * @param {Feed[]} feeds - Array of found feeds
  * @param {number} maxFeeds - Maximum number of feeds allowed
- * @returns {Promise<void>}
  */
-async function handleMaxFeedsReached(
-	instance: MetaLinksInstance,
-	feeds: Feed[],
-	maxFeeds: number
-): Promise<void> {
+function handleMaxFeedsReached(instance: MetaLinksInstance, feeds: Feed[], maxFeeds: number): void {
 	instance.emit('log', {
 		module: 'blindsearch',
 		message: `Stopped due to reaching maximum feeds limit: ${feeds.length} feeds found (max ${maxFeeds} allowed).`
@@ -368,7 +327,7 @@ async function handleMaxFeedsReached(
  * limiter's cooldown on every single one. Emitted as a 'log' message so the
  * CLI's default text output shows it inline.
  */
-async function handleChallengeAbort(instance: MetaLinksInstance): Promise<void> {
+function handleChallengeAbort(instance: MetaLinksInstance): void {
 	const message =
 		'Stopped: the site is returning a bot-protection challenge page (e.g. Cloudflare) for ' +
 		'candidate feed URLs, so blind search cannot reliably probe the remaining endpoints. ' +

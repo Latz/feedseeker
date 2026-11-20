@@ -47,6 +47,8 @@ export default [
 				HeadersInit: 'readonly',
 				Headers: 'readonly',
 				AbortController: 'readonly',
+				TextDecoder: 'readonly',
+				ReadableStreamDefaultReader: 'readonly',
 				AbortSignal: 'readonly',
 				// DOM types
 				HTMLElement: 'readonly',

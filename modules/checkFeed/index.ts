@@ -13,7 +13,12 @@
 
 import fetchWithTimeout from '../fetchWithTimeout.ts';
 import { isOEmbedEndpoint } from './oembed.ts';
-import { validateUrl, validateContentSize, validateTimeout, VALIDATION_LIMITS } from './validation.ts';
+import {
+	validateUrl,
+	validateContentSize,
+	validateTimeout,
+	VALIDATION_LIMITS
+} from './validation.ts';
 import { checkRss } from './checkRss.ts';
 import { checkAtom } from './checkAtom.ts';
 import { checkJson } from './checkJson.ts';
@@ -34,6 +39,66 @@ export class ChallengeResponseError extends Error {
 }
 
 export { type FeedResult, type FeedSeekerInstance } from './types.ts';
+
+// An HTML document start (optionally after an XML declaration / comments). Feeds
+// start with <?xml, <rss, <feed, <rdf:RDF or {, so this never matches one.
+const HTML_DOCUMENT_START =
+	/^\s*(?:<\?xml[^>]*>\s*)?(?:<!--[\s\S]*?-->\s*)*<(?:!doctype\s+html|html)[\s>]/i;
+const HTML_SNIFF_BYTES = 2048;
+// Once a body is known to be HTML, the rest is read and thrown away rather than
+// cancelled: cancelling closes the keep-alive connection, and a new TLS handshake
+// per candidate measured ~3x slower than draining a typical page. Only pages
+// larger than this are cut off.
+const HTML_DRAIN_LIMIT_BYTES = 1024 * 1024;
+
+/**
+ * Reads the response body, but returns null as soon as the first few KB show
+ * an HTML document — most candidates (soft 404s, article pages) are full HTML
+ * pages that would otherwise be buffered and regex-scanned only to be rejected.
+ */
+async function readUnlessHtmlPage(response: Response): Promise<string | null> {
+	const reader = response.body?.getReader();
+	if (!reader) return response.text();
+
+	const decoder = new TextDecoder();
+	let text = '';
+	let sniffed = false;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		text += decoder.decode(value, { stream: true });
+		if (!sniffed && text.length >= HTML_SNIFF_BYTES) {
+			sniffed = true;
+			if (HTML_DOCUMENT_START.test(text.slice(0, HTML_SNIFF_BYTES))) {
+				await drainOrCancel(reader, text.length);
+				return null;
+			}
+		}
+		if (text.length > VALIDATION_LIMITS.MAX_CONTENT_SIZE) break; // validateContentSize rejects it
+	}
+	text += decoder.decode();
+	return !sniffed && HTML_DOCUMENT_START.test(text) ? null : text;
+}
+
+async function drainOrCancel(
+	reader: ReadableStreamDefaultReader<Uint8Array>,
+	alreadyRead: number
+): Promise<void> {
+	try {
+		let total = alreadyRead;
+		for (;;) {
+			const { done, value } = await reader.read();
+			if (done) return;
+			total += value.byteLength;
+			if (total > HTML_DRAIN_LIMIT_BYTES) {
+				await reader.cancel();
+				return;
+			}
+		}
+	} catch {
+		// timeout/abort while draining — the page is rejected either way
+	}
+}
 
 /**
  * Validates if a URL is a feed (RSS, Atom, or JSON) by analyzing its content structure
@@ -99,7 +164,12 @@ export default async function checkFeed(
 				`Content too large: ${contentLength} bytes. Maximum allowed: ${VALIDATION_LIMITS.MAX_CONTENT_SIZE} bytes.`
 			);
 		}
-		content = await response.text();
+		const body = await readUnlessHtmlPage(response);
+		if (body === null) {
+			onReject?.('content is an HTML page, not a feed');
+			return null;
+		}
+		content = body;
 		// response.url reflects where the request actually landed after following
 		// redirects, which may differ from the requested url.
 		resolvedUrl = response.url || undefined;
@@ -119,7 +189,9 @@ export default async function checkFeed(
 		checkJson(content, captureReject) ||
 		null;
 	if (!result) {
-		onReject?.(specificRejectReason ?? 'content is not a recognized RSS, Atom, or JSON feed format');
+		onReject?.(
+			specificRejectReason ?? 'content is not a recognized RSS, Atom, or JSON feed format'
+		);
 		return null;
 	}
 	return resolvedUrl ? { ...result, resolvedUrl } : result;

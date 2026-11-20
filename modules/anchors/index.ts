@@ -28,7 +28,10 @@ const URL_REGEX = /https?:\/\/[^\s"'<>)]+/gi;
  * Fetches and parses the meta-refresh target URL, then recursively checks it for feeds.
  * Returns an empty array (rather than throwing) if the target page can't be fetched.
  */
-async function followRedirectTarget(instance: MetaLinksInstance, redirectUrl: string): Promise<Feed[]> {
+async function followRedirectTarget(
+	instance: MetaLinksInstance,
+	redirectUrl: string
+): Promise<Feed[]> {
 	const response = await fetchWithTimeout(redirectUrl, {
 		timeout: instance.options?.timeout,
 		insecure: instance.options?.insecure
@@ -195,7 +198,36 @@ function emitMaxFeedsReached(
 }
 
 /**
- * Processes anchor tags in batches and appends found feeds to context.feedUrls.
+ * Runs fn over items with up to `concurrency` calls in flight. Each worker pulls
+ * the next item as soon as it is free, so one slow URL never stalls the others.
+ * Stops handing out items once maxFeeds is reached (and logs that once).
+ */
+async function runPool<T>(
+	items: T[],
+	context: AnchorContext,
+	concurrency: number,
+	maxFeeds: number,
+	fn: (item: T) => Promise<void>
+): Promise<void> {
+	let next = 0;
+	let limitLogged = false;
+	const worker = async (): Promise<void> => {
+		while (next < items.length) {
+			if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) {
+				if (!limitLogged) emitMaxFeedsReached(context.instance, context.feedUrls.length, maxFeeds);
+				limitLogged = true;
+				return;
+			}
+			await fn(items[next++]);
+		}
+	};
+	await Promise.all(
+		Array.from({ length: Math.min(Math.max(1, concurrency), items.length) }, worker)
+	);
+}
+
+/**
+ * Processes anchor tags concurrently and appends found feeds to context.feedUrls.
  * @returns {number} Number of anchors processed.
  */
 async function processAnchorPhase(
@@ -205,25 +237,15 @@ async function processAnchorPhase(
 	maxFeeds: number
 ): Promise<number> {
 	let processedCount = 0;
-	for (let i = 0; i < filteredAnchors.length; i += concurrency) {
-		if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) {
-			emitMaxFeedsReached(context.instance, context.feedUrls.length, maxFeeds);
-			break;
-		}
-		const batch = filteredAnchors.slice(i, i + concurrency);
-		await Promise.allSettled(
-			batch.map(async ({ anchor, url }) => {
-				if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) return;
-				processedCount++;
-				context.instance.emit('log', {
-					module: 'anchors',
-					totalCount: processedCount,
-					totalEndpoints: filteredAnchors.length
-				});
-				await processAnchor(anchor, url, context);
-			})
-		);
-	}
+	await runPool(filteredAnchors, context, concurrency, maxFeeds, async ({ anchor, url }) => {
+		processedCount++;
+		context.instance.emit('log', {
+			module: 'anchors',
+			totalCount: processedCount,
+			totalEndpoints: filteredAnchors.length
+		});
+		await processAnchor(anchor, url, context);
+	});
 	return processedCount;
 }
 
@@ -257,42 +279,32 @@ async function processPlainTextPhase(
 
 	let count = startCount;
 	const totalEndpoints = anchorCount + urlsToCheck.length;
-	for (let i = 0; i < urlsToCheck.length; i += concurrency) {
-		if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) {
-			emitMaxFeedsReached(context.instance, context.feedUrls.length, maxFeeds);
-			break;
+	await runPool(urlsToCheck, context, concurrency, maxFeeds, async (url) => {
+		context.instance.emit('log', { module: 'anchors', totalCount: count++, totalEndpoints });
+		try {
+			const feedResult = await checkFeed(url, '', context.instance);
+			if (feedResult) {
+				context.feedUrls.push({
+					url,
+					title: null,
+					type: feedResult.type,
+					feedTitle: feedResult.title
+				});
+			}
+		} catch (error: unknown) {
+			if (context.instance.options?.showErrors) {
+				const err = error instanceof Error ? error : new Error(String(error));
+				context.instance.emit('error', {
+					module: 'anchors',
+					error: `Error checking feed at ${url}: ${err.message}`,
+					explanation:
+						'An error occurred while trying to fetch and validate a potential feed URL found in page text. This could be due to network timeouts, server errors, or invalid feed content.',
+					suggestion:
+						'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.'
+				});
+			}
 		}
-		const batch = urlsToCheck.slice(i, i + concurrency);
-		await Promise.allSettled(
-			batch.map(async (url) => {
-				if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) return;
-				context.instance.emit('log', { module: 'anchors', totalCount: count++, totalEndpoints });
-				try {
-					const feedResult = await checkFeed(url, '', context.instance);
-					if (feedResult) {
-						context.feedUrls.push({
-							url,
-							title: null,
-							type: feedResult.type,
-							feedTitle: feedResult.title
-						});
-					}
-				} catch (error: unknown) {
-					if (context.instance.options?.showErrors) {
-						const err = error instanceof Error ? error : new Error(String(error));
-						context.instance.emit('error', {
-							module: 'anchors',
-							error: `Error checking feed at ${url}: ${err.message}`,
-							explanation:
-								'An error occurred while trying to fetch and validate a potential feed URL found in page text. This could be due to network timeouts, server errors, or invalid feed content.',
-							suggestion:
-								'Check if the URL is accessible and returns valid feed content. Network connectivity issues or server problems may cause this error.'
-						});
-					}
-				}
-			})
-		);
-	}
+	});
 }
 
 /**
