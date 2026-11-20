@@ -58,6 +58,26 @@ export function getHostname(url: string): string {
 	}
 }
 
+/** Number of hosts currently remembered (for tests). */
+export function trackedHostCount(): number {
+	return hostState.size;
+}
+
+// Drop a host's entry once it holds nothing worth remembering, so long-running
+// processes that see many hosts (e.g. findAll over a domain list) don't grow.
+function forgetIfIdle(hostname: string, state: HostState): void {
+	const now = Date.now();
+	if (
+		state.active === 0 &&
+		state.queue.length === 0 &&
+		state.forbiddenStreak === 0 &&
+		state.cooldownUntil <= now &&
+		state.waitUntil <= now
+	) {
+		hostState.delete(hostname);
+	}
+}
+
 function getOrCreateHostState(hostname: string): HostState {
 	let state = hostState.get(hostname);
 	if (!state) {
@@ -105,7 +125,12 @@ export async function acquireHostSlot(
 ): Promise<(response: Response | null) => void> {
 	const state = getOrCreateHostState(hostname);
 
-	while (state.active >= currentLimit(state)) {
+	// Take a free slot, or queue (FIFO) until a release hands one over. A handed-
+	// over slot is already counted in `active`, so there is never a moment where
+	// a woken caller is uncounted (which would let its entry be forgotten).
+	if (state.queue.length === 0 && state.active < currentLimit(state)) {
+		state.active++;
+	} else {
 		await new Promise<void>((resolve) => state.queue.push(resolve));
 	}
 
@@ -113,8 +138,6 @@ export async function acquireHostSlot(
 	if (wait > 0) {
 		await new Promise((resolve) => setTimeout(resolve, wait));
 	}
-
-	state.active++;
 
 	// response is null when the request errored/timed out before producing a
 	// response (e.g. AbortError) — the slot must still be released, just with
@@ -136,7 +159,11 @@ export async function acquireHostSlot(
 		if (rateLimitWaitMs !== null) {
 			state.waitUntil = Math.max(state.waitUntil, Date.now() + rateLimitWaitMs);
 		}
-		const next = state.queue.shift();
-		next?.();
+		// Hand freed slots to waiters while the (possibly cooled-down) limit allows.
+		while (state.queue.length > 0 && state.active < currentLimit(state)) {
+			state.active++;
+			state.queue.shift()!();
+		}
+		forgetIfIdle(hostname, state);
 	};
 }
