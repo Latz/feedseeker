@@ -194,5 +194,29 @@ export default async function checkFeed(
 		);
 		return null;
 	}
+	rememberFeedContent(url, content);
 	return resolvedUrl ? { ...result, resolvedUrl } : result;
+}
+
+// Content of recently recognized feeds, so `--check` can read a feed's items
+// without downloading it a second time. Bounded in count and per-entry size
+// because library users who never read it back must not leak memory.
+const FEED_CACHE_MAX_ENTRIES = 20;
+const FEED_CACHE_MAX_CHARS = 2 * 1024 * 1024;
+const feedContentCache = new Map<string, string>();
+
+function rememberFeedContent(url: string, content: string): void {
+	if (content.length > FEED_CACHE_MAX_CHARS) return;
+	feedContentCache.delete(url); // re-insert so it counts as newest
+	feedContentCache.set(url, content);
+	if (feedContentCache.size > FEED_CACHE_MAX_ENTRIES) {
+		feedContentCache.delete(feedContentCache.keys().next().value!);
+	}
+}
+
+/** Returns (and forgets) the content checkFeed saw for this feed URL, if still cached. */
+export function takeCachedFeedContent(url: string): string | undefined {
+	const content = feedContentCache.get(url);
+	feedContentCache.delete(url);
+	return content;
 }

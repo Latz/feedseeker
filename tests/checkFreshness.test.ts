@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { checkFeedFreshness } from '../modules/checkFreshness.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
 import type { Feed } from '../modules/metaLinks.ts';
 import type { FeedSeekerInstance } from '../modules/checkFeed/index.ts';
 
@@ -173,5 +174,22 @@ describe('checkFeedFreshness', () => {
 				expect.objectContaining({ timeout: 5000, insecure: true })
 			);
 		});
+	});
+});
+
+describe('checkFeedFreshness — reuses content from discovery', () => {
+	beforeEach(() => vi.clearAllMocks());
+
+	it('does not download a feed again that checkFeed just recognized', async () => {
+		const url = 'https://example.com/discovered.xml';
+		const content =
+			`<rss version="2.0"><channel><title>T</title><description>D</description>` +
+			`<item><title>I</title><pubDate>${daysAgo(1).toUTCString()}</pubDate></item></channel></rss>`;
+		expect(await checkFeed(url, content)).not.toBeNull();
+
+		const fresh = await checkFeedFreshness({ url, type: 'rss', title: null, feedTitle: null }, 30, instance);
+
+		expect(fresh).toBe(true);
+		expect(fetchWithTimeout).not.toHaveBeenCalled();
 	});
 });

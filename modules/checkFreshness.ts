@@ -1,6 +1,6 @@
 import fetchWithTimeout from './fetchWithTimeout.ts';
 import type { Feed } from './metaLinks.ts';
-import type { FeedSeekerInstance } from './checkFeed/index.ts';
+import { type FeedSeekerInstance, takeCachedFeedContent } from './checkFeed/index.ts';
 
 const FRESHNESS_PATTERNS = {
 	RSS_FIRST_ITEM: /<item[^>]*>([\s\S]*?)<\/item>/i,
@@ -51,17 +51,20 @@ export async function checkFeedFreshness(
 	days: number,
 	instance: FeedSeekerInstance
 ): Promise<boolean> {
-	let content: string;
-	try {
-		const timeout = (instance.options.timeout ?? 15) * 1000;
-		const response = await fetchWithTimeout(feed.url, {
-			timeout,
-			insecure: instance.options.insecure
-		});
-		if (!response.ok) return true;
-		content = await response.text();
-	} catch {
-		return true;
+	// Discovery already downloaded this feed in most cases.
+	let content = takeCachedFeedContent(feed.url);
+	if (content === undefined) {
+		try {
+			const timeout = (instance.options.timeout ?? 15) * 1000;
+			const response = await fetchWithTimeout(feed.url, {
+				timeout,
+				insecure: instance.options.insecure
+			});
+			if (!response.ok) return true;
+			content = await response.text();
+		} catch {
+			return true;
+		}
 	}
 
 	let date: Date | null = null;
