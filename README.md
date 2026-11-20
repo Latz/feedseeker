@@ -38,6 +38,9 @@ feedseeker https://example.com
 # Search without protocol (defaults to https://)
 feedseeker example.com
 
+# Apple Podcasts page -> the podcast's RSS feed
+feedseeker https://podcasts.apple.com/us/podcast/some-show/id1234567890
+
 # Limit number of feeds
 feedseeker example.com --max-feeds 5
 ```
@@ -70,6 +73,8 @@ feedseeker -f sites.txt
 feedseeker --file sites.txt --format opml > all-feeds.opml
 feedseeker --file sites.txt -q
 ```
+
+With `-q`, `--format json` or `--format opml`, up to 5 sites are searched at the same time. The interactive text output searches one site after another.
 
 sites.txt format:
 ```
@@ -124,6 +129,9 @@ feedseeker example.com --keep-query-params
 
 # Show error messages
 feedseeker example.com --display-errors
+
+# Show every candidate URL that was checked and why it was rejected
+feedseeker example.com --verbose
 
 # Disable TLS certificate verification (like curl -k)
 feedseeker example.com --insecure
@@ -307,7 +315,16 @@ const results: Map<string, Feed[]> = await findAll(["https://example.com"], opti
 
 ## Changelog
 
-### [1.0.4] — 2026-06-13
+### [1.1.0] — 2026-11-20
+- **feat**: Apple Podcasts URLs resolve to the podcast's RSS feed
+- **feat**: `--verbose` shows why candidate URLs were rejected
+- **feat**: bot-protection pages are detected and reported; optional TLS-fingerprint fallback
+- **perf**: bounded downloads, worker pools, parallel `--file` for machine output, `--check` without refetching
+- **fix**: `--format json` / `--format opml` produced invalid output; RSS 1.0 feeds were not recognized
+- **note**: the CLI command is now `feedseeker`; `feed-seeker` still works as an alias
+- includes the never-published 1.0.4 changes below
+
+### [1.0.4] — 2026-06-13 (not published)
 - **feat**: `--file <path>` / `-f` batch mode — read URLs from a file and search each site
 - **feat**: `findAll(urls, options)` library API — parallel multi-site search returning `Map<url, Feed[]>`
 - **feat**: `--format opml` — export discovered feeds as OPML 2.0

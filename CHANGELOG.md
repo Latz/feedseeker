@@ -2,13 +2,58 @@
 
 All notable changes to feedseeker are documented here.
 
-## [1.0.4] — 2026-06-13
+## [1.1.0] — 2026-11-20
+
+Version 1.0.4 was prepared but never published to npm. Its changes are part of this release (see "Prepared as 1.0.4" below).
+
+### CLI command renamed
+
+- **The CLI command is now `feedseeker`** (`957eec3`). The old name `feed-seeker` is kept as an alias, so existing scripts and global installs keep working.
 
 ### Features
 
-- **CLI `--file <path>` — batch mode for auditing multiple sites** (`fdd9428`): Reads a list of URLs from a plain-text file (one URL per line; blank lines and `#` comment lines are ignored) and searches each site in sequence, aggregating all discovered feeds into a single result set. Combines with all output formats — `--format json`, `--format opml`, `--quiet` — so a full site audit can be piped or exported in one command.
+- **Apple Podcasts support** (`aa66957`): `podcasts.apple.com/.../id<number>` URLs are resolved to the podcast's RSS feed via the public iTunes lookup API. Apple pages carry no feed link, so this previously found nothing.
+- **`--verbose`** (`ca0d7a3`): Shows every candidate URL that was checked and why it was rejected (e.g. "200 OK but not a recognized feed", "content is an HTML page, not a feed"). Implies `--display-errors`.
+- **Bot-protection detection** (`f11677f`, `ae93b09`, `ead5791`): Recognizes challenge pages (Cloudflare, Vercel and others) and tells you that a "no feeds found" result may be caused by bot protection rather than a missing feed. Blind search stops after repeated challenges instead of hanging.
+- **TLS-fingerprint fallback** (`d8e41b5`): When a site still answers 403 after retries, one more attempt is made through the optional `node-wreq` dependency, which gets past fingerprint-only blocks. Disable with the hidden `--no-tls-spoof` flag.
+- **Empty feeds are explained** (`8013b44`): A valid feed with no items yet is reported as such instead of "not a feed".
+- **Site URL that is itself a feed** is returned directly, and the full search skips the remaining strategies in that case (`aa66957`).
 
-- **Library `findAll(urls, options)` — parallel multi-site search** (`dd83bd2`): New named export that accepts an array of URLs, runs a `FeedSeeker` search for each concurrently using `Promise.all`, and returns `Promise<Map<string, Feed[]>>` where each key is the original input URL. Useful for programmatic audits without managing parallel instances manually.
+### Performance
+
+- **Downloads are bounded** (`ac1aee3`): The request timeout now also covers reading the response body; before, a slow or endless response (e.g. a linked MP3) could hang the search indefinitely. Responses announcing more than 10 MB are rejected without downloading.
+- **Anchor search does less work** (`ac1aee3`): Each URL is checked once (repeated links and `#fragment` variants were fetched again and again; about half of all requests on typical news sites), and links to binary files (`.mp3`, `.pdf`, `.zip`, …) are skipped.
+- **Worker pools instead of batches** (`2d5ff7d`): Blind search and anchor search no longer wait for the slowest request of a batch. Measured on netzpolitik.org: blind search 8.3s → ~2.3s, anchor search 7.1s → ~3.7s.
+- **HTML pages are rejected early** (`2d5ff7d`): `checkFeed` recognizes an HTML document from its first 2 KB and no longer buffers and scans the whole page.
+- **`--file` runs sites in parallel** for machine-readable output (`-q`, `--json`, `--format json/opml`): up to 5 at a time, results stay in file order (`394b6a8`). Interactive text output stays sequential.
+- **`--check` no longer downloads each feed twice** (`6640215`).
+- **Per-host request limits** (`3552427`, `73db494`, `1e486c0`): At most 2 concurrent requests per host, `x-ratelimit-*` headers are respected, and 403/429 responses are retried, so feedseeker no longer rate-limits itself out of finding feeds.
+
+### Bug Fixes
+
+- **The installed CLI did nothing** (`f162083`): when started through npm's bin symlink (every `npm install`, also `-g`), the ESM build exited silently without running. Found while testing the packed 1.1.0 tarball.
+- **`--format json` and `--format opml` produced invalid output** (`394b6a8`): progress lines were printed to stdout before the document.
+- **`findAll()` started every site at once** (`80d944c`): now at most 5 sites run concurrently.
+- **RSS 1.0 / RDF feeds were not recognized** (`12c38c7`).
+- **`--display-errors` / `--verbose` had no effect** on per-module errors (`495e1a7`).
+- **The CommonJS CLI build silently did nothing** (`eeb5a82`).
+- **Explicit `http://` sites** fall back to `https://` when plain HTTP fails (`723be66`), and redirects are followed for all later strategies (`ae93b09`).
+- **Duplicate feeds** from candidate paths that redirect to the same feed are merged (`e776818`).
+- Query strings on root URLs are preserved (`bebff72`); non-HTML responses no longer break anchor search (`cd00554`); a dead Shopify endpoint was corrected (`d3f6907`).
+
+### Internal
+
+- Package manager switched from pnpm to npm (`b726c2a`); TypeScript target/lib bumped to ESNext (`60402c1`).
+- Large modules split into folders (`checkFeed/`, `blindsearch/`, `anchors/`, `cli/`); project files renamed from `feed-seeker` to `feedseeker`.
+- Removed the unused `truncate-url` dependency and dead `modules/common.ts` (`bed13ea`).
+
+### Prepared as 1.0.4 (never published)
+
+#### Features
+
+- **CLI `--file <path>` — batch mode for auditing multiple sites** (`fdd9428`): Reads a list of URLs from a plain-text file (one URL per line; blank lines and `#` comment lines are ignored) and searches each site (in parallel for machine-readable output since 1.1.0), aggregating all discovered feeds into a single result set. Combines with all output formats — `--format json`, `--format opml`, `--quiet` — so a full site audit can be piped or exported in one command.
+
+- **Library `findAll(urls, options)` — parallel multi-site search** (`dd83bd2`): New named export that accepts an array of URLs, runs a `FeedSeeker` search for each concurrently (at most 5 at a time since 1.1.0), and returns `Promise<Map<string, Feed[]>>` where each key is the original input URL. Useful for programmatic audits without managing parallel instances manually.
 
 - **CLI `-q` / `-f` short flags** (`940edd6`): Added `-q` as a short alias for `--quiet` and `-c` as a short alias for `--check`, consistent with common Unix CLI conventions.
 
@@ -16,7 +61,7 @@ All notable changes to feedseeker are documented here.
 
 - **CLI `--format opml` — OPML export** (`c7582ba`): Outputs discovered feeds as a valid OPML 2.0 document, directly importable into any feed reader. Feed type (`rss`, `atom`, `json`) is preserved in the `type` attribute of each `<outline>` element.
 
-### Chore
+#### Chore
 
 - **Knip dead-code analysis added to `bin/check`** (`86c9177`): `bin/check` now runs ESLint, TypeScript type-checking, and Knip in sequence. All Knip findings in the codebase have been resolved — unused exports, unused re-exports, and transitive type-only imports are now clean.
 

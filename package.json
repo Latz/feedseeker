@@ -1,10 +1,11 @@
 {
 	"name": "feedseeker",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "FeedSeeker - Find RSS, Atom, and JSON feeds on any website.",
 	"type": "module",
 	"bin": {
-		"feedseeker": "dist/feedseeker-cli.js"
+		"feedseeker": "dist/feedseeker-cli.js",
+		"feed-seeker": "dist/feedseeker-cli.js"
 	},
 	"exports": {
 		".": {
