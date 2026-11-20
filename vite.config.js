@@ -27,7 +27,6 @@ export default defineConfig({
 				'async',
 				'parse5',
 				'tldts',
-				'truncate-url',
 				'commander',
 				'chalk',
 				'undici',
@@ -53,7 +52,6 @@ export default defineConfig({
 					chalk: 'chalk',
 					parse5: 'parse5',
 					tldts: 'tldts',
-					'truncate-url': 'truncateUrl',
 					commander: 'commander'
 				}
 			}

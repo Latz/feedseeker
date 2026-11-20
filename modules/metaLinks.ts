@@ -12,6 +12,7 @@
  */
 
 import checkFeed, { type FeedSeekerInstance } from './checkFeed/index.ts';
+import { cleanTitle } from './checkFeed/textUtils.ts';
 
 /**
  * Feed type MIME types to search for in link elements
@@ -22,17 +23,6 @@ const FEED_TYPES = ['feed+json', 'rss+xml', 'atom+xml', 'xml', 'rdf+xml'] as con
  * URL patterns that suggest a feed
  */
 const FEED_PATTERNS = ['/rss', '/feed', '/atom', '.rss', '.atom', '.xml', '.json'] as const;
-
-/**
- * Cleans titles by removing excessive whitespace and newlines
- * @param {string} title - The title to clean
- * @returns {string} The cleaned title
- */
-function cleanTitle(title: string | null | undefined): string | null {
-	if (!title) return null;
-	// Remove leading/trailing whitespace and collapse multiple whitespace characters
-	return title.replaceAll(/\s+/g, ' ').trim();
-}
 
 /**
  * Feed object structure
