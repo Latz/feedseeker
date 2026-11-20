@@ -176,6 +176,20 @@ async function processFeeds(
 	let stopped = false;
 	const requestDelay = validateRequestDelay(instance.options?.requestDelay);
 	const limitReached = () => maxFeeds > 0 && feeds.length >= maxFeeds;
+	// Post-result stop conditions; kept out of worker() to hold its complexity down.
+	const checkStop = (): boolean => {
+		if (consecutiveChallenges >= CONSECUTIVE_CHALLENGE_ABORT_THRESHOLD) {
+			stopped = true;
+			handleChallengeAbort(instance);
+			return true;
+		}
+		if (limitReached()) {
+			stopped = true;
+			handleMaxFeedsReached(instance, feeds, maxFeeds);
+			return true;
+		}
+		return false;
+	};
 
 	// A pool of workers each pulling the next URL, so one slow candidate only
 	// occupies its own slot instead of stalling a whole batch.
@@ -195,7 +209,7 @@ async function processFeeds(
 			}
 
 			const url = endpointUrls[next++];
-			const result = await processSingleFeedUrl(
+			const result = await processSingleFeedUrl( // NOSONAR: bounded worker pool, await is the concurrency limit
 				url,
 				instance,
 				foundUrls,
@@ -222,16 +236,7 @@ async function processFeeds(
 				feedsFound: feeds.length
 			});
 
-			if (consecutiveChallenges >= CONSECUTIVE_CHALLENGE_ABORT_THRESHOLD) {
-				stopped = true;
-				handleChallengeAbort(instance);
-				return;
-			}
-			if (limitReached()) {
-				stopped = true;
-				handleMaxFeedsReached(instance, feeds, maxFeeds);
-				return;
-			}
+			if (checkStop()) return;
 			if (requestDelay > 0 && next < endpointUrls.length) {
 				await new Promise((resolve) => setTimeout(resolve, requestDelay));
 			}
@@ -301,7 +306,7 @@ async function processSingleFeedUrl(
 		if (err instanceof ChallengeResponseError) {
 			return { found: false, rssFound, atomFound, isChallenge: true };
 		}
-		await handleFeedError(instance, url, err);
+		handleFeedError(instance, url, err);
 	}
 
 	return { found: false, rssFound, atomFound, isChallenge: false };
@@ -340,13 +345,12 @@ function handleChallengeAbort(instance: MetaLinksInstance): void {
  * @param {MetaLinksInstance} instance - The FeedSeeker instance
  * @param {string} url - The URL that caused the error
  * @param {Error} error - The error that occurred
- * @returns {Promise<void>}
  */
-async function handleFeedError(
+function handleFeedError(
 	instance: MetaLinksInstance,
 	url: string,
 	error: Error
-): Promise<void> {
+): void {
 	// Only show errors if the undocumented --show-errors flag is set
 	if (instance.options?.showErrors) {
 		instance.emit('error', {

@@ -263,9 +263,9 @@ class Crawler extends EventEmitter {
 			this.emit('log', { module: 'deepSearch', message: `Seeded ${newFromSitemap.length} URLs from sitemap.` });
 		}
 
-		this.queue.push({ url: this.startUrl, depth: 0 });
+		void this.queue.push({ url: this.startUrl, depth: 0 });
 		for (const url of newFromSitemap) {
-			this.queue.push({ url, depth: 1 });
+			void this.queue.push({ url, depth: 1 });
 		}
 
 		this.queue.resume();
@@ -412,10 +412,10 @@ class Crawler extends EventEmitter {
 				const isSameDomain = this.isValidUrl(linkUrl);
 				if (isSameDomain) {
 					this.enqueuedUrls.add(linkUrl);
-					this.queue.push({ url: linkUrl, depth: depth + 1 });
+					void this.queue.push({ url: linkUrl, depth: depth + 1 });
 				} else if (this.checkForeignFeeds) {
 					this.enqueuedUrls.add(linkUrl);
-					this.queue.push({ url: linkUrl, depth: depth + 1, foreignOnly: true });
+					void this.queue.push({ url: linkUrl, depth: depth + 1, foreignOnly: true });
 				}
 			} catch {
 				// Skip malformed URLs

@@ -278,7 +278,7 @@ export default class EventEmitter {
 
 		const onceWrapper: OnceWrapper = ((...args: unknown[]) => {
 			this.off(event, onceWrapper);
-			listener(...args);
+			return listener(...args);
 		}) as OnceWrapper;
 
 		// Store reference to original listener for removal
@@ -299,7 +299,7 @@ export default class EventEmitter {
 
 		const onceWrapper: OnceWrapper = ((...args: unknown[]) => {
 			this.off(event, onceWrapper);
-			listener(...args);
+			return listener(...args);
 		}) as OnceWrapper;
 
 		onceWrapper.originalListener = listener;

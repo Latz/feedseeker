@@ -218,7 +218,7 @@ async function runPool<T>(
 				limitLogged = true;
 				return;
 			}
-			await fn(items[next++]);
+			await fn(items[next++]); // NOSONAR: bounded worker pool, await is the concurrency limit
 		}
 	};
 	await Promise.all(

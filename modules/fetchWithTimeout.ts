@@ -202,8 +202,8 @@ export default async function fetchWithTimeout(
 			!skip403Retries;
 			attempt++
 		) {
-			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
-			response = await fetch(url, fetchInit);
+			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS)); // NOSONAR: sequential retry by design
+			response = await fetch(url, fetchInit); // NOSONAR: sequential retry by design
 			isChallenge = isChallengeResponse(response, '');
 		}
 

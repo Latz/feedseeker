@@ -167,6 +167,25 @@ describe('EventEmitter Module', () => {
 			expect(errorCaught).toBe(true);
 		});
 
+		it.each(['once', 'prependOnceListener'] as const)(
+			'should capture async errors from %s listeners',
+			async (method) => {
+				const em = new EventEmitter({ captureAsyncErrors: true });
+				let errorCaught = false;
+				em.on('error', () => {
+					errorCaught = true;
+				});
+				em[method]('test', async () => {
+					throw new Error('Async error');
+				});
+
+				em.emit('test');
+
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				expect(errorCaught).toBe(true);
+			}
+		);
+
 		it('should not capture async errors when captureAsyncErrors is false', async () => {
 			const em = new EventEmitter({ captureAsyncErrors: false });
 			let errorCaught = false;

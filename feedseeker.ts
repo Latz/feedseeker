@@ -262,33 +262,7 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 				this.syncSiteToFinalUrl(response);
 
 				this.content = await response.text();
-
-				// If the site URL itself is already a feed, skip HTML parsing
-				// and record it so metaLinks() can return it directly.
-				// An empty body can't be a feed, and checkFeed treats '' as "fetch it yourself".
-				const feedResult = this.content ? await checkFeed(this.site, this.content) : null;
-				if (feedResult) {
-					this.selfFeed = {
-						url: this.site,
-						title: null,
-						type: feedResult.type,
-						feedTitle: feedResult.title
-					};
-				}
-
-				// Apple Podcasts pages don't link their feed; resolve it via the iTunes API.
-				if (!this.selfFeed) {
-					const appleFeed = await lookupApplePodcastFeed(this.site, fetchOptions);
-					const appleResult = appleFeed ? await checkFeed(appleFeed, '', this) : null;
-					if (appleFeed && appleResult) {
-						this.selfFeed = {
-							url: appleFeed,
-							title: null,
-							type: appleResult.type,
-							feedTitle: appleResult.title
-						};
-					}
-				}
+				await this.detectSelfFeed(fetchOptions);
 
 				const { document } = parseHTML(this.content);
 				this.document = document;
@@ -304,6 +278,29 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		})();
 
 		return this.initPromise;
+	}
+
+	/**
+	 * Sets selfFeed when the site URL itself is a feed, or when it is an
+	 * Apple Podcasts page whose feed can be resolved via the iTunes API.
+	 * @private
+	 */
+	private async detectSelfFeed(
+		fetchOptions: { timeout: number; insecure?: boolean }
+	): Promise<void> {
+		// An empty body can't be a feed, and checkFeed treats '' as "fetch it yourself".
+		const feedResult = this.content ? await checkFeed(this.site, this.content) : null;
+		if (feedResult) {
+			this.selfFeed = { url: this.site, title: null, type: feedResult.type, feedTitle: feedResult.title };
+			return;
+		}
+
+		// Apple Podcasts pages don't link their feed; resolve it via the iTunes API.
+		const appleFeed = await lookupApplePodcastFeed(this.site, fetchOptions);
+		const appleResult = appleFeed ? await checkFeed(appleFeed, '', this) : null;
+		if (appleFeed && appleResult) {
+			this.selfFeed = { url: appleFeed, title: null, type: appleResult.type, feedTitle: appleResult.title };
+		}
 	}
 
 	/**
@@ -659,7 +656,7 @@ export async function findAll(
 	const worker = async (): Promise<void> => {
 		while (next < urls.length) {
 			const i = next++;
-			results[i] = await new FeedSeeker(urls[i], options).startSearch();
+			results[i] = await new FeedSeeker(urls[i], options).startSearch(); // NOSONAR: bounded worker pool, await is the concurrency limit
 		}
 	};
 	await Promise.all(Array.from({ length: Math.min(FIND_ALL_CONCURRENCY, urls.length) }, worker));

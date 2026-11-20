@@ -37,7 +37,7 @@ describe('blindsearch/urlGeneration', () => {
 			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 			const manyEndpoints = Array.from({ length: 10001 }, (_, i) => `feed${i}`);
 			const urls = generateEndpointUrls('https://example.com', false, manyEndpoints);
-			expect(urls.length).toBe(10000);
+			expect(urls).toHaveLength(10000);
 			expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('URL generation limit reached'));
 		});
 	});
