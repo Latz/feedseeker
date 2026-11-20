@@ -62,7 +62,7 @@ export const EXCLUDED_EXTENSIONS = new Set([
  * @param {string} url - The URL to check
  * @returns {boolean} True if the URL ends with an excluded extension, false otherwise
  */
-function excludedFile(url: string): boolean {
+export function excludedFile(url: string): boolean {
 	const lastDot = url.lastIndexOf('.');
 	return lastDot !== -1 && EXCLUDED_EXTENSIONS.has(url.slice(lastDot).toLowerCase());
 }

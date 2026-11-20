@@ -17,6 +17,7 @@ import fetchWithTimeout from '../fetchWithTimeout.ts';
 import { type Feed, type MetaLinksInstance } from '../metaLinks.ts';
 import { isValidHttpUrl, isRelativePath, parseUrlSafely } from './urlUtils.ts';
 import { isAllowedDomain } from './domainFilter.ts';
+import { excludedFile } from '../deepSearch.ts';
 
 export { ALLOWED_DOMAINS } from './domainFilter.ts';
 
@@ -232,6 +233,7 @@ async function processAnchorPhase(
 async function processPlainTextPhase(
 	context: AnchorContext,
 	baseUrl: URL,
+	checkedUrls: Set<string>,
 	anchorCount: number,
 	startCount: number,
 	concurrency: number,
@@ -244,12 +246,12 @@ async function processPlainTextPhase(
 		: '';
 	const plainTextUrls = extractUrlsFromText(bodyText);
 
-	const checkedUrls = new Set(context.feedUrls.map((feed) => feed.url));
 	const urlsToCheck: string[] = [];
 	for (const url of plainTextUrls) {
-		if (!checkedUrls.has(url) && isAllowedDomain(url, baseUrl)) {
+		const key = url.split('#')[0];
+		if (!checkedUrls.has(key) && isAllowedDomain(url, baseUrl) && !excludedFile(url)) {
 			urlsToCheck.push(url);
-			checkedUrls.add(url);
+			checkedUrls.add(key);
 		}
 	}
 
@@ -307,12 +309,16 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 	const baseUrl = new URL(instance.site);
 	const allAnchors = instance.document.querySelectorAll('a');
 	const filteredAnchors: { anchor: HTMLAnchorElement; url: string }[] = [];
+	// The same page is often linked several times (title, image, "read more", #comments).
+	const seen = new Set<string>();
 
 	for (const anchor of allAnchors) {
 		const urlToCheck = getUrlFromAnchor(anchor, baseUrl, instance);
-		if (urlToCheck && isAllowedDomain(urlToCheck, baseUrl)) {
-			filteredAnchors.push({ anchor, url: urlToCheck });
-		}
+		if (!urlToCheck || !isAllowedDomain(urlToCheck, baseUrl) || excludedFile(urlToCheck)) continue;
+		const key = urlToCheck.split('#')[0];
+		if (seen.has(key)) continue;
+		seen.add(key);
+		filteredAnchors.push({ anchor, url: urlToCheck });
 	}
 
 	const maxFeeds = instance.options?.maxFeeds || 0;
@@ -327,6 +333,7 @@ async function checkAnchors(instance: MetaLinksInstance): Promise<Feed[]> {
 		await processPlainTextPhase(
 			context,
 			baseUrl,
+			seen,
 			filteredAnchors.length,
 			processedCount + 1,
 			concurrency,

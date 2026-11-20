@@ -338,3 +338,34 @@ describe('ALLOWED_DOMAINS', () => {
 		expect(ALLOWED_DOMAINS.has('feeds2.feedburner.com')).toBe(true);
 	});
 });
+
+describe('checkAllAnchors() — request hygiene', () => {
+	it('checks each URL only once, ignoring #fragments and repeats', async () => {
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance(
+			'<html><body><a href="/post">T</a><a href="/post">Img</a><a href="/post#more">More</a><a href="/other">O</a></body></html>'
+		);
+		await checkAllAnchors(instance);
+		const urls = checkFeed.mock.calls.map((c) => c[0]);
+		expect(urls).toEqual(['https://example.com/post', 'https://example.com/other']);
+	});
+
+	it('does not re-check plain-text URLs already checked as anchors', async () => {
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance(
+			'<html><body><a href="/post">https://example.com/post</a></body></html>'
+		);
+		await checkAllAnchors(instance);
+		expect(checkFeed).toHaveBeenCalledTimes(1);
+	});
+
+	it('skips binary file links (mp3, pdf, zip)', async () => {
+		checkFeed.mockResolvedValue(null);
+		const instance = makeInstance(
+			'<html><body><a href="/ep1.mp3">E</a><a href="/doc.PDF">D</a><a href="/a.zip">Z</a><a href="/feed">F</a> https://example.com/ep2.mp3</body></html>'
+		);
+		await checkAllAnchors(instance);
+		const urls = checkFeed.mock.calls.map((c) => c[0]);
+		expect(urls).toEqual(['https://example.com/feed']);
+	});
+});

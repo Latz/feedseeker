@@ -220,7 +220,10 @@ export default async function fetchWithTimeout(
 
 		releaseHostSlot(response);
 
-		clearTimeout(timeoutId);
+		// Keep the timer armed: the abort also cancels the caller's body read
+		// (response.text()), which would otherwise have no timeout at all.
+		// unref() so a pending timer never delays process exit.
+		timeoutId.unref?.();
 		return response;
 	} catch (error: unknown) {
 		clearTimeout(timeoutId);

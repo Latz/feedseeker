@@ -13,7 +13,7 @@
 
 import fetchWithTimeout from '../fetchWithTimeout.ts';
 import { isOEmbedEndpoint } from './oembed.ts';
-import { validateUrl, validateContentSize, validateTimeout } from './validation.ts';
+import { validateUrl, validateContentSize, validateTimeout, VALIDATION_LIMITS } from './validation.ts';
 import { checkRss } from './checkRss.ts';
 import { checkAtom } from './checkAtom.ts';
 import { checkJson } from './checkJson.ts';
@@ -90,6 +90,14 @@ export default async function checkFeed(
 				throw new ChallengeResponseError(url);
 			}
 			throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+		}
+		// Reject before downloading when the server announces an oversized body.
+		const contentLength = Number(response.headers?.get('content-length'));
+		if (contentLength > VALIDATION_LIMITS.MAX_CONTENT_SIZE) {
+			await response.body?.cancel().catch(() => {});
+			throw new Error(
+				`Content too large: ${contentLength} bytes. Maximum allowed: ${VALIDATION_LIMITS.MAX_CONTENT_SIZE} bytes.`
+			);
 		}
 		content = await response.text();
 		// response.url reflects where the request actually landed after following
