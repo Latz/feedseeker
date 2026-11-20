@@ -706,6 +706,23 @@ describe('findAll()', () => {
 		expect(result.get('https://b.com')).toEqual([]);
 	});
 
+	it('searches at most 5 sites at the same time and keeps input order', async () => {
+		let inFlight = 0;
+		let maxInFlight = 0;
+		(metaLinksMod as Mock).mockImplementation(async () => {
+			maxInFlight = Math.max(maxInFlight, ++inFlight);
+			await new Promise((resolve) => setTimeout(resolve, 5));
+			inFlight--;
+			return [];
+		});
+		const urls = Array.from({ length: 12 }, (_, i) => `https://site${i}.com`);
+
+		const result = await findAll(urls, { metasearch: true });
+
+		expect(maxInFlight).toBe(5);
+		expect([...result.keys()]).toEqual(urls);
+	});
+
 	it('forwards options to each search', async () => {
 		(metaLinksMod as Mock).mockResolvedValue([feed1]);
 

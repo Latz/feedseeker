@@ -146,7 +146,7 @@ console.log("Found feeds:", feeds);
 ```javascript
 import { findAll } from "feedseeker";
 
-// Search multiple sites in parallel
+// Search multiple sites in parallel (up to 5 at a time)
 const results = await findAll([
   "https://example.com",
   "https://blog.example.org",

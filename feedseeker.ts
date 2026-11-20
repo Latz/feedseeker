@@ -638,8 +638,11 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	}
 }
 
+const FIND_ALL_CONCURRENCY = 5;
+
 /**
- * Search multiple sites in parallel and return results keyed by input URL.
+ * Search multiple sites in parallel (at most FIND_ALL_CONCURRENCY at a time)
+ * and return results keyed by input URL.
  * @param urls - Array of site URLs to search
  * @param options - Shared FeedSeekerOptions applied to every site
  * @returns Map from input URL to Feed[] for that site
@@ -648,12 +651,16 @@ export async function findAll(
 	urls: string[],
 	options: FeedSeekerOptions = {}
 ): Promise<Map<string, Feed[]>> {
-	const entries = await Promise.all(
-		urls.map(async (url) => {
-			const seeker = new FeedSeeker(url, options);
-			const feeds = await seeker.startSearch();
-			return [url, feeds] as const;
-		})
-	);
-	return new Map(entries);
+	// Bounded pool: each site runs several strategies with their own requests, so
+	// starting hundreds of sites at once would open thousands of connections.
+	const results: Feed[][] = new Array(urls.length);
+	let next = 0;
+	const worker = async (): Promise<void> => {
+		while (next < urls.length) {
+			const i = next++;
+			results[i] = await new FeedSeeker(urls[i], options).startSearch();
+		}
+	};
+	await Promise.all(Array.from({ length: Math.min(FIND_ALL_CONCURRENCY, urls.length) }, worker));
+	return new Map(urls.map((url, i) => [url, results[i]]));
 }
