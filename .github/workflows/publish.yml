@@ -28,4 +28,4 @@ jobs:
         run: npm ci
 
       - name: Publish Package with Provenance
-        run: npm publish --provenance
+        run: npm publish --provenance --loglevel verbose
