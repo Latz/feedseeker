@@ -21,6 +21,7 @@ import deepSearch, { type DeepSearchOptions } from './modules/deepSearch.ts';
 import checkFeed from './modules/checkFeed/index.ts';
 import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
+import lookupApplePodcastFeed from './modules/applePodcasts.ts';
 import { isChallengeResponse } from './modules/challengeDetection.ts';
 
 export type { BlindSearchFeed } from './modules/blindsearch/index.ts';
@@ -274,6 +275,20 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 					};
 				}
 
+				// Apple Podcasts pages don't link their feed; resolve it via the iTunes API.
+				if (!this.selfFeed) {
+					const appleFeed = await lookupApplePodcastFeed(this.site, fetchOptions);
+					const appleResult = appleFeed ? await checkFeed(appleFeed, '', this) : null;
+					if (appleFeed && appleResult) {
+						this.selfFeed = {
+							url: appleFeed,
+							title: null,
+							type: appleResult.type,
+							feedTitle: appleResult.title
+						};
+					}
+				}
+
 				const { document } = parseHTML(this.content);
 				this.document = document;
 
@@ -475,6 +490,15 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 * console.log('All feeds:', feeds);
 	 */
 	async startSearch(): Promise<Feed[]> {
+		// The site is itself a feed, or an Apple Podcasts page resolved via iTunes:
+		// nothing else to find, skip the remaining strategies.
+		await this.initialize();
+		if (this.selfFeed) {
+			const feeds = [this.selfFeed];
+			this.emit('end', { module: 'all', feeds });
+			return feeds;
+		}
+
 		// Handle single strategy modes
 		const singleStrategyResult = await this.handleSingleStrategyMode();
 		if (singleStrategyResult) {
