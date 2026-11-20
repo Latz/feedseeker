@@ -13,7 +13,7 @@
 
 import { Agent } from 'undici';
 import { tryTlsSpoofFallback } from './tlsSpoofFallback.ts';
-import { acquireHostSlot, getHostname } from './hostRateLimiter.ts';
+import { acquireHostSlot, getHostname, are403RetriesFutile } from './hostRateLimiter.ts';
 import { isChallengeResponse } from './challengeDetection.ts';
 
 let insecureAgent: Agent | undefined;
@@ -191,11 +191,15 @@ export default async function fetchWithTimeout(
 		// clear on its own.
 		let response = await fetch(url, fetchInit);
 		let isChallenge = isChallengeResponse(response, '');
+		// A host that answered 403 to every retry several times in a row (e.g.
+		// S3 for missing paths) won't change its mind: skip retries and spoofing.
+		const skip403Retries = response.status === 403 && are403RetriesFutile(hostname);
 		for (
 			let attempt = 1;
 			attempt < FORBIDDEN_RETRY_ATTEMPTS &&
 			RETRYABLE_STATUS_CODES.has(response.status) &&
-			!isChallenge;
+			!isChallenge &&
+			!skip403Retries;
 			attempt++
 		) {
 			await new Promise((resolve) => setTimeout(resolve, FORBIDDEN_RETRY_DELAY_MS));
@@ -213,7 +217,7 @@ export default async function fetchWithTimeout(
 		// fallback exists for. 429 is excluded: it's a rate-limit signal, not a
 		// fingerprinting gate, and retrying it with a different client wastes
 		// the already-paid cooldown.
-		if (tlsSpoofEnabled && response.status === 403) {
+		if (tlsSpoofEnabled && response.status === 403 && !skip403Retries) {
 			const spoofed = await tryTlsSpoofFallback(url, { timeout, headers });
 			if (spoofed) response = spoofed;
 		}

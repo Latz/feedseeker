@@ -242,6 +242,48 @@ describe('fetchWithTimeout Module', () => {
 		});
 	});
 
+	describe('hosts where 403 retries never help', () => {
+		const makeResponse = (status: number) => new Response('', { status });
+
+		beforeEach(() => {
+			tryTlsSpoofFallbackMock.mockReset();
+			tryTlsSpoofFallbackMock.mockResolvedValue(null);
+		});
+
+		it('stops retrying and spoofing 403s for a host after 3 futile attempts in a row', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403));
+			vi.stubGlobal('fetch', fetchMock);
+			try {
+				for (let i = 0; i < 3; i++) await fetchWithTimeout(`https://forbidden.test/p${i}`, 5000);
+				expect(fetchMock).toHaveBeenCalledTimes(9);
+				expect(tryTlsSpoofFallbackMock).toHaveBeenCalledTimes(3);
+
+				const response = await fetchWithTimeout('https://forbidden.test/p3', 5000);
+				expect(response.status).toBe(403);
+				expect(fetchMock).toHaveBeenCalledTimes(10); // no retries
+				expect(tryTlsSpoofFallbackMock).toHaveBeenCalledTimes(3); // no spoof
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+
+		it('resumes retrying once the host answers anything other than 403', async () => {
+			const fetchMock = vi.fn().mockResolvedValue(makeResponse(403));
+			vi.stubGlobal('fetch', fetchMock);
+			try {
+				for (let i = 0; i < 3; i++) await fetchWithTimeout(`https://recovers.test/p${i}`, 5000);
+				fetchMock.mockResolvedValueOnce(makeResponse(200));
+				await fetchWithTimeout('https://recovers.test/ok', 5000);
+
+				fetchMock.mockClear();
+				await fetchWithTimeout('https://recovers.test/again', 5000);
+				expect(fetchMock).toHaveBeenCalledTimes(3); // retries are back
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
+	});
+
 	describe('429 retry behavior', () => {
 		const makeResponse = (status: number) => new Response('', { status });
 

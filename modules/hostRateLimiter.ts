@@ -37,12 +37,16 @@
 const HOST_MAX_CONCURRENCY = 2;
 const HOST_THROTTLED_CONCURRENCY = 1;
 const HOST_COOLDOWN_MS = 10_000;
+// Some hosts (e.g. S3/CloudFront) answer every missing path with 403. After this
+// many 403s in a row that survived retries, retrying that host is pointless.
+const FUTILE_403_STREAK_LIMIT = 3;
 
 interface HostState {
 	active: number;
 	queue: Array<() => void>;
 	cooldownUntil: number;
 	waitUntil: number;
+	forbiddenStreak: number; // final responses in a row that were 403
 }
 const hostState = new Map<string, HostState>();
 
@@ -57,10 +61,15 @@ export function getHostname(url: string): string {
 function getOrCreateHostState(hostname: string): HostState {
 	let state = hostState.get(hostname);
 	if (!state) {
-		state = { active: 0, queue: [], cooldownUntil: 0, waitUntil: 0 };
+		state = { active: 0, queue: [], cooldownUntil: 0, waitUntil: 0, forbiddenStreak: 0 };
 		hostState.set(hostname, state);
 	}
 	return state;
+}
+
+/** True once this host keeps answering 403 no matter how often it is retried. */
+export function are403RetriesFutile(hostname: string): boolean {
+	return (hostState.get(hostname)?.forbiddenStreak ?? 0) >= FUTILE_403_STREAK_LIMIT;
 }
 
 function currentLimit(state: HostState): number {
@@ -122,6 +131,7 @@ export async function acquireHostSlot(
 		if (response?.status === 429 && !isChallenge) {
 			state.cooldownUntil = Date.now() + HOST_COOLDOWN_MS;
 		}
+		if (response) state.forbiddenStreak = response.status === 403 ? state.forbiddenStreak + 1 : 0;
 		const rateLimitWaitMs = response ? getRateLimitWaitMs(response) : null;
 		if (rateLimitWaitMs !== null) {
 			state.waitUntil = Math.max(state.waitUntil, Date.now() + rateLimitWaitMs);
