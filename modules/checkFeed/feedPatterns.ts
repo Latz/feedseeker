@@ -46,9 +46,8 @@ export const FEED_PATTERNS = {
 		FEED_START: /<feed[\s>]/i,
 
 		// Matches Atom namespace declaration: xmlns="...atom..." or xmlns:atom="..."
-		// These patterns ensure the feed uses the Atom XML namespace
+		// (one pattern covers both: [^>]* also spans the ':' of xmlns:atom)
 		NAMESPACE_XMLNS: /<feed[^>]*xmlns[^>]*atom/i,
-		NAMESPACE_XMLNS_ATOM: /<feed[^>]*xmlns:atom/i,
 		NAMESPACE_ATOM_PREFIX: /<feed[^>]*atom:/i,
 
 		// Matches Atom entry opening tag (individual feed entries)

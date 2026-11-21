@@ -8,7 +8,7 @@ import { type FeedResult } from './types.ts';
  * @returns Object with type 'atom' and title if Atom feed, null otherwise
  */
 export function checkAtom(content: string, onReject?: (reason: string) => void): FeedResult | null {
-	// Gate on the cheap <feed> root-element check before running the three namespace
+	// Gate on the cheap <feed> root-element check before running the namespace
 	// scans. The namespace patterns scan the whole document, so evaluating them first
 	// cost ~4x on large non-Atom pages (the common case while crawling).
 	if (!FEED_PATTERNS.ATOM.FEED_START.test(content)) return null;
@@ -16,7 +16,6 @@ export function checkAtom(content: string, onReject?: (reason: string) => void):
 	// Check for Atom feed root element with appropriate namespace
 	const hasAtomNamespace =
 		FEED_PATTERNS.ATOM.NAMESPACE_XMLNS.test(content) ||
-		FEED_PATTERNS.ATOM.NAMESPACE_XMLNS_ATOM.test(content) ||
 		FEED_PATTERNS.ATOM.NAMESPACE_ATOM_PREFIX.test(content);
 
 	if (hasAtomNamespace) {
