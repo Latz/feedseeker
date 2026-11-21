@@ -27,6 +27,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
+		"test:mutation": "STRYKER=1 stryker run",
 		"clean": "rimraf dist",
 		"dev": "tsc --watch",
 		"typecheck": "tsc --noEmit",
@@ -81,6 +82,8 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.2",
+		"@stryker-mutator/core": "^10.1.1",
+		"@stryker-mutator/vitest-runner": "^10.1.1",
 		"@types/async": "^3.2.25",
 		"@types/node": "^25.9.3",
 		"@typescript-eslint/eslint-plugin": "^8.61.0",

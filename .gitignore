@@ -83,3 +83,7 @@ sonar-scanner.sh
 
 # Per-developer Claude Code permissions (contains local secrets)
 /.claude/settings.local.json
+
+# Stryker mutation testing
+.stryker-tmp/
+reports/
