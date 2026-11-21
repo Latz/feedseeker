@@ -569,7 +569,8 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		if (hasLimit) {
 			// Sequential with early exit when a feed limit is set
 			for (const strategy of searchStrategies) {
-				const feeds = await strategy.call(this);
+				// A failing strategy is skipped, as in the parallel branch's allSettled
+				const feeds = await strategy.call(this).catch((): Feed[] => []);
 				this.addFeedsToMap(feedMap, feeds);
 				if (this.hasReachedLimit(feedMap)) break;
 			}
