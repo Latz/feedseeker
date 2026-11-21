@@ -464,6 +464,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
  */
 export async function run(argv: string[] = process.argv): Promise<void> {
 	anySiteHitChallenge = false; // reset per invocation — module state must not leak across runs
+	counterLength = 0;
 
 	// Must be set before program.parseAsync() below, since fetches happen
 	// during action-handler execution, not after parsing completes.
