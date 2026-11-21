@@ -28,6 +28,8 @@ describe('tlsSpoofFallback', () => {
 		expect(response!.status).toBe(200);
 		expect(await response!.text()).toBe('<html>real content</html>');
 		expect(response!.headers.get('x-feedseeker-tls-spoof')).toBe('success');
+		expect(response!.headers.get('content-type')).toBe('text/html');
+		expect(response!.statusText).toBe('OK');
 	});
 
 	it('calls node-wreq with the fixed browser profile and the given timeout', async () => {
@@ -45,7 +47,7 @@ describe('tlsSpoofFallback', () => {
 		expect(wreqFetchMock).toHaveBeenCalledTimes(1);
 		const [url, options] = wreqFetchMock.mock.calls[0];
 		expect(url).toBe('https://example.com/');
-		expect(options).toMatchObject({ browser: expect.any(String), timeout: 7000 });
+		expect(options).toEqual({ browser: 'chrome_149', timeout: 7000 });
 	});
 
 	it('passes through caller-supplied headers without merging feedseeker default headers', async () => {
@@ -83,7 +85,9 @@ describe('tlsSpoofFallback — node-wreq unavailable', () => {
 	});
 
 	it('returns null when the node-wreq module fails to load, and does not re-attempt the import on a second call', async () => {
+		let loadAttempts = 0;
 		vi.doMock('node-wreq', () => {
+			loadAttempts++;
 			throw new Error('module not found');
 		});
 		const { tryTlsSpoofFallback } = await import('../modules/tlsSpoofFallback.ts');
@@ -93,5 +97,6 @@ describe('tlsSpoofFallback — node-wreq unavailable', () => {
 
 		expect(first).toBeNull();
 		expect(second).toBeNull();
+		expect(loadAttempts).toBe(1);
 	});
 });
