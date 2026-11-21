@@ -65,13 +65,14 @@ export function generateEndpointUrls(
 	const urlObj = validateBlindSearchUrl(siteUrl);
 	const origin = urlObj.origin;
 	const queryParams = keepQueryParams ? urlObj.search : '';
-	let path = siteUrl;
+	// pathname only: query/hash must not end up inside candidate paths
+	let path = origin + urlObj.pathname;
 	const endpointUrls: string[] = [];
 
 	while (path.length >= origin.length) {
 		const basePath = path.endsWith('/') ? path.slice(0, -1) : path;
 		if (!appendEndpointsForPath(basePath, endpoints, queryParams, endpointUrls)) break;
-		path = path.slice(0, path.lastIndexOf('/'));
+		path = basePath.slice(0, basePath.lastIndexOf('/'));
 	}
 
 	return endpointUrls;

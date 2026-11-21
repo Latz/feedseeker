@@ -191,18 +191,11 @@ async function processFeeds(
 		return false;
 	};
 
-	// Checked before each fetch: abort throws, a reached feed limit stops the pool.
-	const checkBeforeFetch = (): boolean => {
+	const throwIfAborted = (): void => {
 		if (signal?.aborted) {
 			stopped = true;
 			throw new Error('Blind search operation was aborted');
 		}
-		if (limitReached()) {
-			stopped = true;
-			handleMaxFeedsReached(instance, feeds, maxFeeds);
-			return true;
-		}
-		return false;
 	};
 
 	// A pool of workers each pulling the next URL, so one slow candidate only
@@ -212,7 +205,7 @@ async function processFeeds(
 			!stopped &&
 			shouldContinueSearch(next, endpointUrls.length, rssFound, atomFound, shouldCheckAll)
 		) {
-			if (checkBeforeFetch()) return;
+			throwIfAborted();
 
 			const url = endpointUrls[next++];
 			const result = await processSingleFeedUrl( // NOSONAR: bounded worker pool, await is the concurrency limit
@@ -250,6 +243,8 @@ async function processFeeds(
 	};
 
 	await Promise.all(Array.from({ length: Math.min(concurrency, endpointUrls.length) }, worker));
+	// Requests already in flight when the limit hit may still have added feeds.
+	if (maxFeeds > 0) feeds.splice(maxFeeds);
 	return { feeds, rssFound, atomFound };
 }
 
@@ -262,7 +257,7 @@ async function processFeeds(
  * @param {Feed[]} feeds - Array of found feeds
  * @param {boolean} rssFound - Whether an RSS feed has been found
  * @param {boolean} atomFound - Whether an Atom feed has been found
- * @returns {Promise<{found: boolean, rssFound: boolean, atomFound: boolean}>} A promise that resolves to an object containing found status and updated flags
+ * @returns {Promise<{rssFound: boolean, atomFound: boolean, isChallenge: boolean}>} Updated flags and whether the response was a bot challenge
  */
 async function processSingleFeedUrl(
 	url: string,
@@ -272,10 +267,10 @@ async function processSingleFeedUrl(
 	feeds: Feed[],
 	rssFound: boolean,
 	atomFound: boolean
-): Promise<{ found: boolean; rssFound: boolean; atomFound: boolean; isChallenge: boolean }> {
+): Promise<{ rssFound: boolean; atomFound: boolean; isChallenge: boolean }> {
 	// Skip if this URL has already been checked (prevents duplicate requests)
 	if (foundUrls.has(url)) {
-		return { found: false, rssFound, atomFound, isChallenge: false };
+		return { rssFound, atomFound, isChallenge: false };
 	}
 
 	// Mark URL as checked before making the request
@@ -296,7 +291,7 @@ async function processSingleFeedUrl(
 			// skip re-adding it as a distinct feed.
 			const identityUrl = feedResult.resolvedUrl ?? url;
 			if (foundResolvedUrls.has(identityUrl)) {
-				return { found: false, rssFound, atomFound, isChallenge: false };
+				return { rssFound, atomFound, isChallenge: false };
 			}
 			foundResolvedUrls.add(identityUrl);
 
@@ -305,17 +300,17 @@ async function processSingleFeedUrl(
 			rssFound = updatedFlags.rssFound;
 			atomFound = updatedFlags.atomFound;
 
-			return { found: true, rssFound, atomFound, isChallenge: false };
+			return { rssFound, atomFound, isChallenge: false };
 		}
 	} catch (error: unknown) {
 		const err = error instanceof Error ? error : new Error(String(error));
 		if (err instanceof ChallengeResponseError) {
-			return { found: false, rssFound, atomFound, isChallenge: true };
+			return { rssFound, atomFound, isChallenge: true };
 		}
 		handleFeedError(instance, url, err);
 	}
 
-	return { found: false, rssFound, atomFound, isChallenge: false };
+	return { rssFound, atomFound, isChallenge: false };
 }
 
 /**

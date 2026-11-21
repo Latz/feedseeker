@@ -41,4 +41,14 @@ describe('blindsearch/urlGeneration', () => {
 			expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('URL generation limit reached'));
 		});
 	});
+
+	it('does not treat the query string as part of the path', () => {
+		const urls = generateEndpointUrls('https://example.com/blog?lang=de', false, ['feed']);
+		expect(urls).toEqual(['https://example.com/blog/feed', 'https://example.com/feed']);
+	});
+
+	it('appends the query string to each candidate with keepQueryParams', () => {
+		const urls = generateEndpointUrls('https://example.com/blog?lang=de', true, ['feed']);
+		expect(urls).toEqual(['https://example.com/blog/feed?lang=de', 'https://example.com/feed?lang=de']);
+	});
 });
