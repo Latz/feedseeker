@@ -581,6 +581,17 @@ describe('startSearch()', () => {
 		expect(blindSearchMod).toHaveBeenCalled();
 	});
 
+	it('with all:true still caps the combined result at maxFeeds', async () => {
+		// strategies run in parallel here, each within its own limit — the total must still be capped
+		(metaLinksMod as Mock).mockResolvedValue([{ url: 'https://example.com/rss1', type: 'rss' }]);
+		(anchorsMod as Mock).mockResolvedValue([{ url: 'https://example.com/atom', type: 'atom' }]);
+		(blindSearchMod as Mock).mockResolvedValue([{ url: 'https://example.com/feed', type: 'rss' }]);
+		(deepSearchMod as Mock).mockResolvedValue([{ url: 'https://example.com/deep', type: 'rss' }]);
+		const fs = new FeedSeeker('https://example.com', { maxFeeds: 2, all: true, deepsearch: true });
+		const result = await fs.startSearch();
+		expect(result.map((f) => f.url)).toEqual(['https://example.com/rss1', 'https://example.com/atom']);
+	});
+
 	it('with deepsearchOnly:true only runs deepSearch', async () => {
 		(deepSearchMod as Mock).mockResolvedValue([{ url: 'https://example.com/rss', type: 'rss' }]);
 		const fs = new FeedSeeker('https://example.com', { deepsearchOnly: true });
