@@ -50,7 +50,6 @@ export interface MetaLinksInstance extends FeedSeekerInstance {
  * @param {Array<Feed>} feeds - The array of found feeds.
  * @param {Set<string>} foundUrls - A set of URLs that have already been added.
  * @param {number} batchSize - Number of links to process concurrently (default: 5).
- * @returns {Promise<boolean>} A promise that resolves to true if the maxFeeds limit is reached, false otherwise.
  * @private
  */
 async function processLinksInBatches(
@@ -59,36 +58,18 @@ async function processLinksInBatches(
 	feeds: Feed[],
 	foundUrls: Set<string>,
 	batchSize: number = 5
-): Promise<boolean> {
+): Promise<void> {
 	const maxFeeds = instance.options?.maxFeeds || 0;
 
 	for (let i = 0; i < links.length; i += batchSize) {
-		if (maxFeeds > 0 && feeds.length >= maxFeeds) {
-			return true;
-		}
+		if (maxFeeds > 0 && feeds.length >= maxFeeds) return;
 
 		const batch = links.slice(i, i + batchSize);
-		await Promise.allSettled(
-			// NOSONAR: sequential batches by design
-			batch.map(async (link) => {
-				if (maxFeeds > 0 && feeds.length >= maxFeeds) return;
-				await processLink(link, instance, feeds, foundUrls);
-			})
-		);
+		const checks = batch.map((link) => processLink(link, instance, feeds, foundUrls));
+		await Promise.allSettled(checks); // NOSONAR: sequential batches by design
 	}
-
-	return maxFeeds > 0 && feeds.length >= maxFeeds;
 }
 
-/**
- * Processes a link element to check if it's a feed and adds it to the feeds array.
- * @param {HTMLLinkElement} link - The link element to process.
- * @param {MetaLinksInstance} instance - The FeedSeeker instance.
- * @param {Array<Feed>} feeds - The array of found feeds.
- * @param {Set<string>} foundUrls - A set of URLs that have already been added.
- * @returns {Promise<void>} A promise that resolves when the link has been processed.
- * @private
- */
 /**
  * Resolves a link element's href to an absolute URL, or returns null on failure.
  */
@@ -111,19 +92,18 @@ function resolveHref(link: HTMLLinkElement, instance: MetaLinksInstance): string
 }
 
 /**
- * Records a validated feed and returns true if the maxFeeds limit has been reached.
+ * Records a validated feed and logs once the maxFeeds limit is reached.
  */
 function recordFeed(
 	fullHref: string,
 	link: HTMLLinkElement,
 	feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null },
 	feeds: Feed[],
-	foundUrls: Set<string>,
 	instance: MetaLinksInstance
-): boolean {
+): void {
 	const maxFeeds = instance.options?.maxFeeds || 0;
 	// Parallel checks in flight when the limit was hit still finish; drop their feeds.
-	if (maxFeeds > 0 && feeds.length >= maxFeeds) return true;
+	if (maxFeeds > 0 && feeds.length >= maxFeeds) return;
 	feeds.push({
 		url: fullHref,
 		title: cleanTitle(link.title),
@@ -135,11 +115,18 @@ function recordFeed(
 			module: 'metalinks',
 			message: `Stopped due to reaching maximum feeds limit: ${feeds.length} feeds found (max ${maxFeeds} allowed).`
 		});
-		return true;
 	}
-	return false;
 }
 
+/**
+ * Processes a link element to check if it's a feed and adds it to the feeds array.
+ * @param {HTMLLinkElement} link - The link element to process.
+ * @param {MetaLinksInstance} instance - The FeedSeeker instance.
+ * @param {Array<Feed>} feeds - The array of found feeds.
+ * @param {Set<string>} foundUrls - A set of URLs that have already been added.
+ * @returns {Promise<void>} A promise that resolves when the link has been processed.
+ * @private
+ */
 async function processLink(
 	link: HTMLLinkElement,
 	instance: MetaLinksInstance,
@@ -162,7 +149,7 @@ async function processLink(
 			: undefined;
 		const feedResult = await checkFeed(fullHref, '', instance, onReject);
 		if (feedResult) {
-			recordFeed(fullHref, link, feedResult, feeds, foundUrls, instance);
+			recordFeed(fullHref, link, feedResult, feeds, instance);
 		}
 	} catch (error: unknown) {
 		if (instance.options?.showErrors) {
@@ -208,9 +195,7 @@ export default async function metaLinks(instance: MetaLinksInstance): Promise<Fe
 			instance.document.querySelectorAll<HTMLLinkElement>(typeSelectors)
 		);
 
-		if (await processLinksInBatches(typeLinks, instance, feeds, foundUrls)) {
-			return feeds;
-		}
+		await processLinksInBatches(typeLinks, instance, feeds, foundUrls);
 
 		// 2. Check for `rel="alternate"` links with feed-related `type` attributes.
 		const alternateTypeSelectors =
@@ -219,9 +204,7 @@ export default async function metaLinks(instance: MetaLinksInstance): Promise<Fe
 			instance.document.querySelectorAll<HTMLLinkElement>(alternateTypeSelectors)
 		);
 
-		if (await processLinksInBatches(alternateTypeLinks, instance, feeds, foundUrls)) {
-			return feeds;
-		}
+		await processLinksInBatches(alternateTypeLinks, instance, feeds, foundUrls);
 
 		// 3. Check for `rel="alternate"` links with `href` patterns that suggest a feed.
 		const alternateLinks = Array.from(
@@ -232,9 +215,7 @@ export default async function metaLinks(instance: MetaLinksInstance): Promise<Fe
 				link.href && FEED_PATTERNS.some((pattern) => link.href.toLowerCase().includes(pattern))
 		);
 
-		if (await processLinksInBatches(patternLinks, instance, feeds, foundUrls)) {
-			return feeds;
-		}
+		await processLinksInBatches(patternLinks, instance, feeds, foundUrls);
 
 		return feeds;
 	} finally {
