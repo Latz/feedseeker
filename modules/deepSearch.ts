@@ -15,9 +15,6 @@ export const EXCLUDED_EXTENSIONS = new Set([
 	'.zip',
 	'.rar',
 	'.7z',
-	'.tar.gz',
-	'.tar.bz2',
-	'.tar.xz',
 	'.tar',
 	'.gz',
 	'.bz2',
@@ -120,7 +117,6 @@ class Crawler extends EventEmitter {
 	queue: QueueObject<CrawlTask>;
 	visitedUrls: Set<string>;
 	enqueuedUrls: Set<string>;
-	feedUrls: Set<string>;
 	timeout: number;
 	insecure: boolean;
 	maxLinksReachedMessageEmitted: boolean;
@@ -161,7 +157,6 @@ class Crawler extends EventEmitter {
 		this.queue.pause(); // Hold until start() pushes all initial URLs and resume() is called
 		this.visitedUrls = new Set(); // Track fetched URLs (for stats/reporting)
 		this.enqueuedUrls = new Set(); // Track enqueued URLs to prevent duplicate queue entries
-		this.feedUrls = new Set(); // O(1) dedup for discovered feed URLs
 		this.timeout = 5000; // Default timeout value for HTTP requests
 		this.insecure = insecure;
 		this.maxLinksReachedMessageEmitted = false; // Flag to track if message was emitted
@@ -186,11 +181,10 @@ class Crawler extends EventEmitter {
 
 	/**
 	 * Increments the error counter and kills the queue if the limit is reached.
-	 * @returns {boolean} True if the error limit has been reached, false otherwise.
 	 * @private
 	 */
-	private incrementError(): boolean {
-		if (this.errorCount >= this.maxErrors) return true;
+	private incrementError(): void {
+		if (this.errorCount >= this.maxErrors) return;
 		this.errorCount++;
 		if (this.errorCount >= this.maxErrors) {
 			this.queue.kill();
@@ -199,9 +193,7 @@ class Crawler extends EventEmitter {
 				message: `Stopped due to ${this.errorCount} errors (max ${this.maxErrors} allowed).`
 			});
 			this.resolve?.();
-			return true;
 		}
-		return false;
 	}
 
 	private normalizeUrl(url: string): string {
@@ -322,31 +314,23 @@ class Crawler extends EventEmitter {
 	 * @param {string} url - The URL that failed to fetch.
 	 * @param {number} depth - The crawl depth at which the error occurred.
 	 * @param {string} error - The error message.
-	 * @returns {boolean} True if the crawl should stop, false otherwise.
 	 * @private
 	 */
-	handleFetchError(url: string, depth: number, error: string): boolean {
+	handleFetchError(url: string, depth: number, error: string): void {
 		this.emit('log', { module: 'deepSearch', url, depth, error });
-		return this.incrementError();
+		this.incrementError();
 	}
 
 	/**
-	 * Processes a single link found on a page, checking if it's a feed.
-	 * @param {string} url - The absolute URL of the link to process.
-	 * @param {number} depth - The current crawl depth.
-	 * @returns {Promise<boolean>} True if the crawl should stop, false otherwise.
-	 * @private
-	 */
-	/**
-	 * Records a found feed and returns true if the max feeds limit has been reached.
+	 * Records a found feed and stops the crawl once the max feeds limit is reached.
 	 */
 	private recordFeed(
 		url: string,
 		depth: number,
 		feedResult: { type: 'rss' | 'atom' | 'json'; title: string | null }
-	): boolean {
-		if (this.feedUrls.has(url)) return false;
-		this.feedUrls.add(url);
+	): void {
+		// Pages already in flight when the limit was hit still finish; drop their feeds.
+		if (this.maxFeeds > 0 && this.feeds.length >= this.maxFeeds) return;
 		this.feeds.push({
 			url,
 			type: feedResult.type,
@@ -366,9 +350,7 @@ class Crawler extends EventEmitter {
 				message: `Stopped due to reaching maximum feeds limit: ${this.feeds.length} feeds found (max ${this.maxFeeds} allowed).`
 			});
 			this.resolve?.();
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -429,7 +411,6 @@ class Crawler extends EventEmitter {
 
 		if (this.visitedUrls.has(normalizedUrl)) return;
 		if (depth > this.maxDepth) return;
-		if (foreignOnly && !this.checkForeignFeeds) return;
 
 		this.visitedUrls.add(normalizedUrl);
 
