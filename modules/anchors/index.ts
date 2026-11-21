@@ -54,9 +54,10 @@ function handleMetaRefreshRedirect(instance: MetaLinksInstance): Promise<Feed[]>
 				.querySelector('meta[http-equiv="refresh"]')
 				?.getAttribute('content');
 			if (content) {
-				const match = /url=(.*)/i.exec(content);
-				if (match?.[1]) {
-					const redirectUrl = new URL(match[1], instance.site).href;
+				// The target may be quoted ('…' or "…"), per the HTML spec for refresh
+				const match = /url\s*=\s*(['"]?)([^'"]*)\1/i.exec(content);
+				if (match?.[2]) {
+					const redirectUrl = new URL(match[2], instance.site).href;
 					instance.emit('log', {
 						module: 'anchors',
 						message: `Following meta refresh redirect to ${redirectUrl}`
