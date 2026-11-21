@@ -146,6 +146,16 @@ interface AnchorContext {
 }
 
 /**
+ * Adds a feed unless maxFeeds is already reached — parallel checks in flight
+ * when the limit was hit still finish and must not push past it.
+ */
+function addFeed(context: AnchorContext, feed: Feed): void {
+	const maxFeeds = context.instance.options?.maxFeeds || 0;
+	if (maxFeeds > 0 && context.feedUrls.length >= maxFeeds) return;
+	context.feedUrls.push(feed);
+}
+
+/**
  * Checks a single anchor to see if it's a feed and adds it to the list if so.
  * @param {HTMLAnchorElement} anchor - The anchor element to check.
  * @param {AnchorContext} context - The context containing instance, baseUrl, and feedUrls array.
@@ -156,12 +166,12 @@ async function processAnchor(
 	urlToCheck: string,
 	context: AnchorContext
 ): Promise<void> {
-	const { instance, feedUrls } = context;
+	const { instance } = context;
 
 	try {
 		const feedResult = await checkFeed(urlToCheck, '', instance);
 		if (feedResult) {
-			feedUrls.push({
+			addFeed(context, {
 				url: urlToCheck,
 				title: anchor.textContent?.trim() || null,
 				type: feedResult.type,
@@ -284,7 +294,7 @@ async function processPlainTextPhase(
 		try {
 			const feedResult = await checkFeed(url, '', context.instance);
 			if (feedResult) {
-				context.feedUrls.push({
+				addFeed(context, {
 					url,
 					title: null,
 					type: feedResult.type,

@@ -120,13 +120,15 @@ function recordFeed(
 	foundUrls: Set<string>,
 	instance: MetaLinksInstance
 ): boolean {
+	const maxFeeds = instance.options?.maxFeeds || 0;
+	// Parallel checks in flight when the limit was hit still finish; drop their feeds.
+	if (maxFeeds > 0 && feeds.length >= maxFeeds) return true;
 	feeds.push({
 		url: fullHref,
 		title: cleanTitle(link.title),
 		type: feedResult.type,
 		feedTitle: feedResult.title
 	});
-	const maxFeeds = instance.options?.maxFeeds || 0;
 	if (maxFeeds > 0 && feeds.length >= maxFeeds) {
 		instance.emit('log', {
 			module: 'metalinks',
