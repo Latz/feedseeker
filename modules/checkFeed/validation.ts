@@ -69,5 +69,6 @@ export function validateTimeout(timeout: number | undefined): number {
 		return VALIDATION_LIMITS.MAX_TIMEOUT;
 	}
 
-	return Math.floor(timeout);
+	// Not rounded: flooring turned 0.5 into 0, which fetchWithTimeout rejects
+	return timeout;
 }
