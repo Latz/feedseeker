@@ -7,6 +7,7 @@ import {
 	isValidUrlLength,
 	MAX_URL_LENGTH
 } from '../modules/blindsearch/validation.ts';
+import endpointsData from '../modules/blindsearch/endpoints.json' with { type: 'json' };
 
 describe('blindsearch/validation', () => {
 	afterEach(() => {
@@ -98,5 +99,58 @@ describe('blindsearch/validation', () => {
 			const url = 'a'.repeat(MAX_URL_LENGTH + 1);
 			expect(isValidUrlLength(url)).toBe(false);
 		});
+	});
+});
+
+describe('blindsearch/validation — endpoint lists per mode', () => {
+	it('builds each mode from the endpoint groups', () => {
+		const { essential, standard, comprehensive } = endpointsData;
+		expect(getEndpointsByMode('fast')).toEqual(essential);
+		expect(getEndpointsByMode('standard')).toEqual([...essential, ...standard]);
+		expect(getEndpointsByMode('exhaustive')).toEqual([...essential, ...standard, ...comprehensive]);
+		expect(getEndpointsByMode('full')).toEqual([...essential, ...standard, ...comprehensive]);
+	});
+});
+
+describe('blindsearch/validation — valid input does not warn', () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it.each([[undefined], ['']])('search mode %j falls back to standard silently', (mode) => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		expect(validateSearchMode(mode)).toBe('standard');
+		expect(warnSpy).not.toHaveBeenCalled();
+	});
+
+	it.each(['fast', 'standard', 'exhaustive', 'full'])(
+		'search mode %s is accepted silently',
+		(mode) => {
+			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			expect(validateSearchMode(mode)).toBe(mode);
+			expect(warnSpy).not.toHaveBeenCalled();
+		}
+	);
+
+	it.each([
+		[undefined, 3],
+		[null, 3],
+		[1, 1],
+		[10, 10]
+	])('concurrency %j → %i without warning', (value, expected) => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		expect(validateConcurrency(value as number | undefined)).toBe(expected);
+		expect(warnSpy).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		[undefined, 0],
+		[null, 0],
+		[0, 0],
+		[60000, 60000]
+	])('request delay %j → %i without warning', (value, expected) => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		expect(validateRequestDelay(value as number | undefined)).toBe(expected);
+		expect(warnSpy).not.toHaveBeenCalled();
 	});
 });
