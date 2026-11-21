@@ -31,7 +31,7 @@ const feed = (path: string, feedTitle: string | null = null): Feed => ({
 	feedTitle
 });
 
-// eslint-disable-next-line no-control-regex
+// oxlint-disable-next-line no-control-regex
 const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, '');
 
 let stdout: Mock;

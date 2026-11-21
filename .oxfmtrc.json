@@ -1,0 +1,24 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"semi": true,
+	"trailingComma": "none",
+	"singleQuote": true,
+	"printWidth": 100,
+	"tabWidth": 2,
+	"useTabs": true,
+	"arrowParens": "always",
+	"sortPackageJson": false,
+	"ignorePatterns": [
+		"node_modules",
+		"dist",
+		"coverage",
+		".scannerwork",
+		".worktrees",
+		"package-lock.json",
+		"*.min.js",
+		"tests/fixtures",
+		"tests/__snapshots__",
+		"sonar-report.json",
+		"sonar-report.md"
+	]
+}

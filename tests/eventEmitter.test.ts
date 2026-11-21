@@ -393,7 +393,7 @@ describe('EventEmitter Module', () => {
 			let receivedThis: any = null;
 
 			function listener() {
-				// eslint-disable-next-line @typescript-eslint/no-this-alias
+				// oxlint-disable-next-line typescript/no-this-alias
 				receivedThis = this;
 			}
 

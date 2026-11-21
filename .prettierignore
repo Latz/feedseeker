@@ -1,7 +1,0 @@
-node_modules
-dist
-coverage
-.scannerwork
-.worktrees
-package-lock.json
-*.min.js

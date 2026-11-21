@@ -1,4 +1,3 @@
-/* global ResponseInit, TextEncoder, ReadableStream */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 
 vi.mock('../modules/fetchWithTimeout.ts', () => ({ default: vi.fn() }));

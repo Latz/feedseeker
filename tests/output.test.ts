@@ -65,7 +65,7 @@ describe('formatOpml', () => {
 
 describe('printFeeds', () => {
 	let log: Mock;
-	// eslint-disable-next-line no-control-regex
+	// oxlint-disable-next-line no-control-regex
 	const lines = () => log.mock.calls.map((c) => String(c[0]).replace(/\x1b\[[0-9;]*m/g, ''));
 	beforeEach(() => {
 		log = vi.spyOn(console, 'log').mockImplementation(() => {}) as unknown as Mock;

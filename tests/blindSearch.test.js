@@ -1,4 +1,3 @@
-/* global AbortController */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Internal helpers replicated from modules/blindsearch.ts ──────────────────
