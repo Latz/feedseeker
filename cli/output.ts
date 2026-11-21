@@ -11,7 +11,7 @@ export function formatOpml(feeds: Feed[], siteUrl: string): string {
 		.map((f) => {
 			const label = escapeXml(f.feedTitle ?? f.title ?? f.url);
 			const type = f.type === 'atom' ? 'atom' : f.type === 'json' ? 'json' : 'rss';
-			return `  <outline type="${type}" text="${label}" title="${label}" xmlUrl="${f.url}"/>`;
+			return `  <outline type="${type}" text="${label}" title="${label}" xmlUrl="${escapeXml(f.url)}"/>`;
 		})
 		.join('\n');
 	return [
