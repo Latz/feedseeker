@@ -29,6 +29,20 @@ describe('lookupApplePodcastFeed', () => {
 		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
+	it('returns null for input that is not a URL', async () => {
+		expect(await lookupApplePodcastFeed('not a url')).toBeNull();
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
+	it('ignores the body of a failed lookup', async () => {
+		// even if an error response carried a feedUrl, it must not be used
+		fetchMock.mockResolvedValue({
+			ok: false,
+			json: async () => ({ results: [{ feedUrl: 'https://wrong.example/feed' }] })
+		});
+		expect(await lookupApplePodcastFeed(apple)).toBeNull();
+	});
+
 	it('returns null on failed lookup or empty results', async () => {
 		fetchMock.mockResolvedValue({ ok: false });
 		expect(await lookupApplePodcastFeed(apple)).toBeNull();
