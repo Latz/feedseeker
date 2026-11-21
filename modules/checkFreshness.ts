@@ -3,8 +3,11 @@ import type { Feed } from './metaLinks.ts';
 import { type FeedSeekerInstance, takeCachedFeedContent } from './checkFeed/index.ts';
 
 const FRESHNESS_PATTERNS = {
-	RSS_FIRST_ITEM: /<item[^>]*>([\s\S]*?)<\/item>/i,
+	// <item> or <item …>, but not RSS 1.0's <items> table of contents
+	RSS_FIRST_ITEM: /<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/i,
 	RSS_PUBDATE: /<pubDate>([\s\S]*?)<\/pubDate>/i,
+	// RSS 1.0 (RDF) items carry Dublin Core dates instead of <pubDate>
+	RSS_DC_DATE: /<dc:date>([\s\S]*?)<\/dc:date>/i,
 	ATOM_FIRST_ENTRY: /<entry[^>]*>([\s\S]*?)<\/entry>/i,
 	ATOM_UPDATED: /<updated>([\s\S]*?)<\/updated>/i,
 	ATOM_PUBLISHED: /<published>([\s\S]*?)<\/published>/i
@@ -20,8 +23,10 @@ function parseDate(str: string): Date | null {
 function extractRssDate(content: string): Date | null {
 	const itemMatch = FRESHNESS_PATTERNS.RSS_FIRST_ITEM.exec(content);
 	if (!itemMatch) return null;
-	const pubDateMatch = FRESHNESS_PATTERNS.RSS_PUBDATE.exec(itemMatch[1]);
-	return pubDateMatch ? parseDate(pubDateMatch[1]) : null;
+	const dateMatch =
+		FRESHNESS_PATTERNS.RSS_PUBDATE.exec(itemMatch[1]) ??
+		FRESHNESS_PATTERNS.RSS_DC_DATE.exec(itemMatch[1]);
+	return dateMatch ? parseDate(dateMatch[1]) : null;
 }
 
 function extractAtomDate(content: string): Date | null {
