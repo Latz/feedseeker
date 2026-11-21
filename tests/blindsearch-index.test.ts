@@ -33,10 +33,16 @@ function makeInstance(options?: Record<string, unknown>, site = SITE) {
 }
 
 /** Sequential run (concurrency 1) so call order and counts are deterministic. */
-const seq = (extra: Record<string, unknown> = {}) => ({ searchMode: 'fast', concurrency: 1, ...extra });
+const seq = (extra: Record<string, unknown> = {}) => ({
+	searchMode: 'fast',
+	concurrency: 1,
+	...extra
+});
 
 /** Make checkFeed answer per candidate index; everything else is "no feed". */
-function feedsAt(map: Record<number, { type: string; title?: string | null; resolvedUrl?: string }>) {
+function feedsAt(
+	map: Record<number, { type: string; title?: string | null; resolvedUrl?: string }>
+) {
 	mockCheckFeed.mockImplementation(async (url: string) => {
 		const i = URLS.indexOf(url);
 		const hit = map[i];
@@ -152,7 +158,9 @@ describe('blindSearch — maxFeeds', () => {
 		const feeds = await blindSearch(instance);
 		expect(feeds).toHaveLength(2);
 		expect(calledUrls()).toEqual(URLS.slice(0, 2));
-		const limitLogs = events.filter((e) => e.event === 'log' && e.data.message?.includes('maximum feeds limit'));
+		const limitLogs = events.filter(
+			(e) => e.event === 'log' && e.data.message?.includes('maximum feeds limit')
+		);
 		expect(limitLogs.map((e) => e.data)).toEqual([
 			{
 				module: 'blindsearch',
@@ -170,7 +178,12 @@ describe('blindSearch — maxFeeds', () => {
 
 	it('never returns more than maxFeeds with parallel workers', async () => {
 		mockCheckFeed.mockResolvedValue({ type: 'rss', title: null });
-		const { instance } = makeInstance({ searchMode: 'fast', all: true, maxFeeds: 1, concurrency: 3 });
+		const { instance } = makeInstance({
+			searchMode: 'fast',
+			all: true,
+			maxFeeds: 1,
+			concurrency: 3
+		});
 		expect(await blindSearch(instance)).toHaveLength(1);
 	});
 
@@ -301,10 +314,12 @@ describe('blindSearch — events', () => {
 describe('blindSearch — verbose rejection logging', () => {
 	it('passes an onReject callback that logs url + reason when verbose', async () => {
 		const { instance, events } = makeInstance(seq({ verbose: true }));
-		mockCheckFeed.mockImplementation(async (url: string, _c: string, _i: unknown, onReject?: (r: string) => void) => {
-			if (url === URLS[0]) onReject?.('not a feed');
-			return null;
-		});
+		mockCheckFeed.mockImplementation(
+			async (url: string, _c: string, _i: unknown, onReject?: (r: string) => void) => {
+				if (url === URLS[0]) onReject?.('not a feed');
+				return null;
+			}
+		);
 		await blindSearch(instance);
 		expect(events).toContainEqual({
 			event: 'log',

@@ -49,6 +49,8 @@ describe('isOEmbedResponse', () => {
 	});
 
 	it('rejects a plain JSON feed object', () => {
-		expect(isOEmbedResponse({ version: 'https://jsonfeed.org/version/1.1', items: [] })).toBe(false);
+		expect(isOEmbedResponse({ version: 'https://jsonfeed.org/version/1.1', items: [] })).toBe(
+			false
+		);
 	});
 });

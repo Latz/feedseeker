@@ -208,7 +208,8 @@ async function processFeeds(
 			throwIfAborted();
 
 			const url = endpointUrls[next++];
-			const result = await processSingleFeedUrl( // NOSONAR: bounded worker pool, await is the concurrency limit
+			const result = await processSingleFeedUrl(
+				// NOSONAR: bounded worker pool, await is the concurrency limit
 				url,
 				instance,
 				foundUrls,
@@ -347,11 +348,7 @@ function handleChallengeAbort(instance: MetaLinksInstance): void {
  * @param {string} url - The URL that caused the error
  * @param {Error} error - The error that occurred
  */
-function handleFeedError(
-	instance: MetaLinksInstance,
-	url: string,
-	error: Error
-): void {
+function handleFeedError(instance: MetaLinksInstance, url: string, error: Error): void {
 	// Only show errors if the undocumented --show-errors flag is set
 	if (instance.options?.showErrors) {
 		instance.emit('error', {

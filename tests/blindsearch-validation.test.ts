@@ -28,7 +28,9 @@ describe('blindsearch/validation', () => {
 		it('warns and falls back to the default mode for an invalid mode string', () => {
 			const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 			expect(validateSearchMode('nonsense')).toBe('standard');
-			expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid search mode "nonsense"'));
+			expect(warnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('Invalid search mode "nonsense"')
+			);
 		});
 
 		it('returns a valid mode unchanged', () => {

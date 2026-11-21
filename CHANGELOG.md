@@ -93,7 +93,7 @@ Version 1.0.4 was prepared but never published to npm. Its changes are part of t
 
 - **deepSearch — feeds lost when crawl stops early** (`cf80606`): When the error limit or feed limit was reached, `queue.kill()` was called to halt the crawl. However, `kill()` does not trigger the queue's `drain` callback, so the promise wrapping the entire crawl never resolved. The process would hang indefinitely and all feeds discovered up to that point were discarded. Fixed by storing a `resolve` callback on the crawler instance and calling it from both kill sites, with a `settled` guard to prevent the `end` event from firing twice if `drain` also fires naturally.
 
-- **deepSearch — duplicate URL fetches under concurrent crawling** (`739eea0`): URLs were only added to `visitedUrls` when a worker *began* processing them. With multiple workers running concurrently, several workers could each dequeue the same URL before any of them marked it as visited, resulting in duplicate HTTP requests and redundant feed checks. Fixed by introducing a separate `enqueuedUrls` set that is marked at push time; `visitedUrls` is now fetch-only and used for stats and reporting.
+- **deepSearch — duplicate URL fetches under concurrent crawling** (`739eea0`): URLs were only added to `visitedUrls` when a worker _began_ processing them. With multiple workers running concurrently, several workers could each dequeue the same URL before any of them marked it as visited, resulting in duplicate HTTP requests and redundant feed checks. Fixed by introducing a separate `enqueuedUrls` set that is marked at push time; `visitedUrls` is now fetch-only and used for stats and reporting.
 
 - **deepSearch — redundant fetch of start URL** (`cefc39a`): When `deepSearch` runs after `metaLinks`, `anchors`, or `blindSearch`, the `FeedSeeker` instance already holds the fetched and parsed HTML for the start URL. Previously `crawlPage` would issue a fresh HTTP request for the start URL anyway. Fixed by passing the cached `site` URL and `content` through `FeedSeekerInstance` so `crawlPage` can skip the network call for the page it already has.
 
@@ -142,16 +142,19 @@ Version 1.0.4 was prepared but never published to npm. Its changes are part of t
 ## [1.0.1] — 2026-03-15
 
 ### Fixed
+
 - `checkFeed`: Removed arbitrary 15-second minimum timeout floor; any positive value is now accepted
 - Default timeout aligned to 15 seconds across all callers
 - README Library API section corrected to match actual behavior
 - CLI options documentation updated
 
 ### CI
+
 - SonarCloud analysis pipeline fixed
 - SonarCloud project key corrected to `Latz_feedseeker`
 
 ### Chore
+
 - Switched from npm to pnpm; removed `package-lock.json`
 - Renamed dist output files from `feed-seeker.*` to `feedseeker.*`
 - Removed stale tracked dist files
@@ -164,6 +167,7 @@ Version 1.0.4 was prepared but never published to npm. Its changes are part of t
 Initial stable release of feedseeker (formerly FeedScout).
 
 ### Features
+
 - **Meta link discovery** — detects feeds via `<link rel="alternate">` elements
 - **Anchor-based discovery** — scans `<a>` tags for feed-like URLs
 - **Blind search** — probes common feed path patterns in fast / standard / exhaustive modes
@@ -174,6 +178,7 @@ Initial stable release of feedseeker (formerly FeedScout).
 - Node.js ≥ 22 required
 
 ### Internal
+
 - Converted to TypeScript throughout
 - Vitest test suite; 317 tests, 88%+ line coverage
 - SonarCloud quality gate integration

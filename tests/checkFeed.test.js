@@ -629,8 +629,7 @@ describe('checkFeed — Atom root-element gating', () => {
 	});
 
 	it('rejects a <feed> root with a namespace but no entries', async () => {
-		const noEntries =
-			'<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
+		const noEntries = '<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
 		const result = await checkFeed('https://example.com/f', noEntries);
 		expect(result).toBeNull();
 	});
@@ -656,8 +655,7 @@ describe('checkFeed — onReject diagnostic callback', () => {
 	});
 
 	it('calls onReject with a specific reason for a valid Atom feed with no entries', async () => {
-		const noEntries =
-			'<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
+		const noEntries = '<feed xmlns="http://www.w3.org/2005/Atom"><title>Empty</title></feed>';
 		const onReject = vi.fn();
 		const result = await checkFeed('https://example.com/feed.xml', noEntries, undefined, onReject);
 		expect(result).toBeNull();

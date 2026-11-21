@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const fetchMock = vi.fn();
-vi.mock('../modules/fetchWithTimeout.ts', () => ({ default: (...a: unknown[]) => fetchMock(...a) }));
+vi.mock('../modules/fetchWithTimeout.ts', () => ({
+	default: (...a: unknown[]) => fetchMock(...a)
+}));
 
 import lookupApplePodcastFeed from '../modules/applePodcasts.ts';
 
@@ -13,7 +15,10 @@ describe('lookupApplePodcastFeed', () => {
 	});
 
 	it('returns feedUrl from the iTunes lookup', async () => {
-		fetchMock.mockResolvedValue({ ok: true, json: async () => ({ results: [{ feedUrl: 'https://feeds.megaphone.fm/kus' }] }) });
+		fetchMock.mockResolvedValue({
+			ok: true,
+			json: async () => ({ results: [{ feedUrl: 'https://feeds.megaphone.fm/kus' }] })
+		});
 		expect(await lookupApplePodcastFeed(apple)).toBe('https://feeds.megaphone.fm/kus');
 		expect(fetchMock.mock.calls[0][0]).toContain('id=6831165042');
 	});
@@ -29,7 +34,9 @@ describe('lookupApplePodcastFeed', () => {
 		expect(await lookupApplePodcastFeed(apple)).toBeNull();
 		fetchMock.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
 		expect(await lookupApplePodcastFeed(apple)).toBeNull();
-		fetchMock.mockImplementation(async () => { throw new Error('net'); });
+		fetchMock.mockImplementation(async () => {
+			throw new Error('net');
+		});
 		expect(await lookupApplePodcastFeed(apple)).toBeNull();
 	});
 });

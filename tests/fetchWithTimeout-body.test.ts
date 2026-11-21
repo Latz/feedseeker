@@ -42,16 +42,19 @@ describe('fetchWithTimeout — body reads', () => {
 	it('checkFeed rejects an oversized response from content-length without reading it', async () => {
 		let bytesSent = 0;
 		const base = await serve((_req, res) => {
-			res.writeHead(200, { 'content-type': 'application/rss+xml', 'content-length': String(50 * 1024 * 1024) });
+			res.writeHead(200, {
+				'content-type': 'application/rss+xml',
+				'content-length': String(50 * 1024 * 1024)
+			});
 			const t = setInterval(() => {
 				res.write(Buffer.alloc(64 * 1024));
 				bytesSent += 64 * 1024;
 			}, 10);
 			res.on('close', () => clearInterval(t));
 		});
-		await expect(checkFeed(`${base}/huge.xml`, '', { options: { timeout: 10 } } as never)).rejects.toThrow(
-			/too large/i
-		);
+		await expect(
+			checkFeed(`${base}/huge.xml`, '', { options: { timeout: 10 } } as never)
+		).rejects.toThrow(/too large/i);
 		expect(bytesSent).toBeLessThan(10 * 1024 * 1024);
 	});
 });
@@ -69,8 +72,11 @@ describe('checkFeed — early HTML rejection', () => {
 			res.on('close', () => clearInterval(t));
 		});
 		const reasons: string[] = [];
-		const result = await checkFeed(`${base}/soft-404`, '', { options: { timeout: 10 } } as never, (r) =>
-			reasons.push(r)
+		const result = await checkFeed(
+			`${base}/soft-404`,
+			'',
+			{ options: { timeout: 10 } } as never,
+			(r) => reasons.push(r)
 		);
 		expect(result).toBeNull();
 		expect(reasons[0]).toMatch(/HTML/);

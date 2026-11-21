@@ -24,7 +24,11 @@ describe('readUrlsFromFile', () => {
 			'list.txt',
 			'# my sites\nexample.com\n\n   https://b.example/blog   \n\t\n  # indented comment\nc.example\n'
 		);
-		expect(await readUrlsFromFile(p)).toEqual(['example.com', 'https://b.example/blog', 'c.example']);
+		expect(await readUrlsFromFile(p)).toEqual([
+			'example.com',
+			'https://b.example/blog',
+			'c.example'
+		]);
 	});
 
 	it('handles Windows line endings', async () => {
@@ -34,7 +38,10 @@ describe('readUrlsFromFile', () => {
 
 	it('keeps URLs that merely contain or end with #', async () => {
 		const p = await file('hash.txt', 'https://a.example/#\nhttps://b.example/page#top\n');
-		expect(await readUrlsFromFile(p)).toEqual(['https://a.example/#', 'https://b.example/page#top']);
+		expect(await readUrlsFromFile(p)).toEqual([
+			'https://a.example/#',
+			'https://b.example/page#top'
+		]);
 	});
 
 	it('reads non-ASCII (IDN) hosts as UTF-8 text', async () => {

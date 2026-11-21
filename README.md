@@ -77,6 +77,7 @@ feedseeker --file sites.txt -q
 With `-q`, `--format json` or `--format opml`, up to 5 sites are searched at the same time. The interactive text output searches one site after another.
 
 sites.txt format:
+
 ```
 # My sites
 https://example.com
@@ -142,27 +143,27 @@ feedseeker example.com --insecure
 ### Basic Example
 
 ```javascript
-import FeedSeeker from "feedseeker";
+import FeedSeeker from 'feedseeker';
 
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 const feeds = await seeker.startSearch();
-console.log("Found feeds:", feeds);
+console.log('Found feeds:', feeds);
 ```
 
 ### Multi-Site Search
 
 ```javascript
-import { findAll } from "feedseeker";
+import { findAll } from 'feedseeker';
 
 // Search multiple sites in parallel (up to 5 at a time)
 const results = await findAll([
-  "https://example.com",
-  "https://blog.example.org",
-  "https://news.example.net",
+	'https://example.com',
+	'https://blog.example.org',
+	'https://news.example.net'
 ]);
 
 for (const [url, feeds] of results) {
-  console.log(`${url}: ${feeds.length} feeds`);
+	console.log(`${url}: ${feeds.length} feeds`);
 }
 ```
 
@@ -171,12 +172,12 @@ for (const [url, feeds] of results) {
 ### With Options
 
 ```javascript
-import FeedSeeker from "feedseeker";
+import FeedSeeker from 'feedseeker';
 
-const seeker = new FeedSeeker("https://blog.example.com", {
-  maxFeeds: 10,
-  timeout: 15,
-  keepQueryParams: true,
+const seeker = new FeedSeeker('https://blog.example.com', {
+	maxFeeds: 10,
+	timeout: 15,
+	keepQueryParams: true
 });
 
 await seeker.initialize();
@@ -186,7 +187,7 @@ const feeds = await seeker.metaLinks();
 ### Using Different Search Strategies
 
 ```javascript
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 await seeker.initialize();
 
 // Meta links (fastest, checks HTML <link> tags)
@@ -205,22 +206,22 @@ const deepFeeds = await seeker.deepSearch();
 ### Event Handling
 
 ```javascript
-const seeker = new FeedSeeker("https://example.com");
+const seeker = new FeedSeeker('https://example.com');
 
-seeker.on("start", (data) => {
-  console.log(`Starting ${data.niceName}`);
+seeker.on('start', (data) => {
+	console.log(`Starting ${data.niceName}`);
 });
 
-seeker.on("log", (data) => {
-  console.log(`Progress: ${data.module}`);
+seeker.on('log', (data) => {
+	console.log(`Progress: ${data.module}`);
 });
 
-seeker.on("end", (data) => {
-  console.log(`Found ${data.feeds.length} feeds`);
+seeker.on('end', (data) => {
+	console.log(`Found ${data.feeds.length} feeds`);
 });
 
-seeker.on("error", (data) => {
-  console.error(`Error: ${data.error}`);
+seeker.on('error', (data) => {
+	console.error(`Error: ${data.error}`);
 });
 ```
 
@@ -264,14 +265,14 @@ Recursively crawls the website to discover feeds:
 
 ## Options Reference
 
-| Option              | Type    | Default      | Description                                      |
-| ------------------- | ------- | ------------ | ------------------------------------------------ |
-| `maxFeeds`          | number  | `0`          | Maximum feeds to return (0 = unlimited)          |
-| `timeout`           | number  | `15`         | Request timeout in seconds                       |
-| `keepQueryParams`   | boolean | `false`      | Preserve query parameters in feed URLs           |
-| `checkForeignFeeds` | boolean | `false`      | Check if foreign domain URLs are feeds           |
-| `maxErrors`         | number  | `5`          | Stop after a certain number of errors            |
-| `insecure`          | boolean | `false`      | Disable TLS certificate verification             |
+| Option              | Type    | Default | Description                             |
+| ------------------- | ------- | ------- | --------------------------------------- |
+| `maxFeeds`          | number  | `0`     | Maximum feeds to return (0 = unlimited) |
+| `timeout`           | number  | `15`    | Request timeout in seconds              |
+| `keepQueryParams`   | boolean | `false` | Preserve query parameters in feed URLs  |
+| `checkForeignFeeds` | boolean | `false` | Check if foreign domain URLs are feeds  |
+| `maxErrors`         | number  | `5`     | Stop after a certain number of errors   |
+| `insecure`          | boolean | `false` | Disable TLS certificate verification    |
 
 ### Deep Search Options
 
@@ -287,10 +288,10 @@ Each discovered feed has the following structure:
 
 ```typescript
 interface Feed {
-  url: string;            // Feed URL
-  title: string | null;   // Page title (null if not found)
-  type: "rss" | "atom" | "json";  // Feed format
-  feedTitle: string | null;       // Title from feed content
+	url: string; // Feed URL
+	title: string | null; // Page title (null if not found)
+	type: 'rss' | 'atom' | 'json'; // Feed format
+	feedTitle: string | null; // Title from feed content
 }
 ```
 
@@ -299,23 +300,24 @@ interface Feed {
 FeedSeeker is written in TypeScript and includes full type definitions:
 
 ```typescript
-import FeedSeeker, { findAll, type FeedSeekerOptions, type Feed } from "feedseeker";
+import FeedSeeker, { findAll, type FeedSeekerOptions, type Feed } from 'feedseeker';
 
 const options: FeedSeekerOptions = {
-  maxFeeds: 5,
-  timeout: 10,
+	maxFeeds: 5,
+	timeout: 10
 };
 
-const seeker = new FeedSeeker("https://example.com", options);
+const seeker = new FeedSeeker('https://example.com', options);
 const feeds: Feed[] = await seeker.metaLinks();
 
 // Multi-site
-const results: Map<string, Feed[]> = await findAll(["https://example.com"], options);
+const results: Map<string, Feed[]> = await findAll(['https://example.com'], options);
 ```
 
 ## Changelog
 
 ### [1.1.0] — 2026-11-20
+
 - **feat**: Apple Podcasts URLs resolve to the podcast's RSS feed
 - **feat**: `--verbose` shows why candidate URLs were rejected
 - **feat**: bot-protection pages are detected and reported; optional TLS-fingerprint fallback
@@ -325,6 +327,7 @@ const results: Map<string, Feed[]> = await findAll(["https://example.com"], opti
 - includes the never-published 1.0.4 changes below
 
 ### [1.0.4] — 2026-06-13 (not published)
+
 - **feat**: `--file <path>` / `-f` batch mode — read URLs from a file and search each site
 - **feat**: `findAll(urls, options)` library API — parallel multi-site search returning `Map<url, Feed[]>`
 - **feat**: `--format opml` — export discovered feeds as OPML 2.0
@@ -333,21 +336,25 @@ const results: Map<string, Feed[]> = await findAll(["https://example.com"], opti
 - **chore**: updated dependencies (vite 8, undici 8, typescript 6)
 
 ### [1.0.3] — 2026-06-13
+
 - **feat**: deepSearch now seeds URLs from `sitemap.xml` before crawling
 - **fix**: www/non-www URL variants deduplicated correctly
 - **fix**: relative links resolved against current page URL
 
 ### [1.0.2] — 2026-06-04
+
 - **fix**: deepSearch no longer hangs when crawl stops early
 - **fix**: concurrent crawlers no longer fetch the same URL multiple times
 - **fix**: CLI `--all` mode shows human-readable output and final summary
 - **perf**: eliminated double-fetch per crawled link; O(1) feed deduplication
 
 ### [1.0.1] — 2026-03-15
+
 - Fixed `checkFeed` minimum timeout; aligned default to 15s across all callers
 - Switched to pnpm; renamed dist files to `feedseeker.*`
 
 ### [1.0.0] — 2026-01-09
+
 - Initial stable release
 
 → [Full changelog](https://github.com/Latz/feedseeker/blob/main/CHANGELOG.md)

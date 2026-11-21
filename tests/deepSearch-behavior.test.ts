@@ -23,20 +23,31 @@ function web(pages: Record<string, Page>) {
 		const page = pages[url] ?? 404;
 		if (page instanceof Error) throw page;
 		if (typeof page === 'number') {
-			return { ok: false, status: page, statusText: page === 404 ? 'Not Found' : 'Internal Server Error', text: async () => '' };
+			return {
+				ok: false,
+				status: page,
+				statusText: page === 404 ? 'Not Found' : 'Internal Server Error',
+				text: async () => ''
+			};
 		}
 		return { ok: true, status: 200, statusText: 'OK', text: async () => page };
 	});
 }
 
-const links = (...hrefs: string[]) => `<html><body>${hrefs.map((h) => `<a href="${h}">x</a>`).join('')}</body></html>`;
+const links = (...hrefs: string[]) =>
+	`<html><body>${hrefs.map((h) => `<a href="${h}">x</a>`).join('')}</body></html>`;
 const fetched = () => mockFetch.mock.calls.map((c) => c[0] as string);
-const pagesFetched = () => fetched().filter((u) => !u.endsWith('/robots.txt') && !u.endsWith('/sitemap.xml'));
+const pagesFetched = () =>
+	fetched().filter((u) => !u.endsWith('/robots.txt') && !u.endsWith('/sitemap.xml'));
 
 type Event = { event: string; data: any };
 function makeInstance(extra: Record<string, unknown> = {}) {
 	const events: Event[] = [];
-	const instance = { options: {}, emit: (event: string, data: unknown) => events.push({ event, data }), ...extra };
+	const instance = {
+		options: {},
+		emit: (event: string, data: unknown) => events.push({ event, data }),
+		...extra
+	};
 	return { instance: instance as any, events };
 }
 /** Let background crawl tasks that outlive deepSearch() run to completion. */
@@ -48,16 +59,55 @@ beforeEach(() => {
 	mockFetch.mockReset();
 	mockCheckFeed.mockReset();
 	mockCheckFeed.mockImplementation(async (url: string, html: string) =>
-		typeof html === 'string' && html.startsWith('FEED:') ? { type: 'rss', title: html.slice(5) } : null
+		typeof html === 'string' && html.startsWith('FEED:')
+			? { type: 'rss', title: html.slice(5) }
+			: null
 	);
 });
 
 describe('excludedFile', () => {
 	it.each([
-		'.zip', '.rar', '.7z', '.tar.gz', '.tar.bz2', '.tar.xz', '.tar', '.gz', '.bz2', '.xz', '.tgz',
-		'.epub', '.mobi', '.azw', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
-		'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg',
-		'.mp3', '.mp4', '.avi', '.mov', '.wmv', '.mpg', '.mpeg', '.flv', '.mkv', '.webm', '.ogg', '.ogv', '.ogx'
+		'.zip',
+		'.rar',
+		'.7z',
+		'.tar.gz',
+		'.tar.bz2',
+		'.tar.xz',
+		'.tar',
+		'.gz',
+		'.bz2',
+		'.xz',
+		'.tgz',
+		'.epub',
+		'.mobi',
+		'.azw',
+		'.pdf',
+		'.doc',
+		'.docx',
+		'.xls',
+		'.xlsx',
+		'.ppt',
+		'.pptx',
+		'.jpg',
+		'.jpeg',
+		'.png',
+		'.gif',
+		'.bmp',
+		'.tiff',
+		'.svg',
+		'.mp3',
+		'.mp4',
+		'.avi',
+		'.mov',
+		'.wmv',
+		'.mpg',
+		'.mpeg',
+		'.flv',
+		'.mkv',
+		'.webm',
+		'.ogg',
+		'.ogv',
+		'.ogx'
 	])('excludes %s files', (ext) => {
 		expect(excludedFile(`${A}/file${ext}`)).toBe(true);
 	});
@@ -108,7 +158,12 @@ describe('deepSearch — sitemap seeding', () => {
 	it('ignores the body of a failed robots.txt and falls back to /sitemap.xml', async () => {
 		mockFetch.mockImplementation(async (url: string) => {
 			if (url === `${A}/robots.txt`) {
-				return { ok: false, status: 404, statusText: 'Not Found', text: async () => 'Sitemap: https://a.com/x.xml' };
+				return {
+					ok: false,
+					status: 404,
+					statusText: 'Not Found',
+					text: async () => 'Sitemap: https://a.com/x.xml'
+				};
 			}
 			return { ok: false, status: 404, statusText: 'Not Found', text: async () => '' };
 		});
@@ -121,13 +176,19 @@ describe('deepSearch — sitemap seeding', () => {
 		web({});
 		await deepSearch(A, { depth: 1, timeout: 7, insecure: true });
 		expect(mockFetch.mock.calls.length).toBe(3);
-		for (const call of mockFetch.mock.calls) expect(call[1]).toEqual({ timeout: 7000, insecure: true });
+		for (const call of mockFetch.mock.calls)
+			expect(call[1]).toEqual({ timeout: 7000, insecure: true });
 	});
 
 	it('does not seed from a sitemap that returns an error status', async () => {
 		mockFetch.mockImplementation(async (url: string) => {
 			if (url === `${A}/sitemap.xml`) {
-				return { ok: false, status: 500, statusText: 'x', text: async () => '<loc>https://a.com/p</loc>' };
+				return {
+					ok: false,
+					status: 500,
+					statusText: 'x',
+					text: async () => '<loc>https://a.com/p</loc>'
+				};
 			}
 			return { ok: false, status: 404, statusText: 'Not Found', text: async () => '' };
 		});
@@ -174,10 +235,18 @@ describe('deepSearch — events', () => {
 		web({ [`${A}/`]: links() });
 		const { instance, events } = makeInstance();
 		await deepSearch(A, { depth: 1 }, instance);
-		expect(events[0]).toEqual({ event: 'start', data: { module: 'deepSearch', niceName: 'Deep Search' } });
+		expect(events[0]).toEqual({
+			event: 'start',
+			data: { module: 'deepSearch', niceName: 'Deep Search' }
+		});
 		expect(events).toContainEqual({
 			event: 'log',
-			data: { module: 'deepSearch', url: `${A}/`, depth: 0, progress: { processed: 1, remaining: 0 } }
+			data: {
+				module: 'deepSearch',
+				url: `${A}/`,
+				depth: 0,
+				progress: { processed: 1, remaining: 0 }
+			}
 		});
 	});
 
@@ -187,7 +256,12 @@ describe('deepSearch — events', () => {
 		await deepSearch(A, { depth: 1 }, instance);
 		expect(events).toContainEqual({
 			event: 'log',
-			data: { module: 'deepSearch', url: `${A}/broken`, depth: 1, error: 'HTTP 500 Internal Server Error' }
+			data: {
+				module: 'deepSearch',
+				url: `${A}/broken`,
+				depth: 1,
+				error: 'HTTP 500 Internal Server Error'
+			}
 		});
 	});
 
@@ -197,12 +271,22 @@ describe('deepSearch — events', () => {
 		await deepSearch(A, { depth: 1 }, instance);
 		expect(events).toContainEqual({
 			event: 'log',
-			data: { module: 'deepSearch', url: `${A}/`, depth: 0, error: 'Failed to fetch URL - timeout or network error' }
+			data: {
+				module: 'deepSearch',
+				url: `${A}/`,
+				depth: 0,
+				error: 'Failed to fetch URL - timeout or network error'
+			}
 		});
 	});
 
 	it('emits exactly one end event', async () => {
-		web({ [`${A}/`]: links('/f1', '/f2', '/f3'), [`${A}/f1`]: 'FEED:1', [`${A}/f2`]: 'FEED:2', [`${A}/f3`]: 'FEED:3' });
+		web({
+			[`${A}/`]: links('/f1', '/f2', '/f3'),
+			[`${A}/f1`]: 'FEED:1',
+			[`${A}/f2`]: 'FEED:2',
+			[`${A}/f3`]: 'FEED:3'
+		});
 		const { instance, events } = makeInstance();
 		await deepSearch(A, { depth: 1, maxFeeds: 1 }, instance);
 		expect(events.filter((e) => e.event === 'end')).toHaveLength(1);
@@ -233,7 +317,9 @@ describe('deepSearch — failed pages', () => {
 
 describe('deepSearch — maxErrors', () => {
 	const tenBroken = () => {
-		const pages: Record<string, Page> = { [`${A}/`]: links(...Array.from({ length: 10 }, (_, i) => `/b${i}`)) };
+		const pages: Record<string, Page> = {
+			[`${A}/`]: links(...Array.from({ length: 10 }, (_, i) => `/b${i}`))
+		};
 		for (let i = 0; i < 10; i++) pages[`${A}/b${i}`] = 500;
 		return pages;
 	};
@@ -299,7 +385,12 @@ describe('deepSearch — feeds', () => {
 		expect(feeds).toEqual([{ url: `${A}/f`, type: 'rss', title: 'My Feed', feedTitle: 'My Feed' }]);
 		expect(events).toContainEqual({
 			event: 'log',
-			data: { module: 'deepSearch', url: `${A}/f`, depth: 2, feedCheck: { isFeed: true, type: 'rss' } }
+			data: {
+				module: 'deepSearch',
+				url: `${A}/f`,
+				depth: 2,
+				feedCheck: { isFeed: true, type: 'rss' }
+			}
 		});
 	});
 
@@ -334,7 +425,9 @@ describe('deepSearch — feeds', () => {
 
 	it('stops crawling queued pages once maxFeeds is reached', async () => {
 		// concurrency 5: the first five links are in flight, the rest must be dropped
-		const pages: Record<string, Page> = { [`${A}/`]: links(...Array.from({ length: 10 }, (_, i) => `/f${i}`)) };
+		const pages: Record<string, Page> = {
+			[`${A}/`]: links(...Array.from({ length: 10 }, (_, i) => `/f${i}`))
+		};
 		for (let i = 0; i < 10; i++) pages[`${A}/f${i}`] = `FEED:${i}`;
 		web(pages);
 		await deepSearch(A, { depth: 1, maxFeeds: 1 });

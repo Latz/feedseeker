@@ -2,7 +2,11 @@ import { styleText } from 'node:util';
 import { type Feed } from '../modules/metaLinks.ts';
 
 export function escapeXml(s: string): string {
-	return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	return s
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;');
 }
 
 export function formatOpml(feeds: Feed[], siteUrl: string): string {
@@ -23,7 +27,7 @@ export function formatOpml(feeds: Feed[], siteUrl: string): string {
 		'<body>',
 		outlines,
 		'</body>',
-		'</opml>',
+		'</opml>'
 	].join('\n');
 }
 

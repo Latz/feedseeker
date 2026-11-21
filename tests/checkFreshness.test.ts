@@ -9,9 +9,24 @@ import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
 
 const instance: FeedSeekerInstance = { options: { timeout: 15 } };
 
-const rssFeed: Feed = { url: 'https://example.com/feed.xml', type: 'rss', title: null, feedTitle: null };
-const atomFeed: Feed = { url: 'https://example.com/atom.xml', type: 'atom', title: null, feedTitle: null };
-const jsonFeed: Feed = { url: 'https://example.com/feed.json', type: 'json', title: null, feedTitle: null };
+const rssFeed: Feed = {
+	url: 'https://example.com/feed.xml',
+	type: 'rss',
+	title: null,
+	feedTitle: null
+};
+const atomFeed: Feed = {
+	url: 'https://example.com/atom.xml',
+	type: 'atom',
+	title: null,
+	feedTitle: null
+};
+const jsonFeed: Feed = {
+	url: 'https://example.com/feed.json',
+	type: 'json',
+	title: null,
+	feedTitle: null
+};
 
 function daysAgo(n: number): Date {
 	return new Date(Date.now() - n * 86_400_000);
@@ -22,9 +37,16 @@ function rssContent(date: Date | string): string {
 	return `<rss version="2.0"><channel><item><pubDate>${d}</pubDate></item></channel></rss>`;
 }
 
-function atomContent(updated: Date | string | null, published: Date | string | null = null): string {
-	const u = updated ? `<updated>${typeof updated === 'string' ? updated : updated.toISOString()}</updated>` : '';
-	const p = published ? `<published>${typeof published === 'string' ? published : published.toISOString()}</published>` : '';
+function atomContent(
+	updated: Date | string | null,
+	published: Date | string | null = null
+): string {
+	const u = updated
+		? `<updated>${typeof updated === 'string' ? updated : updated.toISOString()}</updated>`
+		: '';
+	const p = published
+		? `<published>${typeof published === 'string' ? published : published.toISOString()}</published>`
+		: '';
 	return `<feed xmlns="http://www.w3.org/2005/Atom"><entry>${u}${p}</entry></feed>`;
 }
 
@@ -187,7 +209,11 @@ describe('checkFeedFreshness — reuses content from discovery', () => {
 			`<item><title>I</title><pubDate>${daysAgo(1).toUTCString()}</pubDate></item></channel></rss>`;
 		expect(await checkFeed(url, content)).not.toBeNull();
 
-		const fresh = await checkFeedFreshness({ url, type: 'rss', title: null, feedTitle: null }, 30, instance);
+		const fresh = await checkFeedFreshness(
+			{ url, type: 'rss', title: null, feedTitle: null },
+			30,
+			instance
+		);
 
 		expect(fresh).toBe(true);
 		expect(fetchWithTimeout).not.toHaveBeenCalled();

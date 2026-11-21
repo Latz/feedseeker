@@ -21,7 +21,7 @@ describe('checkFeed snapshot tests', () => {
 			'rss-stylestage.xml',
 			'rss-tt-rss.xml',
 			'rss-visualcapitalist.xml',
-			'rdf-mainichi.xml',
+			'rdf-mainichi.xml'
 		])('%s', async (file) => {
 			expect(await checkFeed(URL, load(file))).toMatchSnapshot();
 		});
@@ -38,7 +38,7 @@ describe('checkFeed snapshot tests', () => {
 			'atom-shkspr.xml',
 			'atom-rachelbythebay.xml',
 			'atom-geminiprotocol.xml',
-			'atom-pagedout.xml',
+			'atom-pagedout.xml'
 		])('%s', async (file) => {
 			expect(await checkFeed(URL, load(file))).toMatchSnapshot();
 		});
@@ -55,7 +55,7 @@ describe('checkFeed snapshot tests', () => {
 			'json-jimnielson.json',
 			'json-adactio.json',
 			'json-podnews.json',
-			'json-netnewswire.json',
+			'json-netnewswire.json'
 		])('%s', async (file) => {
 			expect(await checkFeed(URL, load(file))).toMatchSnapshot();
 		});

@@ -429,7 +429,10 @@ describe('blindSearch() module', () => {
 			return null;
 		});
 		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
-		const instance = new MockInstance('https://example.com/blog/', { searchMode: 'fast', all: true });
+		const instance = new MockInstance('https://example.com/blog/', {
+			searchMode: 'fast',
+			all: true
+		});
 		await blindSearch(instance);
 
 		expect(new Set(checkedUrls).size).toBe(checkedUrls.length); // no URL checked twice
@@ -538,7 +541,10 @@ describe('blindSearch() module', () => {
 			return null;
 		});
 		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
-		const instance = new MockInstance('https://example.com', { searchMode: 'fast', verbose: false });
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			verbose: false
+		});
 		await blindSearch(instance);
 		const verboseLogs = instance._events.filter(
 			(e) => e.event === 'log' && e.data?.module === 'blindsearch' && e.data?.url
@@ -622,14 +628,24 @@ describe('blindsearch module — endpoint getters', () => {
 	it('a slow candidate does not block the remaining candidates', async () => {
 		let release;
 		const slow = new Promise((resolve) => (release = resolve));
-		checkFeed.mockImplementation((url) => (url === 'https://example.com/feed' ? slow.then(() => null) : Promise.resolve(null)));
+		checkFeed.mockImplementation((url) =>
+			url === 'https://example.com/feed' ? slow.then(() => null) : Promise.resolve(null)
+		);
 		const { default: blindSearch } = await import('../modules/blindsearch/index.ts');
-		const instance = new MockInstance('https://example.com', { searchMode: 'fast', concurrency: 2 });
+		const instance = new MockInstance('https://example.com', {
+			searchMode: 'fast',
+			concurrency: 2
+		});
 		const done = blindSearch(instance);
 		const total = instance._events.find((e) => e.event === 'start').data.endpointUrls;
 		// Every other candidate gets processed while /feed is still pending.
 		const progress = () =>
-			Math.max(0, ...instance._events.filter((e) => e.data?.totalCount !== undefined).map((e) => e.data.totalCount));
+			Math.max(
+				0,
+				...instance._events
+					.filter((e) => e.data?.totalCount !== undefined)
+					.map((e) => e.data.totalCount)
+			);
 		await vi.waitFor(() => expect(progress()).toBe(total - 1), { timeout: 1000 });
 		release();
 		await done;

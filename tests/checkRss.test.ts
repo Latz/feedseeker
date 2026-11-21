@@ -6,12 +6,15 @@ const NO_ITEMS_REASON = 'content is a valid RSS feed but has no items yet';
 
 describe('checkRss — detection', () => {
 	it('accepts channel + description + item', () => {
-		const result = checkRss(rss('<channel><title>T</title><description>d</description><item></item></channel>'));
+		const result = checkRss(
+			rss('<channel><title>T</title><description>d</description><item></item></channel>')
+		);
 		expect(result).toEqual({ type: 'rss', title: 'T' });
 	});
 
 	it('rejects feed structure without an <rss version> or <rdf:RDF> root', () => {
-		const html = '<html><channel><title>T</title><description>d</description><item></item></channel></html>';
+		const html =
+			'<html><channel><title>T</title><description>d</description><item></item></channel></html>';
 		expect(checkRss(html)).toBeNull();
 	});
 
@@ -33,7 +36,9 @@ describe('checkRss — title extraction', () => {
 	});
 
 	it('falls back to the first <title> when </channel> is missing', () => {
-		const content = rss('<channel><title>Unclosed</title><description>d</description><item></item>');
+		const content = rss(
+			'<channel><title>Unclosed</title><description>d</description><item></item>'
+		);
 		expect(checkRss(content)).toEqual({ type: 'rss', title: 'Unclosed' });
 	});
 
@@ -46,12 +51,16 @@ describe('checkRss — title extraction', () => {
 describe('checkRss — onReject for empty channels', () => {
 	it('reports an empty but well-formed channel', () => {
 		const onReject = vi.fn();
-		expect(checkRss(rss('<channel><title>T</title><description>d</description></channel>'), onReject)).toBeNull();
+		expect(
+			checkRss(rss('<channel><title>T</title><description>d</description></channel>'), onReject)
+		).toBeNull();
 		expect(onReject).toHaveBeenCalledExactlyOnceWith(NO_ITEMS_REASON);
 	});
 
 	it('does not throw when no callback is given', () => {
-		expect(checkRss(rss('<channel><title>T</title><description>d</description></channel>'))).toBeNull();
+		expect(
+			checkRss(rss('<channel><title>T</title><description>d</description></channel>'))
+		).toBeNull();
 	});
 
 	it('stays silent when </channel> is missing', () => {

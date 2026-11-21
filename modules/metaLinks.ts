@@ -68,7 +68,8 @@ async function processLinksInBatches(
 		}
 
 		const batch = links.slice(i, i + batchSize);
-		await Promise.allSettled( // NOSONAR: sequential batches by design
+		await Promise.allSettled(
+			// NOSONAR: sequential batches by design
 			batch.map(async (link) => {
 				if (maxFeeds > 0 && feeds.length >= maxFeeds) return;
 				await processLink(link, instance, feeds, foundUrls);

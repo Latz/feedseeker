@@ -78,12 +78,7 @@ describe('metaLinks()', () => {
       <link type="application/rss+xml" href="/feed.xml">
     </head></html>`);
 		const result = await metaLinks(instance);
-		expect(checkFeed).toHaveBeenCalledWith(
-			'https://example.com/feed.xml',
-			'',
-			instance,
-			undefined
-		);
+		expect(checkFeed).toHaveBeenCalledWith('https://example.com/feed.xml', '', instance, undefined);
 		expect(result).toHaveLength(1);
 		expect(result[0]).toMatchObject({
 			url: 'https://example.com/feed.xml',
@@ -275,10 +270,15 @@ describe('metaLinks()', () => {
 		// 6 links with batchSize=5: batch 1 processes links 1-5, batch 2 (link 6) should
 		// short-circuit at the top of the loop instead of running any more checkFeed calls.
 		checkFeed.mockResolvedValue({ type: 'rss', title: 'Feed' });
-		const links = Array.from({ length: 6 }, (_, i) => `<link type="application/rss+xml" href="/feed${i + 1}.xml">`).join('\n');
+		const links = Array.from(
+			{ length: 6 },
+			(_, i) => `<link type="application/rss+xml" href="/feed${i + 1}.xml">`
+		).join('\n');
 		const instance = makeInstance(`<html><head>${links}</head></html>`, { maxFeeds: 1 });
 		await metaLinks(instance);
-		const callsForBatch2 = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed6.xml');
+		const callsForBatch2 = checkFeed.mock.calls.filter(
+			(c) => c[0] === 'https://example.com/feed6.xml'
+		);
 		expect(callsForBatch2).toHaveLength(0);
 	});
 
@@ -311,7 +311,9 @@ describe('metaLinks()', () => {
 		const result = await metaLinks(instance);
 		expect(result).toHaveLength(1);
 		expect(result[0].url).toBe('https://example.com/step2-feed.xml');
-		const callsForStep3 = checkFeed.mock.calls.filter((c) => c[0] === 'https://example.com/feed/step3-pattern.xml');
+		const callsForStep3 = checkFeed.mock.calls.filter(
+			(c) => c[0] === 'https://example.com/feed/step3-pattern.xml'
+		);
 		expect(callsForStep3).toHaveLength(0);
 	});
 
@@ -455,7 +457,9 @@ describe('metaLinks() — each URL checked once', () => {
 		checkFeed.mockResolvedValue(null);
 		// Matches phase 1 (type), phase 2 (rel+type) and phase 3 (href pattern); listed twice.
 		const tag = '<link rel="alternate" type="application/rss+xml" href="/comments/feed/">';
-		const instance = makeInstance(`<!DOCTYPE html><html><head>${tag}${tag}</head><body></body></html>`);
+		const instance = makeInstance(
+			`<!DOCTYPE html><html><head>${tag}${tag}</head><body></body></html>`
+		);
 		await metaLinks(instance);
 		expect(checkFeed).toHaveBeenCalledTimes(1);
 	});

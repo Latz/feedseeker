@@ -12,28 +12,31 @@ const TEST_URL = 'https://example.com/feed';
 // ---------------------------------------------------------------------------
 
 function rssArbitrary() {
-	return fc.record({
-		hasTitle: fc.boolean(),
-		titleText: fc.string({ minLength: 0, maxLength: 200 }),
-		hasCdata: fc.boolean(),
-		// min: 1 — a channel with zero <item> elements is now rejected as
-		// "valid feed, no items yet" rather than accepted; these tests are
-		// about title extraction/formatting for feeds that ARE accepted.
-		itemCount: fc.integer({ min: 1, max: 5 }),
-		version: fc.constantFrom('2.0', '1.0', '0.91', '2.0'),
-	}).map(({ hasTitle, titleText, hasCdata, itemCount, version }) => {
-		const escapedTitle = titleText.replace(/&/g, '&amp;').replace(/]]>/g, ']]&gt;');
-		const titleEl = hasTitle
-			? hasCdata
-				? `<title><![CDATA[${escapedTitle}]]></title>`
-				: `<title>${escapedTitle}</title>`
-			: '';
+	return fc
+		.record({
+			hasTitle: fc.boolean(),
+			titleText: fc.string({ minLength: 0, maxLength: 200 }),
+			hasCdata: fc.boolean(),
+			// min: 1 — a channel with zero <item> elements is now rejected as
+			// "valid feed, no items yet" rather than accepted; these tests are
+			// about title extraction/formatting for feeds that ARE accepted.
+			itemCount: fc.integer({ min: 1, max: 5 }),
+			version: fc.constantFrom('2.0', '1.0', '0.91', '2.0')
+		})
+		.map(({ hasTitle, titleText, hasCdata, itemCount, version }) => {
+			const escapedTitle = titleText.replace(/&/g, '&amp;').replace(/]]>/g, ']]&gt;');
+			const titleEl = hasTitle
+				? hasCdata
+					? `<title><![CDATA[${escapedTitle}]]></title>`
+					: `<title>${escapedTitle}</title>`
+				: '';
 
-		const items = Array.from({ length: itemCount }, (_, i) =>
-			`<item><title>Item ${i}</title><description>desc ${i}</description></item>`
-		).join('\n');
+			const items = Array.from(
+				{ length: itemCount },
+				(_, i) => `<item><title>Item ${i}</title><description>desc ${i}</description></item>`
+			).join('\n');
 
-		return `<?xml version="1.0" encoding="UTF-8"?>
+			return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="${version}">
 <channel>
 ${titleEl}
@@ -41,53 +44,57 @@ ${titleEl}
 ${items}
 </channel>
 </rss>`;
-	});
+		});
 }
 
 function atomArbitrary() {
-	return fc.record({
-		titleText: fc.string({ minLength: 0, maxLength: 200 }),
-		nsVariant: fc.integer({ min: 0, max: 2 }),
-	}).map(({ titleText, nsVariant }) => {
-		const escapedTitle = titleText.replace(/&/g, '&amp;');
-		const nsAttr = [
-			'xmlns="http://www.w3.org/2005/Atom"',
-			'xmlns:atom="http://www.w3.org/2005/Atom"',
-			'atom:base="http://www.w3.org/2005/Atom"',
-		][nsVariant];
+	return fc
+		.record({
+			titleText: fc.string({ minLength: 0, maxLength: 200 }),
+			nsVariant: fc.integer({ min: 0, max: 2 })
+		})
+		.map(({ titleText, nsVariant }) => {
+			const escapedTitle = titleText.replace(/&/g, '&amp;');
+			const nsAttr = [
+				'xmlns="http://www.w3.org/2005/Atom"',
+				'xmlns:atom="http://www.w3.org/2005/Atom"',
+				'atom:base="http://www.w3.org/2005/Atom"'
+			][nsVariant];
 
-		return `<?xml version="1.0" encoding="UTF-8"?>
+			return `<?xml version="1.0" encoding="UTF-8"?>
 <feed ${nsAttr}>
 <title>${escapedTitle}</title>
 <entry><title>An entry</title><id>urn:uuid:1</id></entry>
 </feed>`;
-	});
+		});
 }
 
 function jsonFeedArbitrary() {
-	return fc.record({
-		detectionMethod: fc.integer({ min: 0, max: 2 }),
-		titleValue: fc.option(
-			fc.oneof(
-				fc.string({ minLength: 0, maxLength: 200 }),
-				fc.integer(),
-				fc.boolean(),
-				fc.constant(null),
-				fc.constant([]),
-			),
-			{ nil: undefined }
-		),
-	}).map(({ detectionMethod, titleValue }) => {
-		const obj: Record<string, unknown> = {};
+	return fc
+		.record({
+			detectionMethod: fc.integer({ min: 0, max: 2 }),
+			titleValue: fc.option(
+				fc.oneof(
+					fc.string({ minLength: 0, maxLength: 200 }),
+					fc.integer(),
+					fc.boolean(),
+					fc.constant(null),
+					fc.constant([])
+				),
+				{ nil: undefined }
+			)
+		})
+		.map(({ detectionMethod, titleValue }) => {
+			const obj: Record<string, unknown> = {};
 
-		if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
-		if (detectionMethod === 1) obj.items = [{ id: '1' }];
-		if (detectionMethod === 2) obj.feed_url = 'https://example.com/feed.json';
+			if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
+			if (detectionMethod === 1) obj.items = [{ id: '1' }];
+			if (detectionMethod === 2) obj.feed_url = 'https://example.com/feed.json';
 
-		if (titleValue !== undefined) obj.title = titleValue;
+			if (titleValue !== undefined) obj.title = titleValue;
 
-		return JSON.stringify(obj);
-	});
+			return JSON.stringify(obj);
+		});
 }
 
 function nonFeedArbitrary() {
@@ -98,10 +105,12 @@ function nonFeedArbitrary() {
 		fc.constant('not json at all'),
 		fc.constant('hello world'),
 		// Random JSON objects without feed markers
-		fc.record({
-			name: fc.string({ minLength: 1, maxLength: 20 }),
-			value: fc.integer(),
-		}).map(obj => JSON.stringify(obj)),
+		fc
+			.record({
+				name: fc.string({ minLength: 1, maxLength: 20 }),
+				value: fc.integer()
+			})
+			.map((obj) => JSON.stringify(obj))
 	);
 }
 
@@ -126,9 +135,7 @@ describe('checkFeed property-based tests', () => {
 			await fc.assert(
 				fc.asyncProperty(rssArbitrary(), async (content) => {
 					const result = await checkFeed(TEST_URL, content);
-					expect(
-						result!.title === null || typeof result!.title === 'string'
-					).toBe(true);
+					expect(result!.title === null || typeof result!.title === 'string').toBe(true);
 				}),
 				{ numRuns: 200 }
 			);
@@ -137,20 +144,23 @@ describe('checkFeed property-based tests', () => {
 		it('RSS without title element returns null title', async () => {
 			// Generate RSS that never has a title element (min: 1 item — an
 			// empty channel is now rejected rather than accepted with a null title)
-			const noTitleRss = fc.record({
-				itemCount: fc.integer({ min: 1, max: 5 }),
-			}).map(({ itemCount }) => {
-				const items = Array.from({ length: itemCount }, (_, i) =>
-					`<item><description>desc ${i}</description></item>`
-				).join('\n');
-				return `<?xml version="1.0"?>
+			const noTitleRss = fc
+				.record({
+					itemCount: fc.integer({ min: 1, max: 5 })
+				})
+				.map(({ itemCount }) => {
+					const items = Array.from(
+						{ length: itemCount },
+						(_, i) => `<item><description>desc ${i}</description></item>`
+					).join('\n');
+					return `<?xml version="1.0"?>
 <rss version="2.0">
 <channel>
 <description>No title feed</description>
 ${items}
 </channel>
 </rss>`;
-			});
+				});
 
 			await fc.assert(
 				fc.asyncProperty(noTitleRss, async (content) => {
@@ -162,7 +172,7 @@ ${items}
 		});
 
 		it('CDATA is stripped from title', async () => {
-			const cdataRss = fc.string({ minLength: 0, maxLength: 200 }).map(text => {
+			const cdataRss = fc.string({ minLength: 0, maxLength: 200 }).map((text) => {
 				const safe = text.replace(/]]>/g, ']]&gt;');
 				return `<?xml version="1.0"?>
 <rss version="2.0">
@@ -216,9 +226,7 @@ ${items}
 			await fc.assert(
 				fc.asyncProperty(atomArbitrary(), async (content) => {
 					const result = await checkFeed(TEST_URL, content);
-					expect(
-						result!.title === null || typeof result!.title === 'string'
-					).toBe(true);
+					expect(result!.title === null || typeof result!.title === 'string').toBe(true);
 				}),
 				{ numRuns: 200 }
 			);
@@ -241,15 +249,17 @@ ${items}
 			// Only generate JSON feeds where title is a non-string primitive.
 			// items must be non-empty here: an empty items array with no version/feed_url
 			// signal is now rejected as "valid feed, no items yet" rather than accepted.
-			const nonStringTitleFeed = fc.record({
-				detectionMethod: fc.integer({ min: 0, max: 1 }),
-				title: fc.oneof(fc.integer(), fc.boolean(), fc.constant(null), fc.constant([])),
-			}).map(({ detectionMethod, title }) => {
-				const obj: Record<string, unknown> = { title };
-				if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
-				else obj.items = [{ id: '1' }];
-				return JSON.stringify(obj);
-			});
+			const nonStringTitleFeed = fc
+				.record({
+					detectionMethod: fc.integer({ min: 0, max: 1 }),
+					title: fc.oneof(fc.integer(), fc.boolean(), fc.constant(null), fc.constant([]))
+				})
+				.map(({ detectionMethod, title }) => {
+					const obj: Record<string, unknown> = { title };
+					if (detectionMethod === 0) obj.version = 'https://jsonfeed.org/version/1.1';
+					else obj.items = [{ id: '1' }];
+					return JSON.stringify(obj);
+				});
 
 			await fc.assert(
 				fc.asyncProperty(nonStringTitleFeed, async (content) => {

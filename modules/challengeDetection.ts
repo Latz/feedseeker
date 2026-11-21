@@ -13,7 +13,7 @@
 
 export const CHALLENGE_BODY_SIGNATURES = [
 	/id=["']challenge-error-text["']/i, // Cloudflare "Just a moment..." managed challenge
-	/Vercel Security Checkpoint/i,
+	/Vercel Security Checkpoint/i
 ];
 
 export function isChallengeResponse(response: Response, body: string): boolean {

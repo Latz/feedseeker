@@ -20,7 +20,10 @@ export default async function lookupApplePodcastFeed(
 	if (!id) return null;
 
 	try {
-		const res = await fetchWithTimeout(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`, options);
+		const res = await fetchWithTimeout(
+			`https://itunes.apple.com/lookup?id=${id}&entity=podcast`,
+			options
+		);
 		if (!res.ok) return null;
 		const data = (await res.json()) as { results?: { feedUrl?: string }[] };
 		return data.results?.[0]?.feedUrl ?? null;

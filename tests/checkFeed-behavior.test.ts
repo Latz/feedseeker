@@ -3,7 +3,10 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 vi.mock('../modules/fetchWithTimeout.ts', () => ({ default: vi.fn() }));
 
 import fetchWithTimeout from '../modules/fetchWithTimeout.ts';
-import checkFeed, { ChallengeResponseError, takeCachedFeedContent } from '../modules/checkFeed/index.ts';
+import checkFeed, {
+	ChallengeResponseError,
+	takeCachedFeedContent
+} from '../modules/checkFeed/index.ts';
 import { VALIDATION_LIMITS } from '../modules/checkFeed/validation.ts';
 
 const mockFetch = fetchWithTimeout as unknown as Mock;
@@ -52,19 +55,27 @@ beforeEach(() => mockFetch.mockReset());
 describe('checkFeed — oEmbed URLs', () => {
 	it('rejects oEmbed endpoints without fetching', async () => {
 		const onReject = vi.fn();
-		expect(await checkFeed('https://a.example/wp-json/oembed/1.0/embed', '', instance, onReject)).toBeNull();
+		expect(
+			await checkFeed('https://a.example/wp-json/oembed/1.0/embed', '', instance, onReject)
+		).toBeNull();
 		expect(mockFetch).not.toHaveBeenCalled();
-		expect(onReject).toHaveBeenCalledWith('URL matches a WordPress oEmbed endpoint pattern, not a feed');
+		expect(onReject).toHaveBeenCalledWith(
+			'URL matches a WordPress oEmbed endpoint pattern, not a feed'
+		);
 	});
 });
 
 describe('checkFeed — HTTP errors', () => {
 	it('throws ChallengeResponseError for a bot-mitigation challenge', async () => {
-		mockFetch.mockResolvedValue(new Response('', { status: 403, headers: { 'cf-mitigated': 'challenge' } }));
+		mockFetch.mockResolvedValue(
+			new Response('', { status: 403, headers: { 'cf-mitigated': 'challenge' } })
+		);
 		const err = await checkFeed(URL_, '', instance).catch((e: Error) => e);
 		expect(err).toBeInstanceOf(ChallengeResponseError);
 		expect((err as Error).name).toBe('ChallengeResponseError');
-		expect((err as Error).message).toBe(`Fetch of ${URL_} was blocked by a bot-mitigation challenge`);
+		expect((err as Error).message).toBe(
+			`Fetch of ${URL_} was blocked by a bot-mitigation challenge`
+		);
 	});
 
 	it('throws a plain error for other failures', async () => {
@@ -77,7 +88,9 @@ describe('checkFeed — HTTP errors', () => {
 
 describe('checkFeed — announced content length', () => {
 	it('rejects an oversized Content-Length without reading the body', async () => {
-		const { res, stats } = streamed([rss()], { headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE + 1) } });
+		const { res, stats } = streamed([rss()], {
+			headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE + 1) }
+		});
 		mockFetch.mockResolvedValue(res);
 		await expect(checkFeed(URL_, '', instance)).rejects.toThrow(
 			`Content too large: ${VALIDATION_LIMITS.MAX_CONTENT_SIZE + 1} bytes.`
@@ -87,14 +100,19 @@ describe('checkFeed — announced content length', () => {
 	});
 
 	it('accepts a Content-Length of exactly the limit', async () => {
-		const { res } = streamed([rss()], { headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE) } });
+		const { res } = streamed([rss()], {
+			headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE) }
+		});
 		mockFetch.mockResolvedValue(res);
 		expect(await checkFeed(URL_, '', instance)).toEqual({ type: 'rss', title: 'T' });
 	});
 
 	it('handles an oversized Content-Length on a response without a body', async () => {
 		mockFetch.mockResolvedValue(
-			new Response(null, { status: 200, headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE + 1) } })
+			new Response(null, {
+				status: 200,
+				headers: { 'content-length': String(VALIDATION_LIMITS.MAX_CONTENT_SIZE + 1) }
+			})
 		);
 		await expect(checkFeed(URL_, '', instance)).rejects.toThrow('Content too large');
 	});
@@ -150,7 +168,12 @@ describe('checkFeed — early HTML rejection', () => {
 	});
 
 	it('drains the rest of a normal-sized HTML page to keep the connection reusable', async () => {
-		const { res, stats } = streamed([html(3000), 'x'.repeat(1000), 'x'.repeat(1000), 'x'.repeat(1000)]);
+		const { res, stats } = streamed([
+			html(3000),
+			'x'.repeat(1000),
+			'x'.repeat(1000),
+			'x'.repeat(1000)
+		]);
 		mockFetch.mockResolvedValue(res);
 		expect(await checkFeed(URL_, '', instance)).toBeNull();
 		expect(stats.pulled).toBe(4);
@@ -160,7 +183,12 @@ describe('checkFeed — early HTML rejection', () => {
 	it('cancels an HTML page once more than 1 MB has been read', async () => {
 		// total reaches exactly 1 MB after chunk 2 (still drained), exceeds it with chunk 3
 		const first = html(2048);
-		const { res, stats } = streamed([first, 'x'.repeat(MB - first.length), 'x'.repeat(10), 'x'.repeat(10)]);
+		const { res, stats } = streamed([
+			first,
+			'x'.repeat(MB - first.length),
+			'x'.repeat(10),
+			'x'.repeat(10)
+		]);
 		mockFetch.mockResolvedValue(res);
 		expect(await checkFeed(URL_, '', instance)).toBeNull();
 		expect(stats.pulled).toBe(3);
@@ -170,11 +198,23 @@ describe('checkFeed — early HTML rejection', () => {
 	it.each([
 		['leading blank lines', '\n\n  <!DOCTYPE html>\n<html><body>x</body></html>'],
 		['bare <html> tag', '<html lang="de"><body>x</body></html>'],
-		['XHTML with XML declaration', '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html><body>x</body></html>'],
+		[
+			'XHTML with XML declaration',
+			'<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html><body>x</body></html>'
+		],
 		['declaration followed by blank lines', '<?xml version="1.0"?>\n\n<html><body>x</body></html>'],
-		['declaration directly followed by the doctype', '<?xml version="1.0"?><!DOCTYPE html><html></html>'],
-		['several comments before the doctype', '<!-- generated by X -->\n<!-- cache: hit -->\n<!DOCTYPE html><html></html>'],
-		['blank lines after a comment and a spaced doctype', '<!-- x -->\n\n<!DOCTYPE  html>\n<html></html>']
+		[
+			'declaration directly followed by the doctype',
+			'<?xml version="1.0"?><!DOCTYPE html><html></html>'
+		],
+		[
+			'several comments before the doctype',
+			'<!-- generated by X -->\n<!-- cache: hit -->\n<!DOCTYPE html><html></html>'
+		],
+		[
+			'blank lines after a comment and a spaced doctype',
+			'<!-- x -->\n\n<!DOCTYPE  html>\n<html></html>'
+		]
 	])('recognizes an HTML page starting with %s', async (_name, page) => {
 		const onReject = vi.fn();
 		mockFetch.mockResolvedValue(streamed([page]).res);
@@ -202,7 +242,11 @@ describe('checkFeed — result details', () => {
 		const res = new Response(rss(), { status: 200 });
 		Object.defineProperty(res, 'url', { value: 'https://a.example/feed/' });
 		mockFetch.mockResolvedValue(res);
-		expect(await checkFeed(URL_, '', instance)).toEqual({ type: 'rss', title: 'T', resolvedUrl: 'https://a.example/feed/' });
+		expect(await checkFeed(URL_, '', instance)).toEqual({
+			type: 'rss',
+			title: 'T',
+			resolvedUrl: 'https://a.example/feed/'
+		});
 	});
 
 	it('omits resolvedUrl when the response has no URL', async () => {
@@ -213,7 +257,9 @@ describe('checkFeed — result details', () => {
 	it('uses a generic reason for unrecognized content', async () => {
 		const onReject = vi.fn();
 		expect(await checkFeed(URL_, 'just text', undefined, onReject)).toBeNull();
-		expect(onReject).toHaveBeenCalledWith('content is not a recognized RSS, Atom, or JSON feed format');
+		expect(onReject).toHaveBeenCalledWith(
+			'content is not a recognized RSS, Atom, or JSON feed format'
+		);
 	});
 });
 

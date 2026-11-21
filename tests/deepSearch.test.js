@@ -356,7 +356,10 @@ describe('deepSearch — maxErrors circuit breaker', () => {
 		const result = await deepSearch('https://example.com', { depth: 1, maxErrors: 1 }, instance);
 		expect(result).toEqual([]);
 		const stopLog = instance._events.find(
-			(e) => e.event === 'log' && e.data?.message?.includes('Stopped due to') && e.data?.message?.includes('errors')
+			(e) =>
+				e.event === 'log' &&
+				e.data?.message?.includes('Stopped due to') &&
+				e.data?.message?.includes('errors')
 		);
 		expect(stopLog).toBeDefined();
 	});
@@ -369,7 +372,10 @@ describe('deepSearch — maxFeeds limit', () => {
 
 	it('emits maxFeeds log message and resolves when limit is reached', async () => {
 		// 10 linked feeds with concurrency 1 so the limit can actually halt progress
-		const links = Array.from({ length: 10 }, (_, i) => `<a href="https://example.com/feed${i}.xml">f${i}</a>`).join('');
+		const links = Array.from(
+			{ length: 10 },
+			(_, i) => `<a href="https://example.com/feed${i}.xml">f${i}</a>`
+		).join('');
 		const html = `<html><body>${links}</body></html>`;
 		fetchWithTimeout.mockResolvedValue(mockResponse(html));
 		checkFeed.mockImplementation(async (url) => {
@@ -378,7 +384,11 @@ describe('deepSearch — maxFeeds limit', () => {
 		});
 
 		const instance = makeInstance();
-		const result = await deepSearch('https://example.com', { depth: 2, maxFeeds: 2, concurrency: 1 }, instance);
+		const result = await deepSearch(
+			'https://example.com',
+			{ depth: 2, maxFeeds: 2, concurrency: 1 },
+			instance
+		);
 
 		// maxFeeds is a soft cap — in-flight tasks may still complete, but the log must fire
 		const maxFeedsLog = instance._events.find(
@@ -395,7 +405,8 @@ describe('deepSearch — fetchHtml instance cache', () => {
 	});
 
 	it('uses pre-fetched content from instance instead of fetching again', async () => {
-		const cachedHtml = '<rss version="2.0"><channel><title>Cached</title><description>d</description><item><title>i</title></item></channel></rss>';
+		const cachedHtml =
+			'<rss version="2.0"><channel><title>Cached</title><description>d</description><item><title>i</title></item></channel></rss>';
 		const instance = makeInstance();
 		instance.site = 'https://example.com';
 		instance.content = cachedHtml;
@@ -404,10 +415,7 @@ describe('deepSearch — fetchHtml instance cache', () => {
 		await deepSearch('https://example.com', { depth: 1 }, instance);
 
 		// fetchWithTimeout should not have been called because content was cached
-		expect(fetchWithTimeout).not.toHaveBeenCalledWith(
-			'https://example.com',
-			expect.anything()
-		);
+		expect(fetchWithTimeout).not.toHaveBeenCalledWith('https://example.com', expect.anything());
 	});
 });
 
@@ -473,7 +481,10 @@ describe('deepSearch — sitemap seeding', () => {
 		await deepSearch('https://example.com', { depth: 1, maxLinks: 10 }, instance);
 
 		const seededLog = instance._events.find(
-			(e) => e.event === 'log' && e.data?.message?.includes('Seeded') && e.data?.message?.includes('sitemap')
+			(e) =>
+				e.event === 'log' &&
+				e.data?.message?.includes('Seeded') &&
+				e.data?.message?.includes('sitemap')
 		);
 		expect(seededLog).toBeDefined();
 		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
@@ -583,7 +594,9 @@ describe('deepSearch — crawl gating (depth, dedup, foreign-domain)', () => {
 
 	it('emits max-links-reached log exactly once even when the cap is hit repeatedly', async () => {
 		fetchWithTimeout.mockResolvedValue(
-			mockResponse('<html><body><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></body></html>')
+			mockResponse(
+				'<html><body><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></body></html>'
+			)
 		);
 		checkFeed.mockResolvedValue(null);
 		const instance = makeInstance();
@@ -597,7 +610,9 @@ describe('deepSearch — crawl gating (depth, dedup, foreign-domain)', () => {
 	it('checks a foreign-domain link for feeds when foreignOnly and checkForeignFeeds are both true', async () => {
 		fetchWithTimeout.mockImplementation(async (url) => {
 			if (url === 'https://example.com/') {
-				return mockResponse('<html><body><a href="https://foreign.com/maybe-feed">f</a></body></html>');
+				return mockResponse(
+					'<html><body><a href="https://foreign.com/maybe-feed">f</a></body></html>'
+				);
 			}
 			return mockResponse('not a feed');
 		});

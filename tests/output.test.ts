@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vite
 import { escapeXml, formatOpml, printFeeds } from '../cli/output.ts';
 import { type Feed } from '../modules/metaLinks.ts';
 
-const feed = (url: string, type: Feed['type'], title: string | null = null, feedTitle: string | null = null): Feed => ({
+const feed = (
+	url: string,
+	type: Feed['type'],
+	title: string | null = null,
+	feedTitle: string | null = null
+): Feed => ({
 	url,
 	type,
 	title,
@@ -47,13 +52,19 @@ describe('formatOpml', () => {
 	});
 
 	it('escapes titles and the site in the head', () => {
-		const opml = formatOpml([feed('https://a.example/rss', 'rss', null, 'Tom & "Jerry" <3')], 'https://a.example/?a=1&b=2');
+		const opml = formatOpml(
+			[feed('https://a.example/rss', 'rss', null, 'Tom & "Jerry" <3')],
+			'https://a.example/?a=1&b=2'
+		);
 		expect(opml).toContain('<title>Feeds from https://a.example/?a=1&amp;b=2</title>');
 		expect(opml).toContain('text="Tom &amp; &quot;Jerry&quot; &lt;3"');
 	});
 
 	it('escapes the feed URL in xmlUrl', () => {
-		const opml = formatOpml([feed('https://a.example/?feed=rss2&lang=de', 'rss')], 'https://a.example');
+		const opml = formatOpml(
+			[feed('https://a.example/?feed=rss2&lang=de', 'rss')],
+			'https://a.example'
+		);
 		expect(opml).toContain('xmlUrl="https://a.example/?feed=rss2&amp;lang=de"');
 		expect(opml).not.toMatch(/&(?!amp;|lt;|gt;|quot;)/);
 	});
@@ -79,8 +90,12 @@ describe('printFeeds', () => {
 			feed('https://a.example/3', 'rss')
 		]);
 		expect(lines()).toEqual([
-			'Feed One', 'https://a.example/1', '',
-			'Link Two', 'https://a.example/2', '',
+			'Feed One',
+			'https://a.example/1',
+			'',
+			'Link Two',
+			'https://a.example/2',
+			'',
 			'https://a.example/3'
 		]);
 	});

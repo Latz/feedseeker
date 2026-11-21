@@ -49,6 +49,9 @@ describe('blindsearch/urlGeneration', () => {
 
 	it('appends the query string to each candidate with keepQueryParams', () => {
 		const urls = generateEndpointUrls('https://example.com/blog?lang=de', true, ['feed']);
-		expect(urls).toEqual(['https://example.com/blog/feed?lang=de', 'https://example.com/feed?lang=de']);
+		expect(urls).toEqual([
+			'https://example.com/blog/feed?lang=de',
+			'https://example.com/feed?lang=de'
+		]);
 	});
 });

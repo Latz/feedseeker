@@ -71,59 +71,61 @@ function makeLogHandler(ctx: CLIRunContext) {
 	return async function log(...args: unknown[]): Promise<void> {
 		if (ctx.quiet) return;
 		const data = args[0] as LogEventData;
-	if (data.module === 'metalinks') {
-		if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
-			process.stdout.write(`\n  ${data.url} — ${data.reason}`);
-			return;
-		}
-		process.stdout.write('.');
-	}
-	if (data.module === 'blindsearch' || data.module === 'anchors') {
-		if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
-			process.stdout.write(`\n  ${data.url} — ${data.reason}`);
-			return;
-		}
-		if ('message' in data && data.message) {
-			process.stdout.write(`\n  ${data.message}\n`);
-			return;
-		}
-		if ('totalCount' in data && 'totalEndpoints' in data) {
-			if (counterLength > 0) {
-				process.stdout.write(`\x1b[${counterLength}D`);
+		if (data.module === 'metalinks') {
+			if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
+				process.stdout.write(`\n  ${data.url} — ${data.reason}`);
+				return;
 			}
-			const counter = ` (${data.totalCount}/${data.totalEndpoints})`;
-			process.stdout.write(counter);
-			counterLength = counter.length;
+			process.stdout.write('.');
 		}
-	}
-	if (data.module === 'deepSearch') {
-		if ('message' in data) {
-			process.stdout.write(`  ${data.message}\n`);
-			return;
-		}
-		// Display deep search progress: [depth/processed+remaining] current-url
-		if ('url' in data && 'depth' in data && 'progress' in data) {
-			const progress = data.progress as Record<string, number>;
-			const processed = progress.processed || 0;
-			const remaining = progress.remaining || 0;
-			const total = processed + remaining;
-
-			// Extract domain from URL for cleaner display
-			try {
-				const urlObj = new URL(data.url as string);
-				const domain = urlObj.hostname;
-				const path =
-					urlObj.pathname.length > 30 ? urlObj.pathname.substring(0, 27) + '...' : urlObj.pathname;
-				const displayUrl = `${domain}${path}`;
-
-				// Log on a new line
-				process.stdout.write(`  [depth:${data.depth} ${processed}/${total}] ${displayUrl}\n`);
-			} catch {
-				// Fallback if URL parsing fails
-				process.stdout.write(`  [depth:${data.depth} ${processed}/${total}]\n`);
+		if (data.module === 'blindsearch' || data.module === 'anchors') {
+			if (ctx.verbose && 'url' in data && 'reason' in data && data.url && data.reason) {
+				process.stdout.write(`\n  ${data.url} — ${data.reason}`);
+				return;
+			}
+			if ('message' in data && data.message) {
+				process.stdout.write(`\n  ${data.message}\n`);
+				return;
+			}
+			if ('totalCount' in data && 'totalEndpoints' in data) {
+				if (counterLength > 0) {
+					process.stdout.write(`\x1b[${counterLength}D`);
+				}
+				const counter = ` (${data.totalCount}/${data.totalEndpoints})`;
+				process.stdout.write(counter);
+				counterLength = counter.length;
 			}
 		}
-	}
+		if (data.module === 'deepSearch') {
+			if ('message' in data) {
+				process.stdout.write(`  ${data.message}\n`);
+				return;
+			}
+			// Display deep search progress: [depth/processed+remaining] current-url
+			if ('url' in data && 'depth' in data && 'progress' in data) {
+				const progress = data.progress as Record<string, number>;
+				const processed = progress.processed || 0;
+				const remaining = progress.remaining || 0;
+				const total = processed + remaining;
+
+				// Extract domain from URL for cleaner display
+				try {
+					const urlObj = new URL(data.url as string);
+					const domain = urlObj.hostname;
+					const path =
+						urlObj.pathname.length > 30
+							? urlObj.pathname.substring(0, 27) + '...'
+							: urlObj.pathname;
+					const displayUrl = `${domain}${path}`;
+
+					// Log on a new line
+					process.stdout.write(`  [depth:${data.depth} ${processed}/${total}] ${displayUrl}\n`);
+				} catch {
+					// Fallback if URL parsing fails
+					process.stdout.write(`  [depth:${data.depth} ${processed}/${total}]\n`);
+				}
+			}
+		}
 	};
 }
 
@@ -373,10 +375,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 			'Search mode for blind search: fast (~25), standard (~100), or full (~350+)',
 			'standard'
 		)
-		.option(
-			'--verbose',
-			'Show every candidate URL checked and why non-feeds were rejected'
-		)
+		.option('--verbose', 'Show every candidate URL checked and why non-feeds were rejected')
 		.description('Find feeds for site\n')
 		.action(async (site: string, options: CLIOptions & { all?: boolean }) => {
 			if (!site && !options.file) {
@@ -393,7 +392,7 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 				const ctx: CLIRunContext = {
 					isAllMode: !!options.all,
 					quiet: machineOutput,
-					verbose: !!options.verbose,
+					verbose: !!options.verbose
 				};
 				program.ctx = ctx;
 
@@ -443,7 +442,9 @@ function createProgram(_argv?: string[]): ExtendedCommand {
 	// add hidden option '--display-errors' to program
 	program.addOption(new Option('--display-errors', 'Display errors').hideHelp());
 	// --json kept as hidden alias for --format json (backwards compat)
-	program.addOption(new Option('--json', 'Output feeds as JSON (alias for --format json)').hideHelp());
+	program.addOption(
+		new Option('--json', 'Output feeds as JSON (alias for --format json)').hideHelp()
+	);
 	program.addOption(
 		new Option('--insecure', 'Disable TLS certificate verification (like curl -k)').hideHelp()
 	);
@@ -472,7 +473,8 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 
 	const suppressBanner =
 		argv.includes('--json') ||
-		argv.includes('--quiet') || argv.includes('-q') ||
+		argv.includes('--quiet') ||
+		argv.includes('-q') ||
 		(argv.includes('--format') && argv[argv.indexOf('--format') + 1] !== 'text');
 	if (!suppressBanner) {
 		console.log(`${bannerText}\n`);
@@ -494,8 +496,7 @@ export async function run(argv: string[] = process.argv): Promise<void> {
 			);
 			program.feeds = program.feeds.filter(
 				(_, i) =>
-					checks[i].status === 'fulfilled' &&
-					(checks[i] as PromiseFulfilledResult<boolean>).value
+					checks[i].status === 'fulfilled' && (checks[i] as PromiseFulfilledResult<boolean>).value
 			);
 		}
 

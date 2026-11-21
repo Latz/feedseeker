@@ -361,7 +361,12 @@ describe('initialize()', () => {
 	describe('http:// to https:// fallback', () => {
 		it('retries https:// when an explicit http:// site returns a non-OK response, and switches site to it on success', async () => {
 			(fetchWithTimeout as Mock)
-				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' })
+				.mockResolvedValueOnce({
+					ok: false,
+					status: 404,
+					statusText: 'Not Found',
+					text: async () => ''
+				})
 				.mockResolvedValueOnce(
 					mockOkResponse('<html><head><title>Real site</title></head><body></body></html>')
 				);
@@ -371,11 +376,7 @@ describe('initialize()', () => {
 
 			expect(fetchWithTimeout).toHaveBeenCalledTimes(2);
 			expect(fetchWithTimeout).toHaveBeenNthCalledWith(1, 'http://example.com', expect.anything());
-			expect(fetchWithTimeout).toHaveBeenNthCalledWith(
-				2,
-				'https://example.com',
-				expect.anything()
-			);
+			expect(fetchWithTimeout).toHaveBeenNthCalledWith(2, 'https://example.com', expect.anything());
 			expect(fs.site).toBe('https://example.com');
 			expect(fs.content).toContain('<title>Real site</title>');
 			expect(fs.getInitStatus()).toBe('success');
@@ -399,8 +400,18 @@ describe('initialize()', () => {
 
 		it('preserves existing non-OK behavior when the https:// retry also fails', async () => {
 			(fetchWithTimeout as Mock)
-				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' })
-				.mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', text: async () => '' });
+				.mockResolvedValueOnce({
+					ok: false,
+					status: 404,
+					statusText: 'Not Found',
+					text: async () => ''
+				})
+				.mockResolvedValueOnce({
+					ok: false,
+					status: 404,
+					statusText: 'Not Found',
+					text: async () => ''
+				});
 
 			const fs = new FeedSeeker('http://example.com');
 			await fs.initialize();
@@ -442,7 +453,8 @@ describe('initialize()', () => {
 	describe('syncing site to the final URL after a redirect', () => {
 		it.each([
 			{
-				description: 'updates site to response.url when the initial fetch was redirected to a different origin',
+				description:
+					'updates site to response.url when the initial fetch was redirected to a different origin',
 				inputSite: 'https://blog.golang.org',
 				responseUrl: 'https://go.dev/',
 				// Root-path trailing slash normalization applies to the redirect
@@ -589,7 +601,10 @@ describe('startSearch()', () => {
 		(deepSearchMod as Mock).mockResolvedValue([{ url: 'https://example.com/deep', type: 'rss' }]);
 		const fs = new FeedSeeker('https://example.com', { maxFeeds: 2, all: true, deepsearch: true });
 		const result = await fs.startSearch();
-		expect(result.map((f) => f.url)).toEqual(['https://example.com/rss1', 'https://example.com/atom']);
+		expect(result.map((f) => f.url)).toEqual([
+			'https://example.com/rss1',
+			'https://example.com/atom'
+		]);
 	});
 
 	it('with deepsearchOnly:true only runs deepSearch', async () => {

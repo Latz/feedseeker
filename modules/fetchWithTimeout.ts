@@ -48,9 +48,11 @@ export interface FetchWithTimeoutOptions extends RequestInit {
  * Normalizes the legacy `fetchWithTimeout(url, timeoutMs)` and current
  * `fetchWithTimeout(url, options)` call shapes into a single resolved form.
  */
-function resolveFetchOptions(
-	optionsOrTimeout: number | FetchWithTimeoutOptions
-): { timeout: number; insecure: boolean; fetchOptions: RequestInit } {
+function resolveFetchOptions(optionsOrTimeout: number | FetchWithTimeoutOptions): {
+	timeout: number;
+	insecure: boolean;
+	fetchOptions: RequestInit;
+} {
 	if (typeof optionsOrTimeout === 'number') {
 		return { timeout: optionsOrTimeout, insecure: false, fetchOptions: {} };
 	}

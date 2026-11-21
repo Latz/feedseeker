@@ -31,7 +31,7 @@ export type {
 	AnchorsLogData,
 	BlindSearchLogData,
 	DeepSearchLogData,
-	EventEmitter as EventEmitterInterface,
+	EventEmitter as EventEmitterInterface
 } from './types/events.ts';
 
 /**
@@ -285,13 +285,19 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 * Apple Podcasts page whose feed can be resolved via the iTunes API.
 	 * @private
 	 */
-	private async detectSelfFeed(
-		fetchOptions: { timeout: number; insecure?: boolean }
-	): Promise<void> {
+	private async detectSelfFeed(fetchOptions: {
+		timeout: number;
+		insecure?: boolean;
+	}): Promise<void> {
 		// An empty body can't be a feed, and checkFeed treats '' as "fetch it yourself".
 		const feedResult = this.content ? await checkFeed(this.site, this.content) : null;
 		if (feedResult) {
-			this.selfFeed = { url: this.site, title: null, type: feedResult.type, feedTitle: feedResult.title };
+			this.selfFeed = {
+				url: this.site,
+				title: null,
+				type: feedResult.type,
+				feedTitle: feedResult.title
+			};
 			return;
 		}
 
@@ -299,7 +305,12 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 		const appleFeed = await lookupApplePodcastFeed(this.site, fetchOptions);
 		const appleResult = appleFeed ? await checkFeed(appleFeed, '', this) : null;
 		if (appleFeed && appleResult) {
-			this.selfFeed = { url: appleFeed, title: null, type: appleResult.type, feedTitle: appleResult.title };
+			this.selfFeed = {
+				url: appleFeed,
+				title: null,
+				type: appleResult.type,
+				feedTitle: appleResult.title
+			};
 		}
 	}
 
@@ -310,9 +321,10 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 * https but leave plain HTTP misconfigured.
 	 * @private
 	 */
-	private async fetchSiteOrHttpsFallback(
-		fetchOptions: { timeout: number; insecure?: boolean }
-	): Promise<Response> {
+	private async fetchSiteOrHttpsFallback(fetchOptions: {
+		timeout: number;
+		insecure?: boolean;
+	}): Promise<Response> {
 		try {
 			return await fetchWithTimeout(this.site, fetchOptions);
 		} catch (error: unknown) {
@@ -381,9 +393,10 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 	 * itself failed/threw.
 	 * @private
 	 */
-	private async tryHttpsFallback(
-		fetchOptions: { timeout: number; insecure?: boolean }
-	): Promise<Response | null> {
+	private async tryHttpsFallback(fetchOptions: {
+		timeout: number;
+		insecure?: boolean;
+	}): Promise<Response | null> {
 		if (!this.site.startsWith('http://')) return null;
 
 		const httpsSite = `https://${this.site.slice('http://'.length)}`;

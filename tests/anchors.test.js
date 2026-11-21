@@ -374,7 +374,9 @@ describe('checkAllAnchors() — concurrency', () => {
 	it('a slow link does not block the remaining links', async () => {
 		let release;
 		const slow = new Promise((resolve) => (release = resolve));
-		checkFeed.mockImplementation((url) => (url.endsWith('/a0') ? slow.then(() => null) : Promise.resolve(null)));
+		checkFeed.mockImplementation((url) =>
+			url.endsWith('/a0') ? slow.then(() => null) : Promise.resolve(null)
+		);
 		const links = Array.from({ length: 10 }, (_, i) => `<a href="/a${i}">x</a>`).join('');
 		const instance = makeInstance(`<html><body>${links}</body></html>`, { concurrency: 2 });
 		const done = checkAllAnchors(instance);

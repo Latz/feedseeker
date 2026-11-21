@@ -23,9 +23,9 @@ describe('challengeDetection', () => {
 				status: 405,
 				headers: { 'x-amzn-waf-action': 'captcha' }
 			});
-			expect(isChallengeResponse(response, '<html><body>Human verification required</body></html>')).toBe(
-				true
-			);
+			expect(
+				isChallengeResponse(response, '<html><body>Human verification required</body></html>')
+			).toBe(true);
 		});
 
 		it('returns false for an ordinary non-OK response', () => {
@@ -40,7 +40,9 @@ describe('challengeDetection', () => {
 
 		it('does not throw and returns false for a response without a headers object at all', () => {
 			const response = { status: 500 } as unknown as Response;
-			expect(() => isChallengeResponse(response, '<html><body>Server error</body></html>')).not.toThrow();
+			expect(() =>
+				isChallengeResponse(response, '<html><body>Server error</body></html>')
+			).not.toThrow();
 			expect(isChallengeResponse(response, '<html><body>Server error</body></html>')).toBe(false);
 		});
 	});

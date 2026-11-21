@@ -7,7 +7,10 @@ vi.mock('../modules/anchors/index.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/blindsearch/index.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/deepSearch.ts', () => ({ default: vi.fn() }));
 vi.mock('../modules/checkFreshness.ts', () => ({ checkFeedFreshness: vi.fn() }));
-vi.mock('../modules/fetchWithTimeout.ts', () => ({ default: vi.fn(), setTlsSpoofEnabled: vi.fn() }));
+vi.mock('../modules/fetchWithTimeout.ts', () => ({
+	default: vi.fn(),
+	setTlsSpoofEnabled: vi.fn()
+}));
 
 import metaLinksMod from '../modules/metaLinks.ts';
 import anchorsMod from '../modules/anchors/index.ts';
@@ -65,7 +68,9 @@ beforeEach(() => {
 	error = vi.spyOn(console, 'error').mockImplementation(() => {}) as unknown as Mock;
 	exit = vi.spyOn(process, 'exit').mockImplementation((() => {}) as () => never) as unknown as Mock;
 	// a fresh Response per call: a body can only be read once
-	(fetchWithTimeout as Mock).mockImplementation(async () => new Response('<html></html>', { status: 200 }));
+	(fetchWithTimeout as Mock).mockImplementation(
+		async () => new Response('<html></html>', { status: 200 })
+	);
 	for (const m of [meta, anchors, blind, deep]) m.mockResolvedValue([]);
 });
 afterEach(() => vi.restoreAllMocks());
@@ -175,14 +180,22 @@ describe('CLI progress output — deep search', () => {
 	};
 
 	it('prints messages', async () => {
-		expect(await deepRun([['log', { module: 'deepSearch', message: 'Seeded 3 URLs from sitemap.' }]])).toBe(
-			'  Seeded 3 URLs from sitemap.\n'
-		);
+		expect(
+			await deepRun([['log', { module: 'deepSearch', message: 'Seeded 3 URLs from sitemap.' }]])
+		).toBe('  Seeded 3 URLs from sitemap.\n');
 	});
 
 	it('prints crawl progress with host and path', async () => {
 		const o = await deepRun([
-			['log', { module: 'deepSearch', url: `${SITE}/blog`, depth: 1, progress: { processed: 2, remaining: 3 } }]
+			[
+				'log',
+				{
+					module: 'deepSearch',
+					url: `${SITE}/blog`,
+					depth: 1,
+					progress: { processed: 2, remaining: 3 }
+				}
+			]
 		]);
 		expect(o).toBe('  [depth:1 2/5] example.com/blog\n');
 	});
@@ -191,8 +204,24 @@ describe('CLI progress output — deep search', () => {
 		const long = '/' + 'a'.repeat(30); // 31 chars
 		const exact = '/' + 'b'.repeat(29); // 30 chars, kept
 		const o = await deepRun([
-			['log', { module: 'deepSearch', url: `${SITE}${long}`, depth: 1, progress: { processed: 1, remaining: 0 } }],
-			['log', { module: 'deepSearch', url: `${SITE}${exact}`, depth: 1, progress: { processed: 1, remaining: 0 } }]
+			[
+				'log',
+				{
+					module: 'deepSearch',
+					url: `${SITE}${long}`,
+					depth: 1,
+					progress: { processed: 1, remaining: 0 }
+				}
+			],
+			[
+				'log',
+				{
+					module: 'deepSearch',
+					url: `${SITE}${exact}`,
+					depth: 1,
+					progress: { processed: 1, remaining: 0 }
+				}
+			]
 		]);
 		expect(o).toBe(
 			`  [depth:1 1/1] example.com${long.slice(0, 27)}...\n  [depth:1 1/1] example.com${exact}\n`
@@ -200,7 +229,9 @@ describe('CLI progress output — deep search', () => {
 	});
 
 	it('treats missing progress numbers as 0 and survives unparsable URLs', async () => {
-		const o = await deepRun([['log', { module: 'deepSearch', url: 'not a url', depth: 2, progress: {} }]]);
+		const o = await deepRun([
+			['log', { module: 'deepSearch', url: 'not a url', depth: 2, progress: {} }]
+		]);
 		expect(o).toBe('  [depth:2 0/0]\n');
 	});
 
@@ -220,16 +251,27 @@ describe('CLI --all mode', () => {
 	it('prints per-strategy results and a deduplicated summary', async () => {
 		emitting(meta, [['end', { module: 'metalinks', feeds: [feed('/a', 'A')] }]], [feed('/a', 'A')]);
 		emitting(anchors, [['end', { module: 'anchors', feeds: [] }]]);
-		emitting(blind, [['end', { module: 'blindsearch', feeds: [feed('/a', 'A'), feed('/b')] }]], [feed('/a', 'A'), feed('/b')]);
+		emitting(
+			blind,
+			[['end', { module: 'blindsearch', feeds: [feed('/a', 'A'), feed('/b')] }]],
+			[feed('/a', 'A'), feed('/b')]
+		);
 		await cli(SITE, '--all');
 		expect(out()).toBe(' Found 1 feeds.\n No feeds found.\n Found 2 feeds.\n');
 		// printFeeds from the end handlers, then the final summary
 		expect(logged().slice(1)).toEqual([
-			'A', `${SITE}/a`,
-			'A', `${SITE}/a`, '', `${SITE}/b`,
+			'A',
+			`${SITE}/a`,
+			'A',
+			`${SITE}/a`,
+			'',
+			`${SITE}/b`,
 			'\n=== All Strategies Complete ===',
 			'Total unique feeds found: 2\n',
-			'A', `${SITE}/a`, '', `${SITE}/b`
+			'A',
+			`${SITE}/a`,
+			'',
+			`${SITE}/b`
 		]);
 		expect(deep).toHaveBeenCalled();
 	});
@@ -293,7 +335,10 @@ describe('CLI error events', () => {
 		await cli(SITE, '--metasearch');
 		emitError('plain');
 		await cli(SITE, '--metasearch');
-		expect(errors()).toEqual([`\nError for ${SITE}: [object Object]`, `\nError for ${SITE}: plain`]);
+		expect(errors()).toEqual([
+			`\nError for ${SITE}: [object Object]`,
+			`\nError for ${SITE}: plain`
+		]);
 	});
 
 	it('keeps JSON output clean unless --display-errors is set', async () => {
@@ -327,14 +372,34 @@ describe('CLI option parsing', () => {
 	});
 
 	it('passes valid numeric options through, including the boundary values', async () => {
-		await cli(SITE, '--deepsearch-only', '--depth', '1', '--max-links', '1', '--timeout', '1', '--max-errors', '0', '--max-feeds', '0');
+		await cli(
+			SITE,
+			'--deepsearch-only',
+			'--depth',
+			'1',
+			'--max-links',
+			'1',
+			'--timeout',
+			'1',
+			'--max-errors',
+			'0',
+			'--max-feeds',
+			'0'
+		);
 		const options = deep.mock.calls[0][1];
 		expect(options).toMatchObject({ depth: 1, maxLinks: 1, timeout: 1, maxErrors: 0, maxFeeds: 0 });
 	});
 
 	it('uses the documented defaults', async () => {
 		await cli(SITE, '--deepsearch-only');
-		expect(deep.mock.calls[0][1]).toMatchObject({ depth: 3, maxLinks: 1000, timeout: 15, maxErrors: 5, maxFeeds: 0, searchMode: 'standard' });
+		expect(deep.mock.calls[0][1]).toMatchObject({
+			depth: 3,
+			maxLinks: 1000,
+			timeout: 15,
+			maxErrors: 5,
+			maxFeeds: 0,
+			searchMode: 'standard'
+		});
 	});
 
 	it('--display-errors and --verbose turn on module error output', async () => {
@@ -375,7 +440,9 @@ describe('CLI --check', () => {
 
 	it('keeps only fresh feeds and passes timeout/insecure', async () => {
 		await cli(SITE, '--metasearch', '-q', '-c', '--timeout', '9', '--insecure');
-		expect((checkFeedFreshness as Mock).mock.calls[0][2]).toEqual({ options: { timeout: 9, insecure: true } });
+		expect((checkFeedFreshness as Mock).mock.calls[0][2]).toEqual({
+			options: { timeout: 9, insecure: true }
+		});
 		expect(logged()).toEqual([`${SITE}/fresh`]);
 	});
 });

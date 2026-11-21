@@ -214,21 +214,29 @@ class Crawler extends EventEmitter {
 		const origin = new URL(this.startUrl).origin;
 		let sitemapUrl = `${origin}/sitemap.xml`;
 		try {
-			const robots = await fetchWithTimeout(`${origin}/robots.txt`, { timeout: this.timeout, insecure: this.insecure });
+			const robots = await fetchWithTimeout(`${origin}/robots.txt`, {
+				timeout: this.timeout,
+				insecure: this.insecure
+			});
 			if (robots?.ok) {
 				const text = await robots.text();
 				const match = /^Sitemap:\s*(\S+)/im.exec(text);
 				if (match) sitemapUrl = match[1];
 			}
-		} catch { /* ignore, fall back to default sitemap URL */ }
+		} catch {
+			/* ignore, fall back to default sitemap URL */
+		}
 
 		try {
-			const res = await fetchWithTimeout(sitemapUrl, { timeout: this.timeout, insecure: this.insecure });
+			const res = await fetchWithTimeout(sitemapUrl, {
+				timeout: this.timeout,
+				insecure: this.insecure
+			});
 			if (!res?.ok) return [];
 			const xml = await res.text();
 			return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
-				.map(m => this.normalizeUrl(m[1].trim()))
-				.filter(u => this.isValidUrl(u));
+				.map((m) => this.normalizeUrl(m[1].trim()))
+				.filter((u) => this.isValidUrl(u));
 		} catch {
 			return [];
 		}
@@ -252,7 +260,10 @@ class Crawler extends EventEmitter {
 		this.emit('start', { module: 'deepSearch', niceName: 'Deep Search' });
 
 		if (newFromSitemap.length > 0) {
-			this.emit('log', { module: 'deepSearch', message: `Seeded ${newFromSitemap.length} URLs from sitemap.` });
+			this.emit('log', {
+				module: 'deepSearch',
+				message: `Seeded ${newFromSitemap.length} URLs from sitemap.`
+			});
 		}
 
 		void this.queue.push({ url: this.startUrl, depth: 0 });
@@ -368,7 +379,10 @@ class Crawler extends EventEmitter {
 		) {
 			return this.instance.content;
 		}
-		const response = await fetchWithTimeout(url, { timeout: this.timeout, insecure: this.insecure });
+		const response = await fetchWithTimeout(url, {
+			timeout: this.timeout,
+			insecure: this.insecure
+		});
 		if (!response) {
 			this.handleFetchError(url, depth, 'Failed to fetch URL - timeout or network error');
 			return null;
