@@ -40,6 +40,8 @@ const HOST_COOLDOWN_MS = 10_000;
 // Some hosts (e.g. S3/CloudFront) answer every missing path with 403. After this
 // many 403s in a row that survived retries, retrying that host is pointless.
 const FUTILE_403_STREAK_LIMIT = 3;
+// x-ratelimit-reset values above this are Unix timestamps (2001-09-09), not a delay in seconds
+const UNIX_TIMESTAMP_THRESHOLD = 1_000_000_000;
 
 interface HostState {
 	active: number;
@@ -100,16 +102,22 @@ function currentLimit(state: HostState): number {
  * Parses standard rate-limit response headers (x-ratelimit-remaining /
  * x-ratelimit-reset, as used by Reddit, GitHub, and others) and returns the
  * number of milliseconds to wait before the next request to this host, or
- * null if the headers are absent, malformed, or don't indicate exhaustion.
+ * null if either header is absent, malformed, or they don't indicate
+ * exhaustion. The reset may be seconds until reset or a Unix timestamp.
  */
 function getRateLimitWaitMs(response: Response): number | null {
-	const remaining = Number(response.headers?.get('x-ratelimit-remaining'));
-	const resetSeconds = Number(response.headers?.get('x-ratelimit-reset'));
+	const remainingHeader = response.headers?.get('x-ratelimit-remaining');
+	const resetHeader = response.headers?.get('x-ratelimit-reset');
+	// Both are required: Number(null) is 0, which would read as "quota exhausted"
+	if (!remainingHeader || !resetHeader) return null;
+	const remaining = Number(remainingHeader);
+	const reset = Number(resetHeader);
 
-	if (!Number.isFinite(remaining) || !Number.isFinite(resetSeconds)) return null;
-	if (remaining > 0 || resetSeconds <= 0) return null;
+	if (!Number.isFinite(remaining) || !Number.isFinite(reset) || remaining > 0) return null;
 
-	return resetSeconds * 1000;
+	// Reddit sends seconds until the reset, GitHub and others a Unix timestamp
+	const waitMs = reset > UNIX_TIMESTAMP_THRESHOLD ? reset * 1000 - Date.now() : reset * 1000;
+	return waitMs > 0 ? waitMs : null;
 }
 
 /**
