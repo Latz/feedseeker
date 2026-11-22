@@ -1,64 +1,51 @@
 /**
  * @fileoverview Pre-compiled regex patterns for RSS/Atom/JSON feed detection and processing.
  * Compiling once at module load time avoids creating new RegExp objects on every checkFeed call.
+ *
+ * Tag patterns only match the start of a tag; textUtils' openTags/elementText find the
+ * rest. A full /<tag[^>]*>/ or /<tag>([\s\S]*?)<\/tag>/ would backtrack quadratically on
+ * hostile pages full of unclosed tags.
  */
 
 export const FEED_PATTERNS = {
-	// CDATA processing - matches XML CDATA sections: <![CDATA[content]]>
-	// Used to extract clean text content from feeds that wrap content in CDATA.
-	// [\s\S] rather than . so indented, multi-line CDATA titles are unwrapped too.
-	CDATA: /<!\[CDATA\[([\s\S]*?)\]\]>/g,
-
 	// RSS feed detection patterns
 	RSS: {
-		// Matches RSS root element with version attribute: <rss version="2.0">
-		// [^>]* matches any attributes before version, \s+ ensures whitespace before version
-		VERSION: /<rss\s[^>]*version\s*=\s*["'][\d.]+["']/i,
+		// <rss …> root element; VERSION is then checked within that tag
+		ROOT: /<rss\s/i,
+		VERSION: /version\s*=\s*["'][\d.]+["']/i,
 
-		// Matches RSS 1.0's RDF root element: <rdf:RDF ...>. RSS 1.0 feeds have no
+		// RSS 1.0's RDF root element: <rdf:RDF ...>. RSS 1.0 feeds have no
 		// <rss version="..."> tag at all, so they need a separate root-element check.
-		RDF_ROOT: /<rdf:RDF[^>]*>/i,
+		RDF_ROOT: /<rdf:RDF/i,
 
-		// Matches RSS channel opening tag (required container for RSS content)
-		CHANNEL: /<channel[^>]*>/i,
-
-		// Matches RSS item opening tag (individual feed entries)
-		ITEM: /<item[^>]*>/i,
-
-		// Matches RSS description opening tag (content description)
-		DESCRIPTION: /<description[^>]*>/i,
+		// RSS channel (required container for RSS content), items and description;
+		// prefix matches like the former /<item[^>]*>/ (so <items> counts too)
+		CHANNEL: /<channel/i,
+		ITEM: /<item/i,
+		DESCRIPTION: /<description/i,
 
 		// Matches RSS channel closing tag
 		CHANNEL_END: /<\/channel>/i,
 
-		// Captures entire channel content between opening and closing tags
-		// [\s\S]*? uses non-greedy matching to capture everything including newlines
-		// [^>]* tolerates attributes on <channel>, e.g. RSS 1.0's <channel rdf:about="...">
-		CHANNEL_CONTENT: /<channel[^>]*>([\s\S]*?)<\/channel>/i,
-
-		// Captures title content between title tags (feed or item title)
-		TITLE: /<title>([\s\S]*?)<\/title>/i
+		// Title tag without attributes (feed or item title)
+		TITLE: /<title>/i
 	},
 
 	// Atom feed detection patterns
 	ATOM: {
-		// Matches Atom feed opening tag with optional attributes: <feed ...>
-		// (?:\s+[^>]*)? is a non-capturing group for optional attributes
+		// Atom feed root element: <feed …> or <feed>
 		FEED_START: /<feed[\s>]/i,
 
-		// Matches Atom namespace declaration: xmlns="...atom..." or xmlns:atom="..."
-		// (one pattern covers both: [^>]* also spans the ':' of xmlns:atom)
-		NAMESPACE_XMLNS: /<feed[^>]*xmlns[^>]*atom/i,
-		NAMESPACE_ATOM_PREFIX: /<feed[^>]*atom:/i,
+		// Atom namespace inside the <feed> tag: "atom" after the first xmlns covers both
+		// xmlns="...atom..." and xmlns:atom="..."; or an atom: prefix. (Not /xmlns.*atom/:
+		// that backtracks quadratically on a huge tag full of "xmlns".)
+		XMLNS: /xmlns/i,
+		ATOM: /atom/i,
+		NAMESPACE_ATOM_PREFIX: /atom:/i,
 
-		// Matches Atom entry opening tag (individual feed entries)
-		ENTRY: /<entry[^>]*>/i,
-
-		// Matches Atom title opening tag
-		TITLE_TAG: /<title[^>]*>/i,
-
-		// Captures title content between title tags (with optional attributes like type="text")
-		TITLE_CONTENT: /<title[^>]*>([\s\S]*?)<\/title>/i
+		// Atom entry and title tags (title may have attributes like type="text")
+		ENTRY: /<entry/i,
+		TITLE: /<title/i
 	}
 };
 

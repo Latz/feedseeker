@@ -1,5 +1,5 @@
 import { FEED_PATTERNS } from './feedPatterns.ts';
-import { cleanTitle, removeCDATA } from './textUtils.ts';
+import { cleanTitle, elementText, firstOpenTag, openTags, removeCDATA } from './textUtils.ts';
 import { type FeedResult } from './types.ts';
 
 /**
@@ -9,17 +9,10 @@ import { type FeedResult } from './types.ts';
  */
 function extractRssTitle(content: string): string | null {
 	// Extract title from RSS feed (channel title, not item title)
-	const channelMatch = FEED_PATTERNS.RSS.CHANNEL_CONTENT.exec(content);
-	if (channelMatch) {
-		const channelContent = channelMatch[1];
-		const titleMatch = FEED_PATTERNS.RSS.TITLE.exec(channelContent);
-		const title = titleMatch ? cleanTitle(removeCDATA(titleMatch[1])) : null;
-		return title;
-	}
-	// Fallback to original method if channel parsing fails
-	const match = FEED_PATTERNS.RSS.TITLE.exec(content);
-	const title = match ? cleanTitle(removeCDATA(match[1])) : null;
-	return title;
+	const channelContent = elementText(content, FEED_PATTERNS.RSS.CHANNEL, 'channel');
+	// Fallback to the whole document if channel parsing fails
+	const text = elementText(channelContent ?? content, FEED_PATTERNS.RSS.TITLE, 'title');
+	return text === null ? null : cleanTitle(removeCDATA(text));
 }
 
 /**
@@ -30,11 +23,14 @@ function extractRssTitle(content: string): string | null {
 export function checkRss(content: string, onReject?: (reason: string) => void): FeedResult | null {
 	// Step 1: Check for an RSS root element: either <rss version="..."> (RSS 0.91/2.0/etc.)
 	// or <rdf:RDF> (RSS 1.0, which has no <rss> tag at all).
-	if (FEED_PATTERNS.RSS.VERSION.test(content) || FEED_PATTERNS.RSS.RDF_ROOT.test(content)) {
+	const hasVersionedRoot = openTags(content, FEED_PATTERNS.RSS.ROOT).some(({ tag }) =>
+		FEED_PATTERNS.RSS.VERSION.test(tag)
+	);
+	if (hasVersionedRoot || firstOpenTag(content, FEED_PATTERNS.RSS.RDF_ROOT) !== null) {
 		// Step 2: Validate required RSS structure elements
-		const hasChannel = FEED_PATTERNS.RSS.CHANNEL.test(content); // Container for feed metadata
-		const hasItem = FEED_PATTERNS.RSS.ITEM.test(content); // Individual feed entries
-		const hasDescription = FEED_PATTERNS.RSS.DESCRIPTION.test(content); // Content description
+		const hasChannel = firstOpenTag(content, FEED_PATTERNS.RSS.CHANNEL) !== null; // Container for feed metadata
+		const hasItem = firstOpenTag(content, FEED_PATTERNS.RSS.ITEM) !== null; // Individual feed entries
+		const hasDescription = firstOpenTag(content, FEED_PATTERNS.RSS.DESCRIPTION) !== null; // Content description
 
 		// Step 3: Validate RSS structure - must have channel + description + items
 		if (hasChannel && hasDescription && hasItem) {

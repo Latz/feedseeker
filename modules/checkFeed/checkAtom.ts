@@ -1,5 +1,5 @@
 import { FEED_PATTERNS } from './feedPatterns.ts';
-import { cleanTitle, removeCDATA } from './textUtils.ts';
+import { cleanTitle, elementText, firstOpenTag, openTags, removeCDATA } from './textUtils.ts';
 import { type FeedResult } from './types.ts';
 
 /**
@@ -14,21 +14,25 @@ export function checkAtom(content: string, onReject?: (reason: string) => void):
 	if (!FEED_PATTERNS.ATOM.FEED_START.test(content)) return null;
 
 	// Check for Atom feed root element with appropriate namespace
-	const hasAtomNamespace =
-		FEED_PATTERNS.ATOM.NAMESPACE_XMLNS.test(content) ||
-		FEED_PATTERNS.ATOM.NAMESPACE_ATOM_PREFIX.test(content);
+	const hasAtomNamespace = openTags(content, FEED_PATTERNS.ATOM.FEED_START).some(({ tag }) => {
+		const xmlns = tag.search(FEED_PATTERNS.ATOM.XMLNS);
+		return (
+			(xmlns !== -1 && FEED_PATTERNS.ATOM.ATOM.test(tag.slice(xmlns))) ||
+			FEED_PATTERNS.ATOM.NAMESPACE_ATOM_PREFIX.test(tag)
+		);
+	});
 
 	if (hasAtomNamespace) {
 		// For Atom feeds, having <entry> elements is required to be a valid feed
-		const hasEntry = FEED_PATTERNS.ATOM.ENTRY.test(content);
+		const hasEntry = firstOpenTag(content, FEED_PATTERNS.ATOM.ENTRY) !== null;
 
 		// Additional check: Atom feeds should also have a feed-level title
-		const hasTitle = FEED_PATTERNS.ATOM.TITLE_TAG.test(content);
+		const hasTitle = firstOpenTag(content, FEED_PATTERNS.ATOM.TITLE) !== null;
 
 		if (hasEntry && hasTitle) {
 			// Extract title from Atom feed (feed title, not entry title)
-			const match = FEED_PATTERNS.ATOM.TITLE_CONTENT.exec(content);
-			const title = match ? cleanTitle(removeCDATA(match[1])) : null;
+			const text = elementText(content, FEED_PATTERNS.ATOM.TITLE, 'title');
+			const title = text === null ? null : cleanTitle(removeCDATA(text));
 			return { type: 'atom', title };
 		}
 
