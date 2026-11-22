@@ -497,3 +497,47 @@ describe('CLI fatal errors', () => {
 		expect(exit).toHaveBeenCalledWith(0);
 	});
 });
+
+describe('CLI — output details', () => {
+	it('prints found feeds once in normal mode, without the --all summary', async () => {
+		emitting(meta, [['end', { module: 'metalinks', feeds: [feed('/f', 'F')] }]], [feed('/f', 'F')]);
+		await cli(SITE, '--metasearch');
+		expect(logged().slice(1)).toEqual(['F', `${SITE}/f`]);
+	});
+
+	it('prints the feeds as JSON with --json', async () => {
+		meta.mockResolvedValue([feed('/f')]);
+		await cli(SITE, '--metasearch', '--json');
+		expect(log.mock.calls.map((c) => c[0])).toEqual([JSON.stringify([feed('/f')], null, 2)]);
+	});
+
+	it('titles the OPML document after the searched site', async () => {
+		meta.mockResolvedValue([feed('/f')]);
+		await cli(SITE, '--metasearch', '--format', 'opml');
+		expect(String(log.mock.calls[0][0])).toContain(`<title>Feeds from ${SITE}</title>`);
+	});
+
+	it('accepts -c 1 as one day', async () => {
+		meta.mockResolvedValue([feed('/f')]);
+		(checkFeedFreshness as Mock).mockResolvedValue(true);
+		await cli(SITE, '--metasearch', '-q', '-c', '1');
+		expect((checkFeedFreshness as Mock).mock.calls[0][1]).toBe(1);
+	});
+
+	it('prints an error event whose payload is null', async () => {
+		emitting(meta, [['error', null]]);
+		await cli(SITE, '--metasearch');
+		expect(errors()).toContain(`\nError for ${SITE}: null`);
+	});
+
+	it('prints the usage when called without a site', async () => {
+		await cli();
+		expect(out()).toContain('Usage: feedseeker');
+	});
+
+	it('prints the package version for the version command', async () => {
+		const { default: pkg } = await import('../package.json', { with: { type: 'json' } });
+		await cli('version');
+		expect(out()).toBe(`${pkg.version}\n`);
+	});
+});
