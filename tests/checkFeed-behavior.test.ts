@@ -65,6 +65,15 @@ describe('checkFeed — oEmbed URLs', () => {
 	});
 });
 
+describe('checkFeed — arguments', () => {
+	it('requires an instance when no content is given', async () => {
+		await expect(checkFeed(URL_)).rejects.toThrow(
+			'Instance parameter is required when content is not provided'
+		);
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
+});
+
 describe('checkFeed — HTTP errors', () => {
 	it('throws ChallengeResponseError for a bot-mitigation challenge', async () => {
 		mockFetch.mockResolvedValue(

@@ -94,6 +94,13 @@ describe('checkFeedFreshness — RSS 1.0 (dc:date)', () => {
 		expect(await checkFeedFreshness(feedOf('rss'), 120, instance)).toBe(true);
 	});
 
+	it('reads a padded, multi-line dc:date', async () => {
+		serve(
+			`<rdf:RDF><item rdf:about="x">\n<dc:date>\n  ${daysAgo(400).toISOString()}\n</dc:date>\n</item></rdf:RDF>`
+		);
+		expect(await checkFeedFreshness(feedOf('rss'), 30, instance)).toBe(false);
+	});
+
 	it('prefers pubDate over dc:date when an item has both', async () => {
 		serve(
 			`<rss version="2.0"><channel><item><dc:date>${daysAgo(400).toISOString()}</dc:date><pubDate>${daysAgo(1).toUTCString()}</pubDate></item></channel></rss>`

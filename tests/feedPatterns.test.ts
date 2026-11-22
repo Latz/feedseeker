@@ -26,6 +26,13 @@ describe('RSS channel parts with attributes', () => {
 		expect(checkRss(feed)).toEqual({ type: 'rss', title: 'T' });
 	});
 
+	it('reads the title from inside a multi-line channel', () => {
+		const feed =
+			'<rss version="2.0"><title>Outer</title>\n<channel>\n  <title>Channel</title>\n  ' +
+			'<description>d</description>\n  <item></item>\n</channel></rss>';
+		expect(checkRss(feed)?.title).toBe('Channel');
+	});
+
 	it('reads the title from inside a channel that carries attributes', () => {
 		const feed =
 			'<rss version="2.0"><title>Outer</title><channel rdf:about="https://a.example/"><title>Channel</title>' +
