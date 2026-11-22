@@ -6,6 +6,7 @@
  * process for a minute. Parsing is synchronous; no fetch timeout can stop it.
  */
 import { parseHTML } from 'linkedom';
+import { decodeChunks } from './charset.ts';
 
 /** Most characters of an HTML page that are read and parsed (big news front pages reach 2–3 MB). */
 export const MAX_HTML_CHARS = 5 * 1024 * 1024;
@@ -68,17 +69,15 @@ export async function readTextLimited(
 ): Promise<string> {
 	const reader = response.body?.getReader();
 	if (!reader) return (await response.text()).slice(0, maxChars);
-	const decoder = new TextDecoder();
 	let text = '';
-	for (;;) {
-		const { done, value } = await reader.read();
-		if (done) return text + decoder.decode();
-		text += decoder.decode(value, { stream: true });
+	for await (const piece of decodeChunks(reader, response.headers?.get('content-type'))) {
+		text += piece;
 		if (text.length >= maxChars) {
 			await reader.cancel().catch(() => {});
 			return text.slice(0, maxChars);
 		}
 	}
+	return text;
 }
 
 /**

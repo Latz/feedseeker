@@ -215,3 +215,125 @@ describe('FeedSeeker end to end over real HTTP', () => {
 		expect(feeds.map((f) => [f.url, f.feedTitle])).toEqual([[`${base}/podcast`, 'Podcast']]);
 	});
 });
+
+describe('misbehaving servers', () => {
+	const instance = { options: { timeout: 2 } };
+	const page = (head: string) => `<!DOCTYPE html><html><head>${head}</head><body></body></html>`;
+	const links = (...hrefs: string[]) =>
+		page(
+			hrefs.map((h) => `<link rel="alternate" type="application/rss+xml" href="${h}">`).join('')
+		);
+	const cutOff: Handler = (_req, res) => {
+		res.writeHead(200, { 'content-type': 'application/rss+xml' });
+		res.write(rss('Cut').slice(0, 60));
+		setTimeout(() => res.destroy(), 20);
+	};
+	const badGzip: Handler = (_req, res) => {
+		res.writeHead(200, { 'content-type': 'application/rss+xml', 'content-encoding': 'gzip' });
+		res.end(rss('Not zipped'));
+	};
+
+	it.each([
+		['a connection that drops mid-body', cutOff],
+		['an invalid gzip body', badGzip]
+	])('fails the check for %s, and discovery skips that feed', async (_name, handler) => {
+		routes['/broken'] = handler;
+		await expect(checkFeed(`${base}/broken`, '', instance)).rejects.toThrow('terminated');
+		routes['/'] = send(links('/broken', '/ok'));
+		routes['/ok'] = send(rss('Fine'), 'application/rss+xml');
+		const feeds = await new FeedSeeker(base, { timeout: 2 }).startSearch();
+		expect(feeds.map((f) => f.url)).toEqual([`${base}/ok`]);
+	});
+
+	it('gives up on a redirect loop quickly', async () => {
+		routes['/a'] = redirect('/b');
+		routes['/b'] = redirect('/a');
+		const started = Date.now();
+		await expect(checkFeed(`${base}/a`, '', instance)).rejects.toThrow('fetch failed');
+		expect(Date.now() - started).toBeLessThan(1000);
+	});
+
+	it('times out a body shorter than its Content-Length', async () => {
+		routes['/short'] = (_req, res) => {
+			res.writeHead(200, { 'content-type': 'application/rss+xml', 'content-length': '5000' });
+			res.end(rss('Short'));
+		};
+		await expect(checkFeed(`${base}/short`, '', { options: { timeout: 0.5 } })).rejects.toThrow();
+	});
+
+	it('reads only the announced bytes of a longer body, and the next request still works', async () => {
+		routes['/long'] = (_req, res) => {
+			res.writeHead(200, { 'content-type': 'application/rss+xml', 'content-length': '10' });
+			res.end(rss('Long'));
+		};
+		routes['/next'] = send(rss('Next'), 'application/rss+xml');
+		expect(await checkFeed(`${base}/long`, '', instance)).toBeNull();
+		expect(await checkFeed(`${base}/next`, '', instance)).toMatchObject({ title: 'Next' });
+	});
+
+	it('rejects the search when the site itself breaks off', async () => {
+		routes['/'] = cutOff;
+		await expect(new FeedSeeker(base, { timeout: 2 }).startSearch()).rejects.toThrow(
+			`Failed to fetch ${base}: terminated`
+		);
+	});
+});
+
+describe('character sets', () => {
+	const instance = { options: { timeout: 2 } };
+	const latin1 = (s: string) => Buffer.from(s, 'latin1');
+	const declared = (encoding: string) =>
+		rss('Café Müller').replace(
+			'<?xml version="1.0"?>',
+			`<?xml version="1.0" encoding="${encoding}"?>`
+		);
+	const serve =
+		(body: Buffer, type: string): Handler =>
+		(_req, res) => {
+			res.writeHead(200, { 'content-type': type });
+			res.end(body);
+		};
+
+	it.each([
+		[
+			'ISO-8859-1 named in the Content-Type',
+			latin1(rss('Café Müller')),
+			'text/xml; charset=iso-8859-1'
+		],
+		['ISO-8859-1 named in the XML declaration', latin1(declared('ISO-8859-1')), 'text/xml'],
+		[
+			'an unknown header charset, then the declaration',
+			latin1(declared('ISO-8859-1')),
+			'text/xml; charset=foo'
+		],
+		[
+			'the header over the declaration',
+			Buffer.from(declared('ISO-8859-1')),
+			'text/xml; charset=utf-8'
+		],
+		['UTF-8 without any declaration', Buffer.from(rss('Café Müller')), 'text/xml'],
+		['a UTF-8 byte order mark', Buffer.from('﻿' + rss('Café Müller')), 'text/xml'],
+		[
+			'UTF-16 with a byte order mark',
+			Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(rss('Café Müller'), 'utf16le')]),
+			'text/xml; charset=utf-16'
+		]
+	])('decodes a feed in %s', async (_name, body, type) => {
+		routes['/feed'] = serve(body, type);
+		expect(await checkFeed(`${base}/feed`, '', instance)).toMatchObject({ title: 'Café Müller' });
+	});
+
+	it('decodes an HTML page by its <meta charset>', async () => {
+		routes['/'] = serve(
+			latin1(
+				'<!DOCTYPE html><html><head><meta charset="iso-8859-1">' +
+					'<link rel="alternate" type="application/rss+xml" title="Grüße" href="/feed"></head></html>'
+			),
+			'text/html'
+		);
+		routes['/feed'] = serve(latin1(declared('ISO-8859-1')), 'text/xml');
+		expect(await new FeedSeeker(base, { timeout: 2 }).startSearch()).toEqual([
+			{ url: `${base}/feed`, title: 'Grüße', type: 'rss', feedTitle: 'Café Müller' }
+		]);
+	});
+});

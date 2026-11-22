@@ -23,6 +23,7 @@ import { checkRss } from './checkRss.ts';
 import { checkAtom } from './checkAtom.ts';
 import { checkJson } from './checkJson.ts';
 import { isChallengeResponse } from '../challengeDetection.ts';
+import { decodeChunks } from '../charset.ts';
 import { type FeedResult, type FeedSeekerInstance } from './types.ts';
 
 /**
@@ -60,13 +61,10 @@ async function readUnlessHtmlPage(response: Response): Promise<string | null> {
 	const reader = response.body?.getReader();
 	if (!reader) return response.text();
 
-	const decoder = new TextDecoder();
 	let text = '';
 	let sniffed = false;
-	for (;;) {
-		const { done, value } = await reader.read();
-		if (done) break;
-		text += decoder.decode(value, { stream: true });
+	for await (const piece of decodeChunks(reader, response.headers?.get('content-type'))) {
+		text += piece;
 		if (!sniffed && text.length >= HTML_SNIFF_BYTES) {
 			sniffed = true;
 			if (HTML_DOCUMENT_START.test(text.slice(0, HTML_SNIFF_BYTES))) {
@@ -76,7 +74,6 @@ async function readUnlessHtmlPage(response: Response): Promise<string | null> {
 		}
 		if (text.length > VALIDATION_LIMITS.MAX_CONTENT_SIZE) break; // validateContentSize rejects it
 	}
-	text += decoder.decode();
 	return !sniffed && HTML_DOCUMENT_START.test(text) ? null : text;
 }
 
