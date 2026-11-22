@@ -1,0 +1,25 @@
+name: Live sites
+
+# Feed discovery against real websites (tests/live). Nightly rather than on every
+# push: it catches sites changing their markup, but can fail for reasons outside
+# this repo (site down, bot protection), so check a failure by hand.
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run test:live

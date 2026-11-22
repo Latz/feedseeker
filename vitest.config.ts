@@ -6,7 +6,9 @@ export default defineConfig({
 		exclude: [
 			'node_modules/**',
 			'.worktrees/**',
-			...(process.env.STRYKER ? ['tests/cli-build.test.ts'] : [])
+			...(process.env.STRYKER ? ['tests/cli-build.test.ts'] : []),
+			// live websites: only via `npm run test:live` (LIVE=1)
+			...(process.env.LIVE ? [] : ['tests/live/**'])
 		],
 		coverage: {
 			provider: 'v8',

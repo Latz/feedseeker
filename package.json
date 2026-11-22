@@ -28,6 +28,7 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:mutation": "STRYKER=1 stryker run",
+		"test:live": "LIVE=1 vitest run tests/live",
 		"clean": "rimraf dist",
 		"dev": "tsc --watch",
 		"typecheck": "tsc --noEmit",
