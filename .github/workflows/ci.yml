@@ -26,6 +26,8 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+      # Build first: tests/cli-build.test.ts runs dist/ and is skipped without it
+      - run: npm run build
       - run: npm test
 
   sonarcloud:
