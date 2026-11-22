@@ -567,9 +567,29 @@ describe('deepSearch — isValidUrl error handling', () => {
 			(e) => e.event === 'error' && e.data?.error?.includes('Invalid URL')
 		);
 		expect(errorEvent).toBeDefined();
+		expect(errorEvent.data.module).toBe('deepSearch');
+		expect(errorEvent.data.error).toBe('Invalid URL: https://example.com/bad');
+		expect(errorEvent.data.explanation).toContain('could not be parsed or validated');
+		expect(errorEvent.data.suggestion).toContain('broken links');
 		// Crawl continues past the failing link and still processes the other one.
 		const fetchedUrls = fetchWithTimeout.mock.calls.map((c) => c[0]);
 		expect(fetchedUrls.some((u) => u.endsWith('/ok'))).toBe(true);
+		// ...but never crawls the link that failed validation
+		expect(fetchedUrls.some((u) => u.endsWith('/bad'))).toBe(false);
+	});
+
+	it('counts a link that fails validation toward maxErrors', async () => {
+		fetchWithTimeout.mockResolvedValue(
+			mockResponse('<html><body><a href="/bad">bad</a><a href="/ok">ok</a></body></html>')
+		);
+		checkFeed.mockResolvedValue(null);
+		tldtsThrowForUrl = 'https://example.com/bad';
+		const instance = makeInstance();
+		await deepSearch('https://example.com', { depth: 1, maxErrors: 1 }, instance);
+		const stop = instance._events.find(
+			(e) => e.event === 'log' && e.data?.message?.startsWith('Stopped due to')
+		);
+		expect(stop?.data.message).toBe('Stopped due to 1 errors (max 1 allowed).');
 	});
 });
 

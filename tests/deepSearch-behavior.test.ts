@@ -444,3 +444,64 @@ describe('deepSearch — prefetched homepage', () => {
 		expect(pagesFetched()).toEqual([`${A}/p`]);
 	});
 });
+
+describe('deepSearch — exact limit events', () => {
+	const logData = (events: Event[], text: string) =>
+		events.filter((e) => e.event === 'log' && e.data.message?.includes(text)).map((e) => e.data);
+
+	it('tags the error-limit, seeding, link-limit and feed-limit logs with the module', async () => {
+		const errorsRun = makeInstance();
+		web({ [`${A}/`]: links('/b1', '/b2'), [`${A}/b1`]: 500, [`${A}/b2`]: 500 });
+		await deepSearch(A, { depth: 1, maxErrors: 1 }, errorsRun.instance);
+		expect(logData(errorsRun.events, 'Stopped due to')).toEqual([
+			{ module: 'deepSearch', message: 'Stopped due to 1 errors (max 1 allowed).' }
+		]);
+
+		const seeded = makeInstance();
+		web({ [`${A}/sitemap.xml`]: `<loc>${A}/p</loc>` });
+		await deepSearch(A, { depth: 1 }, seeded.instance);
+		expect(logData(seeded.events, 'Seeded')).toEqual([
+			{ module: 'deepSearch', message: 'Seeded 1 URLs from sitemap.' }
+		]);
+
+		const capped = makeInstance();
+		web({ [`${A}/`]: links('/a', '/b') });
+		await deepSearch(A, { depth: 1, maxLinks: 2 }, capped.instance);
+		expect(logData(capped.events, 'Max links')).toEqual([
+			{ module: 'deepSearch', message: 'Max links limit of 2 reached. Stopping deep search.' }
+		]);
+
+		const limited = makeInstance();
+		web({ [`${A}/`]: links('/f'), [`${A}/f`]: 'FEED:x' });
+		await deepSearch(A, { depth: 1, maxFeeds: 1 }, limited.instance);
+		expect(logData(limited.events, 'maximum feeds')).toEqual([
+			{
+				module: 'deepSearch',
+				message: 'Stopped due to reaching maximum feeds limit: 1 feeds found (max 1 allowed).'
+			}
+		]);
+	});
+
+	it('never logs a feed limit with maxFeeds 0', async () => {
+		web({ [`${A}/`]: links('/f1', '/f2'), [`${A}/f1`]: 'FEED:1', [`${A}/f2`]: 'FEED:2' });
+		const { instance, events } = makeInstance();
+		expect(await deepSearch(A, { depth: 1, maxFeeds: 0 }, instance)).toHaveLength(2);
+		expect(logData(events, 'maximum feeds')).toEqual([]);
+	});
+
+	it('a repeated link does not count as hitting the link limit', async () => {
+		// start page + /a fill the budget of 2 exactly; the second /a is a duplicate, not a new link
+		web({ [`${A}/`]: links('/a', '/a') });
+		const { instance, events } = makeInstance();
+		await deepSearch(A, { depth: 1, maxLinks: 2 }, instance);
+		expect(logData(events, 'Max links')).toEqual([]);
+	});
+
+	it('does not collect links from pages at the maximum depth', async () => {
+		web({ [`${A}/`]: links('/a'), [`${A}/a`]: links('/b', '/c', '/d') });
+		const { instance, events } = makeInstance();
+		await deepSearch(A, { depth: 1, maxLinks: 3 }, instance);
+		expect(pagesFetched()).toEqual([`${A}/`, `${A}/a`]);
+		expect(logData(events, 'Max links')).toEqual([]);
+	});
+});
