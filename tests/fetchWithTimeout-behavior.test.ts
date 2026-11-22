@@ -87,6 +87,19 @@ describe('fetchWithTimeout — retries', () => {
 		expect(fetchMock).toHaveBeenCalledTimes(2);
 	});
 
+	it('still retries a 429 on a host whose 403s are known to be futile', async () => {
+		const url = freshUrl();
+		// three final 403s in a row mark the host as "403 retries are futile"
+		fetchMock.mockResolvedValue(new Response('', { status: 403 }));
+		for (let i = 0; i < 3; i++) await fetchWithTimeout(url);
+		fetchMock.mockReset();
+		fetchMock
+			.mockResolvedValueOnce(new Response('', { status: 429 }))
+			.mockResolvedValueOnce(new Response('ok', { status: 200 }));
+		expect((await fetchWithTimeout(url)).status).toBe(200);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+	});
+
 	it('hands a persistent 403 to the TLS spoof fallback with timeout and headers', async () => {
 		fetchMock.mockResolvedValue(new Response('', { status: 403 }));
 		const spoofed = new Response('spoofed', { status: 200 });
