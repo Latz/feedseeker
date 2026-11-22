@@ -54,4 +54,39 @@ describe('blindsearch/urlGeneration', () => {
 			'https://example.com/feed?lang=de'
 		]);
 	});
+
+	it('walks up every path level once, with and without a trailing slash', () => {
+		const expected = [
+			'https://example.com/a/b/feed',
+			'https://example.com/a/feed',
+			'https://example.com/feed'
+		];
+		expect(generateEndpointUrls('https://example.com/a/b', false, ['feed'])).toEqual(expected);
+		expect(generateEndpointUrls('https://example.com/a/b/', false, ['feed'])).toEqual(expected);
+		expect(generateEndpointUrls('https://example.com/', false, ['feed'])).toEqual([
+			'https://example.com/feed'
+		]);
+	});
+
+	it('accepts plain http sites', () => {
+		expect(generateEndpointUrls('http://example.com', false, ['feed'])).toEqual([
+			'http://example.com/feed'
+		]);
+	});
+
+	it('warns about the generation limit only once', () => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const manyEndpoints = Array.from({ length: 10001 }, (_, i) => `feed${i}`);
+		generateEndpointUrls('https://example.com/a/b', false, manyEndpoints);
+		expect(
+			warnSpy.mock.calls.filter((c) => String(c[0]).includes('generation limit'))
+		).toHaveLength(1);
+	});
+
+	it('shortens skipped over-long URLs to 100 characters in the warning', () => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const url = `https://example.com/${'a'.repeat(MAX_URL_LENGTH)}`;
+		generateEndpointUrls('https://example.com', false, ['a'.repeat(MAX_URL_LENGTH)]);
+		expect(warnSpy).toHaveBeenCalledWith(`Skipping URL (too long): ${url.substring(0, 100)}...`);
+	});
 });
