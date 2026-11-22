@@ -85,6 +85,10 @@ describe('rate-limit headers', () => {
 		expect(await waitAfter({ 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '30' })).toBe(30);
 	});
 
+	it('waits at most 60 s, however long the host asks for', async () => {
+		expect(await waitAfter({ 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '3600' })).toBe(60);
+	});
+
 	it('understands a reset given as a Unix timestamp', async () => {
 		const warn = vi.spyOn(process, 'emitWarning');
 		const resetAt = String(Math.floor(Date.now() / 1000) + 30);

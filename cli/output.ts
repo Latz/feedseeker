@@ -1,8 +1,16 @@
 import { styleText } from 'node:util';
 import { type Feed } from '../modules/metaLinks.ts';
 
+// Characters XML 1.0 forbids even when escaped; one in a feed title would make the OPML unreadable
+const ILLEGAL_XML_CHARS = new RegExp(
+	// oxlint-disable-next-line no-control-regex -- intentionally matches control characters
+	'[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\uFFFE\\uFFFF]',
+	'g'
+);
+
 export function escapeXml(s: string): string {
 	return s
+		.replace(ILLEGAL_XML_CHARS, '')
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')

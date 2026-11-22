@@ -42,6 +42,9 @@ const HOST_COOLDOWN_MS = 10_000;
 const FUTILE_403_STREAK_LIMIT = 3;
 // x-ratelimit-reset values above this are Unix timestamps (2001-09-09), not a delay in seconds
 const UNIX_TIMESTAMP_THRESHOLD = 1_000_000_000;
+// Longest rate-limit wait honored per host (same as the max request timeout); longer
+// demands would stall the search and can overflow setTimeout (> ~24.8 days)
+const MAX_RATE_LIMIT_WAIT_MS = 60_000;
 
 interface HostState {
 	active: number;
@@ -117,7 +120,7 @@ function getRateLimitWaitMs(response: Response): number | null {
 
 	// Reddit sends seconds until the reset, GitHub and others a Unix timestamp
 	const waitMs = reset > UNIX_TIMESTAMP_THRESHOLD ? reset * 1000 - Date.now() : reset * 1000;
-	return waitMs > 0 ? waitMs : null;
+	return waitMs > 0 ? Math.min(waitMs, MAX_RATE_LIMIT_WAIT_MS) : null;
 }
 
 /**
