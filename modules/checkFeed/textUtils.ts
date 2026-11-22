@@ -12,10 +12,11 @@ export function removeCDATA(text: string): string {
 /**
  * Cleans titles by removing excessive whitespace and newlines
  * @param title - The title to clean
- * @returns The cleaned title, or null if input is falsy
+ * @returns The cleaned title, or null if input is falsy or only whitespace
  */
 export function cleanTitle(title: string | null | undefined): string | null {
 	if (!title) return null; // Explicitly return null for falsy values
 	// Remove leading/trailing whitespace and collapse multiple whitespace characters
-	return title.replaceAll(WHITESPACE_PATTERN, ' ').trim();
+	// A whitespace-only title is no title: '' would e.g. leave an OPML outline unlabeled
+	return title.replaceAll(WHITESPACE_PATTERN, ' ').trim() || null;
 }

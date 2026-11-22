@@ -15,6 +15,14 @@ import { checkRss } from '../modules/checkFeed/checkRss.ts';
 import { checkAtom } from '../modules/checkFeed/checkAtom.ts';
 import { checkJson } from '../modules/checkFeed/checkJson.ts';
 import { type Feed } from '../modules/metaLinks.ts';
+import { cleanTitle, removeCDATA } from '../modules/checkFeed/textUtils.ts';
+import { validateUrl } from '../modules/checkFeed/validation.ts';
+import checkFeed from '../modules/checkFeed/index.ts';
+import { checkFeedFreshness } from '../modules/checkFreshness.ts';
+import { readUrlsFromFile } from '../cli/readUrlsFromFile.ts';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 afterEach(() => {
 	vi.restoreAllMocks();
@@ -235,6 +243,149 @@ describe('feed parsers', () => {
 				expect([null, 'atom']).toContain(checkAtom(content)?.type ?? null);
 				expect([null, 'json']).toContain(checkJson(content)?.type ?? null);
 			})
+		);
+	});
+});
+
+// Text built mostly from whitespace and markup characters, which the default
+// fc.string() (printable ASCII, no newlines) almost never produces
+const messyText = fc.string({
+	unit: fc.constantFrom(' ', '\n', '\t', '\r', ' ', 'a', 'Z', 'é', '<', '>', ']', '&'),
+	maxLength: 30
+});
+
+describe('title cleanup', () => {
+	it('cleanTitle returns null or a non-empty, trimmed, single-spaced title, and is idempotent', () => {
+		fc.assert(
+			fc.property(messyText, (s) => {
+				const t = cleanTitle(s);
+				if (t === null) return;
+				expect(t.length).toBeGreaterThan(0);
+				expect(t).toBe(t.trim());
+				expect(t).not.toMatch(/\s{2}/);
+				expect(cleanTitle(t)).toBe(t);
+			})
+		);
+	});
+
+	it('removeCDATA unwraps CDATA sections whatever they contain, including newlines', () => {
+		fc.assert(
+			fc.property(
+				messyText.filter((s) => !s.includes(']]>')),
+				(s) => {
+					expect(removeCDATA(`<![CDATA[${s}]]>`)).toBe(s);
+					expect(removeCDATA(`a<![CDATA[${s}]]>b<![CDATA[${s}]]>`)).toBe(`a${s}b${s}`);
+				}
+			)
+		);
+	});
+
+	it('an RSS title reads back as its cleaned text, plain or in multi-line CDATA', () => {
+		const titleText = messyText.filter((s) => !/[<&]|]]>/.test(s));
+		fc.assert(
+			fc.property(titleText, fc.boolean(), (title, cdata) => {
+				const inner = cdata ? `<![CDATA[\n${title}\n]]>` : title;
+				const feed = `<rss version="2.0"><channel><title>${inner}</title><description>d</description><item></item></channel></rss>`;
+				expect(checkRss(feed)?.title).toBe(cleanTitle(title));
+			})
+		);
+	});
+});
+
+describe('validateUrl', () => {
+	it('accepts every http(s) URL and rejects every other scheme', () => {
+		fc.assert(
+			fc.property(
+				fc.webUrl(),
+				fc.constantFrom('ftp', 'file', 'data', 'mailto', 'javascript', 'ws'),
+				(url, scheme) => {
+					expect(() => validateUrl(url)).not.toThrow();
+					const other = url.replace(/^https?/, scheme);
+					expect(() => validateUrl(other)).toThrow(/Invalid (protocol|URL)/);
+				}
+			)
+		);
+	});
+});
+
+describe('checkJson', () => {
+	it('accepts any object with a non-empty items array and cleans a string title', () => {
+		fc.assert(
+			fc.property(
+				fc.array(fc.jsonValue(), { minLength: 1, maxLength: 3 }),
+				fc.option(messyText, { nil: undefined }),
+				(items, title) => {
+					const result = checkJson(
+						JSON.stringify({ items, ...(title === undefined ? {} : { title }) })
+					);
+					expect(result).toEqual({ type: 'json', title: cleanTitle(title) });
+				}
+			)
+		);
+	});
+});
+
+describe('readUrlsFromFile', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'feedseeker-prop-'));
+	let n = 0;
+
+	it('returns exactly the trimmed lines that are neither blank nor comments, in order', async () => {
+		const line = fc.oneof(
+			fc.webUrl(),
+			fc.webUrl().map((u) => `  ${u}\t`),
+			fc.constant(''),
+			fc.constant('   '),
+			fc.string({ maxLength: 10 }).map((s) => `# ${s}`)
+		);
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(line, { maxLength: 8 }),
+				fc.constantFrom('\n', '\r\n'),
+				async (lines, eol) => {
+					const file = join(dir, `urls${++n}.txt`);
+					writeFileSync(file, lines.join(eol));
+					const expected = lines.map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
+					expect(await readUrlsFromFile(file)).toEqual(expected);
+				}
+			)
+		);
+	});
+});
+
+describe('checkFeedFreshness', () => {
+	const NOW = Date.UTC(2026, 5, 15);
+	let n = 0;
+
+	it('keeps a feed exactly when its newest item is at most N days old', async () => {
+		vi.useFakeTimers({ toFake: ['Date'] });
+		vi.setSystemTime(NOW);
+		await fc.assert(
+			fc.asyncProperty(
+				fc.integer({ min: 0, max: 400 * 86_400 }),
+				fc.integer({ min: 1, max: 365 }),
+				fc.constantFrom<Feed['type']>('rss', 'atom', 'json'),
+				async (ageSeconds, days, type) => {
+					const date = new Date(NOW - ageSeconds * 1000);
+					const url = `https://fresh-prop${++n}.example/feed`;
+					const content =
+						type === 'rss'
+							? `<rss version="2.0"><channel><title>t</title><description>d</description><item><pubDate>${date.toUTCString()}</pubDate></item></channel></rss>`
+							: type === 'atom'
+								? `<feed xmlns="http://www.w3.org/2005/Atom"><title>t</title><entry><updated>${date.toISOString()}</updated></entry></feed>`
+								: JSON.stringify({
+										version: 'https://jsonfeed.org/version/1.1',
+										items: [{ date_published: date.toISOString() }]
+									});
+					// checkFeed caches recognized feeds; checkFeedFreshness reads that cache (no network)
+					expect(await checkFeed(url, content)).toMatchObject({ type });
+					const fresh = await checkFeedFreshness(
+						{ url, type, title: null, feedTitle: null },
+						days,
+						{ options: {} }
+					);
+					expect(fresh).toBe(ageSeconds <= days * 86_400);
+				}
+			)
 		);
 	});
 });

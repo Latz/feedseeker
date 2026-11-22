@@ -5,8 +5,9 @@
 
 export const FEED_PATTERNS = {
 	// CDATA processing - matches XML CDATA sections: <![CDATA[content]]>
-	// Used to extract clean text content from feeds that wrap content in CDATA
-	CDATA: /<!\[CDATA\[(.*?)\]\]>/g,
+	// Used to extract clean text content from feeds that wrap content in CDATA.
+	// [\s\S] rather than . so indented, multi-line CDATA titles are unwrapped too.
+	CDATA: /<!\[CDATA\[([\s\S]*?)\]\]>/g,
 
 	// RSS feed detection patterns
 	RSS: {
