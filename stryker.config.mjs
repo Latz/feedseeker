@@ -9,5 +9,7 @@ export default {
 	concurrency: 4,
 	// code default timeout is 15s plus retry delays
 	timeoutMS: 20000,
-	thresholds: { high: 80, low: 60, break: null }
+	// CI fails below 90% overall (.github/workflows/mutation.yml); local runs of single
+	// files never do, since one file alone may legitimately score lower
+	thresholds: { high: 80, low: 60, break: process.env.CI ? 90 : null }
 };
