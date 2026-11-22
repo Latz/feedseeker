@@ -1,13 +1,13 @@
 // Deep Search - Website crawling for feed discovery
 
 import checkFeed from './checkFeed/index.ts';
-import { parseHTML } from 'linkedom';
 import tldts from 'tldts';
 import EventEmitter from './eventEmitter.ts';
 import async from 'async';
 import type { QueueObject } from 'async';
 const { queue } = async;
 import fetchWithTimeout from './fetchWithTimeout.ts';
+import { parseHtmlLimited, readTextLimited } from './htmlLimits.ts';
 import { type FeedSeekerInstance } from './checkFeed/index.ts';
 import { type Feed } from './metaLinks.ts';
 
@@ -391,11 +391,11 @@ class Crawler extends EventEmitter {
 			this.handleFetchError(url, depth, `HTTP ${response.status} ${response.statusText}`);
 			return null;
 		}
-		return response.text();
+		return readTextLimited(response);
 	}
 
 	private enqueueLinks(html: string, depth: number, pageUrl: string): void {
-		const { document } = parseHTML(html);
+		const { document } = parseHtmlLimited(html);
 		for (const link of document.querySelectorAll('a')) {
 			try {
 				const rawUrl = new URL(link.href, pageUrl).href;

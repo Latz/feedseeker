@@ -23,6 +23,8 @@ import EventEmitter from './modules/eventEmitter.ts';
 import fetchWithTimeout from './modules/fetchWithTimeout.ts';
 import lookupApplePodcastFeed from './modules/applePodcasts.ts';
 import { isChallengeResponse } from './modules/challengeDetection.ts';
+import { parseHtmlLimited, readTextLimited } from './modules/htmlLimits.ts';
+import { VALIDATION_LIMITS } from './modules/checkFeed/validation.ts';
 
 export type { BlindSearchFeed } from './modules/blindsearch/index.ts';
 export type {
@@ -261,10 +263,11 @@ export default class FeedSeeker extends EventEmitter implements MetaLinksInstanc
 
 				this.syncSiteToFinalUrl(response);
 
-				this.content = await response.text();
+				// The site itself may be a feed, which can be larger than an HTML page
+				this.content = await readTextLimited(response, VALIDATION_LIMITS.MAX_CONTENT_SIZE);
 				await this.detectSelfFeed(fetchOptions);
 
-				const { document } = parseHTML(this.content);
+				const { document } = parseHtmlLimited(this.content);
 				this.document = document;
 
 				this.initStatus = 'success';

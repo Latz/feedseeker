@@ -11,13 +11,13 @@
  * @since 1.0.0
  */
 
-import { parseHTML } from 'linkedom';
 import checkFeed from '../checkFeed/index.ts';
 import fetchWithTimeout from '../fetchWithTimeout.ts';
 import { type Feed, type MetaLinksInstance } from '../metaLinks.ts';
 import { isValidHttpUrl, isRelativePath, parseUrlSafely } from './urlUtils.ts';
 import { isAllowedDomain } from './domainFilter.ts';
 import { excludedFile } from '../deepSearch.ts';
+import { parseHtmlLimited, readTextLimited } from '../htmlLimits.ts';
 
 export { ALLOWED_DOMAINS } from './domainFilter.ts';
 
@@ -37,8 +37,7 @@ async function followRedirectTarget(
 		insecure: instance.options?.insecure
 	});
 	if (!response?.ok) return [];
-	const html = await response.text();
-	const { document } = parseHTML(html);
+	const { document } = parseHtmlLimited(await readTextLimited(response));
 	return checkAnchors({ ...instance, site: redirectUrl, document });
 }
 
